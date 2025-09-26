@@ -1,0 +1,277 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netframework48</TargetFramework>
+        <RootNamespace>IngameScript</RootNamespace>
+        <LangVersion>6</LangVersion>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <Configurations>Release;Debug</Configurations>
+        <Platforms>x64</Platforms>
+        <UserSecretsId>62fa3c17-762a-4755-9e05-4e3b0415d9e0</UserSecretsId>
+
+
+        <!--        <PackageType>Template</PackageType>-->
+        <!--        <PackageVersion>2.0.1</PackageVersion>-->
+        <!--        <PackageId>Mal.Mdk2.Template</PackageId>-->
+        <!--        <Title>&gt;Space Engineers Programmable Block Script Template</Title>-->
+        <!--        <Authors>Morten "Malware" Aune Lyrstad</Authors>-->
+        <!--        <Description>Templates to use when creating an application</Description>-->
+        <!--        <PackageTags>dotnet;templates;space engineers;pb;programmable block;ingame script</PackageTags>-->
+        <!--        <IncludeContentInPack>true</IncludeContentInPack>-->
+        <!--        <IncludeBuildOutput>false</IncludeBuildOutput>-->
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Mal.Mdk2.PbAnalyzers" Version="2.1.9">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Mal.Mdk2.PbPackager" Version="2.0.8">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="Instructions.readme"/>
+        <AdditionalFiles Include="Instructions.readme"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="0Harmony">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\0Harmony.dll</HintPath>
+      </Reference>
+      <Reference Include="CppNet">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\CppNet.dll</HintPath>
+      </Reference>
+      <Reference Include="DirectShowLib">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\DirectShowLib.dll</HintPath>
+      </Reference>
+      <Reference Include="EmptyKeys.UserInterface">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\EmptyKeys.UserInterface.dll</HintPath>
+      </Reference>
+      <Reference Include="EmptyKeys.UserInterface.Core">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\EmptyKeys.UserInterface.Core.dll</HintPath>
+      </Reference>
+      <Reference Include="EOSSDK">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\EOSSDK.dll</HintPath>
+      </Reference>
+      <Reference Include="GameAnalytics.Mono">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\GameAnalytics.Mono.dll</HintPath>
+      </Reference>
+      <Reference Include="HavokWrapper">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\HavokWrapper.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.CodeAnalysis">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\Microsoft.CodeAnalysis.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.CodeAnalysis.CSharp">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+      </Reference>
+      <Reference Include="netstandard">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\netstandard.dll</HintPath>
+      </Reference>
+      <Reference Include="Newtonsoft.Json">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\Newtonsoft.Json.dll</HintPath>
+      </Reference>
+      <Reference Include="NLog">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\NLog.dll</HintPath>
+      </Reference>
+      <Reference Include="NuGet.Common">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\NuGet.Common.dll</HintPath>
+      </Reference>
+      <Reference Include="NuGet.Configuration">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\NuGet.Configuration.dll</HintPath>
+      </Reference>
+      <Reference Include="NuGet.Frameworks">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\NuGet.Frameworks.dll</HintPath>
+      </Reference>
+      <Reference Include="NuGet.Packaging">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\NuGet.Packaging.dll</HintPath>
+      </Reference>
+      <Reference Include="NuGet.Protocol">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\NuGet.Protocol.dll</HintPath>
+      </Reference>
+      <Reference Include="NuGet.Resolver">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\NuGet.Resolver.dll</HintPath>
+      </Reference>
+      <Reference Include="NuGet.Versioning">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\NuGet.Versioning.dll</HintPath>
+      </Reference>
+      <Reference Include="PluginLoader">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\PluginLoader.dll</HintPath>
+      </Reference>
+      <Reference Include="ProtoBuf.Net">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\ProtoBuf.Net.dll</HintPath>
+      </Reference>
+      <Reference Include="ProtoBuf.Net.Core">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\ProtoBuf.Net.Core.dll</HintPath>
+      </Reference>
+      <Reference Include="RecastDetourWrapper">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\RecastDetourWrapper.dll</HintPath>
+      </Reference>
+      <Reference Include="RestSharp">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\RestSharp.dll</HintPath>
+      </Reference>
+      <Reference Include="Sandbox.Common">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\Sandbox.Common.dll</HintPath>
+      </Reference>
+      <Reference Include="Sandbox.Game">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\Sandbox.Game.dll</HintPath>
+      </Reference>
+      <Reference Include="Sandbox.Game.XmlSerializers">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\Sandbox.Game.XmlSerializers.dll</HintPath>
+      </Reference>
+      <Reference Include="Sandbox.Graphics">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\Sandbox.Graphics.dll</HintPath>
+      </Reference>
+      <Reference Include="Sandbox.RenderDirect">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\Sandbox.RenderDirect.dll</HintPath>
+      </Reference>
+      <Reference Include="SharpDX">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\SharpDX.dll</HintPath>
+      </Reference>
+      <Reference Include="SharpDX.D3DCompiler">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\SharpDX.D3DCompiler.dll</HintPath>
+      </Reference>
+      <Reference Include="SharpDX.Desktop">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\SharpDX.Desktop.dll</HintPath>
+      </Reference>
+      <Reference Include="SharpDX.Direct3D11">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\SharpDX.Direct3D11.dll</HintPath>
+      </Reference>
+      <Reference Include="SharpDX.DirectInput">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\SharpDX.DirectInput.dll</HintPath>
+      </Reference>
+      <Reference Include="SharpDX.DXGI">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\SharpDX.DXGI.dll</HintPath>
+      </Reference>
+      <Reference Include="SharpDX.XAudio2">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\SharpDX.XAudio2.dll</HintPath>
+      </Reference>
+      <Reference Include="SharpDX.XInput">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\SharpDX.XInput.dll</HintPath>
+      </Reference>
+      <Reference Include="SixLabors.Core">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\SixLabors.Core.dll</HintPath>
+      </Reference>
+      <Reference Include="SixLabors.ImageSharp">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\SixLabors.ImageSharp.dll</HintPath>
+      </Reference>
+      <Reference Include="SpaceEngineers">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\SpaceEngineers.exe</HintPath>
+      </Reference>
+      <Reference Include="SpaceEngineers.Game">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\SpaceEngineers.Game.dll</HintPath>
+      </Reference>
+      <Reference Include="SpaceEngineers.ObjectBuilders">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\SpaceEngineers.ObjectBuilders.dll</HintPath>
+      </Reference>
+      <Reference Include="SpaceEngineers.ObjectBuilders.XmlSerializers">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\SpaceEngineers.ObjectBuilders.XmlSerializers.dll</HintPath>
+      </Reference>
+      <Reference Include="SpaceEngineersLauncher">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\SpaceEngineersLauncher.exe</HintPath>
+      </Reference>
+      <Reference Include="Steamworks.NET">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\Steamworks.NET.dll</HintPath>
+      </Reference>
+      <Reference Include="System.Buffers">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\System.Buffers.dll</HintPath>
+      </Reference>
+      <Reference Include="System.Collections.Immutable">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\System.Collections.Immutable.dll</HintPath>
+      </Reference>
+      <Reference Include="System.ComponentModel.Annotations">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\System.ComponentModel.Annotations.dll</HintPath>
+      </Reference>
+      <Reference Include="System.Data.SQLite">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\System.Data.SQLite.dll</HintPath>
+      </Reference>
+      <Reference Include="System.Memory">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\System.Memory.dll</HintPath>
+      </Reference>
+      <Reference Include="System.Numerics.Vectors">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\System.Numerics.Vectors.dll</HintPath>
+      </Reference>
+      <Reference Include="System.Reflection.Metadata">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\System.Reflection.Metadata.dll</HintPath>
+      </Reference>
+      <Reference Include="System.Runtime.CompilerServices.Unsafe">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      </Reference>
+      <Reference Include="System.Text.Encoding.CodePages">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\System.Text.Encoding.CodePages.dll</HintPath>
+      </Reference>
+      <Reference Include="System.Threading.Tasks.Extensions">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\System.Threading.Tasks.Extensions.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.Ansel">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.Ansel.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.Audio">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.Audio.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.EOS">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.EOS.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.EOS.XmlSerializers">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.EOS.XmlSerializers.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.Game">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.Game.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.Game.XmlSerializers">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.Game.XmlSerializers.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.Input">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.Input.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.Library">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.Library.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.Math">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.Math.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.Math.XmlSerializers">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.Math.XmlSerializers.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.Mod.Io">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.Mod.Io.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.NativeAftermath">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.NativeAftermath.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.NativeWrapper">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.NativeWrapper.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.Network">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.Network.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.Platform.Windows">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.Platform.Windows.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.Render">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.Render.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.Render11">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.Render11.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.Scripting">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.Scripting.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.Steam">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.Steam.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.UserInterface">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.UserInterface.dll</HintPath>
+      </Reference>
+      <Reference Include="VRage.XmlSerializers">
+        <HintPath>..\..\..\.steam\debian-installation\steamapps\common\SpaceEngineers\Bin64\VRage.XmlSerializers.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>

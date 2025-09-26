@@ -1,0 +1,72 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/deltawing/repos/ArgusLiteMDK2/EarlyWarningTurret/EarlyWarningTurret.csproj": {}
+  },
+  "projects": {
+    "/home/deltawing/repos/ArgusLiteMDK2/EarlyWarningTurret/EarlyWarningTurret.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/deltawing/repos/ArgusLiteMDK2/EarlyWarningTurret/EarlyWarningTurret.csproj",
+        "projectName": "EarlyWarningTurret",
+        "projectPath": "/home/deltawing/repos/ArgusLiteMDK2/EarlyWarningTurret/EarlyWarningTurret.csproj",
+        "packagesPath": "/home/deltawing/.nuget/packages/",
+        "outputPath": "/home/deltawing/repos/ArgusLiteMDK2/EarlyWarningTurret/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/deltawing/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netframework48"
+        ],
+        "sources": {
+          "/home/deltawing/MyLocalNugetSource": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net48": {
+            "targetAlias": "netframework48",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net48": {
+          "targetAlias": "netframework48",
+          "dependencies": {
+            "Mal.Mdk2.PbAnalyzers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.1.11, )"
+            },
+            "Mal.Mdk2.PbPackager": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.1.4, )"
+            },
+            "Microsoft.NETFramework.ReferenceAssemblies": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "runtimeIdentifierGraphPath": "/home/deltawing/.dotnet/sdk/9.0.200/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

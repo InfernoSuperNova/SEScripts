@@ -1,0 +1,312 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\obj\\intermediate-script.CommentStripper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ArgusLiteMDK2\\obj\\intermediate-script.CommentStripper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|c:\\users\\willi\\source\\repos\\arguslitemdk2\\arguslitemdk2\\arguslitemdk2.mdk.ini||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|solutionrelative:arguslitemdk2\\arguslitemdk2.mdk.ini||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|c:\\users\\willi\\source\\repos\\arguslitemdk2\\arguslitemdk2\\argushud.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|solutionrelative:arguslitemdk2\\argushud.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|c:\\users\\willi\\source\\repos\\arguslitemdk2\\arguslitemdk2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|solutionrelative:arguslitemdk2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|c:\\users\\willi\\source\\repos\\arguslitemdk2\\arguslitemdk2\\gun.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|solutionrelative:arguslitemdk2\\gun.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|c:\\users\\willi\\source\\repos\\arguslitemdk2\\arguslitemdk2\\guns.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|solutionrelative:arguslitemdk2\\guns.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\obj\\intermediate-script.SymbolRenamer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ArgusLiteMDK2\\obj\\intermediate-script.SymbolRenamer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|c:\\users\\willi\\source\\repos\\arguslitemdk2\\arguslitemdk2\\argusenums.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|solutionrelative:arguslitemdk2\\argusenums.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\obj\\intermediate-script.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ArgusLiteMDK2\\obj\\intermediate-script.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|c:\\users\\willi\\source\\repos\\arguslitemdk2\\arguslitemdk2\\kratosmissilemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|solutionrelative:arguslitemdk2\\kratosmissilemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|c:\\users\\willi\\source\\repos\\arguslitemdk2\\arguslitemdk2\\targetableblock.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|solutionrelative:arguslitemdk2\\targetableblock.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|c:\\users\\willi\\source\\repos\\arguslitemdk2\\arguslitemdk2\\targetableship.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|solutionrelative:arguslitemdk2\\targetableship.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|c:\\users\\willi\\source\\repos\\arguslitemdk2\\arguslitemdk2\\argusextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|solutionrelative:arguslitemdk2\\argusextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|c:\\users\\willi\\source\\repos\\arguslitemdk2\\arguslitemdk2\\pid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|solutionrelative:arguslitemdk2\\pid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\obj\\intermediate-script.CodeSmallifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ArgusLiteMDK2\\obj\\intermediate-script.CodeSmallifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|c:\\users\\willi\\source\\repos\\arguslitemdk2\\arguslitemdk2\\aldebug.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|solutionrelative:arguslitemdk2\\aldebug.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|c:\\users\\willi\\source\\repos\\arguslitemdk2\\arguslitemdk2\\arguslitemdk2.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|solutionrelative:arguslitemdk2\\arguslitemdk2.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|c:\\users\\willi\\source\\repos\\arguslitemdk2\\arguslitemdk2\\half.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AE9AE4E-EBFA-4A82-B5A0-9E32FE0C0EBD}|ArgusLiteMDK2\\ArgusLiteMDK2.csproj|solutionrelative:arguslitemdk2\\half.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "intermediate-script.CommentStripper.cs",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\obj\\intermediate-script.CommentStripper.cs",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\obj\\intermediate-script.CommentStripper.cs",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\obj\\intermediate-script.CommentStripper.cs*",
+              "RelativeToolTip": "ArgusLiteMDK2\\obj\\intermediate-script.CommentStripper.cs*",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-31T05:51:00.862Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Guns.cs",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\Guns.cs",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\Guns.cs",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\Guns.cs",
+              "RelativeToolTip": "ArgusLiteMDK2\\Guns.cs",
+              "ViewState": "AQIAAAUAAAAAAAAAAAAvwB0AAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T02:23:39.637Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Gun.cs",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\Gun.cs",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\Gun.cs",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\Gun.cs",
+              "RelativeToolTip": "ArgusLiteMDK2\\Gun.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACQAAAAfAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T02:23:06.205Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "TargetableBlock.cs",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\TargetableBlock.cs",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\TargetableBlock.cs",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\TargetableBlock.cs",
+              "RelativeToolTip": "ArgusLiteMDK2\\TargetableBlock.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAfAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T02:19:31.153Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "KratosMissileManager.cs",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\KratosMissileManager.cs",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\KratosMissileManager.cs",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\KratosMissileManager.cs",
+              "RelativeToolTip": "ArgusLiteMDK2\\KratosMissileManager.cs",
+              "ViewState": "AQIAADUBAAAAAAAAAAAawEoBAAAVAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T02:19:17.185Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "TargetableShip.cs",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\TargetableShip.cs",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\TargetableShip.cs",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\TargetableShip.cs",
+              "RelativeToolTip": "ArgusLiteMDK2\\TargetableShip.cs",
+              "ViewState": "AQIAAPgAAAAAAAAAAAAwwP8AAAAqAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T02:17:47.578Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "PID.cs",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\PID.cs",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\PID.cs",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\PID.cs",
+              "RelativeToolTip": "ArgusLiteMDK2\\PID.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T02:12:05.615Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ArgusEnums.cs",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\ArgusEnums.cs",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\ArgusEnums.cs",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\ArgusEnums.cs",
+              "RelativeToolTip": "ArgusLiteMDK2\\ArgusEnums.cs",
+              "ViewState": "AQIAAAgAAAAAAAAAAAAxwC0AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T02:10:40.564Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ArgusHUD.cs",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\ArgusHUD.cs",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\ArgusHUD.cs",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\ArgusHUD.cs",
+              "RelativeToolTip": "ArgusLiteMDK2\\ArgusHUD.cs",
+              "ViewState": "AQIAAOQBAAAAAAAAAAAqwP8BAAAZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T02:02:16.958Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ArgusLiteMDK2.mdk.ini",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\ArgusLiteMDK2.mdk.ini",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\ArgusLiteMDK2.mdk.ini",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\ArgusLiteMDK2.mdk.ini",
+              "RelativeToolTip": "ArgusLiteMDK2\\ArgusLiteMDK2.mdk.ini",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAALAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002768|",
+              "WhenOpened": "2024-07-30T02:00:50.955Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "ALDebug.cs",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\ALDebug.cs",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\ALDebug.cs",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\ALDebug.cs",
+              "RelativeToolTip": "ArgusLiteMDK2\\ALDebug.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T02:00:24.986Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "ArgusLiteMDK2",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\ArgusLiteMDK2.csproj",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\ArgusLiteMDK2.csproj",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\ArgusLiteMDK2.csproj",
+              "RelativeToolTip": "ArgusLiteMDK2\\ArgusLiteMDK2.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-07-30T01:59:04.859Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "intermediate-script.cs",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\obj\\intermediate-script.cs",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\obj\\intermediate-script.cs",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\obj\\intermediate-script.cs",
+              "RelativeToolTip": "ArgusLiteMDK2\\obj\\intermediate-script.cs",
+              "ViewState": "AQIAAHoBAAAAAAAAAAAawI8BAAARAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T01:57:44.828Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ArgusExtensions.cs",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\ArgusExtensions.cs",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\ArgusExtensions.cs",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\ArgusExtensions.cs",
+              "RelativeToolTip": "ArgusLiteMDK2\\ArgusExtensions.cs",
+              "ViewState": "AQIAACEAAAAAAAAAAAAEwCwAAAAPAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T01:56:25.733Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "Half.cs",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\Half.cs",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\Half.cs",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\Half.cs",
+              "RelativeToolTip": "ArgusLiteMDK2\\Half.cs",
+              "ViewState": "AQIAABkAAAAAAAAAAAAgwAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T01:55:45.983Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\Program.cs",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\Program.cs",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\Program.cs",
+              "RelativeToolTip": "ArgusLiteMDK2\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAGUAAAAlAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T01:54:48.427Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "intermediate-script.SymbolRenamer.cs",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\obj\\intermediate-script.SymbolRenamer.cs",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\obj\\intermediate-script.SymbolRenamer.cs",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\obj\\intermediate-script.SymbolRenamer.cs",
+              "RelativeToolTip": "ArgusLiteMDK2\\obj\\intermediate-script.SymbolRenamer.cs",
+              "ViewState": "AQIAANkPAAAAAAAAAAAuwOwPAAAZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T01:45:59.982Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "intermediate-script.CodeSmallifier.cs",
+              "DocumentMoniker": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\obj\\intermediate-script.CodeSmallifier.cs",
+              "RelativeDocumentMoniker": "ArgusLiteMDK2\\obj\\intermediate-script.CodeSmallifier.cs",
+              "ToolTip": "C:\\Users\\willi\\source\\repos\\ArgusLiteMDK2\\ArgusLiteMDK2\\obj\\intermediate-script.CodeSmallifier.cs",
+              "RelativeToolTip": "ArgusLiteMDK2\\obj\\intermediate-script.CodeSmallifier.cs",
+              "ViewState": "AQIAAMgAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T01:43:55.362Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+﻿
+
+Changelog
+
+Version 0.10.3
+
+Fixed an issue where sphericals on the front of the ship wouldn't have their forces inverted
+Fixed an issue where gravity drives would spazz out in the first few seconds of runtime
+Cleaned up unused fields
+
+Version 0.10.2
+
+Fixed an issue where adding new blocks would not update the block enabled state to the gravity drive, causing extreme instability
+
+Version 0.10.1
+
+Fixed an issue that would cause missiles to detonate in the launcher when scanning without a valid target
+Fixed counting for scan results
+
+Version 0.10
+
+Fixed an issue where block category text would be minified and broken
+Added highlighting to detected blocks on enemy ships
+Optimization
+Connector on missiles now auto locks
+Updated fuel bar visual on missiles
+Show filling bar on missiles
+Show missile count and missiles ready to fire
+Automatically detect new missiles
+I swear to god ChatGPT I will do the AI equivalent of lobotomizing you if you suggest crap to put in my changelogs again
+
+
+
+Version 0.9.2
+
+Missiles are now highlighted on the HUD
+
+
+Version 0.9.1
+
+Safety mechanisms to prevent crashing with missiles
+BSOD class
+Missiles detonate when recompiling the PB
+
+
+Version 0.9
+
+Missiles exist, yay

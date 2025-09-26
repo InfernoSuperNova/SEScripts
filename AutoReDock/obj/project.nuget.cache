@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "kvEPHZwl1U0=",
+  "success": true,
+  "projectFilePath": "/home/deltawing/repos/ArgusLiteMDK2/AutoReDock/AutoReDock.csproj",
+  "expectedPackageFiles": [
+    "/home/deltawing/.nuget/packages/mal.mdk2.pbanalyzers/2.1.9/mal.mdk2.pbanalyzers.2.1.9.nupkg.sha512",
+    "/home/deltawing/.nuget/packages/mal.mdk2.pbpackager/2.0.8/mal.mdk2.pbpackager.2.0.8.nupkg.sha512",
+    "/home/deltawing/.nuget/packages/microsoft.netframework.referenceassemblies/1.0.3/microsoft.netframework.referenceassemblies.1.0.3.nupkg.sha512",
+    "/home/deltawing/.nuget/packages/microsoft.netframework.referenceassemblies.net48/1.0.3/microsoft.netframework.referenceassemblies.net48.1.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
