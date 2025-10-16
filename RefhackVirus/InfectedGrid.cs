@@ -48,13 +48,18 @@ namespace IngameScript
 
         public static void Update(int frame)
         {
-            var list = InfectedGrids.Values;
-            
+            var list = InfectedGrids.Values.ToList(); // copy to list once
             for (int i = list.Count - 1; i >= 0; i--)
             {
-                var infectedGrid = list.ElementAt(i);
-                infectedGrid.Update();
+                var grid = list[i];
+                if (grid.ActualGrid.Closed)
+                {
+                    Program.Log($"Grid {grid.ActualGrid.CustomName} no longer exists.");
+                    InfectedGrids.Remove(grid.ActualGrid);
+                }
+                grid.Update(frame);
             }
+                
         }
         #endregion
 
@@ -64,9 +69,10 @@ namespace IngameScript
     #region instance
     public class InfectedGrid
     {
+        
         #region collections
-        private List<IMyCubeBlock> _blocks;
-        private List<IConnectableBlock> _connectors;
+        private List<IMyCubeBlock> _blocks = new List<IMyCubeBlock>();
+        private List<IConnectableBlock> _connectors = new List<IConnectableBlock>();
         #endregion
         
         #region intraInfection
@@ -75,6 +81,8 @@ namespace IngameScript
         #endregion
         
         public IMyCubeGrid ActualGrid;
+        private int _frame = 0;
+        private int _lastInfectionFinishFrame = 0;
         
         #region infectionRoute
         public IMyCubeGrid Infector;
@@ -89,13 +97,15 @@ namespace IngameScript
             InfectionType = infectionType;
             InfectionTime = (System.DateTime.UtcNow - new System.DateTime(1970, 1, 1)).TotalSeconds;
             InfectionPosition = infectionPosition;
-            
+
+
             InfectThisGrid(grid);
         }
         
         #region update
-        public void Update()
+        public void Update(int frame)
         {
+            _frame = frame;
             switch (_infectionState)
             {
                 case InfectionState.Infecting:
@@ -114,12 +124,19 @@ namespace IngameScript
 
         private void UpdateInfected()
         {
+            if (_frame - _lastInfectionFinishFrame >= Config.FramesToRescan)
+            {
+                Program.Log($"Rescanning grid {ActualGrid.CustomName}");
+                InfectThisGrid(ActualGrid);
+                return;
+            }
+            
             int count = _connectors.Count;
             for (var index = count - 1; index >= 0; index--)
             {
                 var connector = _connectors[index];
                 if (!connector.HasNewTarget()) continue;
-                Program.Log($"Connector {connector.CustomName} new potential infection target: {connector.GetConnectedGrid().CustomName}");
+                //Program.Log($"Connector {connector.CustomName} new potential infection target: {connector.GetConnectedGrid().CustomName}");
                 InfectedGridManager.TryInfectGrid(connector.GetConnectedGrid(), ActualGrid,
                     connector.BaseInfectionType, connector.Position);
             }
@@ -129,12 +146,12 @@ namespace IngameScript
         #region intraInfection
         private void InfectThisGrid(IMyCubeGrid grid)
         {
-            _connectors = new List<IConnectableBlock>();
-            _blocks = new List<IMyCubeBlock>();
+            _infectionState = InfectionState.Infecting;
+            _connectors.Clear();
+            _blocks.Clear();
             _infectionEnumerator = ScanGridCoroutine(grid);
             
             ProfileRunIEnumerator(_infectionEnumerator);
-
         }
         
         private IEnumerator ScanGridCoroutine(IMyCubeGrid grid)
@@ -142,7 +159,7 @@ namespace IngameScript
             var min = grid.Min;
             var max = grid.Max;
 
-            int cxPerTick = 1000;
+            int cxPerTick = Config.BlocksScannedPerTick;
             int complexity = 0;
 
             for (int x = min.X; x <= max.X; x++)
@@ -165,6 +182,7 @@ namespace IngameScript
 
             // Finished scanning
             Program.Log($"Block scan finished: {complexity} blocks scanned");
+            _lastInfectionFinishFrame = _frame;
             _infectionState = InfectionState.Infected;
         }
         
