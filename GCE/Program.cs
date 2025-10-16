@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
+using SpaceEngineers.Game.Entities.Blocks;
 using VRage;
 using VRage.Collections;
 using VRage.Game;
@@ -134,11 +135,10 @@ public class FireControlGroup
         fireControlGroup.GetBlocksOfType(weapons, weapon => weapon is IMyUserControllableGun);
         currentWeaponIndex = 0;
         frame = 0;
-
         var motors = new List<IMyMotorStator>();
         
         fireControlGroup.GetBlocksOfType(motors);
-
+        
         foreach (var motor in motors)
         {
             switch (motor.CustomName)
@@ -155,9 +155,12 @@ public class FireControlGroup
         controllers[0].AzimuthRotor = _azimuth;
         controllers[0].ElevationRotor = _elevation;
 
+        // Temp
+        //controllers[0].AddTools(new List<IMyFunctionalBlock>(weapons));
+        
         EquipWeapon();
             
-        bool _ = IntegrityCheck();
+        IntegrityCheck();
     }
     public Vector3 GetTargetLeadPos(float projectileSpeed)
     {

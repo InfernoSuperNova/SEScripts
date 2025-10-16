@@ -550,17 +550,17 @@ namespace IngameScript
         {
            
             var disabled = new List<MassBlock>();
-
+            var disabledCount = disabled.Count;
                 
             foreach (var mass in massBlocks)
                 if (!mass.Enabled) disabled.Add(mass);
-            if (disabled.Count <= 1) return;
+            if (disabledCount <= 1) return;
             for (int step = 0; step < 50000; step++)
             {
-                if (j >= disabled.Count)
+                if (j >= disabledCount)
                 {
                     i++;
-                    if (i >= disabled.Count - 1)
+                    if (i >= disabledCount - 1)
                     {
                         break;
                     }
@@ -569,21 +569,20 @@ namespace IngameScript
                 
                 var a = disabled[i];
                 var b = disabled[j];
-                if ((a.moment + b.moment).ALengthSquared() < 1) {
+
+                var added = a.moment + b.moment;
+                var lengthSquared = added.X * added.X + added.Y * added.Y + added.Z * added.Z;
+                if (lengthSquared < 1) {
                     a.Enabled = b.Enabled = true;
                 }
                 j++;
             }
 
-            if (i >= disabled.Count || i + 1 >= disabled.Count)
+            if (i >= disabledCount || i + 1 >= disabledCount)
             {
                 i = 0;
                 j = 1;
             }
-            
-
-          
-           
         }
 
         private void BalanceMassBlocks(List<MassBlock> blocks, List<SpaceBall> balls, Vector3D centerOfMass)

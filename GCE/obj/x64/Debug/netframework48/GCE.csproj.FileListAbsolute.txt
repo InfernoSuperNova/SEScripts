@@ -99,3 +99,4 @@
 /home/deltawing/repos/ArgusLiteMDK2/GCE/obj/x64/Debug/netframework48/GCE.csproj.Up2Date
 /home/deltawing/repos/ArgusLiteMDK2/GCE/obj/x64/Debug/netframework48/GCE.dll
 /home/deltawing/repos/ArgusLiteMDK2/GCE/obj/x64/Debug/netframework48/GCE.pdb
+/home/deltawing/repos/ArgusLiteMDK2/GCE/obj/x64/Debug/netframework48/GCE.sourcelink.json

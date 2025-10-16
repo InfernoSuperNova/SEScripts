@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCE", "GCE\GCE.csproj", "{D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaRBoost", "BaRBoost\BaRBoost.csproj", "{87FB1CC6-CB8B-44AE-BFB3-A04B2BC61121}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RefhackVirus", "RefhackVirus\RefhackVirus.csproj", "{17E5CF3C-360B-4F99-8447-2274868C2C33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -93,6 +95,10 @@ Global
 		{87FB1CC6-CB8B-44AE-BFB3-A04B2BC61121}.Debug|x64.Build.0 = Debug|x64
 		{87FB1CC6-CB8B-44AE-BFB3-A04B2BC61121}.Release|x64.ActiveCfg = Release|x64
 		{87FB1CC6-CB8B-44AE-BFB3-A04B2BC61121}.Release|x64.Build.0 = Release|x64
+		{17E5CF3C-360B-4F99-8447-2274868C2C33}.Debug|x64.ActiveCfg = Debug|x64
+		{17E5CF3C-360B-4F99-8447-2274868C2C33}.Debug|x64.Build.0 = Debug|x64
+		{17E5CF3C-360B-4F99-8447-2274868C2C33}.Release|x64.ActiveCfg = Release|x64
+		{17E5CF3C-360B-4F99-8447-2274868C2C33}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
