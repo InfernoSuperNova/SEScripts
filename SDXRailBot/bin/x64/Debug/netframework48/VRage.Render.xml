@@ -607,9 +607,6 @@
             Signals the thread to exit and waits until it does so
             </summary>
         </member>
-        <member name="T:VRageRender.Fractures.WoodFractureSettings.Rotation">
-            How to rotate the splitting geometry
-        </member>
         <member name="M:VRageRender.Import.ModelAutoRebuild.IsModelActual(System.String,System.String,System.String,System.String)">
             <summary>
             Checks whether that model file was build with current sources files. If current sources of this model - FBX, XML, HKT etc. were changed, this returns false.

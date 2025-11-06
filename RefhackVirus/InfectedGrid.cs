@@ -56,6 +56,7 @@ namespace IngameScript
                 {
                     Program.Log($"Grid {grid.ActualGrid.CustomName} no longer exists.");
                     InfectedGrids.Remove(grid.ActualGrid);
+                    continue;
                 }
                 grid.Update(frame);
             }

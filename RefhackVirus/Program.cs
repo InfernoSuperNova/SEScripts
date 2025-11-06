@@ -5,6 +5,7 @@ using EmptyKeys.UserInterface.Controls;
 using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.Entities.Blocks;
 using SpaceEngineers.Game.ModAPI.Ingame;
+using VRageMath;
 
 namespace IngameScript
 {
@@ -23,7 +24,6 @@ namespace IngameScript
         }
         
         public static Program I;
-        
         
         public Program()
         {
@@ -73,5 +73,7 @@ namespace IngameScript
         // Set beacons to 200km
         // Detach mechanical connections
         // NaNify everything
+        // Random dampener toggle
+        // Set all thrust override to a really really low value
     }
 }

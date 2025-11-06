@@ -35,7 +35,7 @@ namespace IngameScript
         }
         public IMyCubeGrid GetConnectedGrid()
         {
-            return _connector.OtherConnector?.CubeGrid;
+            return _connector.OtherConnector.CubeGrid;
         }
         public IMyCubeBlock GetBlock()
         {
@@ -109,6 +109,6 @@ namespace IngameScript
         public InfectionType BaseInfectionType { get; }
         public Vector3D Position => _connector.GetPosition();
         
-        public string CustomName => _connector.DisplayName;
+        public string CustomName => _connector.DisplayName; // MechanicalTop doesn't inherit from MyFunctionalBlock so it never gets a CustomName so we just use the DisplayName instead
     }
 }

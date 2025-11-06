@@ -148,6 +148,11 @@
             Conveyor end point used for injecting zone chips to the inventory.
             </summary>
         </member>
+        <member name="F:SpaceEngineers.Game.EntityComponents.Blocks.MyLightingComponent.MAX_LIGHT_UPDATE_DISTANCE_SQ">
+            <summary>
+            Lights won't update at all when further in any axis.
+            </summary>
+        </member>
         <member name="T:SpaceEngineers.Game.EntityComponents.Blocks.MyOffensiveCombatAbstractComponent">
              <summary>
              Class, that contains shared logic for all attack patterns
@@ -649,6 +654,17 @@
             Describes Spaceball block (mods interface)
             </summary>
         </member>
+        <member name="T:SpaceEngineers.Game.ModAPI.IMySurvivalBuffsProgression">
+            <summary>
+            Describes survival buffs progression component (mods interface)
+            </summary>
+        </member>
+        <member name="M:SpaceEngineers.Game.ModAPI.IMySurvivalBuffsProgression.GetActiveBuffs">
+            <summary>
+            Gets all active buffs on a character
+            </summary>
+            <returns>read-only collection of active buffs</returns>
+        </member>
         <member name="T:SpaceEngineers.Game.ModAPI.IMyTimerBlock">
             <summary>
             Describes timer block (mods interface)
@@ -1025,6 +1041,11 @@
         <member name="P:SpaceEngineers.Game.ModAPI.Ingame.IMySpaceBall.VirtualMass">
             <summary>
             Virtual mass of ball, in kg
+            </summary>
+        </member>
+        <member name="T:SpaceEngineers.Game.ModAPI.Ingame.IMySurvivalBuffsProgression">
+            <summary>
+            Describes survival buffs progression component (PB scripting interface)
             </summary>
         </member>
         <member name="P:SpaceEngineers.Game.ModAPI.Ingame.IMyTimerBlock.IsCountingDown">

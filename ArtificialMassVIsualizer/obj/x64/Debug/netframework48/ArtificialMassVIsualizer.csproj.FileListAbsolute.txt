@@ -5,12 +5,10 @@
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/EmptyKeys.UserInterface.Core.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/EmptyKeys.UserInterface.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/EOSSDK.dll
-/home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/GameAnalytics.Mono.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/HavokWrapper.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/Microsoft.CodeAnalysis.CSharp.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/Microsoft.CodeAnalysis.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/netstandard.dll
-/home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/NLog.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/ProtoBuf.Net.Core.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/ProtoBuf.Net.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/RecastDetourWrapper.dll
@@ -39,7 +37,6 @@
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/System.Buffers.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/System.Collections.Immutable.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/System.ComponentModel.Annotations.dll
-/home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/System.Data.SQLite.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/System.Memory.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/System.Numerics.Vectors.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/bin/x64/Debug/netframework48/System.Reflection.Metadata.dll
@@ -102,3 +99,4 @@
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/obj/x64/Debug/netframework48/Artifici.AB58321E.Up2Date
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/obj/x64/Debug/netframework48/ArtificialMassVIsualizer.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/obj/x64/Debug/netframework48/ArtificialMassVIsualizer.pdb
+/home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/obj/x64/Debug/netframework48/ArtificialMassVIsualizer.sourcelink.json

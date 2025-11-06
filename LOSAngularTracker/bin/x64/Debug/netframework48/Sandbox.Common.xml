@@ -573,6 +573,46 @@
             Describes piston block (mods interface)
             </summary>
         </member>
+        <member name="T:Sandbox.ModAPI.IMyFarmPlotLogic">
+            <summary>
+            Describes the exposed farm plot logic.
+            </summary>
+        </member>
+        <member name="E:Sandbox.ModAPI.IMyFarmPlotLogic.OnPlantResult">
+            <summary>
+            Triggered when a plant action has been completed on the server.
+            The bool indicates whether the action was successful.
+            </summary>
+        </member>
+        <member name="E:Sandbox.ModAPI.IMyFarmPlotLogic.OnHarvestResult">
+            <summary>
+            Triggered when a harvest action has been completed on the server.
+            The bool indicates whether the action was successful.
+            </summary>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyFarmPlotLogic.PlantSeed(VRage.Game.ModAPI.IMyInventoryItem)">
+            <summary>
+            Plants a given seed and starts growing the plant. The specified seed item will be removed from the current player's inventory.
+            </summary>
+            <param name="inventoryItem">Needs to have an item with content of type MySeedItemDefinition.</param>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyFarmPlotLogic.Harvest(VRage.Game.ModAPI.IMyInventory)">
+            <summary>
+            Harvests the plant and puts the output items into the specified inventory. Only works when called from the server. 
+            </summary>
+            <param name="inventory">The inventory to place the gathered items into.</param>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyFarmPlotLogic.Harvest">
+            <summary>
+            Harvests the plant and puts the output items into the current player's inventory.
+            </summary>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyFarmPlotLogic.RemovePlant(System.Boolean)">
+            <summary>
+            Removes the currently planted plant and its seed.
+            </summary>
+            <param name="playSound">Whether the "gather" sound specified in block's definition should be played.</param>
+        </member>
         <member name="T:Sandbox.ModAPI.IMyFlightMovementBlock">
             <summary>
             Describes flight movement block (mods interface)
@@ -835,6 +875,111 @@
             Gets or sets multiplier gyro power consumption
             </summary>
         </member>
+        <member name="T:Sandbox.ModAPI.IMyHazardExposureComponent">
+            <summary>
+            Describes session component responsible for hazard exposure application
+            </summary>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyHazardExposureComponent.AddSource(Sandbox.ModAPI.IMyHazardSource)">
+            <summary>
+            Adds an <see cref="T:Sandbox.ModAPI.IMyHazardSource"/> to the processing list
+            </summary>
+            <param name="src">Hazard source implementation</param>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyHazardExposureComponent.RemoveSource``1">
+            <summary>
+            Removes <see cref="T:Sandbox.ModAPI.IMyHazardSource"/> from the processing list
+            </summary>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyHazardExposureComponent.RemoveSource(Sandbox.ModAPI.IMyHazardSource)">
+            <summary>
+            Removes specific source from the processing list
+            </summary>
+            <param name="toRemove"><see cref="T:Sandbox.ModAPI.IMyHazardSource"/> to be removed</param>
+            <returns>Whether the source was found and removed</returns>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyHazardExposureComponent.GetCurrentlyProcessedSources(System.Collections.Generic.List{Sandbox.ModAPI.IMyHazardSource})">
+            <summary>
+            Gets references to sources in the processing list
+            </summary>
+            <param name="result">An empty list to hold references</param>
+        </member>
+        <member name="T:Sandbox.ModAPI.IMyHazardPointSource">
+            <summary>
+            A source of environmental hazard which has specific position
+            </summary>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyHazardPointSource.GetPosition">
+            <summary>
+            Provides the position of the point source
+            </summary>
+            <returns>World position</returns>
+        </member>
+        <member name="T:Sandbox.ModAPI.IMyHazardReceiver">
+            <summary>
+            Describes a subject of hazard exposure
+            </summary>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyHazardReceiver.CanBeAffected">
+            <summary>
+            Is it sheltered from the exposure?
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyHazardReceiver.Apply(System.Single,VRage.Utils.MyStringHash,VRage.Utils.MyStringHash)">
+            <summary>
+            Affects corresponding entity stat. Does not check admin protection. For Radiation, checks immunity stat. Positive value increases stat
+            (except Health, which is reduced by positive damage value).
+            </summary>
+            <param name="amount">Momentary exposure amount</param>
+            <param name="statId">ID of the affected entity stat</param>
+            <param name="damageType">If the hazard affects Health stat, <see cref="T:VRage.Game.MyDamageType"/> is used to differentiate kinds of damage</param>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyHazardReceiver.GetPosition">
+            <summary>
+            Gets world position
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyHazardReceiver.GetEntity">
+            <summary>
+            Gets the associated entity
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Sandbox.ModAPI.IMyHazardSource">
+            <summary>
+            Describes the ambient hazard source that affects entity stats
+            </summary>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyHazardSource.GetCurrentExposure(Sandbox.ModAPI.IMyHazardReceiver)">
+            <summary>
+            Provides momentary hazard exposure which would be scaled according to the update rate
+            </summary>
+            <param name="receiver">The subject for exposure</param>
+            <returns>Momentary exposure amount</returns>
+        </member>
+        <member name="P:Sandbox.ModAPI.IMyHazardSource.IsExposureScalingNeeded">
+            <summary>
+            Indicates whether the value provided by GetCurrentExposure needs adjustment based on call interval.
+            If the stat is meant to be affected in bursts (e.g. Health damage) and the source is responsible for correct average magnitude, this should return false
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.IMyHazardSource.StatId">
+            <summary>
+            ID of the affected entity stat
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.IMyHazardSource.DamageType">
+            <summary>
+            If the hazard affects Health stat, <see cref="T:VRage.Game.MyDamageType"/> is used to differentiate kinds of damage
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.IMyHazardSource.IgnoresSheltering">
+            <summary>
+            Indicates whether the source penetrates <see cref="T:Sandbox.ModAPI.IMyHazardReceiver"/> sheltering logic. When true, CanBeAffected result is ignored.
+            </summary>
+        </member>
         <member name="T:Sandbox.ModAPI.IMyIngameScripting">
             <summary>
             Allows mods change programmable block script settings
@@ -941,6 +1086,24 @@
             Inventory bag spawned when character died, container breaks, or when entity from other inventory cannot be spawned then bag spawned with the item in its inventory.
             </summary>
         </member>
+        <member name="T:Sandbox.ModAPI.IMyItemProducerComponent">
+            <summary>
+            Describes an entity that produces items (mods interface).
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.IMyItemProducerComponent.UseConveyorSystem">
+            <summary>
+            Indicates whether the conveyor system should be used when this entity's inventory is full.
+            </summary>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyItemProducerComponent.Produce(VRage.Game.MyDefinitionId,VRage.MyFixedPoint)">
+            <summary>
+            Tries to produce an item of the given the definition and quantity.
+            </summary>
+            <param name="itemDefinitionId">Definition of the item to be produced.</param>
+            <param name="quantity">The quantity to produce.</param>
+            <returns>Whether the item was successfully produced and added to the inventory or sent to the conveyor system.</returns>
+        </member>
         <member name="T:Sandbox.ModAPI.IMyJumpDrive">
             <summary>
             Describes jump drive block (mods interface)
@@ -1039,6 +1202,11 @@
         <member name="T:Sandbox.ModAPI.IMyLightingBlock">
             <summary>
             Describes lighting block (mods interface)
+            </summary>
+        </member>
+        <member name="T:Sandbox.ModAPI.IMyLightingComponent">
+            <summary>
+            Describes a lighting Component (mods interface).
             </summary>
         </member>
         <member name="T:Sandbox.ModAPI.IMyMechanicalConnectionBlock">
@@ -2196,6 +2364,23 @@
             <param name="shipRadius">The radius of our ship. Make sure that this is large enough to avoid collision. A value of 0f will use the ship's WorldVolume radius.</param>
             <returns>Adjusted position</returns>
         </member>
+        <member name="T:Sandbox.ModAPI.IMyResourceStorageComponent">
+            <summary>
+            Describes a resource storage entity component.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.IMyResourceStorageComponent.FilledRatioChanged">
+            <summary>
+            When FilledRatio is changed.
+            </summary>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyResourceStorageComponent.ChangeFilledRatio(System.Double,System.Boolean)">
+            <summary>
+            Allows you to set the fill ratio of a storage
+            </summary>
+            <param name="newFilledRatio">New fill ratio (0 empty, 1 full)</param>
+            <param name="updateSync">Sync ratio change to others</param>
+        </member>
         <member name="T:Sandbox.ModAPI.IMyRespawnComponent">
             <summary>
             
@@ -2523,6 +2708,16 @@
             Describes reloadable missile block (mods interface)
             </summary>
         </member>
+        <member name="T:Sandbox.ModAPI.IMySolarFoodGenerator">
+            <summary>
+            Describes an entity that generates food items from solar energy (mods interface).
+            </summary>
+        </member>
+        <member name="T:Sandbox.ModAPI.IMySolarOccludable">
+            <summary>
+            Describes an entity that registers when it is in a planetary shadow (mods interface).
+            </summary>
+        </member>
         <member name="T:Sandbox.ModAPI.IMyStoreBlock">
             <summary>
             Describes store block (mods interface)
@@ -2619,6 +2814,57 @@
         <member name="E:Sandbox.ModAPI.IMyStoredPowerRatio.StoredPowerRatioChanged">
             <summary>
             Event when stored power ratio is changed (block, old value, new value)
+            </summary>
+        </member>
+        <member name="T:Sandbox.ModAPI.IMySurvivalBuff">
+            <summary>
+            Describes single survival buff
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.IMySurvivalBuff.Level">
+            <summary>
+            Curent buff level
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.IMySurvivalBuff.ProgressionTime">
+            <summary>
+            Time to progress to next buff level in seconds
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.IMySurvivalBuff.NotificationTitle">
+            <summary>
+            Buff progress notification title id
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.IMySurvivalBuff.NotificationText">
+            <summary>
+            Buff progress notification text id
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.IMySurvivalBuff.NameId">
+            <summary>
+            Buff name id
+            </summary>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMySurvivalBuff.DoProgressStep">
+            <summary>
+            Checks whether the buff should progress to next level
+            </summary>
+            <returns>true when buff progressed to next level</returns>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMySurvivalBuff.Reset">
+            <summary>
+            Resets buff progress
+            </summary>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMySurvivalBuff.GetCurrentBuffValue">
+            <summary>
+            Gets current value of buff
+            </summary>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMySurvivalBuff.GetCurrentBuffValueString">
+            <summary>
+            Gets current value of buff in a readable form with unit representation. Example: 120%
             </summary>
         </member>
         <member name="T:Sandbox.ModAPI.IMyTargetDummyBlock">
@@ -3845,6 +4091,46 @@
             Describes piston block (PB scripting interface)
             </summary>
         </member>
+        <member name="T:Sandbox.ModAPI.Ingame.IMyFarmPlotLogic">
+            <summary>
+            Describes the exposed farm plot logic (PB scripting interface).
+            </summary>
+        </member>
+        <member name="M:Sandbox.ModAPI.Ingame.IMyFarmPlotLogic.GetDetailedInfoWithoutRequiredInput">
+            <summary>
+            Obtains detailed info that does not include the required power input. Used by the plant management screen.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyFarmPlotLogic.IsAlive">
+            <summary>
+            Whether the plant is alive.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyFarmPlotLogic.IsPlantFullyGrown">
+            <summary>
+            Whether the plant is fully grown.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyFarmPlotLogic.IsPlantPlanted">
+            <summary>
+            Whether a plant is planted, dead or alive.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyFarmPlotLogic.OutputItem">
+            <summary>
+            The item that the currently planted seed will produce when fully grown.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyFarmPlotLogic.OutputItemAmount">
+            <summary>
+            The amount of items that the currently planted seed will produce when fully grown. Returns 0 if the plant is not yet fully grown.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyFarmPlotLogic.AmountOfSeedsRequired">
+            <summary>
+            The amount of seeds that are needed to start growing a plant at this farm plot.
+            </summary>
+        </member>
         <member name="T:Sandbox.ModAPI.Ingame.IMyFlightMovementBlock">
             <summary>
             Describes flight movement block interface
@@ -4324,6 +4610,11 @@
             Unicast listener hooks up all messages addressed directly to this endpoint.
             </summary>
         </member>
+        <member name="T:Sandbox.ModAPI.Ingame.IMyItemProducerComponent">
+            <summary>
+            Describes an entity that produces items (PB scripting interface).
+            </summary>
+        </member>
         <member name="T:Sandbox.ModAPI.Ingame.MyJumpDriveStatus">
             <summary>
             Describes jump drive status
@@ -4519,9 +4810,15 @@
             Gets/sets if the turret should target enemies.
             </summary>
         </member>
-        <member name="M:Sandbox.ModAPI.Ingame.IMyLargeTurretBase.GetTargetingGroups">
+        <member name="M:Sandbox.ModAPI.Ingame.IMyLargeTurretBase.GetTargetingGroups(System.Collections.Generic.List{System.String})">
             <summary>
             Gets all available targeting groups 
+            </summary>
+            <param name="targetingGroups">All targeting groups</param>
+        </member>
+        <member name="M:Sandbox.ModAPI.Ingame.IMyLargeTurretBase.GetTargetingGroups">
+            <summary>
+            Obsolete
             </summary>
         </member>
         <member name="M:Sandbox.ModAPI.Ingame.IMyLargeTurretBase.GetTargetingGroup">
@@ -4668,6 +4965,46 @@
             </summary>
         </member>
         <member name="P:Sandbox.ModAPI.Ingame.IMyLightingBlock.Color">
+            <summary>
+            Gets or sets the color of the light.
+            </summary>
+        </member>
+        <member name="T:Sandbox.ModAPI.Ingame.IMyLightingComponent">
+            <summary>
+            Describes a lighting Component (PB scripting interface).
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyLightingComponent.Radius">
+            <summary>
+            Gets or sets the basic radius of the light.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyLightingComponent.Intensity">
+            <summary>
+            Gets or sets the current intensity of the light.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyLightingComponent.Falloff">
+            <summary>
+            Gets or sets the current falloff of the light.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyLightingComponent.BlinkIntervalSeconds">
+            <summary>
+            Gets or sets the blinking interval of this light (in seconds).
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyLightingComponent.BlinkLength">
+            <summary>
+            Gets or sets how much of the blinking interval should be spent with the light on, as a value between 0 and 1.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyLightingComponent.BlinkOffset">
+            <summary>
+            Adds an offset to the blinking interval, as a value between 0 and 1.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyLightingComponent.Color">
             <summary>
             Gets or sets the color of the light.
             </summary>
@@ -5993,6 +6330,26 @@
             if true, if collision avoidance is on, autopilot will wait until path is clear to move forward.
             </summary>
         </member>
+        <member name="T:Sandbox.ModAPI.Ingame.IMyResourceStorageComponent">
+            <summary>
+            Describes a resource storage entity component for scripting
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyResourceStorageComponent.ResourceCapacity">
+            <summary>
+            Gets the resource capacity of this tank.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyResourceStorageComponent.FilledRatio">
+            <summary>
+            Gets the current fill level of this storage as a value between 0 (empty) and 1 (full).
+            </summary>
+        </member>
+        <member name="M:Sandbox.ModAPI.Ingame.IMyResourceStorageComponent.IsResourceStorage(VRage.Game.MyDefinitionId)">
+            <summary>
+            Can the storage store a specified resource?
+            </summary>
+        </member>
         <member name="T:Sandbox.ModAPI.Ingame.IMySearchEnemyComponent">
             <summary>
             Describes component that can find enemy grids and characters in range
@@ -6616,6 +6973,37 @@
             Describes reloadable missile block (PB scripting interface)
             </summary>
         </member>
+        <member name="T:Sandbox.ModAPI.Ingame.IMySolarFoodGenerator">
+            <summary>
+            Describes an entity that generates food items from solar energy (PB scripting interface).
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMySolarFoodGenerator.ItemsPerMinute">
+            <summary>
+            The current output of items per minute.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMySolarFoodGenerator.TimeRemainingUntilNextBatch">
+            <summary>
+            The remaining time in seconds until the next batch of items is ready.
+            </summary>
+        </member>
+        <member name="T:Sandbox.ModAPI.Ingame.IMySolarOccludable">
+            <summary>
+            Describes an entity that registers when it is in a planetary shadow (PB scripting interface).
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMySolarOccludable.IsSolarOccluded">
+            <summary>
+            Whether the entity is in a planetary shadow.
+            </summary>
+        </member>
+        <member name="M:Sandbox.ModAPI.Ingame.IMySolarOccludable.GetEntityId">
+            <summary>
+            Obtains the entity ID either directly from itself or from its containing entity if the interface is used on a component.
+            </summary>
+            <returns>ID of the given entity.</returns>
+        </member>
         <member name="T:Sandbox.ModAPI.Ingame.MyStoreInsertResults">
             <summary>
             Describes results of inserting order or offers into store block
@@ -7207,11 +7595,16 @@
             Describes block, which has upgrade effects (PB scripting interface)
             </summary>
         </member>
-        <member name="M:Sandbox.ModAPI.Ingame.IMyUpgradableBlock.GetUpgrades(System.Collections.Generic.Dictionary{System.String,System.Single}@)">
+        <member name="M:Sandbox.ModAPI.Ingame.IMyUpgradableBlock.FillUpgradesDictionary(System.Collections.Generic.Dictionary{System.String,System.Single})">
             <summary>
             Get list of upgrades. Read only.
             </summary>
             <param name="upgrades">String - upgrade type, float - effect value as float (1 = 100%)</param>
+        </member>
+        <member name="M:Sandbox.ModAPI.Ingame.IMyUpgradableBlock.GetUpgrades(System.Collections.Generic.Dictionary{System.String,System.Single}@)">
+            <summary>
+            Obsolete
+            </summary>
         </member>
         <member name="P:Sandbox.ModAPI.Ingame.IMyUpgradableBlock.UpgradeCount">
             <summary>
@@ -7223,9 +7616,15 @@
             Describes upgrade module block (PB scripting interface)
             </summary>
         </member>
-        <member name="M:Sandbox.ModAPI.Ingame.IMyUpgradeModule.GetUpgradeList(System.Collections.Generic.List{VRage.Game.ObjectBuilders.Definitions.MyUpgradeModuleInfo}@)">
+        <member name="M:Sandbox.ModAPI.Ingame.IMyUpgradeModule.FillUpgradeList(System.Collections.Generic.List{VRage.Game.ObjectBuilders.Definitions.MyUpgradeModuleInfo})">
             <summary>
             Gets list of upgrades from this block, see <see cref='T:VRage.Game.ObjectBuilders.Definitions.MyUpgradeModuleInfo'>MyUpgradeModuleInfo</see> for details
+            </summary>
+            <param name="upgrades">List of upgrades</param>
+        </member>
+        <member name="M:Sandbox.ModAPI.Ingame.IMyUpgradeModule.GetUpgradeList(System.Collections.Generic.List{VRage.Game.ObjectBuilders.Definitions.MyUpgradeModuleInfo}@)">
+            <summary>
+            Obsolete
             </summary>
         </member>
         <member name="P:Sandbox.ModAPI.Ingame.IMyUpgradeModule.UpgradeCount">
@@ -7307,7 +7706,17 @@
         </member>
         <member name="P:Sandbox.ModAPI.Ingame.IMyWindTurbine.Effectivity">
             <summary>
-            Gets or sets current efficiency of wind turbine. Range of values: [0 - 1]
+            Gets current total efficiency of wind turbine. Range of values: [0 - 1] (could be more than 1 during storms)
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyWindTurbine.WindEffectivity">
+            <summary>
+            Gets wind efficiency multiplier. Range of values: 0 - is 0%, 1 - is 100%, could be more 100% 
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyWindTurbine.PlacementEffectivity">
+            <summary>
+            Gets current efficiency of wind turbine based on nearby blocks. Range of values: [0 - 1]
             </summary>
         </member>
         <member name="T:Sandbox.ModAPI.Ingame.MyDetectedEntityType">
@@ -7368,6 +7777,16 @@
         <member name="F:Sandbox.ModAPI.Ingame.MyDetectedEntityType.Missile">
             <summary>
             Missile
+            </summary>
+        </member>
+        <member name="F:Sandbox.ModAPI.Ingame.MyDetectedEntityType.Tree">
+            <summary>
+            Tree
+            </summary>
+        </member>
+        <member name="F:Sandbox.ModAPI.Ingame.MyDetectedEntityType.Forageable">
+            <summary>
+            Forageable
             </summary>
         </member>
         <member name="T:Sandbox.ModAPI.Ingame.MyDetectedEntityInfo">
@@ -8760,11 +9179,16 @@
             Gets roll indicator
             </summary>
         </member>
-        <member name="M:SpaceEngineers.Game.ModAPI.Ingame.IMyTurretControlBlock.GetTargetingGroups">
+        <member name="M:SpaceEngineers.Game.ModAPI.Ingame.IMyTurretControlBlock.GetTargetingGroups(System.Collections.Generic.List{System.String})">
             <summary>
             Gets all available targeting groups 
             </summary>
-            <returns>list of names of targeting groups</returns>
+            <param name="targetingGroups">All targeting groups</param>
+        </member>
+        <member name="M:SpaceEngineers.Game.ModAPI.Ingame.IMyTurretControlBlock.GetTargetingGroups">
+            <summary>
+            Obsolete
+            </summary>
         </member>
         <member name="M:SpaceEngineers.Game.ModAPI.Ingame.IMyTurretControlBlock.GetTargetingGroup">
             <summary>

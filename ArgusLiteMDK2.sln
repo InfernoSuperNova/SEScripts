@@ -33,6 +33,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaRBoost", "BaRBoost\BaRBoo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RefhackVirus", "RefhackVirus\RefhackVirus.csproj", "{17E5CF3C-360B-4F99-8447-2274868C2C33}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SparkSPammer", "SparkSPammer\SparkSPammer.csproj", "{F07FDBF8-F9E5-4335-A778-C351CC136378}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperRotorSpeedController", "SuperRotorSpeedController\SuperRotorSpeedController.csproj", "{AA3A1F77-BD18-48A7-A397-48253A937179}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgusV2", "ArgusV2\ArgusV2.csproj", "{04B45251-84D3-47C1-9B6B-107DCF00B375}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -99,6 +105,18 @@ Global
 		{17E5CF3C-360B-4F99-8447-2274868C2C33}.Debug|x64.Build.0 = Debug|x64
 		{17E5CF3C-360B-4F99-8447-2274868C2C33}.Release|x64.ActiveCfg = Release|x64
 		{17E5CF3C-360B-4F99-8447-2274868C2C33}.Release|x64.Build.0 = Release|x64
+		{F07FDBF8-F9E5-4335-A778-C351CC136378}.Debug|x64.ActiveCfg = Debug|x64
+		{F07FDBF8-F9E5-4335-A778-C351CC136378}.Debug|x64.Build.0 = Debug|x64
+		{F07FDBF8-F9E5-4335-A778-C351CC136378}.Release|x64.ActiveCfg = Release|x64
+		{F07FDBF8-F9E5-4335-A778-C351CC136378}.Release|x64.Build.0 = Release|x64
+		{AA3A1F77-BD18-48A7-A397-48253A937179}.Debug|x64.ActiveCfg = Debug|x64
+		{AA3A1F77-BD18-48A7-A397-48253A937179}.Debug|x64.Build.0 = Debug|x64
+		{AA3A1F77-BD18-48A7-A397-48253A937179}.Release|x64.ActiveCfg = Release|x64
+		{AA3A1F77-BD18-48A7-A397-48253A937179}.Release|x64.Build.0 = Release|x64
+		{04B45251-84D3-47C1-9B6B-107DCF00B375}.Debug|x64.ActiveCfg = Debug|x64
+		{04B45251-84D3-47C1-9B6B-107DCF00B375}.Debug|x64.Build.0 = Debug|x64
+		{04B45251-84D3-47C1-9B6B-107DCF00B375}.Release|x64.ActiveCfg = Release|x64
+		{04B45251-84D3-47C1-9B6B-107DCF00B375}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

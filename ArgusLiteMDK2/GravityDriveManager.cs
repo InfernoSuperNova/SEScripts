@@ -154,7 +154,7 @@ namespace IngameScript
             if (Dampeners != PreviousDampeners) FlightDataRecorder.GravityDriveDampenersChangedEvent(Dampeners);
             if (Precision != PreviousPrecision) FlightDataRecorder.GravityDrivePrecisionChangedEvent(Precision);
 
-
+            
             if (interruptedFor > 0)
             {
                 interruptedFor--;
@@ -174,7 +174,8 @@ namespace IngameScript
             float baselineGravity = 9.81f;
             var naturalGravity = ShipController.GetNaturalGravity();
             var naturalGravityLength = naturalGravity.Length();
-
+            
+            
             var driveEffectiveness = MathHelper.Clamp(baselineGravity - (naturalGravityLength * 2), 0, baselineGravity) / baselineGravity;
 
             float driveMultiplier = 1;
@@ -183,17 +184,19 @@ namespace IngameScript
                 driveMultiplier = (float)(1 / driveEffectiveness);
             }
             
-            var velocity = ShipController.GetShipVelocities().LinearVelocity + (ShipController.GetNaturalGravity() / 10);
+            var velocity = ShipController.GetShipVelocities().LinearVelocity + (naturalGravity / 10);
             
-            var shipMass = ShipController.CalculateShipMass();
-            this.shipMass = shipMass.PhysicalMass;
+            
+            if (frame % 901 == 0) _shipMass = ShipController.CalculateShipMass();
+            
+            this.shipMass = _shipMass.PhysicalMass;
             velocity *= driveMultiplier;
             
             Vector3 transformedVelocity =
                 Vector3D.TransformNormal(velocity, MatrixD.Transpose(ShipController.WorldMatrix));
 
             
-
+            
             var transformedVelocityNormalized = transformedVelocity;
 
             if (transformedVelocityNormalized.LengthSquared() > 3)
@@ -546,6 +549,8 @@ namespace IngameScript
 
         
         int i = 0, j = 1;
+        private MyShipMass _shipMass;
+
         private void EnableMassBlockPairs()
         {
            

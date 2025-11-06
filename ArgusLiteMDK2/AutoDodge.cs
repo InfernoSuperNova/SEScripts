@@ -35,7 +35,7 @@ namespace IngameScript
         
         public static Vector3D Check(MyDetectedEntityInfo theirGrid, Vector3D theirPos, Vector3D ourPos, Vector3D ourVelocity, IMyCubeGrid ourGrid, Vector3D ourAngularVelocity)
         {
-            
+            if (theirGrid.IsEmpty()) return Vector3D.Zero;
             var theirOrientation = theirGrid.Orientation;
             var ourOrientation = ourGrid.WorldMatrix;
             var theirVelocity = theirGrid.Velocity;

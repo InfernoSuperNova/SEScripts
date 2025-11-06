@@ -94,11 +94,6 @@
             if current axis is being stretched in negative direction m_isJoystickYAxisState_Reversing.value == true
             </summary>
         </member>
-        <member name="T:VRage.Input.MyControllerHelper.FakeControl">
-            <summary>
-            Loading hints require Controls for displaying, but some things cannot be binded to (any direction on Stick or DPad). For this reason fake controls exist, to be able to display control elements That cannot even have binding
-            </summary>
-        </member>
         <member name="T:VRage.Input.MyControlStateType">
             <summary>
             Defines states of the control, newly means that control just changed to that state and it will change to next state right after
@@ -139,10 +134,22 @@
             Control is button
             </summary>
         </member>
+        <member name="T:VRage.Input.MyFakeControl">
+            <summary>
+            Loading hints require Controls for displaying, but some things cannot be binded to (any direction on Stick or DPad). For this reason fake controls exist, to be able to display control elements That cannot even have binding
+            </summary>
+        </member>
         <member name="F:VRage.Input.MyVRageInput.m_isJoystickYAxisState_Reversing">
             <summary>
             if current axis is being stretched in negative direction m_isJoystickYAxisState_Reversing.value == true
             </summary>
+        </member>
+        <member name="M:VRage.Input.MyVRageInput.IsAnyJoystickAxisPressed">
+            <summary>
+            Detects if any controller axis is active
+            We skip sliders as those are tricky to set to ZERO position so they keep joystick constantly active
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:VRage.Input.MyVRageInput.GetMousePosition">
             <summary>
@@ -226,6 +233,18 @@
             <summary>
             if control is enabled or not
             </summary>
+        </member>
+        <member name="M:VRage.ModAPI.IMyControl.GetKeyboardModifier">
+            <summary>
+            Gets keyboard modifiers for the primary key
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:VRage.ModAPI.IMyControl.GetSecondKeyboardModifier">
+            <summary>
+            Gets keyboard modifiers for the secondary key
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:VRage.ModAPI.IMyInput.GetControl(VRage.Input.MyKeys,VRage.ModAPI.MyKeyboardModifiers)">
             <summary>

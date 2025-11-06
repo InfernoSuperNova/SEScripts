@@ -258,7 +258,6 @@ internal class Program : MyGridProgram
         var sphericalGravityGenerators = new List<IMyGravityGeneratorSphere>();
         beacons = new List<IMyBeacon>();
         myOffensiveCombatBlocks = new List<IMyOffensiveCombatBlock>();
-
         var cameraList = new List<IMyCameraBlock>();
 
         group = GridTerminalSystem.GetBlockGroupWithName(GroupName);
@@ -310,6 +309,7 @@ internal class Program : MyGridProgram
             var screen = cockpit.GetSurface(0);
             if (screen == null) continue;
             CockpitScreens.Add(screen);
+                
         }
             
         bool needToRedoIni = false;
@@ -360,7 +360,6 @@ internal class Program : MyGridProgram
 
         diagnosticRequestListener = IGC.RegisterBroadcastListener("ArgusLiteDiagnosticRequest");
         IGC.SendBroadcastMessage("ArgusLiteRegisterFlightData", Me.EntityId);
-
             
             
             
@@ -834,17 +833,18 @@ internal class Program : MyGridProgram
         _host.Update(Me.CubeGrid.GetPosition(), Me.CubeGrid.LinearVelocity, Me.CubeGrid.WorldMatrix, ShipController);
             
         ALDebug.WriteText();
-
+            
         scriptFrame++;
-
+            
+            
         if (scriptFrame % NewBlockCheckPeriod == 0) GetNewBlocks();
         if ((scriptFrame - 300) % NewBlockCheckPeriod == 0) UpdateGravityDriveBlocks();
 
 
         UpdateRuntimeInfo();
         UpdateShipController();
-
-
+            
+            
         var myDetectedEntityInfo = GetTurretTargets(Turrets, TurretControllers, ref Targets);
 
         var entityId = myDetectedEntityInfo.EntityId;
@@ -854,6 +854,9 @@ internal class Program : MyGridProgram
             switches.PrecisionMode =
                 false;
         }
+            
+
+            
 
         if (entityId != 0 && !currentlyScanning && !targetableShips.ContainsKey(entityId) && switches.DoAutoScan)
         {
@@ -881,8 +884,12 @@ internal class Program : MyGridProgram
         TargetVelocity = myDetectedEntityInfo.Velocity;
         CurrentVelocity = ShipController.GetShipVelocities().LinearVelocity;
 
+            
+            
+            
+            
         UpdateScan(entityId);
-
+            
         if (!currentlyScanning && switches.DoTurretAim)
         {
             if (HasTarget)
@@ -925,11 +932,13 @@ internal class Program : MyGridProgram
         {
             TargetPosition = myDetectedEntityInfo.Position;
         }
-
+            
         var autoDodgeVal = AutoDodge.Check(myDetectedEntityInfo, TargetPosition, Me.CubeGrid.WorldVolume.Center, Me.CubeGrid.LinearVelocity,
             Me.CubeGrid, ShipController.GetShipVelocities().AngularVelocity);
+            
         guns._GunMode =  switches.WaitForAll ? Guns.GunMode.WaitForAll : switches.DoVolley ? Guns.GunMode.Volley : Guns.GunMode.FireWhenReady;
         guns.SlowTick(TargetDistance, OnTargetValue);
+            
         HasTarget = myDetectedEntityInfo.EntityId != 0;
         if (HasTarget && switches.DoAim)
         {
@@ -960,31 +969,20 @@ internal class Program : MyGridProgram
         {
             ResetGyroOverrides(Gyros);
         }
-
+            
         UpdateShooting();
-
         UpdateAim();
-
-        kratosMissileManager.Update(actualTargetedShip);
-        if (switches.MissileInterdictionMode != lastInterdictMode)
-        {
-            lastInterdictMode = switches.MissileInterdictionMode;
-                
-        }
+            
     
         if ((scriptFrame + 2) % 10 == 0) UpdateHUD();
         if (switches.DoGravityDrive == false) return;
-
+            
         if (!HasTarget) autoDodgeVal = Vector3D.Zero;
             
         gravityDriveManager.Update(ShipController, switches.PrecisionMode, switches.DoRepulse, switches.DoBalance, autoDodgeVal);
-
-
-        FlightDataRecorder.WriteData();
-        FlightDataRecorder.TickFrame();
-
-        IGCHandler();
             
+
+
     }
 
     void IGCHandler()
@@ -3102,7 +3100,7 @@ public static class AutoDodge
         
     public static Vector3D Check(MyDetectedEntityInfo theirGrid, Vector3D theirPos, Vector3D ourPos, Vector3D ourVelocity, IMyCubeGrid ourGrid, Vector3D ourAngularVelocity)
     {
-            
+        if (theirGrid.IsEmpty()) return Vector3D.Zero;
         var theirOrientation = theirGrid.Orientation;
         var ourOrientation = ourGrid.WorldMatrix;
         var theirVelocity = theirGrid.Velocity;
@@ -3795,7 +3793,7 @@ internal class GravityDriveManager
         if (Dampeners != PreviousDampeners) FlightDataRecorder.GravityDriveDampenersChangedEvent(Dampeners);
         if (Precision != PreviousPrecision) FlightDataRecorder.GravityDrivePrecisionChangedEvent(Precision);
 
-
+            
         if (interruptedFor > 0)
         {
             interruptedFor--;
@@ -3815,7 +3813,8 @@ internal class GravityDriveManager
         float baselineGravity = 9.81f;
         var naturalGravity = ShipController.GetNaturalGravity();
         var naturalGravityLength = naturalGravity.Length();
-
+            
+            
         var driveEffectiveness = MathHelper.Clamp(baselineGravity - (naturalGravityLength * 2), 0, baselineGravity) / baselineGravity;
 
         float driveMultiplier = 1;
@@ -3824,17 +3823,19 @@ internal class GravityDriveManager
             driveMultiplier = (float)(1 / driveEffectiveness);
         }
             
-        var velocity = ShipController.GetShipVelocities().LinearVelocity + (ShipController.GetNaturalGravity() / 10);
+        var velocity = ShipController.GetShipVelocities().LinearVelocity + (naturalGravity / 10);
             
-        var shipMass = ShipController.CalculateShipMass();
-        this.shipMass = shipMass.PhysicalMass;
+            
+        if (frame % 901 == 0) _shipMass = ShipController.CalculateShipMass();
+            
+        this.shipMass = _shipMass.PhysicalMass;
         velocity *= driveMultiplier;
             
         Vector3 transformedVelocity =
             Vector3D.TransformNormal(velocity, MatrixD.Transpose(ShipController.WorldMatrix));
 
             
-
+            
         var transformedVelocityNormalized = transformedVelocity;
 
         if (transformedVelocityNormalized.LengthSquared() > 3)
@@ -4170,21 +4171,23 @@ internal class GravityDriveManager
 
         
     int i = 0, j = 1;
+    MyShipMass _shipMass;
+
     void EnableMassBlockPairs()
     {
            
         var disabled = new List<MassBlock>();
-
+        var disabledCount = disabled.Count;
                 
         foreach (var mass in massBlocks)
             if (!mass.Enabled) disabled.Add(mass);
-        if (disabled.Count <= 1) return;
+        if (disabledCount <= 1) return;
         for (int step = 0; step < 50000; step++)
         {
-            if (j >= disabled.Count)
+            if (j >= disabledCount)
             {
                 i++;
-                if (i >= disabled.Count - 1)
+                if (i >= disabledCount - 1)
                 {
                     break;
                 }
@@ -4193,21 +4196,20 @@ internal class GravityDriveManager
                 
             var a = disabled[i];
             var b = disabled[j];
-            if ((a.moment + b.moment).ALengthSquared() < 1) {
+
+            var added = a.moment + b.moment;
+            var lengthSquared = added.X * added.X + added.Y * added.Y + added.Z * added.Z;
+            if (lengthSquared < 1) {
                 a.Enabled = b.Enabled = true;
             }
             j++;
         }
 
-        if (i >= disabled.Count || i + 1 >= disabled.Count)
+        if (i >= disabledCount || i + 1 >= disabledCount)
         {
             i = 0;
             j = 1;
         }
-            
-
-          
-           
     }
 
     void BalanceMassBlocks(List<MassBlock> blocks, List<SpaceBall> balls, Vector3D centerOfMass)

@@ -99,6 +99,4 @@
 /home/deltawing/repos/ArgusLiteMDK2/ArgusLiteMDK2/obj/x64/Debug/netframework48/ArgusLit.618165C2.Up2Date
 /home/deltawing/repos/ArgusLiteMDK2/ArgusLiteMDK2/obj/x64/Debug/netframework48/ArgusLiteMDK2.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArgusLiteMDK2/obj/x64/Debug/netframework48/ArgusLiteMDK2.pdb
-/home/deltawing/repos/ArgusLiteMDK2/ArgusLiteMDK2/bin/x64/Debug/netframework48/GameAnalytics.Mono.dll
-/home/deltawing/repos/ArgusLiteMDK2/ArgusLiteMDK2/bin/x64/Debug/netframework48/NLog.dll
-/home/deltawing/repos/ArgusLiteMDK2/ArgusLiteMDK2/bin/x64/Debug/netframework48/System.Data.SQLite.dll
+/home/deltawing/repos/ArgusLiteMDK2/ArgusLiteMDK2/obj/x64/Debug/netframework48/ArgusLiteMDK2.sourcelink.json

@@ -2055,6 +2055,11 @@
             Gets or sets selected block entity id in the terminal panel by the client
             </summary>
         </member>
+        <member name="P:VRage.Network.MyClientStateBase.IsPasswordPending">
+            <summary>
+            Gets or sets if password is pending on client side
+            </summary>
+        </member>
         <member name="P:VRage.Network.MyClientStateBase.SelectedGridEntityId">
             <summary>
             Gets or sets selected grid entity id in the terminal panel by the client

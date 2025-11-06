@@ -333,7 +333,6 @@ namespace IngameScript
             var sphericalGravityGenerators = new List<IMyGravityGeneratorSphere>();
             beacons = new List<IMyBeacon>();
             myOffensiveCombatBlocks = new List<IMyOffensiveCombatBlock>();
-
             var cameraList = new List<IMyCameraBlock>();
 
             group = GridTerminalSystem.GetBlockGroupWithName(GroupName);
@@ -385,6 +384,7 @@ namespace IngameScript
                 var screen = cockpit.GetSurface(0);
                 if (screen == null) continue;
                 CockpitScreens.Add(screen);
+                
             }
             
             bool needToRedoIni = false;
@@ -435,7 +435,6 @@ namespace IngameScript
 
             diagnosticRequestListener = IGC.RegisterBroadcastListener("ArgusLiteDiagnosticRequest");
             IGC.SendBroadcastMessage("ArgusLiteRegisterFlightData", Me.EntityId);
-
             
             
             
@@ -934,17 +933,18 @@ namespace IngameScript
             _host.Update(Me.CubeGrid.GetPosition(), Me.CubeGrid.LinearVelocity, Me.CubeGrid.WorldMatrix, ShipController);
             
             ALDebug.WriteText();
-
+            
             scriptFrame++;
-
+            
+            
             if (scriptFrame % NewBlockCheckPeriod == 0) GetNewBlocks();
             if ((scriptFrame - 300) % NewBlockCheckPeriod == 0) UpdateGravityDriveBlocks();
 
 
             UpdateRuntimeInfo();
             UpdateShipController();
-
-
+            
+            
             var myDetectedEntityInfo = GetTurretTargets(Turrets, TurretControllers, ref Targets);
 
             var entityId = myDetectedEntityInfo.EntityId;
@@ -955,6 +955,9 @@ namespace IngameScript
                 switches.PrecisionMode =
                     false; // it would be really bad if, say, we entered combat and our ship's gravity drive was only operating at 10% power, this is a little bit of hand holding
             }
+            
+
+            
 
             // scan the ship if it hasn't been scanned yet
             if (entityId != 0 && !currentlyScanning && !targetableShips.ContainsKey(entityId) && switches.DoAutoScan)
@@ -1002,8 +1005,12 @@ namespace IngameScript
             TargetVelocity = myDetectedEntityInfo.Velocity; // Get this here for the turrets
             CurrentVelocity = ShipController.GetShipVelocities().LinearVelocity;
 
+            
+            
+            
+            
             UpdateScan(entityId);
-
+            
             if (!currentlyScanning && switches.DoTurretAim)
             {
                 if (HasTarget)
@@ -1048,11 +1055,13 @@ namespace IngameScript
             {
                 TargetPosition = myDetectedEntityInfo.Position;
             }
-
+            
             var autoDodgeVal = AutoDodge.Check(myDetectedEntityInfo, TargetPosition, Me.CubeGrid.WorldVolume.Center, Me.CubeGrid.LinearVelocity,
                 Me.CubeGrid, ShipController.GetShipVelocities().AngularVelocity);
+            
             guns._GunMode =  switches.WaitForAll ? Guns.GunMode.WaitForAll : switches.DoVolley ? Guns.GunMode.Volley : Guns.GunMode.FireWhenReady;
             guns.SlowTick(TargetDistance, OnTargetValue);
+            
             HasTarget = myDetectedEntityInfo.EntityId != 0;
             if (HasTarget && switches.DoAim)
             {
@@ -1083,33 +1092,32 @@ namespace IngameScript
             {
                 ResetGyroOverrides(Gyros);
             }
-
+            
             UpdateShooting(); // Gets the reference position for the guns and fires them if necessary
-
             UpdateAim();
-
-            kratosMissileManager.Update(actualTargetedShip);
-            if (switches.MissileInterdictionMode != lastInterdictMode)
-            {
-                lastInterdictMode = switches.MissileInterdictionMode;
-                //kratosMissileManager.ToggleInterdiction(lastInterdictMode);
-                
-            }
+            
+            // kratosMissileManager.Update(actualTargetedShip);
+            // if (switches.MissileInterdictionMode != lastInterdictMode)
+            // {
+            //     lastInterdictMode = switches.MissileInterdictionMode;
+            //     //kratosMissileManager.ToggleInterdiction(lastInterdictMode);
+            //     
+            // }
     
             if ((scriptFrame + 2) % 10 == 0) UpdateHUD();
             if (switches.DoGravityDrive == false) return;
-
+            
             if (!HasTarget) autoDodgeVal = Vector3D.Zero;
             
             //autoDodgeVal = Vector3D.Zero; // Temp
             gravityDriveManager.Update(ShipController, switches.PrecisionMode, switches.DoRepulse, switches.DoBalance, autoDodgeVal);
-
-
-            FlightDataRecorder.WriteData();
-            FlightDataRecorder.TickFrame();
-
-            IGCHandler();
             
+
+            // FlightDataRecorder.WriteData();
+            // FlightDataRecorder.TickFrame();
+            //
+            // IGCHandler();
+
         }
 
         private void IGCHandler()
