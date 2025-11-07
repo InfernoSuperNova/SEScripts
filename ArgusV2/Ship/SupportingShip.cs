@@ -26,13 +26,19 @@ namespace IngameScript
     /// </summary>
     public class SupportingShip : ArgusShip 
     {
-        private List<IMyTurretControlBlock> _targetTrackers;
+        private readonly List<IMyTurretControlBlock> _targetTrackers;
         private readonly IMyCubeGrid _thisGrid;
 
         
-        public SupportingShip(IMyCubeGrid grid)
+        public SupportingShip(IMyCubeGrid grid, List<IMyTerminalBlock> blocks)
         {
             _targetTrackers = new List<IMyTurretControlBlock>();
+            foreach (var block in blocks)
+            {
+                var controller = block as IMyTurretControlBlock;
+                if (controller != null) _targetTrackers.Add(controller);
+            }
+            
             _thisGrid = grid;
             
             // TODO: - get blocks on this grid
@@ -42,6 +48,7 @@ namespace IngameScript
         public override Vector3D Position => _thisGrid.GetPosition();
         public override Vector3D Velocity => CVelocity;
         public override Vector3D Acceleration => CVelocity - CPreviousVelocity;
+        
 
         public override void EarlyUpdate(int frame)
         {
@@ -49,6 +56,9 @@ namespace IngameScript
             CVelocity = _thisGrid.LinearVelocity;
         }
 
-        
+        public override void LateUpdate(int frame)
+        {
+            
+        }
     }
 }

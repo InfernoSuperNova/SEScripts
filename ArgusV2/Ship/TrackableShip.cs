@@ -37,7 +37,10 @@ namespace IngameScript.Ship
             CVelocity = Info.Velocity;
         }
 
-
+        public override void LateUpdate(int frame)
+        {
+            
+        }
         public void AddTrackedBlock(MyDetectedEntityInfo info, IMyLargeTurretBase turret = null, IMyTurretControlBlock controller = null)
         {
             if (info.EntityId != Info.EntityId || info.HitPosition == null) return;
