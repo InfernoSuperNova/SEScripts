@@ -2,7 +2,8 @@ namespace IngameScript
 {
     public static class Config
     {
-
+        public const string ArgumentUnTarget = "Untarget";
+        public const string ArgumentTarget = "Target";
 
 
         public static double ProportialGain = 500;
@@ -14,5 +15,8 @@ namespace IngameScript
         
         
         public static double MaxAngularVelocityRpm = 30;
+        public static string GroupName = "ArgusV2";
+
+        public static double MaxWeaponRange = 2000;
     }
 }

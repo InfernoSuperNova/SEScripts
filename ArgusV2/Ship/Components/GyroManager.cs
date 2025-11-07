@@ -19,16 +19,20 @@ namespace IngameScript.Ship.Components
             foreach (var b in blocks)
             {
                 var gyro = b as IMyGyro;
-                if (gyro != null) _gyros.Add(gyro);
+                if (gyro != null)
+                {
+                    _gyros.Add(gyro);
+                }
             }
-
+            
+            
             _pitch = new PIDController(Config.ProportialGain, Config.IntegralGain, Config.DerivativeGain, 
                 Config.IntegralUpperLimit, Config.IntegralLowerLimit);
             _yaw = new PIDController(Config.ProportialGain, Config.IntegralGain, Config.DerivativeGain,
                 Config.IntegralUpperLimit, Config.IntegralLowerLimit);
         }
         
-        public void Rotate(Vector3D desiredGlobalFwdNormalized, double roll, double onTarget, IMyShipController controller)
+        public void Rotate(Vector3D desiredGlobalFwdNormalized, double onTarget, IMyShipController controller, double roll = 0)
         {
             int roundValue = 7;
             double rotationalGain = 1.0;
@@ -73,7 +77,6 @@ namespace IngameScript.Ship.Components
                 var adjust = Config.MaxAngularVelocityRpm / (Math.Abs(gy) + Math.Abs(gp));
                 gy *= adjust;
                 gp *= adjust;
-                // No you're right, this sucks
             }
             gp *= rotationalGain;
             gy *= rotationalGain;
@@ -85,7 +88,7 @@ namespace IngameScript.Ship.Components
         {
             var rotationVec = new Vector3D(pitchSpeed, yawSpeed, rollSpeed);
             var relativeRotationVec = Vector3D.TransformNormal(rotationVec, worldMatrix);
-
+            Program.Log(_gyros.Count);
             foreach (var gyro in _gyros)
                 if (gyro.IsFunctional && gyro.IsWorking && gyro.Enabled && !gyro.Closed)
                 {
@@ -99,9 +102,9 @@ namespace IngameScript.Ship.Components
                 }
         }
 
-        private void ResetGyroOverrides(List<IMyGyro> gyroList)
+        public void ResetGyroOverrides()
         {
-            foreach (var gyro in gyroList)
+            foreach (var gyro in _gyros)
                 if (gyro.IsFunctional && gyro.IsWorking && gyro.Enabled && !gyro.Closed)
                 {
                     gyro.GyroOverride = false;

@@ -36,21 +36,25 @@ namespace IngameScript
             foreach (var block in blocks)
             {
                 var controller = block as IMyTurretControlBlock;
-                if (controller != null) _targetTrackers.Add(controller);
+                if (controller != null)
+                {
+                    controller.CustomName = "NOT TRACKING";
+                    _targetTrackers.Add(controller);
+                }
             }
             
             _thisGrid = grid;
-            
-            // TODO: - get blocks on this grid
         }
         
         
         public override Vector3D Position => _thisGrid.GetPosition();
         public override Vector3D Velocity => CVelocity;
-        public override Vector3D Acceleration => CVelocity - CPreviousVelocity;
-        
+        public override Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
 
-        public override void EarlyUpdate(int frame)
+        public override string Name => _thisGrid.CustomName;
+        public override string ToString() => Name;
+
+        public override void PollSensors(int frame)
         {
             CPreviousVelocity = CVelocity;
             CVelocity = _thisGrid.LinearVelocity;
@@ -58,7 +62,34 @@ namespace IngameScript
 
         public override void LateUpdate(int frame)
         {
-            
+            for (var index = _targetTrackers.Count - 1; index >= 0; index--)
+            {
+                var tracker = _targetTrackers[index];
+
+                if (tracker.Closed)
+                {
+                    _targetTrackers.RemoveAt(index);
+                    continue;
+                }
+
+                if (!tracker.HasTarget)
+                {
+                    if (!tracker.Enabled)
+                    {
+                        tracker.Enabled = true;
+                        tracker.CustomName = "NOT TRACKING";
+                    }
+                    continue;
+                }
+                
+                if (ShipManager.TrackerToEntityId.ContainsKey(tracker)) continue;
+                var target = tracker.GetTargetedEntity();   
+                if (ShipManager.EntityIdToTrackableShip.ContainsKey(target.EntityId)) continue; // I don't think this check is necessary but might as well keep it anyway
+
+                ShipManager.AddTrackableShip(tracker, target.EntityId);
+                tracker.CustomName = "TRACKING";
+                tracker.Enabled = false;
+            }
         }
     }
 }

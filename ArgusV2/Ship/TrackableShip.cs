@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using IngameScript.Ship.Components;
 using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using VRageMath;
@@ -17,29 +18,39 @@ namespace IngameScript.Ship
         
         
         public SupportingShip TrackingShip;
-        public IMyTurretControlBlock Tracker;
 
         public MyDetectedEntityInfo Info;
 
-        public TrackableShip(IMyTurretControlBlock _tracker)
+        public long EntityId;
+        public TrackableShip(IMyTurretControlBlock tracker, long entityId)
         {
-            Tracker = _tracker;
+            Tracker = tracker;
+            EntityId = entityId;
+            PollFrequency = SensorPollFrequency.Medium;
         }
 
         public override Vector3D Position => Info.Position;
         public override Vector3D Velocity => CVelocity;
-        public override Vector3D Acceleration => CVelocity - CPreviousVelocity;
+        public override Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
 
-        public override void EarlyUpdate(int frame)
+        public override string Name => $"Trackable ship {EntityId}";
+
+        public override string ToString() => Name;
+
+        public IMyTurretControlBlock Tracker { get; }
+
+        public override void PollSensors(int frame)
         {
+            if ((frame + RandomUpdateJitter) % SensorPolling.GetFramesBetweenPolls(PollFrequency) != 0) return;
             Info = Tracker.GetTargetedEntity();
+            if (Tracker.Closed || Info.EntityId != EntityId) ShipManager.RemoveTrackableShip(this);
             CPreviousVelocity = CVelocity;
             CVelocity = Info.Velocity;
         }
 
         public override void LateUpdate(int frame)
         {
-            
+            //Program.I.Echo($"Tracking target {Info.EntityId} at {Info.Position}");
         }
         public void AddTrackedBlock(MyDetectedEntityInfo info, IMyLargeTurretBase turret = null, IMyTurretControlBlock controller = null)
         {
