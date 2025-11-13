@@ -5054,6 +5054,7 @@ public struct ӗ
 {
     private readonly ushort ȇ;
 
+        
     public ӗ(float ي)
     {
         ȇ = ٮ(ي);

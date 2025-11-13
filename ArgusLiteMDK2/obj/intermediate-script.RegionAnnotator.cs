@@ -3957,6 +3957,7 @@ public struct Half
 {
     private readonly ushort value;
 
+        
     public Half(float floatValue)
     {
         value = FloatToHalf(floatValue);

@@ -1,22 +1,10 @@
-using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
 using IngameScript.Ship;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
+using IngameScript.Ship.Components;
 using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
 using VRageMath;
 
 namespace IngameScript
@@ -26,69 +14,119 @@ namespace IngameScript
     /// </summary>
     public class SupportingShip : ArgusShip 
     {
-        private readonly List<IMyTurretControlBlock> _targetTrackers;
-        private readonly IMyCubeGrid _thisGrid;
+        private readonly List<TargetTracker> _targetTrackers;
+        private readonly IMyCubeGrid _grid;
 
         
-        public SupportingShip(IMyCubeGrid grid, List<IMyTerminalBlock> blocks)
+        public SupportingShip(IMyCubeGrid grid, List<IMyTerminalBlock> trackerBlocks)
         {
-            _targetTrackers = new List<IMyTurretControlBlock>();
-            foreach (var block in blocks)
+            IMyUserControllableGun gun = null;
+            IMyMotorStator rotor = null;
+            _targetTrackers = new List<TargetTracker>();
+            foreach (var block in trackerBlocks)
             {
                 var controller = block as IMyTurretControlBlock;
                 if (controller != null)
                 {
-                    controller.CustomName = "NOT TRACKING";
-                    _targetTrackers.Add(controller);
+                    
+                    _targetTrackers.Add(new TargetTracker(controller));
+                    continue;
                 }
+                gun = gun ?? block as IMyUserControllableGun;
+                rotor = rotor ?? block as IMyMotorStator;
+            }
+
+            if (gun == null) throw new Exception($"FATAL: Grid '{grid.CustomName}' tracker group missing a gun.");
+            if (rotor == null) throw new Exception($"FATAL: Grid '{grid.CustomName}' tracker group missing a rotor.");
+
+
+
+            foreach (var tracker in _targetTrackers)
+            {
+                var block = tracker.Block;
+                block.ClearTools();
+                block.AddTool(gun);
+                block.AzimuthRotor = null; // These aren't intended to actually shoot at anything, just used for target designation and scanning
+                block.ElevationRotor = rotor;
+                block.AIEnabled = true;
+                block.CustomName = Config.SearchingName;
             }
             
-            _thisGrid = grid;
+            _grid = grid;
         }
         
         
-        public override Vector3D Position => _thisGrid.GetPosition();
+        public override Vector3D Position => _grid.GetPosition();
         public override Vector3D Velocity => CVelocity;
         public override Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
 
-        public override string Name => _thisGrid.CustomName;
+        public override string Name => _grid.CustomName;
         public override string ToString() => Name;
 
-        public override void PollSensors(int frame)
+        public override void EarlyUpdate(int frame)
         {
             CPreviousVelocity = CVelocity;
-            CVelocity = _thisGrid.LinearVelocity;
+            CVelocity = _grid.LinearVelocity;
         }
 
         public override void LateUpdate(int frame)
         {
-            for (var index = _targetTrackers.Count - 1; index >= 0; index--)
+            for (int i = _targetTrackers.Count - 1; i >= 0; i--)
             {
-                var tracker = _targetTrackers[index];
+                var tracker = _targetTrackers[i];
 
+                // Cleanup destroyed trackers
                 if (tracker.Closed)
                 {
-                    _targetTrackers.RemoveAt(index);
+                    _targetTrackers.RemoveAt(i);
                     continue;
                 }
 
-                if (!tracker.HasTarget)
+                // Update target state
+                tracker.UpdateState();
+
+                // Tracker has no target
+                if (!tracker.HasTarget || tracker.Invalid)
                 {
-                    if (!tracker.Enabled)
+                    if (tracker.JustLostTarget)
                     {
                         tracker.Enabled = true;
-                        tracker.CustomName = "NOT TRACKING";
+                        tracker.CustomName = Config.SearchingName;
+                        tracker.TrackedShip = null;
                     }
+                    else if (tracker.JustInvalidated)
+                    {
+                        tracker.Enabled = true;
+                        tracker.CustomName = Config.SearchingName;
+                    }
+
                     continue;
                 }
-                
-                if (ShipManager.TrackerToEntityId.ContainsKey(tracker)) continue;
-                var target = tracker.GetTargetedEntity();   
-                if (ShipManager.EntityIdToTrackableShip.ContainsKey(target.EntityId)) continue; // I don't think this check is necessary but might as well keep it anyway
 
-                ShipManager.AddTrackableShip(tracker, target.EntityId);
-                tracker.CustomName = "TRACKING";
+                // Tracker currently has a target
+                if (tracker.TargetedEntity != 0) continue;
+                
+                var target = tracker.GetTargetedEntity();
+
+
+                TargetTracker existingTracker;
+                // Already tracked by this or another tracker
+                if (ShipManager.EntityIdToTracker.TryGetValue(target.EntityId, out existingTracker))
+                {
+                    if (existingTracker == tracker && tracker.Enabled)
+                        tracker.Enabled = false;
+                    
+                    existingTracker.TrackedShip.AddTrackedBlock(target, null, tracker);
+                    continue;
+                }
+
+                // Newly detected ship — register it
+                var trackableShip = ShipManager.AddTrackableShip(tracker, target.EntityId, target);
+                tracker.TrackedShip = trackableShip;
+                tracker.CustomName = Config.TrackingName;
                 tracker.Enabled = false;
+                tracker.TargetedEntity = target.EntityId;
+                
             }
         }
     }

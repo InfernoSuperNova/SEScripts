@@ -3,7 +3,6 @@ using System;
 using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using System.Collections.Generic;
-using HarmonyLib;
 
 
 namespace IngameScript

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmptyKeys.UserInterface.Controls.Primitives;
+using IngameScript.Helper;
 using IngameScript.Ship;
 using IngameScript.Ship.Components;
 using Sandbox.ModAPI.Ingame;
@@ -12,13 +13,16 @@ namespace IngameScript
 {
     public static class ShipManager
     {
+        
         public static readonly List<ArgusShip> AllShips = new List<ArgusShip>();
-        public static readonly Dictionary<long, TrackableShip> EntityIdToTrackableShip = new Dictionary<long, TrackableShip>();
-        public static readonly Dictionary<IMyTurretControlBlock, long> TrackerToEntityId = new Dictionary<IMyTurretControlBlock, long>();
         
         private static List<TrackableShip> _reusedShipList = new List<TrackableShip>();
         
+        public static Dictionary<long, TargetTracker> EntityIdToTracker = new Dictionary<long, TargetTracker>();
+        
         private static IEnumerator<TrackableShip> _pollEnumerator;
+
+        private static MyDynamicAABBTreeD _trackableShipTree = new MyDynamicAABBTreeD();
 
         static ShipManager()
         {
@@ -28,16 +32,61 @@ namespace IngameScript
 
         
         
-        public static void PollSensors(int frame)
+        public static void EarlyUpdate(int frame)
         {
             UpdatePollFrequency();
-
             for (var index = AllShips.Count - 1; index >= 0; index--)
             {
                 var ship = AllShips[index];
 
-                ship.PollSensors(frame);
-                
+                ship.EarlyUpdate(frame);
+            }
+
+
+
+            foreach (var ship in AllShips)
+            {
+                var trackable = ship as TrackableShip;
+                if (trackable == null) continue;
+                var box = trackable.WorldAABB;
+                    
+                if (trackable.ProxyId != 0)
+                {
+                    var displacement = trackable.TakeDisplacement();
+                    _trackableShipTree.MoveProxy(trackable.ProxyId, ref box, displacement);
+                }
+                else
+                {
+                    trackable.ProxyId = _trackableShipTree.AddProxy(ref box, trackable, 0U);
+                }
+
+            }
+            
+
+            foreach (var kvp in DynamicAABBTreeDHelper.GetAllOverlaps(_trackableShipTree))
+            {
+                var testShip = kvp.Key;
+                var overlaps = kvp.Value;
+
+                var shipSize = testShip.WorldAABB.Size.LengthSquared();
+
+                foreach (var overlapShip in overlaps)
+                {
+                    
+
+                    var overlapShipSize = overlapShip.WorldAABB.Size.LengthSquared();
+
+                    // var outcome = overlapShipSize > shipSize ? "losing" : "winning";
+                    // Program.Log($"Ship {testShip?.Name} is overlapping ship {overlapShip?.Name} and {outcome}");
+                    
+                    if (overlapShipSize > shipSize)
+                    {
+                        testShip.IntersectsLargerShipAABB = true;
+                        return;
+                    }
+                }
+
+                testShip.IntersectsLargerShipAABB = false;
             }
         }
 
@@ -67,6 +116,7 @@ namespace IngameScript
 
             for (var index = AllShips.Count - 1; index >= 0; index--)
             {
+                if (index >= AllShips.Count) continue;
                 var ship = AllShips[index];
                 var trackableShip = ship as TrackableShip;
                 if (trackableShip == null) continue;
@@ -145,26 +195,36 @@ namespace IngameScript
             {
                 throw new Exception($"Group missing! Please create a group called {Config.GroupName}");
             }
+            var trackerGroup = gridTerminalSystem.GetBlockGroupWithName(Config.TrackerGroupName);
+            if (trackerGroup == null)
+            {
+                throw new Exception(
+                    $"Tracker group missing! Please create a group called {Config.TrackerGroupName} containing custom turret controllers, a rotor and a fixed gun.");
+            }
             var blocks = new List<IMyTerminalBlock>();
+            var trackerBlocks = new List<IMyTerminalBlock>();
             group.GetBlocks(blocks);
-            var ship = new ControllableShip(grid, blocks);
+            trackerGroup.GetBlocks(trackerBlocks);
+            var ship = new ControllableShip(grid, blocks, trackerBlocks);
             AllShips.Add(ship);
             PrimaryShip = ship;
+
+            
             _pollEnumerator = UpdatePollFrequenciesOneByOne().GetEnumerator();
         }
 
-        public static void AddTrackableShip(IMyTurretControlBlock tracker, long entityId)
+        public static TrackableShip AddTrackableShip(TargetTracker tracker, long entityId, MyDetectedEntityInfo initial)
         {
-            var trackableShip = new TrackableShip(tracker, entityId);
+            var trackableShip = new TrackableShip(tracker, entityId, initial);
             AllShips.Add(trackableShip);
-            EntityIdToTrackableShip.Add(entityId, trackableShip);
-            TrackerToEntityId.Add(tracker, entityId);
+            EntityIdToTracker.Add(entityId, tracker);
+            return trackableShip;
         }
         public static void RemoveTrackableShip(TrackableShip trackableShip)
         {
             AllShips.Remove(trackableShip);
-            EntityIdToTrackableShip.Remove(trackableShip.EntityId);
-            TrackerToEntityId.Remove(trackableShip.Tracker);
+            EntityIdToTracker.Remove(trackableShip.EntityId);
+            _trackableShipTree.RemoveProxy(trackableShip.ProxyId);
         }
 
 

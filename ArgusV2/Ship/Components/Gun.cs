@@ -1,0 +1,181 @@
+using System;
+using IngameScript.Database;
+using Sandbox.Game.EntityComponents;
+using Sandbox.ModAPI.Ingame;
+using VRage.Game;
+using VRage.Game.ObjectBuilders.Definitions;
+using VRageMath;
+
+namespace IngameScript.Ship.Components
+{
+    public enum GunReloadType
+    {
+        Normal,
+        NeedsCharging
+    }
+    
+    public enum GunFireType
+    {
+        Normal,
+        Delay
+    }
+
+    public enum GunState
+    {
+        Firing,
+        Cancelling,
+        ReadyToFire,
+        Reloading,
+        Recharging,
+        NonFunctional
+    }
+    
+    
+    public class Gun
+    {
+        private static readonly MyDefinitionId ElectricityId =
+            new MyDefinitionId(typeof(MyObjectBuilder_GasProperties), "Electricity");
+        private IMyUserControllableGun _gun;
+        private GunReloadType _reloadType;
+        private GunFireType _fireType;
+        private MyResourceSinkComponent _gunSinkComponent;
+        private int _reloadTimerId;
+        private int _firingTimerId;
+        private GunState _cachedState;
+        private bool _stateValid;
+        private bool _cancelled;
+        private GunData _gunData;
+
+
+        public Gun(IMyUserControllableGun gun)
+        {
+            var blockDefinition = gun.BlockDefinition;
+            var gunData = GunData.Get(blockDefinition.SubtypeIdAttribute);
+            if (gunData == GunData.DefaultGun) gunData = GunData.Get(blockDefinition.TypeIdString);
+            _gunData = gunData;
+            
+            _gun = gun;
+            _gunSinkComponent = gun.Components.Get<MyResourceSinkComponent>();
+            _reloadType = _gunData.ReloadType;
+            _fireType = _gunData.FireType;
+        }     
+            
+        public Vector3D Position { get; set; }
+        public Vector3D Direction { get; set; }
+        public float Velocity => _gunData.ProjectileData.ProjectileVelocity;
+
+        public float Acceleration => _gunData.ProjectileData.Acceleration;
+
+        public float MaxVelocity => _gunData.ProjectileData.MaxVelocity;
+
+        public float MaxRange => _gunData.ProjectileData.MaxRange;
+        
+        public GunState State
+        {
+            get
+            {
+                if (!_stateValid)
+                {
+                    _cachedState = EvaluateState();
+                    _stateValid = true;
+                }
+                return _cachedState;
+
+            }
+        }
+        
+        public void EarlyUpdate(int frame)
+        {
+            _stateValid = false;
+            using (Program.Debug.Measure(ts => Program.Log(ts, "GunStateProperty")))
+            {
+                var state = State;
+                Program.Log(state);
+            }
+        }
+
+        public void LateUpdate(int frame)
+        {
+            
+        }
+
+        public bool Fire()
+        {
+            if (State != GunState.ReadyToFire) return false;
+            
+            _gun.ShootOnce();
+            if (_fireType == GunFireType.Delay)
+            {
+                _firingTimerId = TimerManager.Start(_gunData.FireTimeFrames, OnFireComplete); // Temporary delay value
+            }
+            else
+            {
+                _firingTimerId = TimerManager.Start(0, OnFireComplete);
+            }
+            return true;
+        }
+
+        public bool Cancel()
+        {
+
+            if (State != GunState.Firing) return false;
+            _gun.Enabled = false; // The only way to force a gun to not fire is to turn it off
+            TimerManager.Start(0, ReenableGun);
+            _cancelled = true;
+            return true;
+        }
+        
+        
+        
+        
+        public Vector3D GetFireVelocity(Vector3D shipVelocity)
+        {
+            Vector3D combinedVelocity = shipVelocity + Direction * Velocity;
+            if (combinedVelocity.LengthSquared() > Velocity * Velocity)
+                combinedVelocity = combinedVelocity.Normalized() * Velocity;
+            return combinedVelocity;
+        }
+        
+        
+        
+        private GunState EvaluateState()
+        {
+            bool functional = _gun.IsFunctional;
+            if (!functional) return GunState.NonFunctional;
+                
+            if (_fireType == GunFireType.Delay && TimerManager.IsActive(_firingTimerId)) return _cancelled ? GunState.Cancelling : GunState.Firing;
+                
+            switch (_reloadType)
+            {
+                case GunReloadType.Normal:
+                    if (TimerManager.IsActive(_reloadTimerId)) return GunState.Reloading;
+                    break;
+                case GunReloadType.NeedsCharging:
+                    if (_gunSinkComponent.CurrentInputByType(ElectricityId) > 0.02f) return GunState.Recharging;
+                    break;
+            }
+            return GunState.ReadyToFire;
+        }
+
+        private void OnFireComplete()
+        {
+            if (_cancelled)
+            {
+                _cancelled = false;
+                return;
+            }
+            _reloadTimerId = TimerManager.Start(_gunData.ReloadTimeFrames, OnReloadComplete);
+            
+        }
+
+        private void OnReloadComplete()
+        {
+            
+        }
+
+        private void ReenableGun()
+        {
+            _gun.Enabled = true;
+        }
+    }
+}
