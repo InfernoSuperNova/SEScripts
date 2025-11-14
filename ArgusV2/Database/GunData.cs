@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using IngameScript.Helper;
-using IngameScript.Helper.IngameScript.Helper;
+using IngameScript.Helper;
 using IngameScript.SConfig;
 using IngameScript.Ship.Components;
 using VRage.Game.ModAPI.Ingame.Utilities;

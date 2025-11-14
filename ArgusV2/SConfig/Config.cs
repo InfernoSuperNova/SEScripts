@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using IngameScript.Database;
+using IngameScript.Helper;
 using IngameScript.SConfig;
 using Sandbox.ModAPI.Ingame;
 
@@ -10,22 +12,39 @@ namespace IngameScript
         private static ConfigTool _configTool = new ConfigTool("General Config", "")
         {
             Get = GetConfig,
+            Set = SetConfig
         };
+
+
+
         public static void Setup(IMyProgrammableBlock me)
         {
             // We touch the static classes that have config data that needs collecting/setting
             GunData.Init();
             ProjectileData.Init();
-            me.CustomData = ConfigTool.Collect();
+            
+            ConfigTool.DeserializeAll(me.CustomData);
+            me.CustomData = ConfigTool.SerializeAll();
+            
+            Commands = new Dictionary<string, Action>
+            {
+                { ArgumentTarget,     () => ShipManager.PrimaryShip.Target() },
+                { ArgumentUnTarget,   () => ShipManager.PrimaryShip.UnTarget() },
+                { "FireAllTest",             () => ShipManager.PrimaryShip.Guns.FireAll() },
+                { "CancelAllTest",           () => ShipManager.PrimaryShip.Guns.CancelAll() }
+            };
         }
 
         static Config()
         {
             
         }
+
+        public static Dictionary<string, Action> Commands;
         
-        public const string ArgumentTarget = "Target";
-        public const string ArgumentUnTarget = "Untarget";
+        
+        public static string ArgumentTarget = "Target";
+        public static string ArgumentUnTarget = "Untarget";
         public static string GroupName = "ArgusV2";
         public static string TrackerGroupName = "TrackerGroup";
 
@@ -81,6 +100,57 @@ namespace IngameScript
                     ["MaxAngularVelocityRPM"] = MaxAngularVelocityRpm
                 }
             };
+        }
+        private static void SetConfig(Dictionary<string, object> obj)
+        {
+            
+            Program.LogLine("Unwrapping");
+            // Unwrap any Dwon.Comment objects recursively first
+            Dwon.UnwrapAllComments(obj);
+
+            
+            Program.LogLine(obj.Keys);
+            // String Config
+            var stringConfig = obj.ContainsKey("String Config") ? obj["String Config"] as Dictionary<string, object> : null;
+            if (stringConfig != null)
+            {
+                Program.LogLine("Got string config");
+                ArgumentTarget       = Dwon.GetValue(stringConfig, "ArgumentTarget", ArgumentTarget);
+                ArgumentUnTarget     = Dwon.GetValue(stringConfig, "ArgumentUnTarget", ArgumentUnTarget);
+                GroupName            = Dwon.GetValue(stringConfig, "GroupName", GroupName);
+                TrackerGroupName     = Dwon.GetValue(stringConfig, "TrackerGroupName", TrackerGroupName);
+            }
+
+            // Behavior Config
+            var behaviorConfig = obj.ContainsKey("Behavior Config") ? obj["Behavior Config"] as Dictionary<string, object> : null;
+            if (behaviorConfig != null)
+            {
+                MaxWeaponRange = Dwon.GetValue(behaviorConfig, "MaxWeaponRange", MaxWeaponRange);
+                LockRange      = Dwon.GetValue(behaviorConfig, "LockRange", LockRange);
+                LockAngle      = Dwon.GetValue(behaviorConfig, "LockAngle", LockAngle);
+            }
+
+            // Tracker Config
+            var trackerConfig = obj.ContainsKey("Tracker Config") ? obj["Tracker Config"] as Dictionary<string, object> : null;
+            if (trackerConfig != null)
+            {
+                TrackingName                 = Dwon.GetValue(trackerConfig, "TrackingName", TrackingName);
+                SearchingName                = Dwon.GetValue(trackerConfig, "SearchingName", SearchingName);
+                StandbyName                  = Dwon.GetValue(trackerConfig, "StandbyName", StandbyName);
+                ScannedBlockMaximumValidTimeFrames = Dwon.GetValue(trackerConfig, "ScannedBlockMaxValidFrames", ScannedBlockMaximumValidTimeFrames);
+            }
+
+            // PID Config
+            var pidConfig = obj.ContainsKey("PID Config") ? obj["PID Config"] as Dictionary<string, object> : null;
+            if (pidConfig != null)
+            {
+                ProportialGain        = Dwon.GetValue(pidConfig, "ProportionalGain", ProportialGain);
+                IntegralGain          = Dwon.GetValue(pidConfig, "IntegralGain", IntegralGain);
+                DerivativeGain        = Dwon.GetValue(pidConfig, "DerivativeGain", DerivativeGain);
+                IntegralLowerLimit    = Dwon.GetValue(pidConfig, "IntegralLowerLimit", IntegralLowerLimit);
+                IntegralUpperLimit    = Dwon.GetValue(pidConfig, "IntegralUpperLimit", IntegralUpperLimit);
+                MaxAngularVelocityRpm = Dwon.GetValue(pidConfig, "MaxAngularVelocityRPM", MaxAngularVelocityRpm);
+            }
         }
     }
 }

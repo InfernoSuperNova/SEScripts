@@ -58,6 +58,7 @@ namespace IngameScript.Ship
 
         public void UnTarget()
         {
+            Program.LogLine("Reset target");
             _currentTarget = null;
             _hasTarget = false;
             _gyroManager.ResetGyroOverrides();
@@ -65,12 +66,18 @@ namespace IngameScript.Ship
 
         public void Target()
         {
+            
             _currentTarget = ShipManager.GetForwardTarget(this, Config.LockRange, Config.LockAngle);
             _hasTarget = true;
             if (_currentTarget == null)
             {
                 _hasTarget = false;
                 _gyroManager.ResetGyroOverrides();
+                Program.LogLine("Couldn't find new target");
+            }
+            else
+            {
+                Program.LogLine("Got new target");
             }
         }
     }

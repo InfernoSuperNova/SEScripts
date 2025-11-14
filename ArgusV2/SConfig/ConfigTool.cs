@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using IngameScript.Helper;
-using IngameScript.Helper.IngameScript.Helper;
 using VRage.Game.ModAPI.Ingame.Utilities;
 
 namespace IngameScript.SConfig
@@ -10,7 +9,7 @@ namespace IngameScript.SConfig
     {
         private static readonly Dictionary<string, ConfigTool> Configs = new Dictionary<string, ConfigTool>();
 
-        public static string Collect()
+        public static string SerializeAll()
         {
             Program.LogLine(Configs.Count);
             var config = new Dictionary<string, object>();
@@ -20,64 +19,27 @@ namespace IngameScript.SConfig
                 config.Add(kv.Key, kv.Value.Get());
             }
 
-            return TestDwon();
-            //return Dwon.Serialize(config);
+            //return TestDwon();
+            return Dwon.Serialize(config);
         }
 
-        
-        
-        public static string TestDwon()
+        public static void DeserializeAll(string config)
         {
-            // Build test config
-            var config = new Dictionary<string, object>
+            var parsed = Dwon.Parse(config);
+            var dict = parsed as Dictionary<string, object>;
+            if (dict == null) throw new Exception("Config malformed");
+            var obj = dict["General Config"]; // Stupid hacky workaround will fix later TODO
+            var dict2 = obj as Dictionary<string, object>;
+            if (dict2 == null) throw new Exception("Config malformed (dict2)");
+            foreach (var kv in dict2)
             {
-                { "GeneralConfig", new Dictionary<string, object> {
-                    { "GroupName", new Dwon.Comment("ArgusV2", "name of group") },
-                    { "MaxWeaponRange", 2000 },
-                    { "LockAngle", 40 }
-                }},
-                { "PID", new Dictionary<string, object> {
-                    { "P", 500 },
-                    { "I", 0 },
-                    { "D", new Dwon.Comment(30, "derivative gain") }
-                }},
-                { "Weapons", new List<object> { "Railgun", "Laser", "PlasmaCannon" } },
-                { "NestedObjects", new Dictionary<string, object> {
-                    { "SomeNestedObject", new Dwon.Comment("foobar", "inline comment") },
-                    { "AnotherNested", new Dictionary<string, object> {
-                        { "X", 1 },
-                        { "Y", 2 }
-                    }}
-                }}
-            };
-
-            // Serialize
-            string serialized = Dwon.Serialize(config);
-            // Parse
-            object parsed = Dwon.Parse(serialized);
-
-            // Serialize again for round-trip check
-            string serializedAgain = Dwon.Serialize(parsed);
-            return serializedAgain;
-        }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        public static void Save(string config)
-        {
-            var parsed = MiniToml.Parse(config);
-
-            foreach (var kv in parsed)
-            {
-                var dict = kv.Value as Dictionary<string, object>;
-                if (dict != null) 
-                    Configs[kv.Key].Set(dict);
+                ConfigTool config1;
+                if (!Configs.TryGetValue(kv.Key, out config1)) continue;
+                var dict3 = kv.Value as Dictionary<string, object>;
+                if (dict3 != null)
+                {
+                    config1.Set(dict3);
+                }
             }
         }
         

@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperRotorSpeedController",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgusV2", "ArgusV2\ArgusV2.csproj", "{04B45251-84D3-47C1-9B6B-107DCF00B375}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Garbage", "Garbage\Garbage.csproj", "{B0A5BE25-BDCF-42EB-9E52-6064DF3A0A50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -117,6 +119,10 @@ Global
 		{04B45251-84D3-47C1-9B6B-107DCF00B375}.Debug|x64.Build.0 = Debug|x64
 		{04B45251-84D3-47C1-9B6B-107DCF00B375}.Release|x64.ActiveCfg = Release|x64
 		{04B45251-84D3-47C1-9B6B-107DCF00B375}.Release|x64.Build.0 = Release|x64
+		{B0A5BE25-BDCF-42EB-9E52-6064DF3A0A50}.Debug|x64.ActiveCfg = Debug|x64
+		{B0A5BE25-BDCF-42EB-9E52-6064DF3A0A50}.Debug|x64.Build.0 = Debug|x64
+		{B0A5BE25-BDCF-42EB-9E52-6064DF3A0A50}.Release|x64.ActiveCfg = Release|x64
+		{B0A5BE25-BDCF-42EB-9E52-6064DF3A0A50}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
