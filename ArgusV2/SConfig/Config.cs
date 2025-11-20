@@ -15,6 +15,7 @@ namespace IngameScript
             Set = SetConfig
         };
 
+        
 
 
         public static void Setup(IMyProgrammableBlock me)
@@ -23,7 +24,9 @@ namespace IngameScript
             GunData.Init();
             ProjectileData.Init();
             
-            ConfigTool.DeserializeAll(me.CustomData);
+            
+            if (me.CustomData.Length > 0)
+                ConfigTool.DeserializeAll(me.CustomData);
             me.CustomData = ConfigTool.SerializeAll();
             
             Commands = new Dictionary<string, Action>
@@ -52,6 +55,7 @@ namespace IngameScript
         public static double MaxWeaponRange = 2000;
         public static double LockRange = 3000; // m
         public static float LockAngle = 40; // deg
+        public static double MinFireDot = 0.999999; // Should be updated further
         
         
         public static string TrackingName = "CTC: Tracking";
@@ -81,7 +85,8 @@ namespace IngameScript
                 {
                     ["MaxWeaponRange"] = MaxWeaponRange,
                     ["LockRange"] = LockRange,
-                    ["LockAngle"] = LockAngle
+                    ["LockAngle"] = LockAngle,
+                    ["MinFireDot"] = MinFireDot,
                 },
                 ["Tracker Config"] = new Dictionary<string, object>
                 {
@@ -104,12 +109,10 @@ namespace IngameScript
         private static void SetConfig(Dictionary<string, object> obj)
         {
             
-            Program.LogLine("Unwrapping");
             // Unwrap any Dwon.Comment objects recursively first
             Dwon.UnwrapAllComments(obj);
 
             
-            Program.LogLine(obj.Keys);
             // String Config
             var stringConfig = obj.ContainsKey("String Config") ? obj["String Config"] as Dictionary<string, object> : null;
             if (stringConfig != null)
@@ -128,6 +131,7 @@ namespace IngameScript
                 MaxWeaponRange = Dwon.GetValue(behaviorConfig, "MaxWeaponRange", MaxWeaponRange);
                 LockRange      = Dwon.GetValue(behaviorConfig, "LockRange", LockRange);
                 LockAngle      = Dwon.GetValue(behaviorConfig, "LockAngle", LockAngle);
+                MinFireDot     = Dwon.GetValue(behaviorConfig, "MinFireDot", MinFireDot);
             }
 
             // Tracker Config

@@ -32,27 +32,27 @@ namespace IngameScript.Ship.Components
                 Config.IntegralUpperLimit, Config.IntegralLowerLimit);
         }
         
-        public void Rotate(Vector3D desiredGlobalFwdNormalized, double onTarget, IMyShipController controller, double roll = 0)
+        public void Rotate(ref FiringSolution solution, double roll = 0)
         {
             int roundValue = 7;
             double rotationalGain = 1.0;
-            if (onTarget > 0.9999)
+            if (solution.Dot > 0.9999)
             {
                 rotationalGain *= 0.8;
                 roundValue = 4;
             }
 
-            if (onTarget > 0.99999)
+            if (solution.Dot > 0.99999)
             {
                 rotationalGain *= 0.8;
                 roundValue = 3;
             }
-            if (onTarget > 0.999999)
+            if (solution.Dot > 0.999999)
             {
                 rotationalGain *= 0.8;
                 roundValue = 2;
             }
-            if (onTarget > 0.9999999)
+            if (solution.Dot > 0.9999999)
             {
                 rotationalGain *= 0.8;
                 roundValue = 1;
@@ -64,8 +64,8 @@ namespace IngameScript.Ship.Components
 
             //Rotate Toward forward
 
-            var waxis = Vector3D.Cross(controller.WorldMatrix.Forward, desiredGlobalFwdNormalized);
-            var axis = Vector3D.TransformNormal(waxis, MatrixD.Transpose(controller.WorldMatrix));
+            var waxis = Vector3D.Cross(solution.CurrentForward, solution.DesiredForward);
+            var axis = Vector3D.TransformNormal(waxis, MatrixD.Transpose(solution.WorldMatrix));
             var x = _pitch.Filter(-axis.X, roundValue);
             var y = _yaw.Filter(-axis.Y, roundValue);
 
@@ -80,7 +80,7 @@ namespace IngameScript.Ship.Components
             }
             gp *= rotationalGain;
             gy *= rotationalGain;
-            ApplyGyroOverride(gp, gy, gr, controller.WorldMatrix);
+            ApplyGyroOverride(gp, gy, gr, solution.WorldMatrix);
         }
 
 
@@ -88,7 +88,6 @@ namespace IngameScript.Ship.Components
         {
             var rotationVec = new Vector3D(pitchSpeed, yawSpeed, rollSpeed);
             var relativeRotationVec = Vector3D.TransformNormal(rotationVec, worldMatrix);
-            Program.Log(_gyros.Count);
             foreach (var gyro in _gyros)
                 if (gyro.IsFunctional && gyro.IsWorking && gyro.Enabled && !gyro.Closed)
                 {

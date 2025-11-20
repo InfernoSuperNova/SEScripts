@@ -101,8 +101,9 @@ namespace IngameScript.Helper
             if (obj == null) return "null";
             if (obj is string) return "\"" + Escape((string)obj) + "\"";
             if (obj is bool) return ((bool)obj ? "true" : "false");
-            if (obj is float) return ((float)obj).ToString("R");
-            if (obj is double) return ((double)obj).ToString("R");
+            if (obj is float) return ((float)obj).ToString("0.#####", System.Globalization.CultureInfo.InvariantCulture);
+            if (obj is double) return ((double)obj).ToString("0.##########", System.Globalization.CultureInfo.InvariantCulture); 
+            // ~10 decimal places, enough for SE precision
             if (obj is int || obj is long || obj is short || obj is byte) return obj.ToString();
             return "\"" + Escape(obj.ToString()) + "\"";
         }
@@ -127,13 +128,13 @@ namespace IngameScript.Helper
         {
             int idx = 0;
             var top = new Dictionary<string, object>();
-
             while (idx < dwon.Length)
             {
                 SkipWhitespaceAndComments(dwon, ref idx);
                 if (idx >= dwon.Length) break;
 
                 string key = ParseKey(dwon, ref idx);
+                Program.Log(key);
                 ExpectChar(dwon, ref idx, '=');
                 object value = ParseValue(dwon, ref idx);
                 string comment = ParseInlineComment(dwon, ref idx);
@@ -142,7 +143,6 @@ namespace IngameScript.Helper
 
                 top[key] = value;
             }
-
             return top;
         }
 
@@ -236,9 +236,29 @@ namespace IngameScript.Helper
         private static string ParseKey(string s, ref int idx)
         {
             SkipWhitespace(s, ref idx);
+
             int start = idx;
-            while (idx < s.Length && s[idx] != '=' && s[idx] != '\n' && s[idx] != '\r') idx++;
+
+            while (idx < s.Length)
+            {
+                char c = s[idx];
+
+                // key ends ONLY at '='
+                if (c == '=')
+                    break;
+
+                // stop if we hit newline before seeing '=' → malformed key
+                if (c == '\n' || c == '\r')
+                    throw new Exception("Unexpected newline while reading key");
+
+                idx++;
+            }
+
+            if (idx == start)
+                throw new Exception($"Empty key at index {idx}");
+
             string key = s.Substring(start, idx - start).Trim();
+
             return key;
         }
 

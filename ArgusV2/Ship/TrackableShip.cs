@@ -94,22 +94,18 @@ namespace IngameScript.Ship
         public override Vector3D Position => Info.Position;
         public override Vector3D Velocity => CVelocity;
         public override Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
+        public override float GridSize => _gridSize;
 
         public override string Name => $"Trackable ship {EntityId}";
 
+        public bool Defunct { get; set; } = false;
+
         public override string ToString() => Name;
 
-        public TargetTracker Tracker { get; }
+        public TargetTracker Tracker { get; set; }
         public bool IntersectsLargerShipAABB { get; set; }
 
         public BoundingBoxD WorldAABB => Info.BoundingBox;
-        // {
-        //     get
-        //     {
-        //         if (!_aabbValidThisFrame) GenerateWorldAABB();
-        //         return _cachedAABB;
-        //     }
-        // }
         
         public Vector3D Extents => LocalAABB.Extents;
         public Vector3D HalfExtents => LocalAABB.HalfExtents;
@@ -156,10 +152,10 @@ namespace IngameScript.Ship
         }
         public override void EarlyUpdate(int frame)
         {
-            
+            if (Defunct) return;
             if ((frame + RandomUpdateJitter) % SensorPolling.GetFramesBetweenPolls(PollFrequency) != 0) return;
             Info = Tracker.GetTargetedEntity();
-            if (Tracker.Closed || Info.EntityId != EntityId) ShipManager.RemoveTrackableShip(this);
+            if (Tracker.Closed || Info.EntityId != EntityId) Defunct = true;
             CPreviousVelocity = CVelocity;
             CVelocity = Info.Velocity;
             _displacement = Position - _previousPosition;

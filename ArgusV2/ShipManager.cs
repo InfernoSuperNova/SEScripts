@@ -18,7 +18,9 @@ namespace IngameScript
         
         private static List<TrackableShip> _reusedShipList = new List<TrackableShip>();
         
-        public static Dictionary<long, TargetTracker> EntityIdToTracker = new Dictionary<long, TargetTracker>();
+        //public static Dictionary<long, TargetTracker> EntityIdToTracker = new Dictionary<long, TargetTracker>();
+
+        public static Dictionary<long, TrackableShip> EntityIdToTrackableShip = new Dictionary<long, TrackableShip>();
         
         private static IEnumerator<TrackableShip> _pollEnumerator;
 
@@ -215,18 +217,39 @@ namespace IngameScript
 
         public static TrackableShip AddTrackableShip(TargetTracker tracker, long entityId, MyDetectedEntityInfo initial)
         {
-            var trackableShip = new TrackableShip(tracker, entityId, initial);
+            TrackableShip trackableShip;
+            if (EntityIdToTrackableShip.TryGetValue(entityId, out trackableShip))
+            {
+                Program.LogLine("Adding: Restoring defunct ship");
+                if (!trackableShip.Defunct) return null;
+                trackableShip.Tracker = tracker;
+                trackableShip.Defunct = false;
+
+                return trackableShip;
+            }
+            Program.LogLine("Adding: Creating new ship " + entityId);
+            trackableShip = new TrackableShip(tracker, entityId, initial);
             AllShips.Add(trackableShip);
-            EntityIdToTracker.Add(entityId, tracker);
+            //EntityIdToTracker.Add(entityId, tracker);
+            EntityIdToTrackableShip.Add(entityId, trackableShip);
             return trackableShip;
         }
         public static void RemoveTrackableShip(TrackableShip trackableShip)
         {
             AllShips.Remove(trackableShip);
-            EntityIdToTracker.Remove(trackableShip.EntityId);
+            //EntityIdToTracker.Remove(trackableShip.EntityId);
+            EntityIdToTrackableShip.Remove(trackableShip.EntityId);
             _trackableShipTree.RemoveProxy(trackableShip.ProxyId);
         }
 
 
+        public static bool HasNonDefunctTrackableShip(long targetEntityId, out TargetTracker existingTracker)
+        {
+            TrackableShip trackableShip;
+
+            var keyExists = EntityIdToTrackableShip.TryGetValue(targetEntityId, out trackableShip);
+            existingTracker = keyExists ? trackableShip.Tracker : null;
+            return keyExists && !trackableShip.Defunct;
+        }
     }
 }

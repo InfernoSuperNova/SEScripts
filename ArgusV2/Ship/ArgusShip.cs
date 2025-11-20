@@ -23,6 +23,7 @@ namespace IngameScript.Ship
         public abstract Vector3D Position { get; }
         public abstract Vector3D Velocity { get; }
         public abstract Vector3D Acceleration { get; }
+        public abstract float GridSize { get; }
         public abstract string Name { get; }
 
 

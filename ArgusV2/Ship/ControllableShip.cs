@@ -11,6 +11,7 @@ namespace IngameScript.Ship
     {
         private GyroManager _gyroManager;
         public GunManager Guns;
+        private FireController _fireController;
         private List<IMyLargeTurretBase> _turrets; // TODO: Abstract into a turrets handler
         // TODO: Handler for gravity drive and thrusters (probably just copy and paste from arguslite)
 
@@ -18,15 +19,13 @@ namespace IngameScript.Ship
         private bool _hasTarget;
         
         
-        public IMyShipController Controller { get; set; }
-        //public IMyFlightMovementBlock AiFlight { get; set; }
-        public Vector3D Forward => Controller.WorldMatrix.Forward;
-        public Vector3D Up => Controller.WorldMatrix.Up;
-        
+
+
         public ControllableShip(IMyCubeGrid grid, List<IMyTerminalBlock> blocks, List<IMyTerminalBlock> trackerBlocks) : base(grid, trackerBlocks)
         {
             _gyroManager = new GyroManager(blocks);
-            Guns = new GunManager(blocks);
+            Guns = new GunManager(blocks, this);
+            _fireController = new FireController(this, Guns);
             foreach (var block in blocks) // TODO: Proper controller candidate system (and perhaps manager)
             {
                 var controller = block as IMyShipController;
@@ -36,7 +35,12 @@ namespace IngameScript.Ship
             }
         }
 
-        
+        public IMyShipController Controller { get; set; }
+        //public IMyFlightMovementBlock AiFlight { get; set; }
+        public Vector3D Forward => Controller.WorldMatrix.Forward;
+        public Vector3D Up => Controller.WorldMatrix.Up;
+        public MatrixD WorldMatrix => _grid.WorldMatrix;
+        public TrackableShip CurrentTarget => _currentTarget;
 
         public override void EarlyUpdate(int frame)
         {
@@ -49,16 +53,17 @@ namespace IngameScript.Ship
         {
             base.LateUpdate(frame);
             if (!_hasTarget) return;
-            var leadPos = GetTargetLeadPosition(_currentTarget, 2000);
-            var solution = (leadPos - Position).Normalized();
-            var onTarget = solution.Dot(Forward);
-            _gyroManager.Rotate(solution, onTarget, Controller);
+
+            
+            
+            var solution = _fireController.ArbitrateFiringSolution();
+            if (solution.TargetPosition == Vector3D.Zero) _gyroManager.ResetGyroOverrides(); // TODO: Don't spam this
+            else _gyroManager.Rotate(ref solution);
             Guns.LateUpdate(frame);
         }
 
         public void UnTarget()
         {
-            Program.LogLine("Reset target");
             _currentTarget = null;
             _hasTarget = false;
             _gyroManager.ResetGyroOverrides();
@@ -79,6 +84,11 @@ namespace IngameScript.Ship
             {
                 Program.LogLine("Got new target");
             }
+        }
+
+        public Vector3D GetTargetPosition()
+        {
+            return _currentTarget?.Position ?? Vector3D.Zero;
         }
     }
 }

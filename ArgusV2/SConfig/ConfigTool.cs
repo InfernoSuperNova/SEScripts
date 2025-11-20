@@ -28,10 +28,7 @@ namespace IngameScript.SConfig
             var parsed = Dwon.Parse(config);
             var dict = parsed as Dictionary<string, object>;
             if (dict == null) throw new Exception("Config malformed");
-            var obj = dict["General Config"]; // Stupid hacky workaround will fix later TODO
-            var dict2 = obj as Dictionary<string, object>;
-            if (dict2 == null) throw new Exception("Config malformed (dict2)");
-            foreach (var kv in dict2)
+            foreach (var kv in dict)
             {
                 ConfigTool config1;
                 if (!Configs.TryGetValue(kv.Key, out config1)) continue;

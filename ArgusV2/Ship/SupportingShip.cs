@@ -15,7 +15,7 @@ namespace IngameScript
     public class SupportingShip : ArgusShip 
     {
         private readonly List<TargetTracker> _targetTrackers;
-        private readonly IMyCubeGrid _grid;
+        protected readonly IMyCubeGrid _grid;
 
         
         public SupportingShip(IMyCubeGrid grid, List<IMyTerminalBlock> trackerBlocks)
@@ -59,6 +59,7 @@ namespace IngameScript
         public override Vector3D Position => _grid.GetPosition();
         public override Vector3D Velocity => CVelocity;
         public override Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
+        public override float GridSize => _grid.GridSize;
 
         public override string Name => _grid.CustomName;
         public override string ToString() => Name;
@@ -84,48 +85,53 @@ namespace IngameScript
 
                 // Update target state
                 tracker.UpdateState();
-
                 // Tracker has no target
                 if (!tracker.HasTarget || tracker.Invalid)
                 {
-                    if (tracker.JustLostTarget)
+                    if (tracker.JustLostTarget && !tracker.Enabled)
                     {
+                        Program.LogLine("Occurs");
                         tracker.Enabled = true;
                         tracker.CustomName = Config.SearchingName;
+
+                        if (tracker.TrackedShip != null)
+                        {
+                            tracker.TrackedShip.Defunct = true;
+                            tracker.TrackedShip.Tracker = null;
+                        }
+                        
                         tracker.TrackedShip = null;
+
+                        
                     }
                     else if (tracker.JustInvalidated)
                     {
+                        Program.LogLine("Here?");
                         tracker.Enabled = true;
                         tracker.CustomName = Config.SearchingName;
                     }
 
                     continue;
                 }
-
                 // Tracker currently has a target
                 if (tracker.TargetedEntity != 0) continue;
                 
                 var target = tracker.GetTargetedEntity();
-
-
+                
                 TargetTracker existingTracker;
                 // Already tracked by this or another tracker
-                if (ShipManager.EntityIdToTracker.TryGetValue(target.EntityId, out existingTracker))
+                if (ShipManager.HasNonDefunctTrackableShip(target.EntityId, out existingTracker))
                 {
-                    if (existingTracker == tracker && tracker.Enabled)
-                        tracker.Enabled = false;
-                    
+                    if (existingTracker == tracker && tracker.Enabled) tracker.Enabled = false;
                     existingTracker.TrackedShip.AddTrackedBlock(target, null, tracker);
                     continue;
                 }
-
                 // Newly detected ship — register it
                 var trackableShip = ShipManager.AddTrackableShip(tracker, target.EntityId, target);
                 tracker.TrackedShip = trackableShip;
                 tracker.CustomName = Config.TrackingName;
                 tracker.Enabled = false;
-                tracker.TargetedEntity = target.EntityId;
+                tracker.TargetedEntity = target.EntityId;   
                 
             }
         }
