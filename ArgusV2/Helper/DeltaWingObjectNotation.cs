@@ -25,6 +25,7 @@ namespace IngameScript.Helper
         {
             var sb = new StringBuilder();
             Serialize(obj, sb, indent, null);
+            Program.LogLine("Serialized successfully", LogLevel.Debug);
             return sb.ToString();
         }
 
@@ -323,8 +324,8 @@ namespace IngameScript.Helper
             int i;
             if (int.TryParse(token, out i)) return i;
 
-            float f;
-            if (float.TryParse(token, System.Globalization.NumberStyles.Float,
+            double f;
+            if (double.TryParse(token, System.Globalization.NumberStyles.Float,
                                System.Globalization.CultureInfo.InvariantCulture, out f)) return f;
 
             return token; // string fallback

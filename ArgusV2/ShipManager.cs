@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using EmptyKeys.UserInterface.Controls.Primitives;
 using IngameScript.Helper;
 using IngameScript.Ship;
 using IngameScript.Ship.Components;
@@ -193,20 +192,15 @@ namespace IngameScript
         public static void CreateControllableShip(IMyCubeGrid grid, IMyGridTerminalSystem gridTerminalSystem)
         {
             var group = gridTerminalSystem.GetBlockGroupWithName(Config.GroupName);
-            if (group == null)
-            {
-                throw new Exception($"Group missing! Please create a group called {Config.GroupName}");
-            }
+            Program.LogLine($"Getting group : {Config.GroupName}", LogLevel.Trace);
             var trackerGroup = gridTerminalSystem.GetBlockGroupWithName(Config.TrackerGroupName);
-            if (trackerGroup == null)
-            {
-                throw new Exception(
-                    $"Tracker group missing! Please create a group called {Config.TrackerGroupName} containing custom turret controllers, a rotor and a fixed gun.");
-            }
+            Program.LogLine($"Getting group : {Config.TrackerGroupName}", LogLevel.Trace);
             var blocks = new List<IMyTerminalBlock>();
             var trackerBlocks = new List<IMyTerminalBlock>();
-            group.GetBlocks(blocks);
-            trackerGroup.GetBlocks(trackerBlocks);
+            if (group != null) {group.GetBlocks(blocks); Program.LogLine($"Got group: {Config.GroupName}", LogLevel.Debug);}
+            else Program.LogLine($"Group not present: {Config.GroupName}", LogLevel.Warning);
+            if (trackerGroup != null) {trackerGroup.GetBlocks(trackerBlocks); Program.LogLine($"Got group: {Config.TrackerGroupName}", LogLevel.Debug);}
+            else Program.LogLine($"Group not present: {Config.TrackerGroupName}", LogLevel.Warning);
             var ship = new ControllableShip(grid, blocks, trackerBlocks);
             AllShips.Add(ship);
             PrimaryShip = ship;
@@ -220,14 +214,14 @@ namespace IngameScript
             TrackableShip trackableShip;
             if (EntityIdToTrackableShip.TryGetValue(entityId, out trackableShip))
             {
-                Program.LogLine("Adding: Restoring defunct ship");
+                Program.LogLine("Restoring defunct ship" + entityId, LogLevel.Debug);
                 if (!trackableShip.Defunct) return null;
                 trackableShip.Tracker = tracker;
                 trackableShip.Defunct = false;
 
                 return trackableShip;
             }
-            Program.LogLine("Adding: Creating new ship " + entityId);
+            Program.LogLine("Creating new ship " + entityId, LogLevel.Debug);
             trackableShip = new TrackableShip(tracker, entityId, initial);
             AllShips.Add(trackableShip);
             //EntityIdToTracker.Add(entityId, tracker);

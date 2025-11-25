@@ -100,3 +100,5 @@
 /home/deltawing/repos/ArgusLiteMDK2/MothershipBroadcaster/obj/x64/Debug/netframework48/MothershipBroadcaster.dll
 /home/deltawing/repos/ArgusLiteMDK2/MothershipBroadcaster/obj/x64/Debug/netframework48/MothershipBroadcaster.pdb
 /home/deltawing/repos/ArgusLiteMDK2/MothershipBroadcaster/obj/x64/Debug/netframework48/MothershipBroadcaster.sourcelink.json
+/home/delta/RiderProjects/SEScripts/MothershipBroadcaster/obj/x64/Debug/netframework48/MothershipBroadcaster.dll
+/home/delta/RiderProjects/SEScripts/MothershipBroadcaster/obj/x64/Debug/netframework48/MothershipBroadcaster.pdb

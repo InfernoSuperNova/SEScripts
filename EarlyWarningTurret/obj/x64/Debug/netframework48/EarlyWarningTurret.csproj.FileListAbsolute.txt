@@ -112,3 +112,5 @@
 /home/deltawing/repos/ArgusLiteMDK2/EarlyWarningTurret/obj/x64/Debug/netframework48/EarlyWarningTurret.dll
 /home/deltawing/repos/ArgusLiteMDK2/EarlyWarningTurret/obj/x64/Debug/netframework48/EarlyWarningTurret.pdb
 /home/deltawing/repos/ArgusLiteMDK2/EarlyWarningTurret/obj/x64/Debug/netframework48/EarlyWar.CAC40BF3.Up2Date
+/home/delta/RiderProjects/SEScripts/EarlyWarningTurret/obj/x64/Debug/netframework48/EarlyWarningTurret.dll
+/home/delta/RiderProjects/SEScripts/EarlyWarningTurret/obj/x64/Debug/netframework48/EarlyWarningTurret.pdb

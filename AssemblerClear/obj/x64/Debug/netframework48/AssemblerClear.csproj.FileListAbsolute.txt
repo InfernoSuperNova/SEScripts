@@ -112,3 +112,5 @@
 /home/deltawing/repos/ArgusLiteMDK2/AssemblerClear/obj/x64/Debug/netframework48/AssemblerClear.dll
 /home/deltawing/repos/ArgusLiteMDK2/AssemblerClear/obj/x64/Debug/netframework48/AssemblerClear.pdb
 /home/deltawing/repos/ArgusLiteMDK2/AssemblerClear/obj/x64/Debug/netframework48/Assemble.00697A80.Up2Date
+/home/delta/RiderProjects/SEScripts/AssemblerClear/obj/x64/Debug/netframework48/AssemblerClear.dll
+/home/delta/RiderProjects/SEScripts/AssemblerClear/obj/x64/Debug/netframework48/AssemblerClear.pdb

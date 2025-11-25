@@ -14,6 +14,11 @@
             Code of the control
             </summary>
         </member>
+        <member name="P:VRage.Input.IMyControllerControl.Control">
+            <summary>
+            Base Control 
+            </summary>
+        </member>
         <member name="P:VRage.Input.IMyControllerControl.Condition">
             <summary>
             Condition if control should be active
@@ -272,6 +277,36 @@
         <member name="F:VRage.ModAPI.MyKeyboardModifiers.Alt">
             <summary>
             Both left and right ALT
+            </summary>
+        </member>
+        <member name="F:VRage.ModAPI.MyKeyboardModifiers.LeftControl">
+            <summary>
+            Only left control
+            </summary>
+        </member>
+        <member name="F:VRage.ModAPI.MyKeyboardModifiers.RightControl">
+            <summary>
+            Only right control
+            </summary>
+        </member>
+        <member name="F:VRage.ModAPI.MyKeyboardModifiers.LeftShift">
+            <summary>
+            Only left shift
+            </summary>
+        </member>
+        <member name="F:VRage.ModAPI.MyKeyboardModifiers.RightShift">
+            <summary>
+            Only right shift
+            </summary>
+        </member>
+        <member name="F:VRage.ModAPI.MyKeyboardModifiers.LeftAlt">
+            <summary>
+            Only left alt
+            </summary>
+        </member>
+        <member name="F:VRage.ModAPI.MyKeyboardModifiers.RightAlt">
+            <summary>
+            Only right alt
             </summary>
         </member>
     </members>

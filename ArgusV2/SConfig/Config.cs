@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
-using IngameScript.Database;
 using IngameScript.Helper;
 using IngameScript.SConfig;
+using IngameScript.SConfig.Database;
 using Sandbox.ModAPI.Ingame;
 
 namespace IngameScript
 {
     public static class Config
     {
+        
+
         private static ConfigTool _configTool = new ConfigTool("General Config", "")
         {
             Get = GetConfig,
@@ -16,35 +18,9 @@ namespace IngameScript
         };
 
         
-
-
-        public static void Setup(IMyProgrammableBlock me)
-        {
-            // We touch the static classes that have config data that needs collecting/setting
-            GunData.Init();
-            ProjectileData.Init();
-            
-            
-            if (me.CustomData.Length > 0)
-                ConfigTool.DeserializeAll(me.CustomData);
-            me.CustomData = ConfigTool.SerializeAll();
-            
-            Commands = new Dictionary<string, Action>
-            {
-                { ArgumentTarget,     () => ShipManager.PrimaryShip.Target() },
-                { ArgumentUnTarget,   () => ShipManager.PrimaryShip.UnTarget() },
-                { "FireAllTest",             () => ShipManager.PrimaryShip.Guns.FireAll() },
-                { "CancelAllTest",           () => ShipManager.PrimaryShip.Guns.CancelAll() }
-            };
-        }
-
-        static Config()
-        {
-            
-        }
-
         public static Dictionary<string, Action> Commands;
         
+        public static LogLevel LogLevel = LogLevel.Trace; // TODO: Hook me up
         
         public static string ArgumentTarget = "Target";
         public static string ArgumentUnTarget = "Untarget";
@@ -69,6 +45,56 @@ namespace IngameScript
         public static double IntegralLowerLimit = -0.05;
         public static double IntegralUpperLimit = 0.05;
         public static double MaxAngularVelocityRpm = 30;
+
+
+        public static int GdriveTimeoutFrames = 300; // TODO: Hook me up
+        public static double GravityAcceleration = 9.81; // TODO: Hook me up
+        public static bool DefaultPrecisionMode = false; // TODO: Hook me up
+        public static bool DisablePrecisionModeOnEnemyDetected = false; // TODO: Hook me up
+
+        public static void Setup(IMyProgrammableBlock me)
+        {
+            Program.LogLine("Setting up config");
+            // We touch the static classes that have config data that needs collecting/setting
+            GunData.Init();
+            ProjectileData.Init();
+            
+            if (me.CustomData.Length > 0)
+                ConfigTool.DeserializeAll(me.CustomData);
+            me.CustomData = ConfigTool.SerializeAll();
+            Program.LogLine("Written config to custom data", LogLevel.Debug);
+            Commands = new Dictionary<string, Action>
+            {
+                { ArgumentTarget,     () => ShipManager.PrimaryShip.Target() },
+                { ArgumentUnTarget,   () => ShipManager.PrimaryShip.UnTarget() },
+                { "FireAllTest",             () => ShipManager.PrimaryShip.Guns.FireAll() },
+                { "CancelAllTest",           () => ShipManager.PrimaryShip.Guns.CancelAll() }
+            };
+            if (LogLevel.Trace <= LogLevel)
+            {
+                foreach (var command in Commands)
+                {
+                    Program.LogLine($"Command: {command.Key}", LogLevel.Trace);
+                }
+            }
+            Program.LogLine("Commands set up", LogLevel.Debug);
+            SetupGlobalState(me);
+            Program.LogLine("Config setup done", LogLevel.Info);
+            
+        }
+
+        public static void SetupGlobalState(IMyProgrammableBlock me)
+        {
+            Program.LogLine("Setting up global state", LogLevel.Debug);
+            GlobalState.PrecisionMode = DefaultPrecisionMode;
+            Program.LogLine($"Precision mode state is {GlobalState.PrecisionMode}", LogLevel.Trace);
+        }
+
+        static Config()
+        {
+            
+        }
+
 
         private static Dictionary<string, object> GetConfig()
         {
@@ -117,7 +143,6 @@ namespace IngameScript
             var stringConfig = obj.ContainsKey("String Config") ? obj["String Config"] as Dictionary<string, object> : null;
             if (stringConfig != null)
             {
-                Program.LogLine("Got string config");
                 ArgumentTarget       = Dwon.GetValue(stringConfig, "ArgumentTarget", ArgumentTarget);
                 ArgumentUnTarget     = Dwon.GetValue(stringConfig, "ArgumentUnTarget", ArgumentUnTarget);
                 GroupName            = Dwon.GetValue(stringConfig, "GroupName", GroupName);

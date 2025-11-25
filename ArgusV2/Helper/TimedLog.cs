@@ -1,52 +1,88 @@
 using System.Collections.Generic;
 using System.Linq;
+using Color = VRageMath.Color;
 
-public class TimedLog
+namespace IngameScript.Helper
 {
-    private class Entry
+    public enum LogLevel
     {
-        public string Text;
-        public double Timestamp; // seconds since epoch
-        public Entry(string text, double timestamp)
+        Trace,
+        Debug,
+        Info,
+        Warning,
+        Error,
+        Critical,
+        Highlight
+    }
+
+    public class TimedLog
+    {
+        private Dictionary<LogLevel, string> _logColour = new Dictionary<LogLevel, string>()
         {
-            Text = text;
-            Timestamp = timestamp;
-        }
-    }
-
-    private readonly List<Entry> _entries = new List<Entry>();
-    private readonly double _lifespan; // seconds
-
-    public TimedLog(double lifespanSeconds)
-    {
-        _lifespan = lifespanSeconds;
-    }
-
-    public void Add(string message)
-    {
-        double now = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
-        _entries.Add(new Entry(message, now));
-    }
-
-    public void Update()
-    {
-        double now = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
-        _entries.RemoveAll(e => now - e.Timestamp > _lifespan);
-    }
-
-    public List<string> GetEntries()
-    {
-        return _entries.Select(e => e.Text).ToList();
-    }
-
-    public override string ToString()
-    {
-        string value = "";
-        foreach (var entry in _entries)
+            { LogLevel.Trace, $"{ColorToHexARGB(Color.Gray)}" },
+            { LogLevel.Debug, $"{ColorToHexARGB(Color.DarkSeaGreen)}"},
+            { LogLevel.Info, $"{ColorToHexARGB(Color.White)}" },
+            { LogLevel.Warning, $"{ColorToHexARGB(Color.Gold)}" },
+            { LogLevel.Error, $"{ColorToHexARGB(Color.Red)}" },
+            { LogLevel.Critical, $"{ColorToHexARGB(Color.DarkRed)}" },
+            { LogLevel.Highlight, $"{ColorToHexARGB(Color.Aquamarine)}"}
+        };
+        private static string ColorToHexARGB(Color color)
         {
-            value += entry.Text + "\n";
+            return $"[color=#{color.A:X2}{color.R:X2}{color.G:X2}{color.B:X2}]";
         }
 
-        return value;
+        private static string _footer = "[/color]\n";
+    
+        private class Entry
+        {
+            internal readonly string Text;
+            internal readonly double Timestamp; // seconds since epoch
+            internal readonly LogLevel Level;
+            public Entry(string text, double timestamp, LogLevel level)
+            {
+                Text = text;
+                Timestamp = timestamp;
+                Level = level;
+            }
+            
+        }
+
+        private readonly List<Entry> _entries = new List<Entry>();
+        private readonly double _lifespan; // seconds
+
+        public TimedLog(double lifespanSeconds)
+        {
+            _lifespan = lifespanSeconds;
+        }
+
+        public void Add(string message, LogLevel level)
+        {
+            if (level < Config.LogLevel) return;
+            double now = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
+            _entries.Add(new Entry(message, now, level));
+        }
+
+        public void Update()
+        {
+            double now = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
+            _entries.RemoveAll(e => now - e.Timestamp > _lifespan);
+        }
+
+        public List<string> GetEntries()
+        {
+            return _entries.Select(e => e.Text).ToList();
+        }
+
+        public override string ToString()
+        {
+            string value = "";
+            foreach (var entry in _entries)
+            {
+                value += _logColour[entry.Level] + entry.Text + _footer;
+            }
+
+            return value;
+        }
     }
 }

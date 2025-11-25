@@ -11,11 +11,11 @@ namespace IngameScript.SConfig
 
         public static string SerializeAll()
         {
-            Program.LogLine(Configs.Count);
+            Program.LogLine("Writing config", LogLevel.Info);
             var config = new Dictionary<string, object>();
             foreach (var kv in Configs)
             {
-                Program.LogLine(kv.Key);
+                Program.LogLine($"Collecting config: {kv.Key}", LogLevel.Debug);
                 config.Add(kv.Key, kv.Value.Get());
             }
 
@@ -25,9 +25,15 @@ namespace IngameScript.SConfig
 
         public static void DeserializeAll(string config)
         {
+            Program.LogLine("Reading config from custom data", LogLevel.Info);
             var parsed = Dwon.Parse(config);
+            Program.LogLine("DeltaWing Object Notation: Parsed successfully", LogLevel.Debug);
             var dict = parsed as Dictionary<string, object>;
-            if (dict == null) throw new Exception("Config malformed");
+            if (dict == null)
+            {
+                Program.LogLine("Config malformed", LogLevel.Critical);
+                throw new Exception();
+            }
             foreach (var kv in dict)
             {
                 ConfigTool config1;
@@ -35,6 +41,7 @@ namespace IngameScript.SConfig
                 var dict3 = kv.Value as Dictionary<string, object>;
                 if (dict3 != null)
                 {
+                    Program.LogLine("Config set: " + kv.Key, LogLevel.Debug);
                     config1.Set(dict3);
                 }
             }

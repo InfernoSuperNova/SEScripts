@@ -1,5 +1,6 @@
-using System;
-using IngameScript.Database;
+
+using IngameScript.Helper;
+using IngameScript.SConfig.Database;
 using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI.Ingame;
 using VRage.Game;
@@ -49,7 +50,9 @@ namespace IngameScript.Ship.Components
 
         public Gun(IMyUserControllableGun gun, GunManager manager)
         {
+            
             var blockDefinition = gun.BlockDefinition;
+            Program.LogLine($"Set up new gun {blockDefinition}", LogLevel.Info);
             var gunData = GunData.Get(blockDefinition.SubtypeIdAttribute);
             if (gunData == GunData.DefaultGun) gunData = GunData.Get(blockDefinition.TypeIdString);
             _gunData = gunData;

@@ -290,7 +290,7 @@ internal class Program : MyGridProgram
         µ = O.OfType<IMyOffensiveCombatBlock>().ToList();
         Ĉ = O.OfType<IMyCameraBlock>().ToList();
 
-        var Đ = è.Č ? k.ċ.Č : è.č ? k.ċ.Ď : k.ċ.ď;
+        var Đ = è.ċ ? k.Č.ċ : è.č ? k.Č.Ď : k.Č.ď;
             
         l = new k(Ă, this, q, f, Đ, ú);
         đ();
@@ -405,7 +405,7 @@ internal class Program : MyGridProgram
         Ô = F.Get(ĥ, "ProjectileVelocity").ToSingle(Ô);
         f = F.Get(ĥ, "FramesToGroupGuns").ToSingle(f);
         è.č = F.Get(ĥ, "DoVolley").ToBoolean(è.č);
-        è.Č = F.Get(ĥ, "WaitForAll").ToBoolean(è.Č);
+        è.ċ = F.Get(ĥ, "WaitForAll").ToBoolean(è.ċ);
         ú = F.Get(ĥ, "VolleyDelayFrames").ToInt32(ú);
 
         F.Set(ĥ, "DoAutoFire", è.ĭ);
@@ -425,7 +425,7 @@ internal class Program : MyGridProgram
             "Maximum frame difference between available guns to aim and fire them together");
         F.Set(ĥ, "DoVolley", è.č);
         F.SetComment(ĥ, "DoVolley", "DO NOT ENABLE NOT FINISHED");
-        F.Set(ĥ, "WaitForAll", è.Č);
+        F.Set(ĥ, "WaitForAll", è.ċ);
         F.SetComment(ĥ, "WaitForAll", "Whether to wait for all guns before firing (WARNING: DPS WILL BE LOST)");
         F.Set(ĥ, "VolleyDelayFrames", ú);
         F.SetComment(ĥ, "VolleyDelayFrames", "Spacing between each weapon firing for Volley mode");
@@ -936,7 +936,7 @@ internal class Program : MyGridProgram
         var ƅ = ƃ.Ƅ(ź, î, Me.CubeGrid.WorldVolume.Center, Me.CubeGrid.LinearVelocity,
             Me.CubeGrid, å.GetShipVelocities().AngularVelocity);
             
-        l.Ɔ =  è.Č ? k.ċ.Č : è.č ? k.ċ.Ď : k.ċ.ď;
+        l.Ɔ =  è.ċ ? k.Č.ċ : è.č ? k.Č.Ď : k.Č.ď;
         l.Ƈ(ê, Á);
             
         o = ź.EntityId != 0;
@@ -1034,7 +1034,7 @@ internal class Program : MyGridProgram
 
         if (ß)
         {
-            foreach (J Ƙ in é.Values) Ƙ.ƙ();
+            foreach (var Ƙ in é.Values) Ƙ.ƙ();
             foreach (var Ė in ó)
             {
                 Ė.SetTargetingGroup("");
@@ -2066,7 +2066,7 @@ internal class P
 
         int ʏ = 0;
         int ʐ = 0;
-        foreach (u.ɾ ʑ in ʂ)
+        foreach (var ʑ in ʂ)
         {
             if (ʑ.ʒ) 
                 ʐ++;
@@ -2717,7 +2717,7 @@ public class L
 
     public static void Ŵ()
     {
-        foreach (L Ι in Θ)
+        foreach (var Ι in Θ)
         {
             Ι.Ε = false;
         }
@@ -2785,7 +2785,7 @@ internal class J : L
         var Ϊ = new List<Vector3D>();
 
 
-        foreach (ǆ Ċ in ǈ)
+        foreach (var Ċ in ǈ)
         {
             var ʘ = Ċ.Ϋ * 2.5;
             var ά = Ċ.ƪ;
@@ -2996,7 +2996,7 @@ public class ç
     public bool ĳ { get; set; } = true;
     public bool č { get; set; }
         
-    public bool Č { get; set; } = true;
+    public bool ċ { get; set; } = true;
     public bool Ķ { get; set; } = true;
     public bool ĵ { get; set; } = true;
     public bool ο { get; set; } = true;
@@ -3015,7 +3015,7 @@ public class ç
         π[7] = İ;
         π[8] = ĳ;
         π[9] = č;
-        π[10] = Č;
+        π[10] = ċ;
         π[11] = Ķ;
         π[12] = ĵ;
         π[13] = ο;
@@ -3034,7 +3034,7 @@ public class ç
         İ = π[7];
         ĳ = π[8];
         č = π[9];
-        Č = π[10];
+        ċ = π[10];
         Ķ = π[11];
         ĵ = π[12];
         ο = π[13];
@@ -3054,7 +3054,7 @@ public class ç
         ρ.Add("Balance", İ);
         ρ.Add("AutoScn", ĳ);
         ρ.Add("Volley", č);
-        ρ.Add("Wt4All", Č);
+        ρ.Add("Wt4All", ċ);
         ρ.Add("H.Targt", Ķ);
         ρ.Add("H.Mssle", ĵ);
         ρ.Add("M.Inter", ο);
@@ -3073,7 +3073,7 @@ public class ç
         İ = ρ["Balance"];
         ĳ = ρ["AutoScn"];
         č = ρ["Volley"];
-        Č = ρ["Wt4All"];
+        ċ = ρ["Wt4All"];
         Ķ = ρ["H.Targt"];
         ĵ = ρ["H.Mssle"];
         ο = ρ["M.Inter"];
@@ -3963,13 +3963,13 @@ internal class g
 
             var Ձ = Vector3D.Zero;
             var Ղ = Vector3D.Zero;
-            foreach (Ӿ Ճ in ӿ)
+            foreach (var Ճ in ӿ)
             {
                 Ձ += Ճ.Մ;
                 Ղ += Ճ.Յ;
             }
 
-            foreach (ԏ Ն in ą)
+            foreach (var Ն in ą)
             {
                 Ձ += Ն.Մ;
                 Ղ += Ն.Յ;
@@ -4000,13 +4000,13 @@ internal class g
 
             var Ձ = Vector3D.Zero;
             var Ղ = Vector3D.Zero;
-            foreach (Ӿ Ճ in ӿ)
+            foreach (var Ճ in ӿ)
             {
                 Ձ += Ճ.Մ;
                 Ղ += Ճ.Յ;
             }
 
-            foreach (ԏ Ն in ą)
+            foreach (var Ն in ą)
             {
                 Ձ += Ն.Մ;
                 Ղ += Ն.Յ;
@@ -4103,7 +4103,7 @@ internal class g
     void ԝ()
     {
         ŝ(false);
-        foreach (ӱ Լ in Ӳ)
+        foreach (var Լ in Ӳ)
         {
             Լ.Վ.Enabled = true;
             Լ.Խ(Ԋ);
@@ -4118,7 +4118,7 @@ internal class g
 
     void ԙ()
     {
-        foreach (ԏ ԓ in ą) ԓ.Ċ.VirtualMass = 20000;
+        foreach (var ԓ in ą) ԓ.Ċ.VirtualMass = 20000;
     }
 
 
@@ -4133,13 +4133,13 @@ internal class g
 
     void ԛ(Vector3D ԕ, List<Ӿ> ӿ, List<ԏ> ą)
     {
-        foreach (Ӿ Ճ in ӿ) Ճ.Ց(ԕ);
-        foreach (ԏ Ն in ą) Ն.Ց(ԕ);
+        foreach (var Ճ in ӿ) Ճ.Ց(ԕ);
+        foreach (var Ն in ą) Ն.Ց(ԕ);
     }
 
     void ԛ(Vector3D ԕ, List<ԏ> ą)
     {
-        foreach (ԏ Ն in ą) Ն.Ց(ԕ);
+        foreach (var Ն in ą) Ն.Ց(ԕ);
     }
 
     void ԛ(Vector3D ԕ, List<Ӿ> ӿ)
@@ -4160,13 +4160,13 @@ internal class g
     void Հ(Ԇ Ʋ, List<ԏ> ą)
     {
         if (Ʋ != Ԇ.ԇ) return;
-        foreach (ԏ Ն in ą) Ն.Ċ.Enabled = Ն.Ւ;
+        foreach (var Ն in ą) Ն.Ċ.Enabled = Ն.Ւ;
     }
 
     void Հ(Ԇ Ʋ, List<Ӿ> ӿ)
     {
         if (Ʋ != Ԇ.ԇ) return;
-        foreach (Ӿ Ճ in ӿ) Ճ.Ċ.Enabled = Ճ.Ւ;
+        foreach (var Ճ in ӿ) Ճ.Ċ.Enabled = Ճ.Ւ;
     }
 
         
@@ -4179,7 +4179,7 @@ internal class g
         var Փ = new List<Ӿ>();
         var Ք = Փ.Count;
                 
-        foreach (Ӿ Օ in ӿ)
+        foreach (var Օ in ӿ)
             if (!Օ.Ւ) Փ.Add(Օ);
         if (Ք <= 1) return;
         for (int ф = 0; ф < 50000; ф++)
@@ -4218,13 +4218,13 @@ internal class g
 
         var զ = Vector3D.Zero;
             
-        foreach (Ӿ Ċ in գ)
+        foreach (var Ċ in գ)
         {
             ե += Ċ.Ւ ? Ċ.Յ : Vector3D.Zero;
             զ += Vector3D.Abs(Ċ.Յ);
         }
             
-        foreach (ԏ ԓ in դ)
+        foreach (var ԓ in դ)
         {
             ե += ԓ.Յ;
             զ += Vector3D.Abs(ԓ.Յ);
@@ -4234,7 +4234,7 @@ internal class g
         var է = զ.Ʈ();
 
         int ӫ = 0;
-        foreach (Ӿ Ċ in գ)
+        foreach (var Ċ in գ)
         {
             ӫ++;
                 
@@ -4275,9 +4275,9 @@ internal class g
     {
         var ի = Vector3D.Zero;
 
-        foreach (Ӿ Ċ in գ) ի += Ċ.Ւ ? Ċ.Յ : Vector3D.Zero;
-        foreach (ԏ ԓ in դ) ի += ԓ.Յ;
-        foreach (ԏ ԓ in ą)
+        foreach (var Ċ in գ) ի += Ċ.Ւ ? Ċ.Յ : Vector3D.Zero;
+        foreach (var ԓ in դ) ի += ԓ.Յ;
+        foreach (var ԓ in ą)
             if (ի.Ʈ() > 10 * 10)
             {
                 var լ = ԓ.Ċ.VirtualMass;
@@ -4498,8 +4498,8 @@ internal class g
         var Ռ = 9.81 * Ć.Count;
 
         double Օ = 0;
-        foreach (Ӿ Ċ in ӿ) Օ += Ċ.Ւ ? 50000 : 0;
-        foreach (ԏ ԓ in ą) Օ += ԓ.Ċ.VirtualMass;
+        foreach (var Ċ in ӿ) Օ += Ċ.Ւ ? 50000 : 0;
+        foreach (var ԓ in ą) Օ += ԓ.Ċ.VirtualMass;
         return Օ * Ռ;
     }
 
@@ -4510,18 +4510,18 @@ internal class g
 
 
         var օ = Vector3D.Zero;
-        foreach (ӱ Լ in փ)
+        foreach (var Լ in փ)
         {
             var ֆ = Լ.Վ.GetPosition();
             var և = Vector3D.Zero;
-            foreach (Ӿ Ċ in ӿ)
+            foreach (var Ċ in ӿ)
             {
                 if (!Ċ.Ւ) continue;
                 var ͺ = (ֆ - Ċ.Ċ.GetPosition()).Normalized();
                 և += ͺ * 50000 * 9.81 * Լ.א;
             }
 
-            foreach (ԏ ԓ in ą)
+            foreach (var ԓ in ą)
             {
                 var ͺ = (ֆ - ԓ.Ċ.GetPosition()).Normalized();
                 և += ͺ * ԓ.Ċ.VirtualMass * 9.81 * Լ.א;
@@ -4749,17 +4749,17 @@ public class k
         
     public int ط;
 
-    public enum ċ
+    public enum Č
     {
         ď,
         Ď,
-        Č
+        ċ
     }
 
-    public ċ Ɔ = ċ.Č;
+    public Č Ɔ = Č.ċ;
 
     public k(List<IMyUserControllableGun> l, MyGridProgram ā,
-        Dictionary<MyDefinitionId, float> ת, float ظ,ċ Đ,
+        Dictionary<MyDefinitionId, float> ת, float ظ,Č Đ,
         int ط)
 
     {
@@ -4781,20 +4781,20 @@ public class k
             }
         }
 
-        foreach (ג ד in this.l) ح[ד] = ד.ח;
+        foreach (var ד in this.l) ح[ד] = ד.ח;
         this.ط = ط;
 
         this.ā = ā;
 
         switch (Đ)
         {
-            case ċ.ď:
+            case Č.ď:
                 break;
-            case ċ.Ď:
+            case Č.Ď:
                 ج = this.l[0];
                 ذ = this.l[0];
                 break;
-            case ċ.Č:
+            case Č.ċ:
                 break;
         }
             
@@ -4815,7 +4815,7 @@ public class k
             }
         }
 
-        foreach (ג ד in this.l) ح[ד] = ד.ח;
+        foreach (var ד in this.l) ح[ד] = ד.ח;
     }
 
     void غ(ג ד)
@@ -4876,7 +4876,7 @@ public class k
             this.ح[ד] = ؽ;
         }
 
-        if (Ɔ == ċ.Ď && د) ؾ();
+        if (Ɔ == Č.Ď && د) ؾ();
         return ح;
     }
 
@@ -4900,7 +4900,7 @@ public class k
 
     public Vector3D Ɗ(Vector3D ف)
     {
-        if (Ɔ == ċ.Ď)
+        if (Ɔ == Č.Ď)
         {
             if (ذ == null) return ف;
             if (ح[ذ])
@@ -4979,7 +4979,7 @@ public class k
 
         switch (Ɔ)
         {
-            case ċ.ď:
+            case Č.ď:
                 for (var ĉ = 0; ĉ < l.Count; ĉ++)
                 {
                     var ד = l[ĉ];
@@ -4990,7 +4990,7 @@ public class k
                     }
                 }
                 break;
-            case ċ.Ď:
+            case Č.Ď:
                 if (ح[ج])
                 {
                     ج.Ւ = true;
@@ -4998,7 +4998,7 @@ public class k
                     د = true;
                 }
                 break;
-            case ċ.Č:
+            case Č.ċ:
                 var ى = true;
                     
                 for (var ĉ = 0; ĉ < l.Count; ĉ++)
@@ -5043,7 +5043,7 @@ public class k
 
     public void Ǒ()
     {
-        foreach (ג ד in l)
+        foreach (var ד in l)
         {
             ד.צ = false;
             ד.Ւ = true;
@@ -6242,12 +6242,12 @@ internal class u
 
     public void ޟ(J ޝ)
     {
-        foreach (ە ʑ in ޅ) ޞ(ʑ, ޝ);
+        foreach (var ʑ in ޅ) ޞ(ʑ, ޝ);
     }
 
     void ޡ(ە ʑ, List<J> ޠ)
     {
-        foreach (J Ι in ޠ) ޞ(ʑ, Ι);
+        foreach (var Ι in ޠ) ޞ(ʑ, Ι);
     }
 
 
@@ -6369,14 +6369,14 @@ internal class u
     {
             
         if (Ι == J.Î)
-            foreach (ە ʑ in ޅ)
+            foreach (var ʑ in ޅ)
             {
                 ʑ.ݦ();
                 ʑ.ڼ = Ι;
                 ʑ.ŵ(վ, ۮ);
             }
         else
-            foreach (ە ʑ in ޅ)
+            foreach (var ʑ in ޅ)
             {
                 ʑ.ڋ();
                 ʑ.ڼ = Ι;
@@ -6388,7 +6388,7 @@ internal class u
     void ݩ(J Ι, Vector3D վ, Vector3D ۮ)
     {
         if (Ι == J.Î)
-            foreach (ە ʑ in ޅ)
+            foreach (var ʑ in ޅ)
             {
                 ʑ.ݦ();
                 ʑ.ڼ = Ι;
@@ -6396,7 +6396,7 @@ internal class u
                 Ğ.Ȅ("Loitering around host?");
             }
         else if (ސ)
-            foreach (ە ʑ in ޅ)
+            foreach (var ʑ in ޅ)
             {
                 ʑ.ڋ();
                 ʑ.ڼ = Ι;
@@ -6404,7 +6404,7 @@ internal class u
                 Ğ.Ȅ("Attacking target?");
             }
         else
-            foreach (ە ʑ in ޅ)
+            foreach (var ʑ in ޅ)
             {
                 ʑ.ݧ();
                 ʑ.ڼ = Ι;
@@ -6416,7 +6416,7 @@ internal class u
 
     void ݪ(Vector3D վ, Vector3D ۮ)
     {
-        foreach (ە ʑ in ޅ)
+        foreach (var ʑ in ޅ)
         {
             var ʢ = ߋ(މ, ʑ);
             ʑ.ڼ = ʢ;
@@ -6432,7 +6432,7 @@ internal class u
     {
         var چ = double.MaxValue;
         var ߌ = J.Î;
-        foreach (J ߍ in ޠ)
+        foreach (var ߍ in ޠ)
         {
             var ߎ = (ߍ.ž - ʑ.ة()).LengthSquared();
 
@@ -6452,7 +6452,7 @@ internal class u
 
     public void ś()
     {
-        foreach (ە ʑ in ޅ)
+        foreach (var ʑ in ޅ)
         {
             if (!ʑ.ʒ) return;
             ʑ.ܚ();
@@ -6630,7 +6630,7 @@ internal class u
     public List<ɾ> ů()
     {
         var ʂ = new List<ɾ>();
-        foreach (ە ʑ in ޅ) ʂ.Add(ʑ.ݢ());
+        foreach (var ʑ in ޅ) ʂ.Add(ʑ.ݢ());
         return ʂ;
     }
 

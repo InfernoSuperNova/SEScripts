@@ -1,11 +1,11 @@
 using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
 using System.Collections.Generic;
 using IngameScript.Ship;
 using IngameScript.Ship.Components;
 using VRage.Game.ModAPI.Ingame;
 using VRageMath;
+using IngameScript.Helper;
 
 namespace IngameScript
 {
@@ -20,6 +20,7 @@ namespace IngameScript
         
         public SupportingShip(IMyCubeGrid grid, List<IMyTerminalBlock> trackerBlocks)
         {
+            Program.LogLine("New SupportingShip : ArgusShip", LogLevel.Debug);
             IMyUserControllableGun gun = null;
             IMyMotorStator rotor = null;
             _targetTrackers = new List<TargetTracker>();
@@ -36,21 +37,28 @@ namespace IngameScript
                 rotor = rotor ?? block as IMyMotorStator;
             }
 
-            if (gun == null) throw new Exception($"FATAL: Grid '{grid.CustomName}' tracker group missing a gun.");
-            if (rotor == null) throw new Exception($"FATAL: Grid '{grid.CustomName}' tracker group missing a rotor.");
+            // if (gun == null) throw new Exception($"FATAL: Grid '{grid.CustomName}' tracker group missing a gun.");
+            // if (rotor == null) throw new Exception($"FATAL: Grid '{grid.CustomName}' tracker group missing a rotor.");
 
 
-
-            foreach (var tracker in _targetTrackers)
+            if (gun != null && rotor != null)
             {
-                var block = tracker.Block;
-                block.ClearTools();
-                block.AddTool(gun);
-                block.AzimuthRotor = null; // These aren't intended to actually shoot at anything, just used for target designation and scanning
-                block.ElevationRotor = rotor;
-                block.AIEnabled = true;
-                block.CustomName = Config.SearchingName;
+                Program.LogLine("Setting up trackers", LogLevel.Debug);
+                foreach (var tracker in _targetTrackers)
+                {
+                    Program.LogLine($"Set up tracker: {tracker.CustomName}");
+                    var block = tracker.Block;
+                    block.ClearTools();
+                    block.AddTool(gun);
+                    block.AzimuthRotor = null; // These aren't intended to actually shoot at anything, just used for target designation and scanning
+                    block.ElevationRotor = rotor;
+                    block.AIEnabled = true;
+                    block.CustomName = Config.SearchingName;
+                }
+
+                if (_targetTrackers.Count <= 0) Program.LogLine("No target trackers in group", LogLevel.Warning);
             }
+            else Program.LogLine($"Gun/rotor not present in group: {Config.TrackerGroupName}, cannot setup trackers", LogLevel.Warning);
             
             _grid = grid;
         }
@@ -90,7 +98,6 @@ namespace IngameScript
                 {
                     if (tracker.JustLostTarget && !tracker.Enabled)
                     {
-                        Program.LogLine("Occurs");
                         tracker.Enabled = true;
                         tracker.CustomName = Config.SearchingName;
 
@@ -106,7 +113,6 @@ namespace IngameScript
                     }
                     else if (tracker.JustInvalidated)
                     {
-                        Program.LogLine("Here?");
                         tracker.Enabled = true;
                         tracker.CustomName = Config.SearchingName;
                     }

@@ -1,26 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "/home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/ArtificialMassVIsualizer.csproj": {}
+    "/home/delta/RiderProjects/SEScripts/ArtificialMassVIsualizer/ArtificialMassVIsualizer.csproj": {}
   },
   "projects": {
-    "/home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/ArtificialMassVIsualizer.csproj": {
+    "/home/delta/RiderProjects/SEScripts/ArtificialMassVIsualizer/ArtificialMassVIsualizer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/ArtificialMassVIsualizer.csproj",
+        "projectUniqueName": "/home/delta/RiderProjects/SEScripts/ArtificialMassVIsualizer/ArtificialMassVIsualizer.csproj",
         "projectName": "ArtificialMassVIsualizer",
-        "projectPath": "/home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/ArtificialMassVIsualizer.csproj",
-        "packagesPath": "/home/deltawing/.nuget/packages/",
-        "outputPath": "/home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/obj/",
+        "projectPath": "/home/delta/RiderProjects/SEScripts/ArtificialMassVIsualizer/ArtificialMassVIsualizer.csproj",
+        "packagesPath": "/home/delta/.nuget/packages/",
+        "outputPath": "/home/delta/RiderProjects/SEScripts/ArtificialMassVIsualizer/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/deltawing/.nuget/NuGet/NuGet.Config"
+          "/home/delta/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netframework48"
         ],
         "sources": {
-          "/home/deltawing/MyLocalNugetSource": {},
+          "/usr/lib/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -39,7 +39,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net48": {
@@ -49,13 +49,13 @@
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[2.1.9, )"
+              "version": "[2.1.13, )"
             },
             "Mal.Mdk2.PbPackager": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[2.0.8, )"
+              "version": "[2.1.7, )"
             },
             "Microsoft.NETFramework.ReferenceAssemblies": {
               "suppressParent": "All",
@@ -64,7 +64,7 @@
               "autoReferenced": true
             }
           },
-          "runtimeIdentifierGraphPath": "/home/deltawing/.dotnet/sdk/9.0.200/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/9.0.111/RuntimeIdentifierGraph.json"
         }
       }
     }

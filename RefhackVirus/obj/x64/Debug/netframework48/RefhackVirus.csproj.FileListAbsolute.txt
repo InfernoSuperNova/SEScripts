@@ -100,3 +100,5 @@
 /home/deltawing/repos/ArgusLiteMDK2/RefhackVirus/obj/x64/Debug/netframework48/RefhackV.F1D6068F.Up2Date
 /home/deltawing/repos/ArgusLiteMDK2/RefhackVirus/obj/x64/Debug/netframework48/RefhackVirus.dll
 /home/deltawing/repos/ArgusLiteMDK2/RefhackVirus/obj/x64/Debug/netframework48/RefhackVirus.pdb
+/home/delta/RiderProjects/SEScripts/RefhackVirus/obj/x64/Debug/netframework48/RefhackVirus.dll
+/home/delta/RiderProjects/SEScripts/RefhackVirus/obj/x64/Debug/netframework48/RefhackVirus.pdb

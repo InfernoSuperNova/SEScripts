@@ -32,6 +32,7 @@ namespace IngameScript.Ship.Components
 
         public FireController(ControllableShip ship, GunManager guns)
         {
+            Program.LogLine($"Setting up FCS", LogLevel.Info);
             _ship = ship;
             _guns = guns;
         }

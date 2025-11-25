@@ -3273,7 +3273,7 @@
         </member>
         <member name="P:VRage.Game.ModAPI.IMyFaction.AcceptHumans">
             <summary>
-            Gets if faction accepts players
+            Gets or set if faction accepts players
             </summary>
         </member>
         <member name="P:VRage.Game.ModAPI.IMyFaction.FounderId">

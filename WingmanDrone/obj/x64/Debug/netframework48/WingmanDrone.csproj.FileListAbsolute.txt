@@ -100,3 +100,5 @@
 /home/deltawing/repos/ArgusLiteMDK2/WingmanDrone/obj/x64/Debug/netframework48/WingmanDrone.dll
 /home/deltawing/repos/ArgusLiteMDK2/WingmanDrone/obj/x64/Debug/netframework48/WingmanDrone.pdb
 /home/deltawing/repos/ArgusLiteMDK2/WingmanDrone/obj/x64/Debug/netframework48/WingmanDrone.sourcelink.json
+/home/delta/RiderProjects/SEScripts/WingmanDrone/obj/x64/Debug/netframework48/WingmanDrone.dll
+/home/delta/RiderProjects/SEScripts/WingmanDrone/obj/x64/Debug/netframework48/WingmanDrone.pdb

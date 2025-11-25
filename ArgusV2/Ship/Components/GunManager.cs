@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using EmptyKeys.UserInterface.Controls;
-using IngameScript.Database;
 using IngameScript.Helper;
+using IngameScript.SConfig.Database;
 using Sandbox.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame;
 using VRageMath;
@@ -37,12 +36,13 @@ namespace IngameScript.Ship.Components
         
         public GunManager(List<IMyTerminalBlock> blocks, ControllableShip thisShip)
         {
+            Program.LogLine("Setting up gun manager", LogLevel.Info);
             foreach (var block in blocks)
             {
                 var gun = block as IMyUserControllableGun;
                 if (gun != null) _guns.Add(new Gun(gun, this));
             }
-
+            if (_guns.Count <= 0) Program.LogLine($"No guns in group {Config.GroupName}", LogLevel.Warning);
             ThisShip = thisShip;
         }
 
@@ -188,13 +188,13 @@ namespace IngameScript.Ship.Components
 
             if (refGun == null) return Vector3D.Zero;
 
-            var gravity = Vector3D.Zero; // TODO: This
-            bool hasGravity = false;
+            var gravity = ThisShip.Gravity;
+            var hasGravity = gravity.LengthSquared() != 0;
 
-            return Solver.BallisticSolver(maxSpeed, refGun.GetFireVelocity(ThisShip.Velocity),
+            return Solver.BallisticSolver(maxSpeed, refGun.GetFireVelocity(ThisShip.Velocity) / 60,
                 _gunData.ProjectileData.Acceleration * refGun.Forward,
                 displacement,
-                ThisShip.CurrentTarget.Position, ThisShip.CurrentTarget.Velocity, ThisShip.CurrentTarget.Acceleration,
+                ThisShip.CurrentTarget.Position, ThisShip.CurrentTarget.Velocity / 60, ThisShip.CurrentTarget.Acceleration / 60,
                 Vector3D.Zero, false, gravity, hasGravity);
         }
     }

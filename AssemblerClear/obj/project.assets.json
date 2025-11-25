@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     ".NETFramework,Version=v4.8": {
-      "Mal.Mdk2.PbAnalyzers/2.1.11": {
+      "Mal.Mdk2.PbAnalyzers/2.1.13": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/_._": {}
@@ -14,7 +14,7 @@
           "build/Mal.MDK2.PbAnalyzers.props": {}
         }
       },
-      "Mal.Mdk2.PbPackager/2.1.4": {
+      "Mal.Mdk2.PbPackager/2.1.7": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/_._": {}
@@ -41,10 +41,10 @@
     }
   },
   "libraries": {
-    "Mal.Mdk2.PbAnalyzers/2.1.11": {
-      "sha512": "EzOo+dsZdVy9OEs13YfQmDrh59eyVzz82DGlsEnenQOHjVDpW11yM0zPJShcHNL4XRR4q3km7symeERBnEg8NA==",
+    "Mal.Mdk2.PbAnalyzers/2.1.13": {
+      "sha512": "yKjXW5qtiarh8S1BcAIXwJZnPA7c5CJqnukdOrhdSKFXVJeCSizbvUtA0TL2O9sBYD6drHnA4ni3xWmXQh9ENg==",
       "type": "package",
-      "path": "mal.mdk2.pbanalyzers/2.1.11",
+      "path": "mal.mdk2.pbanalyzers/2.1.13",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
@@ -53,7 +53,7 @@
         "analyzers/dotnet/cs/Microsoft.Extensions.FileSystemGlobbing.dll",
         "build/Mal.MDK2.PbAnalyzers.props",
         "lib/netstandard2.0/_._",
-        "mal.mdk2.pbanalyzers.2.1.11.nupkg.sha512",
+        "mal.mdk2.pbanalyzers.2.1.13.nupkg.sha512",
         "mal.mdk2.pbanalyzers.nuspec",
         "malware256.png",
         "readme.md",
@@ -61,17 +61,17 @@
         "tools/uninstall.ps1"
       ]
     },
-    "Mal.Mdk2.PbPackager/2.1.4": {
-      "sha512": "YejtKa1fXjX3XEPuEONGCJUeouH+4zicr+Y3bhOCyGg3Dk7Xh0/szQJa42527Zz2JA7CRHCczxwzoL2d4MHHcg==",
+    "Mal.Mdk2.PbPackager/2.1.7": {
+      "sha512": "RjH5b7i49ihXylafLeI259gLCs+vTw/BRUE5Gu4u73abeD4ZKqp4ODs9LMN3wfpJ+55KkIFYCgVkqVRCvNYTtQ==",
       "type": "package",
-      "path": "mal.mdk2.pbpackager/2.1.4",
+      "path": "mal.mdk2.pbpackager/2.1.7",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "build/Mal.Mdk2.PbPackager.props",
         "lib/netstandard2.0/_._",
-        "mal.mdk2.pbpackager.2.1.4.nupkg.sha512",
+        "mal.mdk2.pbpackager.2.1.7.nupkg.sha512",
         "mal.mdk2.pbpackager.nuspec",
         "malware256.png",
         "readme.md",
@@ -561,7 +561,7 @@
         "tools/mdknotify-win.exe",
         "tools/mdknotify-win.runtimeconfig.json",
         "tools/mscordaccore.dll",
-        "tools/mscordaccore_amd64_amd64_9.0.425.16305.dll",
+        "tools/mscordaccore_amd64_amd64_9.0.925.41916.dll",
         "tools/mscordbi.dll",
         "tools/mscorlib.dll",
         "tools/mscorrc.dll",
@@ -1097,31 +1097,31 @@
   },
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.8": [
-      "Mal.Mdk2.PbAnalyzers >= 2.1.11",
-      "Mal.Mdk2.PbPackager >= 2.1.4",
+      "Mal.Mdk2.PbAnalyzers >= 2.1.13",
+      "Mal.Mdk2.PbPackager >= 2.1.7",
       "Microsoft.NETFramework.ReferenceAssemblies >= 1.0.3"
     ]
   },
   "packageFolders": {
-    "/home/deltawing/.nuget/packages/": {}
+    "/home/delta/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/deltawing/repos/ArgusLiteMDK2/AssemblerClear/AssemblerClear.csproj",
+      "projectUniqueName": "/home/delta/RiderProjects/SEScripts/AssemblerClear/AssemblerClear.csproj",
       "projectName": "AssemblerClear",
-      "projectPath": "/home/deltawing/repos/ArgusLiteMDK2/AssemblerClear/AssemblerClear.csproj",
-      "packagesPath": "/home/deltawing/.nuget/packages/",
-      "outputPath": "/home/deltawing/repos/ArgusLiteMDK2/AssemblerClear/obj/",
+      "projectPath": "/home/delta/RiderProjects/SEScripts/AssemblerClear/AssemblerClear.csproj",
+      "packagesPath": "/home/delta/.nuget/packages/",
+      "outputPath": "/home/delta/RiderProjects/SEScripts/AssemblerClear/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/deltawing/.nuget/NuGet/NuGet.Config"
+        "/home/delta/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netframework48"
       ],
       "sources": {
-        "/home/deltawing/MyLocalNugetSource": {},
+        "/usr/lib/dotnet/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -1140,7 +1140,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.200"
+      "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
       "net48": {
@@ -1150,13 +1150,13 @@
             "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
             "suppressParent": "All",
             "target": "Package",
-            "version": "[2.1.11, )"
+            "version": "[2.1.13, )"
           },
           "Mal.Mdk2.PbPackager": {
             "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
             "suppressParent": "All",
             "target": "Package",
-            "version": "[2.1.4, )"
+            "version": "[2.1.7, )"
           },
           "Microsoft.NETFramework.ReferenceAssemblies": {
             "suppressParent": "All",
@@ -1165,7 +1165,7 @@
             "autoReferenced": true
           }
         },
-        "runtimeIdentifierGraphPath": "/home/deltawing/.dotnet/sdk/9.0.200/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/9.0.111/RuntimeIdentifierGraph.json"
       }
     }
   }

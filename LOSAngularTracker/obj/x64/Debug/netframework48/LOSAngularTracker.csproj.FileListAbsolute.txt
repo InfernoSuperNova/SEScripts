@@ -100,3 +100,5 @@
 /home/deltawing/repos/ArgusLiteMDK2/LOSAngularTracker/obj/x64/Debug/netframework48/LOSAngularTracker.dll
 /home/deltawing/repos/ArgusLiteMDK2/LOSAngularTracker/obj/x64/Debug/netframework48/LOSAngularTracker.pdb
 /home/deltawing/repos/ArgusLiteMDK2/LOSAngularTracker/obj/x64/Debug/netframework48/LOSAngularTracker.sourcelink.json
+/home/delta/RiderProjects/SEScripts/LOSAngularTracker/obj/x64/Debug/netframework48/LOSAngularTracker.dll
+/home/delta/RiderProjects/SEScripts/LOSAngularTracker/obj/x64/Debug/netframework48/LOSAngularTracker.pdb

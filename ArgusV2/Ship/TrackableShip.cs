@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using EmptyKeys.UserInterface.Controls;
 using IngameScript.Helper;
 using IngameScript.Ship.Components;
 using Sandbox.ModAPI.Ingame;

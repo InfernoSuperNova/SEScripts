@@ -14,6 +14,11 @@
             Implements Win-Win achievement - make peace with a faction
             </summary>
         </member>
+        <member name="M:SpaceEngineers.Game.AI.MyAstronautActions.Init_GotoTarget">
+            <summary>
+            Ensure astronaut always uses follow movement aiming.
+            </summary>
+        </member>
         <member name="M:SpaceEngineers.Game.AI.MySpiderActions.GetBlockTargetPriority(Sandbox.Game.Entities.Cube.MySlimBlock)">
             <summary>
             Weapon Blocks = 2, Propulsion Blocks = 3, Power Blocks = 4, Other Blocks = 5
@@ -92,6 +97,29 @@
             <summary>
             Called each tick when door is closed or called from UpdateParachutePosition if the door is opening/closing/fullyopen after being closed. 
             </summary>
+        </member>
+        <member name="F:SpaceEngineers.Game.Entities.Blocks.MyShipMergeBlock.m_forward">
+            <summary>
+            Constraint axis directions loaded from the dummy (before transformation by this block's orientation).
+            </summary>
+        </member>
+        <member name="F:SpaceEngineers.Game.Entities.Blocks.MyShipMergeBlock.m_reconcileMergeStateCountdown">
+            <summary>
+            When a block is welded from a projection in a non-working state, it must be separated after the projector has had a chance to remove the preview.
+            Projector visuals get removed after about <see cref="F:SpaceEngineers.Game.Entities.Blocks.MyShipMergeBlock.PROJECTION_VISUAL_UPDATE_PERIOD_FRAMES"/> we wait that period plus a safety margin.
+            Countdown is stored in frames and decremented by 10 per UpdateBeforeSimulation10 tick.
+            </summary>
+        </member>
+        <member name="P:SpaceEngineers.Game.Entities.Blocks.MyShipMergeBlock.OtherRight">
+            <summary>
+            When the constraint is set, this field contains direction that should align to the other's right direction.
+            </summary>
+        </member>
+        <member name="M:SpaceEngineers.Game.Entities.Blocks.MyShipMergeBlock.GetBlockSpecificState">
+            <summary>
+            Returns 2 when locked, 1 when in constraint or 0 otherwise.
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:SpaceEngineers.Game.Entities.Blocks.MyShipWelder.IsWithinWorldLimits(Sandbox.Game.Entities.Blocks.MyProjectorBase,System.String,System.Int32)">
             <summary>

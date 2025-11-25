@@ -2641,6 +2641,11 @@
             Validate handler is raised on server after deserialization.
             </summary>
         </member>
+        <member name="F:VRage.Sync.Sync`2.ValueChangedFromTo">
+            <summary>
+            Event fired when value is changing. Tracks also old value 
+            </summary>
+        </member>
         <member name="P:VRage.Sync.Sync`2.Enabled">
             <summary>
             Only synchronizes with server/client if enabled.

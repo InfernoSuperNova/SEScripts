@@ -100,3 +100,5 @@
 /home/deltawing/repos/ArgusLiteMDK2/GCE/obj/x64/Debug/netframework48/GCE.dll
 /home/deltawing/repos/ArgusLiteMDK2/GCE/obj/x64/Debug/netframework48/GCE.pdb
 /home/deltawing/repos/ArgusLiteMDK2/GCE/obj/x64/Debug/netframework48/GCE.sourcelink.json
+/home/delta/RiderProjects/SEScripts/GCE/obj/x64/Debug/netframework48/GCE.dll
+/home/delta/RiderProjects/SEScripts/GCE/obj/x64/Debug/netframework48/GCE.pdb

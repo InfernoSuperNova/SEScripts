@@ -100,3 +100,5 @@
 /home/deltawing/repos/ArgusLiteMDK2/AutoReDock/obj/x64/Debug/netframework48/AutoReDock.dll
 /home/deltawing/repos/ArgusLiteMDK2/AutoReDock/obj/x64/Debug/netframework48/AutoReDock.pdb
 /home/deltawing/repos/ArgusLiteMDK2/AutoReDock/obj/x64/Debug/netframework48/AutoReDock.sourcelink.json
+/home/delta/RiderProjects/SEScripts/AutoReDock/obj/x64/Debug/netframework48/AutoReDock.dll
+/home/delta/RiderProjects/SEScripts/AutoReDock/obj/x64/Debug/netframework48/AutoReDock.pdb

@@ -1,13 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "0jRlR4fkLA8=",
+  "dgSpecHash": "1wU4z/FpdYQ=",
   "success": true,
-  "projectFilePath": "/home/deltawing/repos/ArgusLiteMDK2/ItemStacker/ItemStacker.csproj",
+  "projectFilePath": "/home/delta/RiderProjects/SEScripts/ItemStacker/ItemStacker.csproj",
   "expectedPackageFiles": [
-    "/home/deltawing/.nuget/packages/mal.mdk2.pbanalyzers/2.1.9/mal.mdk2.pbanalyzers.2.1.9.nupkg.sha512",
-    "/home/deltawing/.nuget/packages/mal.mdk2.pbpackager/2.0.8/mal.mdk2.pbpackager.2.0.8.nupkg.sha512",
-    "/home/deltawing/.nuget/packages/microsoft.netframework.referenceassemblies/1.0.3/microsoft.netframework.referenceassemblies.1.0.3.nupkg.sha512",
-    "/home/deltawing/.nuget/packages/microsoft.netframework.referenceassemblies.net48/1.0.3/microsoft.netframework.referenceassemblies.net48.1.0.3.nupkg.sha512"
+    "/home/delta/.nuget/packages/mal.mdk2.pbanalyzers/2.1.13/mal.mdk2.pbanalyzers.2.1.13.nupkg.sha512",
+    "/home/delta/.nuget/packages/mal.mdk2.pbpackager/2.1.7/mal.mdk2.pbpackager.2.1.7.nupkg.sha512",
+    "/home/delta/.nuget/packages/microsoft.netframework.referenceassemblies/1.0.3/microsoft.netframework.referenceassemblies.1.0.3.nupkg.sha512",
+    "/home/delta/.nuget/packages/microsoft.netframework.referenceassemblies.net48/1.0.3/microsoft.netframework.referenceassemblies.net48.1.0.3.nupkg.sha512"
   ],
   "logs": []
 }

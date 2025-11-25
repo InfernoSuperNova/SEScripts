@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using IngameScript.Helper;
 using IngameScript.Ship.Components;
 using VRageMath;
 
@@ -17,6 +18,7 @@ namespace IngameScript.Ship
 
         public ArgusShip()
         {
+            Program.LogLine("New ArgusShip", LogLevel.Debug);
             RandomUpdateJitter = Program.RNG.Next() % 600;
         }
         

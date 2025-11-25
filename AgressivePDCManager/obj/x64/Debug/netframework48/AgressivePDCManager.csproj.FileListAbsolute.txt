@@ -100,3 +100,5 @@
 /home/deltawing/repos/ArgusLiteMDK2/AgressivePDCManager/obj/x64/Debug/netframework48/AgressivePDCManager.dll
 /home/deltawing/repos/ArgusLiteMDK2/AgressivePDCManager/obj/x64/Debug/netframework48/AgressivePDCManager.pdb
 /home/deltawing/repos/ArgusLiteMDK2/AgressivePDCManager/obj/x64/Debug/netframework48/AgressivePDCManager.sourcelink.json
+/home/delta/RiderProjects/SEScripts/AgressivePDCManager/obj/x64/Debug/netframework48/AgressivePDCManager.dll
+/home/delta/RiderProjects/SEScripts/AgressivePDCManager/obj/x64/Debug/netframework48/AgressivePDCManager.pdb

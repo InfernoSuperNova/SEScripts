@@ -100,3 +100,5 @@
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/obj/x64/Debug/netframework48/ArtificialMassVIsualizer.dll
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/obj/x64/Debug/netframework48/ArtificialMassVIsualizer.pdb
 /home/deltawing/repos/ArgusLiteMDK2/ArtificialMassVIsualizer/obj/x64/Debug/netframework48/ArtificialMassVIsualizer.sourcelink.json
+/home/delta/RiderProjects/SEScripts/ArtificialMassVIsualizer/obj/x64/Debug/netframework48/ArtificialMassVIsualizer.dll
+/home/delta/RiderProjects/SEScripts/ArtificialMassVIsualizer/obj/x64/Debug/netframework48/ArtificialMassVIsualizer.pdb

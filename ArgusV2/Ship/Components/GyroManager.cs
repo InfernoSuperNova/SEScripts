@@ -15,6 +15,7 @@ namespace IngameScript.Ship.Components
         
         public GyroManager(List<IMyTerminalBlock> blocks)
         {
+            Program.LogLine("Setting up gyro manager", LogLevel.Info);
             _gyros = new List<IMyGyro>();
             foreach (var b in blocks)
             {
@@ -24,6 +25,8 @@ namespace IngameScript.Ship.Components
                     _gyros.Add(gyro);
                 }
             }
+            
+            if (_gyros.Count <= 0) Program.LogLine($"No gyroscopes found in group: {Config.GroupName}", LogLevel.Warning);
             
             
             _pitch = new PIDController(Config.ProportialGain, Config.IntegralGain, Config.DerivativeGain, 

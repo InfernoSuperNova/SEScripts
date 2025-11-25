@@ -100,3 +100,5 @@
 /home/deltawing/repos/ArgusLiteMDK2/BaRBoost/obj/x64/Debug/netframework48/BaRBoost.dll
 /home/deltawing/repos/ArgusLiteMDK2/BaRBoost/obj/x64/Debug/netframework48/BaRBoost.pdb
 /home/deltawing/repos/ArgusLiteMDK2/BaRBoost/obj/x64/Debug/netframework48/BaRBoost.sourcelink.json
+/home/delta/RiderProjects/SEScripts/BaRBoost/obj/x64/Debug/netframework48/BaRBoost.dll
+/home/delta/RiderProjects/SEScripts/BaRBoost/obj/x64/Debug/netframework48/BaRBoost.pdb

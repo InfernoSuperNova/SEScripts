@@ -100,3 +100,5 @@
 /home/deltawing/repos/ArgusLiteMDK2/ItemStacker/obj/x64/Debug/netframework48/ItemStacker.dll
 /home/deltawing/repos/ArgusLiteMDK2/ItemStacker/obj/x64/Debug/netframework48/ItemStacker.pdb
 /home/deltawing/repos/ArgusLiteMDK2/ItemStacker/obj/x64/Debug/netframework48/ItemStacker.sourcelink.json
+/home/delta/RiderProjects/SEScripts/ItemStacker/obj/x64/Debug/netframework48/ItemStacker.dll
+/home/delta/RiderProjects/SEScripts/ItemStacker/obj/x64/Debug/netframework48/ItemStacker.pdb

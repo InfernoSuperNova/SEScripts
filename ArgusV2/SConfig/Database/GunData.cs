@@ -1,12 +1,9 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using IngameScript.Helper;
-using IngameScript.Helper;
-using IngameScript.SConfig;
 using IngameScript.Ship.Components;
-using VRage.Game.ModAPI.Ingame.Utilities;
 
-namespace IngameScript.Database
+namespace IngameScript.SConfig.Database
 {
     public class ProjectileData
     {
@@ -35,7 +32,7 @@ namespace IngameScript.Database
 
         public static void Init()
         {
-            
+            Program.LogLine("Projectile data loaded", LogLevel.Debug);
         }
         
         
@@ -79,7 +76,24 @@ namespace IngameScript.Database
         }
         private static void SetConfig(Dictionary<string, object> config)
         {
-            
+            Dwon.UnwrapAllComments(config);
+
+            foreach (var kv in config)
+            {
+                var data = (Dictionary<string, object>)kv.Value;
+                
+                var existing  = LookupTable[kv.Key] ?? DefaultProjectile;
+                
+                var projectileVelocity = Dwon.GetValue(data,  "ProjectileVelocity", existing.ProjectileVelocity);
+                var maxVelocity = Dwon.GetValue(data,  "MaxVelocity", existing.MaxVelocity);
+                var maxRange = Dwon.GetValue(data,  "MaxRange", existing.MaxRange);
+                var acceleration = Dwon.GetValue(data, "Acceleration", existing.Acceleration);
+                
+                
+                
+                var gunData = new ProjectileData(projectileVelocity, maxVelocity, maxRange, acceleration);
+                LookupTable[kv.Key] = gunData;
+            }
         }
     }
     
@@ -117,7 +131,7 @@ namespace IngameScript.Database
         
         public static void Init()
         {
-            
+            Program.LogLine("Gun data loaded", LogLevel.Debug);
         }
         
         public static GunData Get(string nameThing)
@@ -160,8 +174,8 @@ namespace IngameScript.Database
                 gunData["Projectile"] = values._projectileDataString;
                 gunData["ReloadType"] = new Dwon.Comment((int)values.ReloadType, "0 = normal, 1 = charged");
                 gunData["FireType"] = new Dwon.Comment((int)values.FireType,"0 = normal, 1 = delay before firing") ;
-                gunData["FireTimeFrames"] = values.FireTimeFrames;
-                gunData["ReloadTimeFrames"] = values.ReloadTimeFrames;
+                gunData["FireTime"] = values.FireTime;
+                gunData["ReloadTime"] = values.ReloadTime;
 
                 root[name] = gunData;
             }
@@ -171,7 +185,25 @@ namespace IngameScript.Database
         
         private static void SetConfig(Dictionary<string, object> config)
         {
-            
+            Dwon.UnwrapAllComments(config);
+
+            foreach (var kv in config)
+            {
+                var data = (Dictionary<string, object>)kv.Value;
+                
+                var existing  = LookupTable[kv.Key] ?? DefaultGun;
+
+
+                var projectile = Dwon.GetValue(data, "Projectile", existing._projectileDataString);
+                var gunReloadType = Dwon.GetValue(data,  "ReloadType", existing.ReloadType);
+                var fireType = Dwon.GetValue(data,  "FireType", existing.FireType);
+                var fireTime = Dwon.GetValue(data,  "FireTime", existing.FireTime);
+                var reloadTime = Dwon.GetValue(data,  "ReloadTime", existing.ReloadTime);
+                
+                
+                var gunData = new GunData(projectile, gunReloadType, fireType, fireTime, reloadTime);
+                LookupTable[kv.Key] = gunData;
+            }
         }
         
     }

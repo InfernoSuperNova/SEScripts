@@ -1,0 +1,66 @@
+
+
+using System.Collections.Generic;
+using IngameScript.Helper;
+using IngameScript.Ship.Components.Propulsion.Gravity;
+using IngameScript.Ship.Components.Propulsion.Thruster;
+using Sandbox.ModAPI.Ingame;
+using VRageMath;
+
+namespace IngameScript.Ship.Components.Propulsion
+{
+    public class PropulsionController
+    {
+        private GDrive _gDrive;
+        private TDrive _tDrive;
+        private ControllableShip _ship;
+
+        public PropulsionController(List<IMyTerminalBlock> blocks, ControllableShip ship)
+        {
+            Program.LogLine($"Setting up propulsion controller", LogLevel.Info);
+            _ship = ship;
+            _gDrive = new GDrive(blocks, ship);
+            _tDrive = new TDrive(); // TODO
+        }
+
+        public void EarlyUpdate(int frame)
+        {
+            // Put logic to discern propulsion here?
+            
+            _gDrive.EarlyUpdate(frame);
+            _tDrive.EarlyUpdate(frame);
+        }
+
+        public void LateUpdate(int frame)
+        {
+            var userInput = _ship.Controller.MoveIndicator;
+
+            Matrix matrix; // TODO: Cache cockpit local orientation matrix
+            _ship.Controller.Orientation.GetMatrix(out matrix);
+
+            var desiredMovement = Vector3.Transform(userInput, matrix);
+
+            if (_ship.Controller.DampenersOverride)
+            {
+                var velocity = _ship.Velocity;
+                var localVelocity = Vector3D.TransformNormal(velocity, MatrixD.Invert(_ship.WorldMatrix)); // TODO: Cache inverted matrix somewhere in ship
+
+                // TODO: Integrate ship mass and total force in each direction for proper dampening results
+                var dampenValueForwardBackward = localVelocity * Vector3D.Forward;
+                var dampenValueLeftRight = localVelocity * Vector3D.Left;
+                var dampenValueUpDown = localVelocity * Vector3D.Down;
+
+                if (desiredMovement.Dot(Vector3D.Forward) == 0) desiredMovement += dampenValueForwardBackward;
+                if (desiredMovement.Dot(Vector3D.Left) == 0) desiredMovement += dampenValueLeftRight;
+                if (desiredMovement.Dot(Vector3D.Down) == 0) desiredMovement += dampenValueUpDown;
+            }
+            
+            
+            // Put logic to resolve propulsion here?
+            _gDrive.ApplyPropulsion(desiredMovement);
+            _gDrive.LateUpdate(frame);
+            _tDrive.LateUpdate(frame);
+        }
+        
+    }
+}

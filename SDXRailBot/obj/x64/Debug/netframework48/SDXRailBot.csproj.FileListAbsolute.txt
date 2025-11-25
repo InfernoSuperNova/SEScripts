@@ -100,3 +100,5 @@
 /home/deltawing/repos/ArgusLiteMDK2/SDXRailBot/obj/x64/Debug/netframework48/SDXRailBot.dll
 /home/deltawing/repos/ArgusLiteMDK2/SDXRailBot/obj/x64/Debug/netframework48/SDXRailBot.pdb
 /home/deltawing/repos/ArgusLiteMDK2/SDXRailBot/obj/x64/Debug/netframework48/SDXRailBot.sourcelink.json
+/home/delta/RiderProjects/SEScripts/SDXRailBot/obj/x64/Debug/netframework48/SDXRailBot.dll
+/home/delta/RiderProjects/SEScripts/SDXRailBot/obj/x64/Debug/netframework48/SDXRailBot.pdb

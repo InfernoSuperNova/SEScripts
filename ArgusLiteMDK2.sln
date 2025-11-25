@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgusV2", "ArgusV2\ArgusV2.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Garbage", "Garbage\Garbage.csproj", "{B0A5BE25-BDCF-42EB-9E52-6064DF3A0A50}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BallBaller", "BallBaller\BallBaller.csproj", "{A21CC316-1584-4149-BDE7-A9EE357C3EA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -123,6 +125,10 @@ Global
 		{B0A5BE25-BDCF-42EB-9E52-6064DF3A0A50}.Debug|x64.Build.0 = Debug|x64
 		{B0A5BE25-BDCF-42EB-9E52-6064DF3A0A50}.Release|x64.ActiveCfg = Release|x64
 		{B0A5BE25-BDCF-42EB-9E52-6064DF3A0A50}.Release|x64.Build.0 = Release|x64
+		{A21CC316-1584-4149-BDE7-A9EE357C3EA2}.Debug|x64.ActiveCfg = Debug|x64
+		{A21CC316-1584-4149-BDE7-A9EE357C3EA2}.Debug|x64.Build.0 = Debug|x64
+		{A21CC316-1584-4149-BDE7-A9EE357C3EA2}.Release|x64.ActiveCfg = Release|x64
+		{A21CC316-1584-4149-BDE7-A9EE357C3EA2}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

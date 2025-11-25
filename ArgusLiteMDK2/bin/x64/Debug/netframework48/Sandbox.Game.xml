@@ -65,10 +65,9 @@
             Enable asteroid rotation
             </summary>
         </member>
-        <member name="F:Sandbox.Definitions.MyBlueprintDefinitionBase.Item.Amount">
+        <member name="F:Sandbox.Definitions.MyBlueprintDefinitionBase.Atomic">
             <summary>
-            Amount of item required or produced. For discrete objects this refers to
-            pieces. For ingots and ore, this refers to volume in m^3.
+            Whether the blueprint's outputs have to be produced as a whole at once (because you cannot divide some output items)
             </summary>
         </member>
         <member name="F:Sandbox.Definitions.MyBlueprintDefinitionBase.BaseProductionTimeInSeconds">
@@ -82,11 +81,6 @@
             Total volume of products created by one unit of blueprint. This is for production calculation purposes.
             </summary>
         </member>
-        <member name="F:Sandbox.Definitions.MyBlueprintDefinitionBase.Atomic">
-            <summary>
-            Whether the the blueprint's outputs have to be produced as a whole at once (because you cannot divide some output items)
-            </summary>
-        </member>
         <member name="F:Sandbox.Definitions.MyBlueprintDefinitionBase.Priority">
             <summary>
             Priority for sorting inside production screen within tabs. Higher priority blueprints will show up before the others
@@ -94,12 +88,18 @@
         </member>
         <member name="P:Sandbox.Definitions.MyBlueprintDefinitionBase.PostprocessNeeded">
             <summary>
-            Whether the Postprocess method still needs to be called.
+            Whether the postprocess method still needs to be called.
             </summary>
         </member>
         <member name="M:Sandbox.Definitions.MyBlueprintDefinitionBase.GetBlueprints(System.Collections.Generic.List{Sandbox.Definitions.MyBlueprintDefinitionBase.ProductionInfo})">
             <summary>
             Should return the number of added blueprints (to make building hierarchical blueprint production infos easier)
+            </summary>
+        </member>
+        <member name="F:Sandbox.Definitions.MyBlueprintDefinitionBase.Item.Amount">
+            <summary>
+            Amount of item required or produced. For discrete objects this refers to
+            pieces. For ingots and ore, this refers to volume in m^3.
             </summary>
         </member>
         <member name="P:Sandbox.Definitions.MyCharacterDefinition.UseNewAnimationSystem">
@@ -1538,7 +1538,7 @@
         </member>
         <member name="M:Sandbox.Game.Entities.Cube.MyGridClipboard.GetTouchingGrids(Sandbox.Game.Entities.MyCubeGrid,VRage.Game.ObjectBuilders.Definitions.SessionComponents.MyGridPlacementSettings,System.UInt64)">
             <summary>
-            Gets grids that are touching given grid. It's used for diciding if grids should be merged on later stage.
+            Gets grids that are touching given grid. It's used for deciding if grids should be merged on later stage.
             </summary>
             <param name="grid">Grid to be tested.</param>
             <param name="settings">Settings used for the test.</param>
@@ -3640,6 +3640,12 @@
             This will be called back from the sync object both on local and remote clients
             </summary>
         </member>
+        <member name="M:Sandbox.Game.Entities.IMyControllableEntity.CleanControls">
+            <summary>
+            Implementation should clear previousControlled entities and cameras. They are no longer valid.
+            Called on game load, if player is not online
+            </summary>
+        </member>
         <member name="P:Sandbox.Game.Entities.IMyGunBaseUser.AmmoInventory">
             <summary>
             The inventory in which the weapon searches for additional ammo
@@ -4666,6 +4672,13 @@
             <summary>
             event params: oldEntity, newEntity
             </summary>
+        </member>
+        <member name="M:Sandbox.Game.World.MyEntityController.GetControlChain(System.Int64)">
+            <summary>
+            CTC -> Remote control -> Cockpit -> Character
+            </summary>
+            <param name="entityId"></param>
+            <returns></returns>
         </member>
         <member name="M:Sandbox.Game.World.MyGlobalEventFactory.CreateEvent``1(VRage.Game.MyDefinitionId,System.Int64)">
             <summary>
@@ -7866,6 +7879,53 @@
             used to test if interacted entity is still connected with open inventory interacted entity
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:Sandbox.Game.Screens.ViewModels.IMyFarmPlotLogicViewModel">
+            <summary>
+            Client-side interface whose method request a given functionality from the server.
+            </summary>
+        </member>
+        <member name="E:Sandbox.Game.Screens.ViewModels.IMyFarmPlotLogicViewModel.OnPlantResult">
+            <summary>
+            Triggered when a plant action has been completed on the server.
+            The bool indicates whether the action was successful.
+            </summary>
+        </member>
+        <member name="E:Sandbox.Game.Screens.ViewModels.IMyFarmPlotLogicViewModel.OnHarvestResult">
+            <summary>
+            Triggered when a harvest action has been completed on the server.
+            The bool indicates whether the action was successful.
+            </summary>
+        </member>
+        <member name="M:Sandbox.Game.Screens.ViewModels.IMyFarmPlotLogicViewModel.IsSeedItemWhitelisted(VRage.Game.ModAPI.IMyInventoryItem)">
+            <summary>
+            Whether the given item is a whitelisted seed. To be used as a preliminary client-side UI check.
+            </summary>
+            <returns>True if the item is a seed and is allowed in this farm plot, false otherwise.</returns>
+        </member>
+        <member name="M:Sandbox.Game.Screens.ViewModels.IMyFarmPlotLogicViewModel.RequestPlantSeed(VRage.Game.MyDefinitionId)">
+            <summary>
+            Plants a given seed and starts growing the plant. The specified seed item will be removed from the current player's inventory.
+            </summary>
+            <param name="seedItemDefinitionId">Needs to be of MySeedItemDefinition type.</param>
+        </member>
+        <member name="M:Sandbox.Game.Screens.ViewModels.IMyFarmPlotLogicViewModel.RequestPlantSeed(VRage.Game.ModAPI.IMyInventoryItem)">
+            <summary>
+            Plants a given seed and starts growing the plant. The specified seed item will be removed from the current player's inventory.
+            </summary>
+            <param name="inventoryItem">Needs to have an item with content of type MySeedItemDefinition.</param>
+        </member>
+        <member name="M:Sandbox.Game.Screens.ViewModels.IMyFarmPlotLogicViewModel.RequestHarvest(System.Boolean)">
+            <summary>
+            Harvests the plant and puts the output items into the current player's inventory.
+            </summary>
+            <param name="removeDeadPlant">Whether the farm plot should get cleared during this action if the plant is dead.</param>
+        </member>
+        <member name="M:Sandbox.Game.Screens.ViewModels.IMyFarmPlotLogicViewModel.RequestRemovePlant(System.Boolean)">
+            <summary>
+            Removes the currently planted plant and its seed.
+            </summary>
+            <param name="playEffects">Whether the "gather" sound and particle effects specified in block's definition should be played.</param>
         </member>
         <member name="P:Sandbox.Game.Screens.ViewModels.MyEditFactionIconViewModel.ImageIconPath">
             <summary>
@@ -11209,6 +11269,16 @@
              CycleHUD
             </summary>
         </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BuildScreenControl">
+            <summary>
+             BuildScreenControl
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.PaintColor">
+            <summary>
+             PaintColor
+            </summary>
+        </member>
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.Dampeners">
             <summary>
              Dampeners
@@ -11277,6 +11347,11 @@
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Space_Wolf">
             <summary>
              DisplayName_Space_Wolf
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Astronaut">
+            <summary>
+             DisplayName_Astronaut
             </summary>
         </member>
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.DefinitionError_BlockWithComputerNotTerminalBlock">
@@ -13097,6 +13172,11 @@
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_LandingGear">
             <summary>
              DisplayName_Block_LandingGear
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_LandingGearReskin">
+            <summary>
+             DisplayName_Block_LandingGearReskin
             </summary>
         </member>
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_LargeAtmoThrust">
@@ -16642,6 +16722,21 @@
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.NotificationHintPressToOpenPlantManagement">
             <summary>
              NotificationHintPressToOpenPlantManagement
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.NotificationHintPressToHarvest">
+            <summary>
+             NotificationHintPressToHarvest
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.NotificationHintPressToPlant">
+            <summary>
+             NotificationHintPressToPlant
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.NotificationFarmPlotOccupied">
+            <summary>
+             NotificationFarmPlotOccupied
             </summary>
         </member>
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.NotificationHintPressToRechargeInMedicalRoom">
@@ -20747,6 +20842,51 @@
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.ToolTipItemFilter_GenericProductionBlockOutput">
             <summary>
              ToolTipItemFilter_GenericProductionBlockOutput
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.ToolTipItemFilter_FoodProcessorInput">
+            <summary>
+             ToolTipItemFilter_FoodProcessorInput
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.ToolTipItemFilter_IceInput">
+            <summary>
+             ToolTipItemFilter_IceInput
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.ToolTipItemFilter_IceWaterInput">
+            <summary>
+             ToolTipItemFilter_IceWaterInput
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.ToolTipItemFilter_OxygenBottlesInput">
+            <summary>
+             ToolTipItemFilter_OxygenBottlesInput
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.ToolTipItemFilter_HydrogenBottlesInput">
+            <summary>
+             ToolTipItemFilter_HydrogenBottlesInput
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.ToolTipItemFilter_RefineryInput">
+            <summary>
+             ToolTipItemFilter_RefineryInput
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.ToolTipItemFilter_BasicRefineryInput">
+            <summary>
+             ToolTipItemFilter_BasicRefineryInput
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.ToolTipItemFilter_AssemblerInput">
+            <summary>
+             ToolTipItemFilter_AssemblerInput
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.ToolTipItemFilter_SurvivalKitInput">
+            <summary>
+             ToolTipItemFilter_SurvivalKitInput
             </summary>
         </member>
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.ToolTipItemFilter_Missile200mm">
@@ -25884,9 +26024,79 @@
              DisplayName_InventoryConstraint_PersonalItems
             </summary>
         </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_InventoryConstraint_Algae">
+            <summary>
+             DisplayName_InventoryConstraint_Algae
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_InventoryConstraint_HandTools">
+            <summary>
+             DisplayName_InventoryConstraint_HandTools
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_InventoryConstraint_HandWeapons">
+            <summary>
+             DisplayName_InventoryConstraint_HandWeapons
+            </summary>
+        </member>
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_InventoryConstraint_Components">
             <summary>
              DisplayName_InventoryConstraint_Components
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_InventoryConstraint_BlockWeaponAmmo">
+            <summary>
+             DisplayName_InventoryConstraint_BlockWeaponAmmo
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_InventoryConstraint_BlockWeaponInteriorTurret">
+            <summary>
+             DisplayName_InventoryConstraint_BlockWeaponInteriorTurret
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_InventoryConstraint_BlockWeaponGatlingAmmo">
+            <summary>
+             DisplayName_InventoryConstraint_BlockWeaponGatlingAmmo
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_InventoryConstraint_BlockWeaponAutocannonAmmo">
+            <summary>
+             DisplayName_InventoryConstraint_BlockWeaponAutocannonAmmo
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_InventoryConstraint_BlockWeaponRocket">
+            <summary>
+             DisplayName_InventoryConstraint_BlockWeaponRocket
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_InventoryConstraint_BlockWeaponMediumShell">
+            <summary>
+             DisplayName_InventoryConstraint_BlockWeaponMediumShell
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_InventoryConstraint_BlockWeaponLargeShell">
+            <summary>
+             DisplayName_InventoryConstraint_BlockWeaponLargeShell
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_InventoryConstraint_BlockWeaponRailgun">
+            <summary>
+             DisplayName_InventoryConstraint_BlockWeaponRailgun
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_InventoryConstraint_BlockWeaponFireworks">
+            <summary>
+             DisplayName_InventoryConstraint_BlockWeaponFireworks
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_InventoryConstraint_MedicalSupplies">
+            <summary>
+             DisplayName_InventoryConstraint_MedicalSupplies
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_InventoryConstraint_ZoneChips">
+            <summary>
+             DisplayName_InventoryConstraint_ZoneChips
             </summary>
         </member>
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_TSS_ClockAnalog">
@@ -26687,6 +26897,11 @@
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.RadialMenuGroupTitle_QuickActions">
             <summary>
              RadialMenuGroupTitle_QuickActions
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.RadialMenuGroupTitle_Seeds">
+            <summary>
+             RadialMenuGroupTitle_Seeds
             </summary>
         </member>
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.RadialMenuGroupTitle_Menu">
@@ -29357,6 +29572,11 @@
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Category_FoodItems">
             <summary>
              DisplayName_Category_FoodItems
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Category_Seeds">
+            <summary>
+             DisplayName_Category_Seeds
             </summary>
         </member>
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Item_Powerkit">
@@ -39529,6 +39749,11 @@
              DisplayName_Category_DLC_Contact
             </summary>
         </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Category_DLC_CoreSystems">
+            <summary>
+             DisplayName_Category_DLC_CoreSystems
+            </summary>
+        </member>
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Category_DLC_DecorativePack">
             <summary>
              DisplayName_Category_DLC_DecorativePack
@@ -40252,6 +40477,11 @@
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_DLC_Contact">
             <summary>
              DisplayName_DLC_Contact
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_DLC_CoreSystems">
+            <summary>
+             DisplayName_DLC_CoreSystems
             </summary>
         </member>
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_DLC_Fieldwork">
@@ -42719,6 +42949,16 @@
              BlockPropertyProperties_WaterUsage
             </summary>
         </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockPropertyProperties_MaxResourceOutput">
+            <summary>
+             BlockPropertyProperties_MaxResourceOutput
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockPropertyProperties_OxygenDisabled">
+            <summary>
+             BlockPropertyProperties_OxygenDisabled
+            </summary>
+        </member>
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockPropertyProperties_CauseOfDeath">
             <summary>
              BlockPropertyProperties_CauseOfDeath
@@ -42929,6 +43169,11 @@
              SurvivalBuff_ViewAllBuffs
             </summary>
         </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.SurvivalBuff_ViewAllBuffs_Gamepad">
+            <summary>
+             SurvivalBuff_ViewAllBuffs_Gamepad
+            </summary>
+        </member>
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.SurvivalBuff_BuffsLostTitle">
             <summary>
              SurvivalBuff_BuffsLostTitle
@@ -42979,9 +43224,19 @@
              MessageBox_Caption_InsufficientSeedsWarning
             </summary>
         </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.MessageBox_Caption_UnableToPlantWarning">
+            <summary>
+             MessageBox_Caption_UnableToPlantWarning
+            </summary>
+        </member>
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.MessageBox_Text_InsufficientSeedsWarning">
             <summary>
              MessageBox_Text_InsufficientSeedsWarning
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.MessageBox_Text_SeedNotAllowedWarning">
+            <summary>
+             MessageBox_Text_SeedNotAllowedWarning
             </summary>
         </member>
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.BuffScreen_NoActiveBuffs">
@@ -43957,6 +44212,356 @@
         <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockPropertyProperties_CurrentProgress">
             <summary>
              BlockPropertyProperties_CurrentProgress
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.TradeWindow_InventoryFull">
+            <summary>
+             TradeWindow_InventoryFull
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.TradeWindow_OfferNotAccepted">
+            <summary>
+             TradeWindow_OfferNotAccepted
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_ConduitBoxesInv">
+            <summary>
+             DisplayName_Block_ConduitBoxesInv
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_ConduitJunctionInv">
+            <summary>
+             DisplayName_Block_ConduitJunctionInv
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_ConduitLightInv">
+            <summary>
+             DisplayName_Block_ConduitLightInv
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Category_DLC_208">
+            <summary>
+             DisplayName_Category_DLC_208
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_SuspendedControlSeat">
+            <summary>
+             DisplayName_Block_SuspendedControlSeat
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_SuspendedControlSeatB">
+            <summary>
+             DisplayName_Block_SuspendedControlSeatB
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_ConvSorterTypes_Consumables">
+            <summary>
+             DisplayName_ConvSorterTypes_Consumables
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_ConvSorterTypes_Seeds">
+            <summary>
+             DisplayName_ConvSorterTypes_Seeds
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_BedFree">
+            <summary>
+             DisplayName_Block_BedFree
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.Description_RoundEdgeBlock">
+            <summary>
+             Description_RoundEdgeBlock
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_RoundEdgeA">
+            <summary>
+             DisplayName_Block_RoundEdgeA
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_RoundEdgeB">
+            <summary>
+             DisplayName_Block_RoundEdgeB
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_RoundEdgeC">
+            <summary>
+             DisplayName_Block_RoundEdgeC
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_RoundEdgeCorner">
+            <summary>
+             DisplayName_Block_RoundEdgeCorner
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_RoundEdgeCornerB">
+            <summary>
+             DisplayName_Block_RoundEdgeCornerB
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_RoundEdgeCornerInv">
+            <summary>
+             DisplayName_Block_RoundEdgeCornerInv
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_RoundEdgeCornerInvB">
+            <summary>
+             DisplayName_Block_RoundEdgeCornerInvB
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_RoundEdgeSlopeBase">
+            <summary>
+             DisplayName_Block_RoundEdgeSlopeBase
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_RoundEdgeSlopeTip">
+            <summary>
+             DisplayName_Block_RoundEdgeSlopeTip
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_RoundHalfEdge">
+            <summary>
+             DisplayName_Block_RoundHalfEdge
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_RoundHalfEdgeCorner">
+            <summary>
+             DisplayName_Block_RoundHalfEdgeCorner
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_RoundHalfEdgeCornerB">
+            <summary>
+             DisplayName_Block_RoundHalfEdgeCornerB
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_RoundHalfEdgeCornerInv">
+            <summary>
+             DisplayName_Block_RoundHalfEdgeCornerInv
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_RoundHalfEdgeCornerInvB">
+            <summary>
+             DisplayName_Block_RoundHalfEdgeCornerInvB
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetAngleDeviation">
+            <summary>
+             BlockActionTitle_SetAngleDeviation
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetAngleDeviationLabel">
+            <summary>
+             BlockActionTitle_SetAngleDeviationLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetGravityAcceleration">
+            <summary>
+             BlockActionTitle_SetGravityAcceleration
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetGravityAccelerationLabel">
+            <summary>
+             BlockActionTitle_SetGravityAccelerationLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetJumpDistance">
+            <summary>
+             BlockActionTitle_SetJumpDistance
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetJumpDistanceLabel">
+            <summary>
+             BlockActionTitle_SetJumpDistanceLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetRadiusLabel">
+            <summary>
+             BlockActionTitle_SetRadiusLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetHudText">
+            <summary>
+             BlockActionTitle_SetHudText
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetHudTextLabel">
+            <summary>
+             BlockActionTitle_SetHudTextLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_CenteredDoor">
+            <summary>
+             DisplayName_Block_CenteredDoor
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_CenteredDoorGlass">
+            <summary>
+             DisplayName_Block_CenteredDoorGlass
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_HalfCenteredDoor">
+            <summary>
+             DisplayName_Block_HalfCenteredDoor
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_HalfCenteredDoorGlass">
+            <summary>
+             DisplayName_Block_HalfCenteredDoorGlass
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_LargeHydrogenThrustReskin">
+            <summary>
+             DisplayName_Block_LargeHydrogenThrustReskin
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_SmallHydrogenThrustReskin">
+            <summary>
+             DisplayName_Block_SmallHydrogenThrustReskin
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetSensorLeft">
+            <summary>
+             BlockActionTitle_SetSensorLeft
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetSensorLeftLabel">
+            <summary>
+             BlockActionTitle_SetSensorLeftLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetSensorRight">
+            <summary>
+             BlockActionTitle_SetSensorRight
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetSensorRightLabel">
+            <summary>
+             BlockActionTitle_SetSensorRightLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetSensorBottom">
+            <summary>
+             BlockActionTitle_SetSensorBottom
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetSensorBottomLabel">
+            <summary>
+             BlockActionTitle_SetSensorBottomLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetSensorTop">
+            <summary>
+             BlockActionTitle_SetSensorTop
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetSensorTopLabel">
+            <summary>
+             BlockActionTitle_SetSensorTopLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetSensorBack">
+            <summary>
+             BlockActionTitle_SetSensorBack
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetSensorBackLabel">
+            <summary>
+             BlockActionTitle_SetSensorBackLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetSensorFront">
+            <summary>
+             BlockActionTitle_SetSensorFront
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetSensorFrontLabel">
+            <summary>
+             BlockActionTitle_SetSensorFrontLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetBroadcastRadius">
+            <summary>
+             BlockActionTitle_SetBroadcastRadius
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetBroadcastRadiusLabel">
+            <summary>
+             BlockActionTitle_SetBroadcastRadiusLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetPower">
+            <summary>
+             BlockActionTitle_SetPower
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetPowerLabel">
+            <summary>
+             BlockActionTitle_SetPowerLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetPitch">
+            <summary>
+             BlockActionTitle_SetPitch
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetPitchLabel">
+            <summary>
+             BlockActionTitle_SetPitchLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetYaw">
+            <summary>
+             BlockActionTitle_SetYaw
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetYawLabel">
+            <summary>
+             BlockActionTitle_SetYawLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetRoll">
+            <summary>
+             BlockActionTitle_SetRoll
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetRollLabel">
+            <summary>
+             BlockActionTitle_SetRollLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.Description_SuspendedConstrolSeat">
+            <summary>
+             Description_SuspendedConstrolSeat
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_JumpDriveReskin">
+            <summary>
+             DisplayName_Block_JumpDriveReskin
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_Hydrogen_EngineReskin">
+            <summary>
+             DisplayName_Block_Hydrogen_EngineReskin
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_TrofferLight">
+            <summary>
+             DisplayName_Block_TrofferLight
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_TrofferLightHalf">
+            <summary>
+             DisplayName_Block_TrofferLightHalf
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.BlockActionTitle_SetSpeedLimitLabel">
+            <summary>
+             BlockActionTitle_SetSpeedLimitLabel
+            </summary>
+        </member>
+        <member name="F:Sandbox.Game.Localization.MySpaceTexts.DisplayName_Block_TrofferLightHalfInv">
+            <summary>
+             DisplayName_Block_TrofferLightHalfInv
             </summary>
         </member>
         <member name="F:Sandbox.Game.Multiplayer.MyFactionCollection.AddFactionMsg.FactionId">
@@ -47032,7 +47637,12 @@
             <param name="useWhitelist"></param>
             <param name="onDone"></param>
         </member>
-        <member name="M:Sandbox.Graphics.GUI.MyGuiSandbox.ShowSetValueActionDialog(Sandbox.ModAPI.Ingame.IUserCustomizableTerminalAction,System.Action{System.Boolean},System.Single,System.Single,System.Single,System.String,VRage.Utils.MyStringId,System.Boolean,System.Single)">
+        <member name="M:Sandbox.Graphics.GUI.MyGuiSandbox.ShowSetValueActionDialog(Sandbox.ModAPI.Ingame.IUserCustomizableTerminalAction,System.Action{System.Boolean},System.Single,System.Single,System.Single,System.String,VRage.Utils.MyStringId,System.Boolean,System.Single,System.Action{System.Text.StringBuilder,System.Single},System.Func{System.String,System.Boolean,System.Nullable{System.Single}})">
+            <summary>
+            Shows 2-stage dialog for toolbar action that lets setting custom label and an argument via float slider
+            </summary>
+        </member>
+        <member name="M:Sandbox.Graphics.GUI.MyGuiSandbox.ShowSetValueActionDialog(Sandbox.ModAPI.Ingame.IUserCustomizableTerminalAction,System.Action{System.Boolean},System.String,System.Int32,System.String,VRage.Utils.MyStringId,System.Boolean,System.Single)">
             <summary>
             Shows 2-stage dialog for toolbar action that lets setting custom label and an argument via float slider
             </summary>

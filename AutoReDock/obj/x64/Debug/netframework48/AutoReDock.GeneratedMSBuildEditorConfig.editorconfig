@@ -1,6 +1,6 @@
 is_global = true
-build_property.ProjectDir = /home/deltawing/repos/ArgusLiteMDK2/AutoReDock/
-build_property.ProjectDir = /home/deltawing/repos/ArgusLiteMDK2/AutoReDock/
+build_property.ProjectDir = /home/delta/RiderProjects/SEScripts/AutoReDock/
+build_property.ProjectDir = /home/delta/RiderProjects/SEScripts/AutoReDock/
 build_property.Mdk-IgnorePaths = obj/**/*;MDK/**/*;**/*.debug.cs
 build_property.RootNamespace = IngameScript
 build_property.EnableComHosting = 

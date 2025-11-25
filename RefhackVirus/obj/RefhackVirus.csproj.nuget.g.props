@@ -4,20 +4,20 @@
     <RestoreSuccess Condition=" '$(RestoreSuccess)' == '' ">True</RestoreSuccess>
     <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
     <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">$(MSBuildThisFileDirectory)project.assets.json</ProjectAssetsFile>
-    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">/home/deltawing/.nuget/packages/</NuGetPackageRoot>
-    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">/home/deltawing/.nuget/packages/</NuGetPackageFolders>
+    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">/home/delta/.nuget/packages/</NuGetPackageRoot>
+    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">/home/delta/.nuget/packages/</NuGetPackageFolders>
     <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
     <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">6.14.0</NuGetToolVersion>
   </PropertyGroup>
   <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <SourceRoot Include="/home/deltawing/.nuget/packages/" />
+    <SourceRoot Include="/home/delta/.nuget/packages/" />
   </ItemGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <Import Project="$(NuGetPackageRoot)mal.mdk2.pbpackager/2.0.8/build/Mal.Mdk2.PbPackager.props" Condition="Exists('$(NuGetPackageRoot)mal.mdk2.pbpackager/2.0.8/build/Mal.Mdk2.PbPackager.props')" />
-    <Import Project="$(NuGetPackageRoot)mal.mdk2.pbanalyzers/2.1.9/build/Mal.MDK2.PbAnalyzers.props" Condition="Exists('$(NuGetPackageRoot)mal.mdk2.pbanalyzers/2.1.9/build/Mal.MDK2.PbAnalyzers.props')" />
+    <Import Project="$(NuGetPackageRoot)mal.mdk2.pbpackager/2.1.7/build/Mal.Mdk2.PbPackager.props" Condition="Exists('$(NuGetPackageRoot)mal.mdk2.pbpackager/2.1.7/build/Mal.Mdk2.PbPackager.props')" />
+    <Import Project="$(NuGetPackageRoot)mal.mdk2.pbanalyzers/2.1.13/build/Mal.MDK2.PbAnalyzers.props" Condition="Exists('$(NuGetPackageRoot)mal.mdk2.pbanalyzers/2.1.13/build/Mal.MDK2.PbAnalyzers.props')" />
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <PkgMal_Mdk2_PbPackager Condition=" '$(PkgMal_Mdk2_PbPackager)' == '' ">/home/deltawing/.nuget/packages/mal.mdk2.pbpackager/2.0.8</PkgMal_Mdk2_PbPackager>
-    <PkgMal_Mdk2_PbAnalyzers Condition=" '$(PkgMal_Mdk2_PbAnalyzers)' == '' ">/home/deltawing/.nuget/packages/mal.mdk2.pbanalyzers/2.1.9</PkgMal_Mdk2_PbAnalyzers>
+    <PkgMal_Mdk2_PbPackager Condition=" '$(PkgMal_Mdk2_PbPackager)' == '' ">/home/delta/.nuget/packages/mal.mdk2.pbpackager/2.1.7</PkgMal_Mdk2_PbPackager>
+    <PkgMal_Mdk2_PbAnalyzers Condition=" '$(PkgMal_Mdk2_PbAnalyzers)' == '' ">/home/delta/.nuget/packages/mal.mdk2.pbanalyzers/2.1.13</PkgMal_Mdk2_PbAnalyzers>
   </PropertyGroup>
 </Project>

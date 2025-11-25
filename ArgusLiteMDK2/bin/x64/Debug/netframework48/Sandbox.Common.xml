@@ -578,40 +578,29 @@
             Describes the exposed farm plot logic.
             </summary>
         </member>
-        <member name="E:Sandbox.ModAPI.IMyFarmPlotLogic.OnPlantResult">
-            <summary>
-            Triggered when a plant action has been completed on the server.
-            The bool indicates whether the action was successful.
-            </summary>
-        </member>
-        <member name="E:Sandbox.ModAPI.IMyFarmPlotLogic.OnHarvestResult">
-            <summary>
-            Triggered when a harvest action has been completed on the server.
-            The bool indicates whether the action was successful.
-            </summary>
-        </member>
-        <member name="M:Sandbox.ModAPI.IMyFarmPlotLogic.PlantSeed(VRage.Game.ModAPI.IMyInventoryItem)">
-            <summary>
-            Plants a given seed and starts growing the plant. The specified seed item will be removed from the current player's inventory.
-            </summary>
-            <param name="inventoryItem">Needs to have an item with content of type MySeedItemDefinition.</param>
-        </member>
-        <member name="M:Sandbox.ModAPI.IMyFarmPlotLogic.Harvest(VRage.Game.ModAPI.IMyInventory)">
+        <member name="M:Sandbox.ModAPI.IMyFarmPlotLogic.Harvest(VRage.Game.ModAPI.IMyInventory,System.Boolean)">
             <summary>
             Harvests the plant and puts the output items into the specified inventory. Only works when called from the server. 
             </summary>
             <param name="inventory">The inventory to place the gathered items into.</param>
-        </member>
-        <member name="M:Sandbox.ModAPI.IMyFarmPlotLogic.Harvest">
-            <summary>
-            Harvests the plant and puts the output items into the current player's inventory.
-            </summary>
+            <param name="removeDeadPlant">Whether the farm plot should get cleared during this action if the plant is dead.</param>
+            <returns>Whether the action completed successfully.</returns>
         </member>
         <member name="M:Sandbox.ModAPI.IMyFarmPlotLogic.RemovePlant(System.Boolean)">
             <summary>
-            Removes the currently planted plant and its seed.
+            Removes the currently planted plant and its seed. Only works when called from the server. 
             </summary>
-            <param name="playSound">Whether the "gather" sound specified in block's definition should be played.</param>
+            <param name="playEffects">Whether the "gather" sound and particle effects specified in block's definition should be played.</param>
+            <returns>Whether the action completed successfully.</returns>
+        </member>
+        <member name="M:Sandbox.ModAPI.IMyFarmPlotLogic.PlantSeed(VRage.Game.MyDefinitionId)">
+            <summary>
+            Plants a given seed and starts growing the plant. It is the responsibility of the caller to handle inventory management.
+            This method will just plant the seed from the definition with the necessary amount.
+            Only works when called from the server.
+            </summary>
+            <param name="seedItemDefinitionId">Needs to be of MySeedItemDefinition type.</param>
+            <returns>Whether the action completed successfully.</returns>
         </member>
         <member name="T:Sandbox.ModAPI.IMyFlightMovementBlock">
             <summary>
@@ -2826,6 +2815,11 @@
             Curent buff level
             </summary>
         </member>
+        <member name="P:Sandbox.ModAPI.IMySurvivalBuff.MaxLevel">
+            <summary>
+            Max buff level
+            </summary>
+        </member>
         <member name="P:Sandbox.ModAPI.IMySurvivalBuff.ProgressionTime">
             <summary>
             Time to progress to next buff level in seconds
@@ -4114,6 +4108,11 @@
         <member name="P:Sandbox.ModAPI.Ingame.IMyFarmPlotLogic.IsPlantPlanted">
             <summary>
             Whether a plant is planted, dead or alive.
+            </summary>
+        </member>
+        <member name="P:Sandbox.ModAPI.Ingame.IMyFarmPlotLogic.IsHarvestable">
+            <summary>
+            Whether the plant can be harvested. By default, the block is harvestable if it contains a plant that is fully grown or dead.
             </summary>
         </member>
         <member name="P:Sandbox.ModAPI.Ingame.IMyFarmPlotLogic.OutputItem">
@@ -9062,6 +9061,11 @@
         <member name="P:SpaceEngineers.Game.ModAPI.IMyTurretControlBlock.Pilot">
             <summary>
             Get the character that is currently piloting the controller.
+            </summary>
+        </member>
+        <member name="P:SpaceEngineers.Game.ModAPI.IMyTurretControlBlock.PreviousControlledEntity">
+            <summary>
+            Get the block through which player got control to turret.
             </summary>
         </member>
         <member name="T:SpaceEngineers.Game.ModAPI.Ingame.IMyTurretControlBlock">

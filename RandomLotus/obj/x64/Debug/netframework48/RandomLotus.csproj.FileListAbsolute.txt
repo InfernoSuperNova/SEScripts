@@ -112,3 +112,5 @@
 /home/deltawing/repos/ArgusLiteMDK2/RandomLotus/obj/x64/Debug/netframework48/RandomLotus.dll
 /home/deltawing/repos/ArgusLiteMDK2/RandomLotus/obj/x64/Debug/netframework48/RandomLotus.pdb
 /home/deltawing/repos/ArgusLiteMDK2/RandomLotus/obj/x64/Debug/netframework48/RandomLo.FBEFC719.Up2Date
+/home/delta/RiderProjects/SEScripts/RandomLotus/obj/x64/Debug/netframework48/RandomLotus.dll
+/home/delta/RiderProjects/SEScripts/RandomLotus/obj/x64/Debug/netframework48/RandomLotus.pdb
