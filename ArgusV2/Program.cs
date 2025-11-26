@@ -43,9 +43,16 @@ namespace IngameScript
         
         public void Main(string argument, UpdateType updateSource)
         {
-            
-            if ((updateSource & UpdateType.Update1) != 0) RunUpdate();
-            if ((updateSource & (UpdateType.Trigger | UpdateType.Terminal)) != 0) RunCommand(argument);
+            try
+            {
+                if ((updateSource & UpdateType.Update1) != 0) RunUpdate();
+                if ((updateSource & (UpdateType.Trigger | UpdateType.Terminal)) != 0) RunCommand(argument);
+            }
+            catch (Exception ex)
+            {
+                Echo(ex.ToString());
+                Runtime.UpdateFrequency = UpdateFrequency.None;
+            }
         }
 
 

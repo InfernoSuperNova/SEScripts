@@ -11,6 +11,7 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
         private List<GravityGenerator> _generators;
         private bool _previousEnabled;
         private float _acceleration;
+        private float _previousAcceleration;
         private int _framesOff;
 
         public DirectionalDrive(List<GravityGenerator> generators, Direction direction)
@@ -30,7 +31,6 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
         {
             if (_acceleration == 0) _framesOff++;
             else _framesOff = 0;
-
             if (_framesOff > Config.GdriveTimeoutFrames) Enabled = false;
         }
 
@@ -39,21 +39,22 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
             if (_previousEnabled != Enabled) 
                 foreach (var generator in _generators) generator.Enabled = Enabled;
             _previousEnabled = Enabled;
+            if (_previousAcceleration != _acceleration)
+                foreach (var generator in _generators)
+                    generator.Acceleration = _acceleration;
+            _previousAcceleration = _acceleration;
         }
         
         public Direction Direction { get; private set; }
-        public bool Enabled { get; set; }
+        public bool Enabled { get; private set; }
         public double TotalAcceleration { get; private set; } // Probably not spherical inclusive for now
 
         public void SetAcceleration(float acceleration)
         {
+            if (acceleration == _acceleration && acceleration == 0) return;
             Enabled = true;
             if (acceleration == _acceleration) return; // Could possibly round this to maybe 2 dp to reduce polling rate
             _acceleration = acceleration;
-            foreach (var generator in _generators)
-            {
-                generator.Acceleration = acceleration * (float)Config.GravityAcceleration;
-            }
         }
     }
 }

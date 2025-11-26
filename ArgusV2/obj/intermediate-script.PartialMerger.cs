@@ -1236,9 +1236,16 @@ class Program : MyGridProgram
         
     public void Main(string argument, UpdateType updateSource)
     {
-            
-        if ((updateSource & UpdateType.Update1) != 0) RunUpdate();
-        if ((updateSource & (UpdateType.Trigger | UpdateType.Terminal)) != 0) RunCommand(argument);
+        try
+        {
+            if ((updateSource & UpdateType.Update1) != 0) RunUpdate();
+            if ((updateSource & (UpdateType.Trigger | UpdateType.Terminal)) != 0) RunCommand(argument);
+        }
+        catch (Exception ex)
+        {
+            Echo(ex.ToString());
+            Runtime.UpdateFrequency = UpdateFrequency.None;
+        }
     }
 
 
@@ -2359,16 +2366,61 @@ public class GyroManager
         
         
 }
-internal class BalancedMass
+public class BalancedMassSystem
 {
-    private List<BlockMass> blocks; // Ehhh should probably wrap the mass blocks too
-    private List<BallMass> balls;
+    private readonly List<BlockMass> _blocks;
+    private readonly List<BallMass> _balls;
+
+
+
+    public BalancedMassSystem(List<IMyTerminalBlock> blocks)
+    {
+        _blocks = new List<BlockMass>();
+        _balls = new List<BallMass>();
+
+        foreach (var block in blocks)
+        {
+            var ball = block as IMySpaceBall;
+            if (ball != null)
+            {
+                _balls.Add(new BallMass(ball, this));
+                continue;
+            }
+
+            var mass = block as IMyArtificialMassBlock;
+            if (mass != null)
+            {
+                _blocks.Add(new BlockMass(mass, this));
+            }
+
+        }
+    }
+        
+    public bool Enabled { get; set; }
+
+    public void EarlyUpdate(int _frame)
+    {
+        // TODO: Balancer logic
+    }
+
+    public void LateUpdate(int _frame)
+    {
+        foreach (var block in _blocks)
+        {
+            block.UpdateState();
+        }
+        foreach (var ball in _balls)
+        {
+            ball.UpdateState();
+        }
+    }
 }
 internal class DirectionalDrive
 {
     private List<GravityGenerator> _generators;
     private bool _previousEnabled;
     private float _acceleration;
+    private float _previousAcceleration;
     private int _framesOff;
 
     public DirectionalDrive(List<GravityGenerator> generators, Direction direction)
@@ -2388,7 +2440,6 @@ internal class DirectionalDrive
     {
         if (_acceleration == 0) _framesOff++;
         else _framesOff = 0;
-
         if (_framesOff > Config.GdriveTimeoutFrames) Enabled = false;
     }
 
@@ -2397,21 +2448,22 @@ internal class DirectionalDrive
         if (_previousEnabled != Enabled) 
             foreach (var generator in _generators) generator.Enabled = Enabled;
         _previousEnabled = Enabled;
+        if (_previousAcceleration != _acceleration)
+            foreach (var generator in _generators)
+                generator.Acceleration = _acceleration;
+        _previousAcceleration = _acceleration;
     }
         
     public Direction Direction { get; private set; }
-    public bool Enabled { get; set; }
+    public bool Enabled { get; private set; }
     public double TotalAcceleration { get; private set; } // Probably not spherical inclusive for now
 
     public void SetAcceleration(float acceleration)
     {
+        if (acceleration == _acceleration && acceleration == 0) return;
         Enabled = true;
         if (acceleration == _acceleration) return; // Could possibly round this to maybe 2 dp to reduce polling rate
         _acceleration = acceleration;
-        foreach (var generator in _generators)
-        {
-            generator.Acceleration = acceleration * (float)Config.GravityAcceleration;
-        }
     }
 }
 public class GDrive
@@ -2420,8 +2472,12 @@ public class GDrive
     private readonly DirectionalDrive _leftRight;
     private readonly DirectionalDrive _upDown;
 
-    private BalancedMass Mass;
+    private BalancedMassSystem _massSystem;
     private ControllableShip _ship;
+
+
+    private bool _previousMassEnabled;
+        
 
     public GDrive(List<IMyTerminalBlock> blocks, ControllableShip ship)
     {
@@ -2458,7 +2514,7 @@ public class GDrive
             {
                 var forward = _ship.LocalOrientationForward;
                 var forwardDir = Base6Directions.Directions[(int)forward];
-                var inverted = forwardDir.Dot(_ship.Position - sphericalGen.GetPosition()) < 0; // TODO: ensure sign
+                var inverted = forwardDir.Dot(_ship.Position - sphericalGen.GetPosition()) > 0;
                 var list = genCastArray[forward];
                 list.Add(new GravityGeneratorSpherical(sphericalGen, forward, inverted));
                     
@@ -2472,14 +2528,20 @@ public class GDrive
         _forwardBackward = new DirectionalDrive(forwardBackward, Direction.Forward);
         _leftRight = new DirectionalDrive(leftRight, Direction.Left);
         _upDown = new DirectionalDrive(upDown, Direction.Up);
+
+
+        _massSystem = new BalancedMassSystem(blocks);
     }
 
+    private bool MassEnabled => _forwardBackward.Enabled || _leftRight.Enabled || _upDown.Enabled;
 
     public void EarlyUpdate(int frame)
     {
         _forwardBackward.EarlyUpdate(frame);
         _leftRight.EarlyUpdate(frame);
         _upDown.EarlyUpdate(frame);
+
+        _massSystem.EarlyUpdate(frame);
     }
 
     public void LateUpdate(int frame)
@@ -2487,11 +2549,18 @@ public class GDrive
         _forwardBackward.LateUpdate(frame);
         _leftRight.LateUpdate(frame);
         _upDown.LateUpdate(frame);
+
+
+        if (MassEnabled != _previousMassEnabled) _massSystem.Enabled = MassEnabled;
+        Program.Log(_massSystem.Enabled);
+        _previousMassEnabled = MassEnabled;
+        _massSystem.LateUpdate(frame);
     }
 
 
     public void ApplyPropulsion(Vector3 propLocal)
     {
+        propLocal *= (float)Config.GravityAcceleration;
         _forwardBackward.SetAcceleration(propLocal.Dot(Vector3D.Forward));
         _leftRight.SetAcceleration(propLocal.Dot(Vector3D.Left));
         _upDown.SetAcceleration(propLocal.Dot(Vector3D.Up));
@@ -2500,18 +2569,54 @@ public class GDrive
 public class BallMass : Mass
 {
     private IMySpaceBall _ball;
-        
-    public override double VirtualMass => _ball.VirtualMass;
-        
-        
-    public override bool BEnabled { get; set; }
-    public override double BVirtualMass => BEnabled ? _ball.VirtualMass : 0;
+    private BalancedMassSystem _massSystem;
+    public BallMass(IMySpaceBall ball, BalancedMassSystem massSystem)
+    {
+        _ball = ball;
+        _massSystem = massSystem;
+    }
+
+    public bool BalancerAllowed { get; set; } = true;
+
+    public bool GeneratorRequested => _massSystem.Enabled;
+
+    public bool IsActive => BalancerAllowed && GeneratorRequested;
+    public override double AbsoluteVirtualMass => _ball.VirtualMass;
+    public override double BalancerVirtualMass => BalancerAllowed ? _ball.VirtualMass : 0;
+
+    public void UpdateState()
+    {
+        _ball.Enabled = IsActive;
+    }
 }
 public class BlockMass : Mass
 {
-    public override bool BEnabled { get; set; }
-    public override double VirtualMass { get; }
-    public override double BVirtualMass { get; }
+    private IMyArtificialMassBlock _mass;
+    private BalancedMassSystem _massSystem;
+
+    private bool _previousActive;
+    public BlockMass(IMyArtificialMassBlock mass, BalancedMassSystem massSystem)
+    {
+        _mass = mass;
+        _massSystem = massSystem;
+    }
+        
+    public bool BalancerAllowed { get; set; } = true;
+
+    public bool GeneratorRequested => _massSystem.Enabled;
+
+    public bool IsActive => BalancerAllowed && GeneratorRequested;
+    public override double AbsoluteVirtualMass => _mass.VirtualMass;
+    public override double BalancerVirtualMass => BalancerAllowed ? _mass.VirtualMass : 0;
+
+    public void UpdateState()
+    {
+            
+
+        if (_previousActive != IsActive)
+            _mass.Enabled = IsActive;
+        _previousActive = IsActive;
+    }
 }
 public abstract class GravityGenerator
 {
@@ -2564,10 +2669,9 @@ public class GravityGeneratorSpherical : GravityGenerator
 }
 public abstract class Mass
 {
-    public abstract bool BEnabled { get; set; }
         
-    public abstract double VirtualMass { get; }
-    public abstract double BVirtualMass { get; }
+    public abstract double AbsoluteVirtualMass { get; }
+    public abstract double BalancerVirtualMass { get; }
 }
 public class PropulsionController
 {
@@ -2625,6 +2729,7 @@ public class PropulsionController
 }
 public class TDrive
 {
+    // TODO: Expand this stub
     public void EarlyUpdate(int frame)
     {
     }

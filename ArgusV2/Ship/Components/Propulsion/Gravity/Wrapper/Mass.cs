@@ -5,9 +5,8 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity.Wrapper
 {
     public abstract class Mass
     {
-        public abstract bool BEnabled { get; set; }
         
-        public abstract double VirtualMass { get; }
-        public abstract double BVirtualMass { get; }
+        public abstract double AbsoluteVirtualMass { get; }
+        public abstract double BalancerVirtualMass { get; }
     }
 }

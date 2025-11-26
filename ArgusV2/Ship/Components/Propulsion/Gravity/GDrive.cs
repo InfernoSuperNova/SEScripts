@@ -15,8 +15,12 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
         private readonly DirectionalDrive _leftRight;
         private readonly DirectionalDrive _upDown;
 
-        private BalancedMass Mass;
+        private BalancedMassSystem _massSystem;
         private ControllableShip _ship;
+
+
+        private bool _previousMassEnabled;
+        
 
         public GDrive(List<IMyTerminalBlock> blocks, ControllableShip ship)
         {
@@ -53,7 +57,7 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
                 {
                     var forward = _ship.LocalOrientationForward;
                     var forwardDir = Base6Directions.Directions[(int)forward];
-                    var inverted = forwardDir.Dot(_ship.Position - sphericalGen.GetPosition()) < 0; // TODO: ensure sign
+                    var inverted = forwardDir.Dot(_ship.Position - sphericalGen.GetPosition()) > 0;
                     var list = genCastArray[forward];
                     list.Add(new GravityGeneratorSpherical(sphericalGen, forward, inverted));
                     
@@ -67,14 +71,20 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
             _forwardBackward = new DirectionalDrive(forwardBackward, Direction.Forward);
             _leftRight = new DirectionalDrive(leftRight, Direction.Left);
             _upDown = new DirectionalDrive(upDown, Direction.Up);
+
+
+            _massSystem = new BalancedMassSystem(blocks);
         }
 
+        private bool MassEnabled => _forwardBackward.Enabled || _leftRight.Enabled || _upDown.Enabled;
 
         public void EarlyUpdate(int frame)
         {
             _forwardBackward.EarlyUpdate(frame);
             _leftRight.EarlyUpdate(frame);
             _upDown.EarlyUpdate(frame);
+
+            _massSystem.EarlyUpdate(frame);
         }
 
         public void LateUpdate(int frame)
@@ -82,11 +92,18 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
             _forwardBackward.LateUpdate(frame);
             _leftRight.LateUpdate(frame);
             _upDown.LateUpdate(frame);
+
+
+            if (MassEnabled != _previousMassEnabled) _massSystem.Enabled = MassEnabled;
+            Program.Log(_massSystem.Enabled);
+            _previousMassEnabled = MassEnabled;
+            _massSystem.LateUpdate(frame);
         }
 
 
         public void ApplyPropulsion(Vector3 propLocal)
         {
+            propLocal *= (float)Config.GravityAcceleration;
             _forwardBackward.SetAcceleration(propLocal.Dot(Vector3D.Forward));
             _leftRight.SetAcceleration(propLocal.Dot(Vector3D.Left));
             _upDown.SetAcceleration(propLocal.Dot(Vector3D.Up));
