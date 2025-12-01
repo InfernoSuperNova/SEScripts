@@ -52,7 +52,7 @@ namespace IngameScript.Ship.Components
         {
             
             var blockDefinition = gun.BlockDefinition;
-            Program.LogLine($"Set up new gun {blockDefinition}", LogLevel.Info);
+            Program.LogLine($"Set up new gun {blockDefinition}", LogLevel.Trace);
             var gunData = GunData.Get(blockDefinition.SubtypeIdAttribute);
             if (gunData == GunData.DefaultGun) gunData = GunData.Get(blockDefinition.TypeIdString);
             _gunData = gunData;
@@ -108,7 +108,7 @@ namespace IngameScript.Ship.Components
             _reloadTimerId = TimerManager.Start(_gunData.ReloadTimeFrames, OnReloadComplete);
             if (_fireType == GunFireType.Delay)
             {
-                _firingTimerId = TimerManager.Start(_gunData.FireTimeFrames, OnFireComplete); // Temporary delay value
+                _firingTimerId = TimerManager.Start(_gunData.FireTimeFrames, OnFireComplete);
             }
             else
             {

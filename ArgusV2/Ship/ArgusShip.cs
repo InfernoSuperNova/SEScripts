@@ -14,12 +14,12 @@ namespace IngameScript.Ship
         protected Vector3D CPreviousVelocity;
         protected Vector3D CVelocity;
         protected int RandomUpdateJitter;
-        public SensorPollFrequency PollFrequency = SensorPollFrequency.Realtime;
+        public PollFrequency PollFrequency = PollFrequency.Realtime;
 
         public ArgusShip()
         {
             Program.LogLine("New ArgusShip", LogLevel.Debug);
-            RandomUpdateJitter = Program.RNG.Next() % 600;
+            RandomUpdateJitter = Program.RNG.Next() % 6000;
         }
         
         public abstract Vector3D Position { get; }

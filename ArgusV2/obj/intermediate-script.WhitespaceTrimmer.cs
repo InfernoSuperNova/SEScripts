@@ -18,354 +18,366 @@ using VRage.Library.Collections;
 using VRage.Utils;
 class Program : MyGridProgram
 {
-public static Program A;public static B C;public static Random D;public E F=new E(10);int G;public
- Program(){try{var H=
-DateTime.UtcNow;F.I("Beginning script setup",J.K);A=this;C=new B(this);D=new Random();L("Setup debug and RNG",J.C);M.N(Me);
-Program.L("Creating this ship as controllable ship",J.K);O.P(Me.CubeGrid,GridTerminalSystem);Runtime.UpdateFrequency=
-UpdateFrequency.Update1;var Q=DateTime.UtcNow-H;L($"Setup completed in {Q.TotalMilliseconds:F1} ms",J.R);}catch(Exception S){Echo(
-"Crashed: "+S);}Echo(F.ToString());}public void
+public static Program A;public static B C;public static Random D;public E F=new E(10);private static Queue<double>G=new
+Queue<double>();int H;public
+ Program
+(){try{var I=DateTime.UtcNow;F.J("Beginning script setup",K.L);A=this;C=new B(this);D=new Random();M(
+"Setup debug and RNG",K.C);N.O(Me);Program.M("Creating this ship as controllable ship",K.L);P.Q(Me.CubeGrid,GridTerminalSystem);Runtime.
+UpdateFrequency=UpdateFrequency.Update1;var R=DateTime.UtcNow-I;M($"Setup completed in {R.TotalMilliseconds:F1} ms",K.S);}catch(
+Exception T){Echo("Crashed: "+T);}Echo(F.ToString());}public void
  Main
-(string T,UpdateType U){try{if((U&UpdateType.Update1)!=0)V();if((U&(UpdateType.Trigger|UpdateType.Terminal))!=0)W(T);}
-catch(Exception S){Echo(S.ToString());Runtime.UpdateFrequency=UpdateFrequency.None;}}void V(){X.Y();O.Z(G);O.a(G++);F.b();c(F
-);}void W(string T){Action d;if(M.e.TryGetValue(T,out d)){d();}else{}}public static void c(object f){A.Echo(f.ToString())
-;}public static void c(TimeSpan Q,string g){double h=Q.Ticks/10.0;A.Echo($"{g}: {h} µs");}public static void L(object i,J
-j=J.K){A.F.I(i.ToString(),j);}}
-public class B{public readonly bool k;public void n()=>l?.Invoke(m);Action<IMyProgrammableBlock>l;public void p()=>o?.
-Invoke(m);Action<IMyProgrammableBlock>o;public void s(int q)=>r?.Invoke(m,q);Action<IMyProgrammableBlock,int>r;public int µ(
-Vector3D t,Color u,float v=0.2f,float x=w,bool?y=null)=>z?.Invoke(m,t,u,v,x,y??ª)??-1;Func<IMyProgrammableBlock,Vector3D,Color,
-float,float,bool,int>z;public int Ä(Vector3D º,Vector3D À,Color u,float Â=Á,float x=w,bool?y=null)=>Ã?.Invoke(m,º,À,u,Â,x,y??
-ª)??-1;Func<IMyProgrammableBlock,Vector3D,Vector3D,Color,float,float,bool,int>Ã;public int Ê(BoundingBoxD Å,Color u,Æ È=Æ
-.Ç,float Â=Á,float x=w,bool?y=null)=>É?.Invoke(m,Å,u,(int)È,Â,x,y??ª)??-1;Func<IMyProgrammableBlock,BoundingBoxD,Color,
-int,float,float,bool,int>É;public int Í(MyOrientedBoundingBoxD Ë,Color u,Æ È=Æ.Ç,float Â=Á,float x=w,bool?y=null)=>Ì?.
-Invoke(m,Ë,u,(int)È,Â,x,y??ª)??-1;Func<IMyProgrammableBlock,MyOrientedBoundingBoxD,Color,int,float,float,bool,int>Ì;public int
-Ñ(BoundingSphereD Î,Color u,Æ È=Æ.Ç,float Â=Á,int Ï=15,float x=w,bool?y=null)=>Ð?.Invoke(m,Î,u,(int)È,Â,Ï,x,y??ª)??-1;
-Func<IMyProgrammableBlock,BoundingSphereD,Color,int,float,int,float,bool,int>Ð;public int Õ(MatrixD Ò,float Ó=1f,float Â=Á,
-float x=w,bool?y=null)=>Ô?.Invoke(m,Ò,Ó,Â,x,y??ª)??-1;Func<IMyProgrammableBlock,MatrixD,float,float,float,bool,int>Ô;public
-int Ù(string Ö,Vector3D t,Color?u=null,float x=w)=>Ø?.Invoke(m,Ö,t,u,x)??-1;Func<IMyProgrammableBlock,string,Vector3D,Color
-?,float,int>Ø;public int Þ(string Ú,Û Ü=Û.C,float x=2)=>Ý?.Invoke(m,Ú,Ü.ToString(),x)??-1;Func<IMyProgrammableBlock,
-string,string,float,int>Ý;public void â(string Ú,string ß=null,Color?à=null,Û Ü=Û.C)=>á?.Invoke(m,Ú,ß,à,Ü.ToString());Action<
-IMyProgrammableBlock,string,string,Color?,string>á;public void ê(out int q,double ã,double ä=0.05,å ç=å.æ,string è=null)=>q=é?.Invoke(m,ã,ä,
-ç.ToString(),è)??-1;Func<IMyProgrammableBlock,double,double,string,string,int>é;public double í(int q,double ë=1)=>ì?.
-Invoke(m,q)??ë;Func<IMyProgrammableBlock,int,double>ì;public int ï()=>î?.Invoke()??-1;Func<int>î;public TimeSpan ñ()=>ð?.
-Invoke()??TimeSpan.Zero;Func<TimeSpan>ð;public ò ô(Action<TimeSpan>ó)=>new ò(this,ó);public struct ò:IDisposable{B õ;TimeSpan
-ö;Action<TimeSpan>ø;public ò(B ù,Action<TimeSpan>ó){õ=ù;ø=ó;ö=õ.ñ();}public void Dispose(){ø?.Invoke(õ.ñ()-ö);}}public
-enum Æ{ú,Ç,û}public enum å{ü,ý,þ,ÿ,Ā,ā,Ă,ă,Ą,ą,Ć,ć,Ĉ,æ,ĉ,Ċ,ċ,Č,č,Ď,ď,Đ,đ,Ē,ē,Ĕ,ĕ,Ė,ė,Ę,ę,Ě,ě,Ĝ,ĝ,Ğ,õ,ğ,ø,Ġ,ġ,Ģ,ģ,Ĥ,A,ĥ,Ħ,ħ,Ĩ
-,ĩ,Ī,ī,Ĭ,ĭ,ö,Į,į,İ,ı,Ĳ,ĳ,Ĵ,ĵ,Ķ,ķ,ĸ,Ĺ,ĺ,Ļ,ļ,Ľ,ľ,Ŀ,I,ŀ,Ł,ł,Ń,ń,Ņ,ņ,Ň,ň,ŉ,Ŋ,ŋ,Ō,ō,Ŏ,ŏ}public enum Û{C,Ő,ő,Œ,œ,Ŕ}const float
-Á=0.02f;const float w=-1;IMyProgrammableBlock m;bool ª;public B(MyGridProgram ŕ,bool Ŗ=false){if(ŕ==null)throw new
-Exception("Pass `this` into the API, not null.");ª=Ŗ;m=ŕ.Me;var ŗ=m.GetProperty("DebugAPI")?.As<IReadOnlyDictionary<string,
-Delegate>>()?.GetValue(m);if(ŗ!=null){Ř(out o,ŗ["RemoveAll"]);Ř(out l,ŗ["RemoveDraw"]);Ř(out r,ŗ["Remove"]);Ř(out z,ŗ["Point"]);
-Ř(out Ã,ŗ["Line"]);Ř(out É,ŗ["AABB"]);Ř(out Ì,ŗ["OBB"]);Ř(out Ð,ŗ["Sphere"]);Ř(out Ô,ŗ["Matrix"]);Ř(out Ø,ŗ["GPS"]);Ř(out
-Ý,ŗ["HUDNotification"]);Ř(out á,ŗ["Chat"]);Ř(out é,ŗ["DeclareAdjustNumber"]);Ř(out ì,ŗ["GetAdjustNumber"]);Ř(out î,ŗ[
-"Tick"]);Ř(out ð,ŗ["Timestamp"]);p();k=true;}}void Ř<Į>(out Į ř,object Ś)=>ř=(Į)Ś;}public static class Ǝ{public class Ş{public
-object ś;public string Ŝ;public Ş(object f,string ŝ){ś=f;Ŝ=ŝ;}}public static string š(object f,int ş=-1){var Š=new
-StringBuilder();š(f,Š,ş,null);Program.L("Serialized successfully",J.C);return Š.ToString();}private static void š(object f,
-StringBuilder Š,int ş,string Ţ){string ţ=new string(' ',Math.Max(ş,0));if(f==null){if(Ţ!=null)Š.AppendLine(ţ+Ţ+" = null");return;}Ş Ť
-=f as Ş;if(Ť!=null){bool Ŧ=ť(Ť.ś);if(Ŧ&&Ţ!=null){Š.AppendLine(ţ+Ţ+" = "+ŧ(Ť.ś)+"   # "+Ť.Ŝ);}else{if(!string.
-IsNullOrEmpty(Ť.Ŝ))Š.AppendLine(ţ+"# "+Ť.Ŝ);š(Ť.ś,Š,ş,Ţ);}return;}IDictionary<string,object>Ũ=f as IDictionary<string,object>;if(Ũ!=
-null){if(Ţ!=null)Š.AppendLine(ţ+Ţ+" = [");foreach(var ũ in Ũ){š(ũ.Value,Š,ş+2,ũ.Key);}if(Ţ!=null)Š.AppendLine(ţ+"]");return;
-}IEnumerable<object>Ū=f as IEnumerable<object>;if(Ū!=null){if(Ţ!=null){Š.Append(ţ+Ţ+" = { ");bool ū=true;foreach(object Ŭ
-in Ū){if(!ū)Š.Append(", ");Š.Append(ŧ(Ŭ));ū=false;}Š.AppendLine(" }");}else{foreach(object Ŭ in Ū)š(Ŭ,Š,ş,null);}return;}
-if(Ţ!=null){Š.AppendLine(ţ+Ţ+" = "+ŧ(f));}}private static string ŧ(object f){if(f==null)return"null";if(f is string)return
-"\""+ŭ((string)f)+"\"";if(f is bool)return((bool)f?"true":"false");if(f is float)return((float)f).ToString("0.#####",System.
-Globalization.CultureInfo.InvariantCulture);if(f is double)return((double)f).ToString("0.##########",System.Globalization.CultureInfo
-.InvariantCulture);if(f is int||f is long||f is short||f is byte)return f.ToString();return"\""+ŭ(f.ToString())+"\"";}
-private static string ŭ(string Ů){return Ů.Replace("\\","\\\\").Replace("\"","\\\"");}private static bool ť(object ů){return ů
-is string||ů is bool||ů is int||ů is long||ů is short||ů is byte||ů is float||ů is double;}public static object Ÿ(string Ű
-){int ű=0;var Ų=new Dictionary<string,object>();while(ű<Ű.Length){ų(Ű,ref ű);if(ű>=Ű.Length)break;string Ţ=Ŵ(Ű,ref ű);
-Program.c(Ţ);ŵ(Ű,ref ű,'=');object ů=Ŷ(Ű,ref ű);string ŝ=ŷ(Ű,ref ű);if(ŝ!=null&&ť(ů))ů=new Ş(ů,ŝ);Ų[Ţ]=ů;}return Ų;}private
-static object Ŷ(string Ů,ref int ű){ų(Ů,ref ű);if(ű>=Ů.Length)return null;char Ź=Ů[ű];switch(Ź){case'[':{ű++;var Ũ=new
-Dictionary<string,object>();while(true){ų(Ů,ref ű);if(ű>=Ů.Length)break;if(Ů[ű]==']'){ű++;break;}string Ţ=Ŵ(Ů,ref ű);ŵ(Ů,ref ű,'='
-);object ů=Ŷ(Ů,ref ű);string ŝ=ŷ(Ů,ref ű);if(ŝ!=null&&ť(ů))ů=new Ş(ů,ŝ);Ũ[Ţ]=ů;}return Ũ;}case'{':{ű++;var Ū=new List<
-object>();while(true){ų(Ů,ref ű);if(ű>=Ů.Length)break;if(Ů[ű]=='}'){ű++;break;}object ů=Ŷ(Ů,ref ű);string ŝ=ŷ(Ů,ref ű);if(ŝ!=
-null&&ť(ů))ů=new Ş(ů,ŝ);Ū.Add(ů);ų(Ů,ref ű);if(ű<Ů.Length&&Ů[ű]==',')ű++;}return Ū;}}string Ż=ź(Ů,ref ű);string ż=ŷ(Ů,ref ű)
-;object ž=Ž(Ż);if(ż!=null&&ť(ž))ž=new Ş(ž,ż);return ž;}private static void ų(string Ů,ref int ű){while(ű<Ů.Length){if(Ů[ű
-]==' '||Ů[ű]=='\t'||Ů[ű]=='\r'||Ů[ű]=='\n'){ű++;continue;}if(Ů[ű]=='#'){while(ű<Ů.Length&&Ů[ű]!='\n')ű++;continue;}break;
-}}private static string Ŵ(string Ů,ref int ű){ſ(Ů,ref ű);int º=ű;while(ű<Ů.Length){char Ź=Ů[ű];if(Ź=='=')break;if(Ź=='\n'
-||Ź=='\r')throw new Exception("Unexpected newline while reading key");ű++;}if(ű==º)throw new Exception(
-$"Empty key at index {ű}");string Ţ=Ů.Substring(º,ű-º).Trim();return Ţ;}private static string ź(string Ů,ref int ű){ſ(Ů,ref ű);if(ű>=Ů.Length)
-return"";char Ź=Ů[ű];if(Ź=='"'||Ź=='\''){char ƀ=Ź;ű++;int º=ű;while(ű<Ů.Length&&Ů[ű]!=ƀ)ű++;string Ɓ=Ů.Substring(º,ű-º);if(ű<Ů
-.Length)ű++;return Ɓ;}int Ƃ=ű;while(ű<Ů.Length&&Ů[ű]!='\n'&&Ů[ű]!='\r'&&Ů[ű]!='#'&&Ů[ű]!=','&&Ů[ű]!='}'&&Ů[ű]!=']')ű++;
-string Ż=Ů.Substring(Ƃ,ű-Ƃ).Trim();return Ż;}private static string ŷ(string Ů,ref int ű){ſ(Ů,ref ű);if(ű<Ů.Length&&Ů[ű]=='#'){
-ű++;int º=ű;while(ű<Ů.Length&&Ů[ű]!='\n'&&Ů[ű]!='\r')ű++;return Ů.Substring(º,ű-º).Trim();}return null;}private static
-void ſ(string Ů,ref int ű){while(ű<Ů.Length&&(Ů[ű]==' '||Ů[ű]=='\t'||Ů[ű]=='\r'||Ů[ű]=='\n'))ű++;}private static void ŵ(
-string Ů,ref int ű,char ƃ){ſ(Ů,ref ű);if(ű>=Ů.Length||Ů[ű]!=ƃ)throw new Exception("Expected '"+ƃ+"' at index "+ű);ű++;}private
-static object Ž(string Ż){if(Ż.Length==0)return null;if(Ż=="true")return true;if(Ż=="false")return false;int Ƅ;if(int.TryParse
-(Ż,out Ƅ))return Ƅ;double ƅ;if(double.TryParse(Ż,System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo
-.InvariantCulture,out ƅ))return ƅ;return Ż;}public static void Ɖ(Dictionary<string,object>Ũ){var Ɔ=new List<string>(Ũ.
-Keys);foreach(var Ţ in Ɔ){var Ƈ=Ũ[Ţ];var Ź=Ƈ as Ş;var ƈ=Ƈ as Dictionary<string,object>;var Ū=Ƈ as List<object>;if(Ź!=null)Ũ[
-Ţ]=Ź.ś;else if(ƈ!=null)Ɖ(ƈ);else if(Ū!=null){for(int Ƅ=0;Ƅ<Ū.Count;Ƅ++){var Ɗ=Ū[Ƅ];var Ƌ=Ɗ as Ş;Ū[Ƅ]=Ƌ!=null?Ƌ.ś:Ū[Ƅ];}}}
-}public static Į ƍ<Į>(Dictionary<string,object>Ũ,string Ţ,Į ƌ=default(Į)){object ů;if(Ũ.TryGetValue(Ţ,out ů)){if(ů is Į)
-return(Į)ů;try{return(Į)Convert.ChangeType(ů,typeof(Į));}catch{return ƌ;}}return ƌ;}}public enum Ƒ:byte{Ə,Ɛ,đ,ē,Ē,Ĕ,}public
-static class ơ{private static readonly List<ƒ>Ɠ=new List<ƒ>();private static readonly List<BoundingBoxD>Ɣ=new List<
-BoundingBoxD>();private static readonly Dictionary<ƒ,List<ƒ>>ƕ=new Dictionary<ƒ,List<ƒ>>();private static readonly List<List<ƒ>>Ɩ=
-new List<List<ƒ>>();private static int Ɨ=0;private static List<ƒ>Ƙ(){if(Ɨ>=Ɩ.Count)Ɩ.Add(new List<ƒ>(8));var Ū=Ɩ[Ɨ++];Ū.
-Clear();return Ū;}public static Dictionary<ƒ,List<ƒ>>ƞ(MyDynamicAABBTreeD ƙ){Ɨ=0;ƕ.Clear();ƙ.GetAll(Ɠ,clear:true,boxsList:Ɣ);
-for(int Ƅ=0;Ƅ<Ɠ.Count;Ƅ++){var ƚ=Ɠ[Ƅ];var ƛ=Ɣ[Ƅ];var Ɯ=Ƙ();ƙ.OverlapAllBoundingBox(ref ƛ,Ɯ,0U,false);foreach(var Ɲ in Ɯ){if
-(ƚ==Ɲ)continue;if(!ƕ.ContainsKey(ƚ))ƕ.Add(ƚ,Ƙ());ƕ[ƚ].Add(Ɲ);if(!ƕ.ContainsKey(Ɲ))ƕ.Add(Ɲ,Ƙ());ƕ[Ɲ].Add(ƚ);}}return ƕ;}
-public static List<ƒ>Ơ(MyDynamicAABBTreeD ƙ,BoundingBoxD Ɵ){Ɨ=0;var Ɯ=Ƙ();ƙ.OverlapAllBoundingBox(ref Ɵ,Ɯ,0U,false);return Ɯ;}
-}public static class ǜ{private static bool Ƶ(long Ƣ,long ƣ,long Ƥ,double ƥ,MatrixD Ʀ,Vector3D Ƨ){double ƨ=Ƣ*ƥ;double Ʃ=ƣ*
-ƥ;double ƪ=Ƥ*ƥ;Vector3D ƫ=Ʀ.Right;Vector3D Ƭ=Ʀ.Up;Vector3D ƭ=Ʀ.Forward;Vector3D Ʈ=Vector3D.Abs(ƫ);Vector3D Ư=Vector3D.Abs
-(Ƭ);Vector3D ư=Vector3D.Abs(ƭ);const double Ʊ=1e-8;double Ʋ=ƨ*Ʈ.X+Ʃ*Ư.X+ƪ*ư.X;if(Ʋ>Ƨ.X+Ʊ)return false;double Ƴ=ƨ*Ʈ.Y+Ʃ*Ư.
-Y+ƪ*ư.Y;if(Ƴ>Ƨ.Y+Ʊ)return false;double ƴ=ƨ*Ʈ.Z+Ʃ*Ư.Z+ƪ*ư.Z;if(ƴ>Ƨ.Z+Ʊ)return false;return true;}private static bool ǎ(
-Vector3D ƫ,Vector3D Ƭ,Vector3D ƭ,Vector3D Ƨ,out double ƨ,out double Ʃ,out double ƪ){var ƶ=Math.Abs(ƫ.X);var Ʒ=Math.Abs(Ƭ.X);var
-Ƹ=Math.Abs(ƭ.X);var ƹ=Math.Abs(ƫ.Y);var ƺ=Math.Abs(Ƭ.Y);var ƻ=Math.Abs(ƭ.Y);var Ƽ=Math.Abs(ƫ.Z);var ƽ=Math.Abs(Ƭ.Z);var ƾ
-=Math.Abs(ƭ.Z);double ƿ=Ƨ.X,ǀ=Ƨ.Y,ǁ=Ƨ.Z;double ǂ=ƶ*(ƺ*ƾ-ƻ*ƽ)-Ʒ*(ƹ*ƾ-ƻ*Ƽ)+Ƹ*(ƹ*ƽ-ƺ*Ƽ);const double ǃ=1e-12;if(Math.Abs(ǂ)<
-ǃ){ƨ=Ʃ=ƪ=0.0;return false;}double Ǆ=(ƺ*ƾ-ƻ*ƽ)/ǂ;double ǅ=-(Ʒ*ƾ-Ƹ*ƽ)/ǂ;double ǆ=(Ʒ*ƻ-Ƹ*ƺ)/ǂ;double Ǉ=-(ƹ*ƾ-ƻ*Ƽ)/ǂ;double ǈ
-=(ƶ*ƾ-Ƹ*Ƽ)/ǂ;double ǉ=-(ƶ*ƻ-Ƹ*ƹ)/ǂ;double Ǌ=(ƹ*ƽ-ƺ*Ƽ)/ǂ;double ǋ=-(ƶ*ƽ-Ʒ*Ƽ)/ǂ;double ǌ=(ƶ*ƺ-Ʒ*ƹ)/ǂ;ƨ=Ǆ*ƿ+ǅ*ǀ+ǆ*ǁ;Ʃ=Ǉ*ƿ+ǈ*
-ǀ+ǉ*ǁ;ƪ=Ǌ*ƿ+ǋ*ǀ+ǌ*ǁ;const double Ǎ=-1e-9;if(ƨ<Ǎ||Ʃ<Ǎ||ƪ<Ǎ)return false;ƨ=Math.Max(0.0,ƨ);Ʃ=Math.Max(0.0,Ʃ);ƪ=Math.Max(0.0
-,ƪ);return true;}public static BoundingBoxD Ǜ(BoundingBoxD Ǐ,MatrixD Ʀ,double ƥ){ƥ/=2;Vector3D Ƨ=Ǐ.HalfExtents;Vector3D ƫ
-=Ʀ.Right;Vector3D Ƭ=Ʀ.Up;Vector3D ƭ=Ʀ.Forward;double ǐ,Ǒ,ǒ;if(ǎ(ƫ,Ƭ,ƭ,Ƨ,out ǐ,out Ǒ,out ǒ)){long Ƣ=Math.Max(0,(long)(ǐ/ƥ+
-1e-12));long ƣ=Math.Max(0,(long)(Ǒ/ƥ+1e-12));long Ƥ=Math.Max(0,(long)(ǒ/ƥ+1e-12));bool Ǔ;do{Ǔ=false;if(Ƶ(Ƣ+1,ƣ,Ƥ,ƥ,Ʀ,Ƨ)){Ƣ++;
-Ǔ=true;}if(Ƶ(Ƣ,ƣ+1,Ƥ,ƥ,Ʀ,Ƨ)){ƣ++;Ǔ=true;}if(Ƶ(Ƣ,ƣ,Ƥ+1,ƥ,Ʀ,Ƨ)){Ƥ++;Ǔ=true;}}while(Ǔ);var ǔ=new Vector3D(Ƣ*ƥ,ƣ*ƥ,Ƥ*ƥ);
-return new BoundingBoxD(-ǔ,ǔ);}double Ǖ=Ƨ.X/(Math.Abs(ƫ.X)+Math.Abs(Ƭ.X)+Math.Abs(ƭ.X));double ǖ=Ƨ.Y/(Math.Abs(ƫ.Y)+Math.Abs(Ƭ
-.Y)+Math.Abs(ƭ.Y));double Ǘ=Ƨ.Z/(Math.Abs(ƫ.Z)+Math.Abs(Ƭ.Z)+Math.Abs(ƭ.Z));double ǘ=Math.Min(Math.Min(Ǖ,ǖ),Ǘ);long Ǚ=
-Math.Max(0,(long)Math.Floor(ǘ/ƥ));var ǚ=new Vector3D(Ǚ*ƥ,Ǚ*ƥ,Ǚ*ƥ);return new BoundingBoxD(-ǚ,ǚ);}}public class ǫ{double ǝ;
-double Ǟ;public double ǟ;double Ǡ;public double ǡ;double Ǣ;double ǣ;double Ǥ;public ǫ(double ǥ,double Ǧ,double ǧ,double Ǩ=0,
-double ǩ=0,double Ǫ=60){ǟ=ǥ;Ǡ=Ǧ;ǡ=ǧ;Ǣ=Ǩ;ǣ=ǩ;Ǥ=Ǫ;}public double ǰ(double Ǭ,int ǭ){double Ǯ=Math.Round(Ǭ,ǭ);ǝ=ǝ+(Ǭ/Ǥ);ǝ=(Ǣ>0&&ǝ>
-Ǣ?Ǣ:ǝ);ǝ=(ǣ<0&&ǝ<ǣ?ǣ:ǝ);double ǯ=(Ǯ-Ǟ)*Ǥ;Ǟ=Ǯ;return(ǟ*Ǭ)+(Ǡ*ǝ)+(ǡ*ǯ);}public void Ǳ(){ǝ=Ǟ=0;}}public static class ȳ{
-private static double ǲ=104;public static double ǳ=>Double.MaxValue;public const double Ǵ=1e-6,ǵ=-0.5,Ƕ=1.73205,Ƿ=Ƕ/2,Ǹ=1.0/3.0
-,ǹ=1.0/9.0,Ǻ=1.0/6.0,ǻ=1.0/54.0;public static Vector3D Ȓ(double Ǽ,Vector3D ǽ,Vector3D Ǿ,Vector3D ǿ,Vector3D Ȁ,Vector3D ȁ,
-Vector3D Ȃ,Vector3D ȃ,bool Ȅ,Vector3D ȅ=default(Vector3D),bool Ȇ=false){double ȇ=0;Vector3D Ȉ=Vector3D.Zero,ȉ=Ȃ,Ȋ=ȁ,ȋ,Ȍ;if(Ȃ.
-LengthSquared()>1){ȇ=Math.Min((Vector3D.Normalize(Ȃ)*ǲ-Vector3D.ProjectOnVector(ref ȁ,ref Ȃ)).Length(),2*ǲ)/Ȃ.Length();ȁ=Vector3D.
-ClampToSphere(ȁ+Ȃ*ȇ,ǲ);Ȋ+=Ȃ*ȇ*0.5;Ȃ=Vector3D.Zero;}if(Ǿ.LengthSquared()>1){double ȍ=Math.Max((Vector3D.Normalize(Ǿ)*Ǽ-Vector3D.
-ProjectOnVector(ref ǽ,ref Ǿ)).Length(),0)/Ǿ.Length(),Ȏ=(ǽ*ȍ+Ǿ*ȍ*ȍ).Length();Vector3D ȏ=ǿ+ȁ*ȍ+0.5*Ȃ*ȍ*ȍ;if(ȏ.Length()>Ȏ){Ǿ=Vector3D.Zero
-;ǽ=Vector3D.ClampToSphere(ǽ+Ǿ*ȍ,Ǽ);ǿ-=Vector3D.Normalize(ǿ)*Ȏ;}}ȋ=ȁ-ǽ;Ȍ=Ȃ-Ǿ;double ȑ=Ȑ(Ȍ.LengthSquared()*0.25,Ȍ.X*ȋ.X+Ȍ.Y
-*ȋ.Y+Ȍ.Z*ȋ.Z,ȋ.LengthSquared()-ǽ.LengthSquared()+ǿ.X*Ȍ.X+ǿ.Y*Ȍ.Y+ǿ.Z*Ȍ.Z,2*(ǿ.X*ȋ.X+ǿ.Y*ȋ.Y+ǿ.Z*ȋ.Z),ǿ.LengthSquared());
-if(ȑ==ǳ||double.IsNaN(ȑ)||ȑ>100)ȑ=100;if(ȇ>ȑ){ȇ=ȑ;ȑ=0;}else ȑ-=ȇ;return Ȅ?ǿ+ȁ*ȑ+Ȋ*ȇ+0.5*ȉ*ȇ*ȇ+0.5*Ȃ*ȑ*ȑ+Ȉ:Ȁ+(ȁ-ǽ)*ȑ+(Ȋ-ǽ)*
-ȇ+0.5*ȉ*ȇ*ȇ+0.5*Ȃ*ȑ*ȑ+-0.5*ȅ*(ȑ+ȇ)*(ȑ+ȇ)*Convert.ToDouble(Ȇ)+Ȉ;}public static double Ȑ(double ȓ,double Ȕ,double Ź,double
-ȕ,double Ȗ){if(Math.Abs(ȓ)<Ǵ)ȓ=ȓ>=0?Ǵ:-Ǵ;double ȗ=1/ȓ;Ȕ*=ȗ;Ź*=ȗ;ȕ*=ȗ;Ȗ*=ȗ;double Ș=-Ź,ș=Ȕ*ȕ-4*Ȗ,Ț=-Ȕ*Ȕ*Ȗ-ȕ*ȕ+4*Ź*Ȗ,ț;
-double[]Ȝ;bool Ȟ=ȝ(Ș,ș,Ț,out Ȝ);ț=Ȝ[0];if(Ȟ){if(Math.Abs(Ȝ[1])>Math.Abs(ț))ț=Ȝ[1];if(Math.Abs(Ȝ[2])>Math.Abs(ț))ț=Ȝ[2];}double
-ȟ,Ƞ,ȡ,Ȣ,ȣ;double Ȥ=ț*ț-4*Ȗ;if(Math.Abs(Ȥ)<Ǵ){ȟ=Ƞ=ț*0.5;Ȥ=Ȕ*Ȕ-4*(Ź-ț);if(Math.Abs(Ȥ)<Ǵ)ȡ=Ȣ=Ȕ*0.5;else{ȣ=Math.Sqrt(Ȥ);ȡ=(Ȕ+
-ȣ)*0.5;Ȣ=(Ȕ-ȣ)*0.5;}}else{ȣ=Math.Sqrt(Ȥ);ȟ=(ț+ȣ)*0.5;Ƞ=(ț-ȣ)*0.5;double ȥ=1/(ȟ-Ƞ);ȡ=(Ȕ*ȟ-ȕ)*ȥ;Ȣ=(ȕ-Ȕ*Ƞ)*ȥ;}double Ȧ,ȧ;Ȥ=ȡ
-*ȡ-4*ȟ;if(Ȥ<0)Ȧ=ǳ;else{ȣ=Math.Sqrt(Ȥ);Ȧ=Ȩ(-ȡ+ȣ,-ȡ-ȣ)*0.5;}Ȥ=Ȣ*Ȣ-4*Ƞ;if(Ȥ<0)ȧ=ǳ;else{ȣ=Math.Sqrt(Ȥ);ȧ=Ȩ(-Ȣ+ȣ,-Ȣ-ȣ)*0.5;}
-return Ȩ(Ȧ,ȧ);}private static bool ȝ(double ȓ,double Ȕ,double Ź,out double[]Ȝ){Ȝ=new double[4];double ȩ=ȓ*ȓ,Ȫ=(ȩ-3*Ȕ)*ǹ,ȫ=(ȓ*(
-2*ȩ-9*Ȕ)+27*Ź)*ǻ,Ʃ=ȫ*ȫ,Ȭ=Ȫ*Ȫ*Ȫ;if(Ʃ<Ȭ){double ȭ=Math.Sqrt(Ȫ),Ȯ=ȫ/(ȭ*ȭ*ȭ);if(Ȯ<-1)Ȯ=-1;else if(Ȯ>1)Ȯ=1;Ȯ=Math.Acos(Ȯ);ȓ*=Ǹ
-;Ȫ=-2*ȭ;double ȯ=Math.Cos(Ȯ*Ǹ),Ȱ=Math.Sin(Ȯ*Ǹ);Ȝ[0]=Ȫ*ȯ-ȓ;Ȝ[1]=Ȫ*((ȯ*ǵ)-(Ȱ*Ƿ))-ȓ;Ȝ[2]=Ȫ*((ȯ*ǵ)+(Ȱ*Ƿ))-ȓ;return true;}else
-{double ȱ=-Math.Pow(Math.Abs(ȫ)+Math.Sqrt(Ʃ-Ȭ),Ǹ),Ȳ;if(ȫ<0)ȱ=-ȱ;Ȳ=ȱ==0?0:Ȫ/ȱ;ȓ*=Ǹ;Ȝ[0]=ȱ+Ȳ-ȓ;Ȝ[1]=-0.5*(ȱ+Ȳ)-ȓ;Ȝ[2]=0.5*Ƕ
-*(ȱ-Ȳ);if(Math.Abs(Ȝ[2])<Ǵ){Ȝ[2]=Ȝ[1];return true;}return false;}}private static double Ȩ(double ȓ,double Ȕ){if(ȓ<=0)
-return Ȕ>0?Ȕ:ǳ;else if(Ȕ<=0)return ȓ;else return Math.Min(ȓ,Ȕ);}}public enum J{ȴ,C,K,ȵ,ȶ,ȷ,R}public class E{Dictionary<J,
-string>ȹ=new Dictionary<J,string>(){{J.ȴ,$"{ȸ(Color.Gray)}"},{J.C,$"{ȸ(Color.DarkSeaGreen)}"},{J.K,$"{ȸ(Color.White)}"},{J.ȵ,
-$"{ȸ(Color.Gold)}"},{J.ȶ,$"{ȸ(Color.Red)}"},{J.ȷ,$"{ȸ(Color.DarkRed)}"},{J.R,$"{ȸ(Color.Aquamarine)}"}};private static string ȸ(Color u){
-return$"[color=#{u.A:X2}{u.R:X2}{u.G:X2}{u.B:X2}]";}private static string Ⱥ="[/color]\n";class ɀ{internal readonly string Ȼ;
-internal readonly double ȼ;internal readonly J Ƚ;public ɀ(string Ⱦ,double ȿ,J j){Ȼ=Ⱦ;ȼ=ȿ;Ƚ=j;}}private readonly List<ɀ>Ɂ=new
-List<ɀ>();private readonly double ɂ;public E(double Ƀ){ɂ=Ƀ;}public void I(string Ú,J j){if(j<M.J)return;double Ʉ=(System.
-DateTime.UtcNow-new System.DateTime(1970,1,1)).TotalSeconds;Ɂ.Add(new ɀ(Ú,Ʉ,j));}public void b(){double Ʉ=(System.DateTime.
-UtcNow-new System.DateTime(1970,1,1)).TotalSeconds;Ɂ.RemoveAll(Ȗ=>Ʉ-Ȗ.ȼ>ɂ);}public List<string>Ʌ(){return Ɂ.Select(Ȗ=>Ȗ.Ȼ).
-ToList();}public override string ToString(){string ů="";foreach(var Ɇ in Ɂ){ů+=ȹ[Ɇ.Ƚ]+Ɇ.Ȼ+Ⱥ;}return ů;}}public class ɉ{public
-int ɇ;public Action Ɉ;}public static class X{private static readonly Dictionary<int,ɉ>Ɋ=new Dictionary<int,ɉ>();private
-static readonly Dictionary<int,ɉ>ɋ=new Dictionary<int,ɉ>();private static int Ɍ=1;public static int ɐ(int ɍ,Action Ɏ=null){if(
-ɍ<=0){if(Ɏ!=null)Ɏ();return-1;}int q=Ɍ++;var ɏ=new ɉ{ɇ=ɍ,Ɉ=Ɏ};ɋ[q]=ɏ;return q;}public static int ɑ(float ɍ,Action Ɏ=null)
-{return ɐ((int)(ɍ*60),Ɏ);}public static void ɒ(int q){Ɋ.Remove(q);ɋ.Remove(q);}public static void Y(){if(ɋ.Count>0){
-foreach(var ɓ in ɋ){Ɋ[ɓ.Key]=ɓ.Value;}ɋ.Clear();}var ɔ=new List<int>();foreach(var ɓ in Ɋ){var ɏ=ɓ.Value;ɏ.ɇ--;if(ɏ.ɇ<=0){ɏ.Ɉ?.
-Invoke();ɔ.Add(ɓ.Key);}}foreach(var q in ɔ){Ɋ.Remove(q);}}public static bool ɕ(int q){return Ɋ.ContainsKey(q)||ɋ.ContainsKey(q
-);}public static int ɖ(int q){ɉ ɏ;if(Ɋ.TryGetValue(q,out ɏ))return ɏ.ɇ;if(ɋ.TryGetValue(q,out ɏ))return ɏ.ɇ;return-1;}}
-public static class M{private static ɗ ɜ=new ɗ("General Config",""){ɘ=ə,ɚ=ɛ};public static Dictionary<string,Action>e;public
-static J J=J.ȴ;public static string ɝ="Target";public static string ɞ="Untarget";public static string ɟ="ArgusV2";public
-static string ɠ="TrackerGroup";public static double ɡ=2000;public static double ɢ=3000;public static float ɣ=40;public static
-double ɤ=0.999999;public static string ɥ="CTC: Tracking";public static string ɦ="CTC: Searching";public static string ɧ=
-"CTC: Standby";public static int ɨ=3600;public static double ɩ=500;public static double ɪ=0;public static double ɫ=30;public static
-double ɬ=-0.05;public static double ɭ=0.05;public static double ɮ=30;public static int ɯ=300;public static double ɰ=9.81;
-public static bool ɱ=false;public static bool ɲ=false;public static void N(IMyProgrammableBlock ɳ){Program.L(
-"Setting up config");ɴ.ɵ();ɶ.ɵ();if(ɳ.CustomData.Length>0)ɗ.ɷ(ɳ.CustomData);ɳ.CustomData=ɗ.ɸ();Program.L("Written config to custom data",J.
-C);e=new Dictionary<string,Action>{{ɝ,()=>O.ɹ.ɺ()},{ɞ,()=>O.ɹ.ɻ()},{"FireAllTest",()=>O.ɹ.ɼ.ɽ()},{"CancelAllTest",()=>O.ɹ
-.ɼ.ɾ()}};if(J.ȴ<=J){foreach(var ɿ in e){Program.L($"Command: {ɿ.Key}",J.ȴ);}}Program.L("Commands set up",J.C);ʀ(ɳ);
-Program.L("Config setup done",J.K);}public static void ʀ(IMyProgrammableBlock ɳ){Program.L("Setting up global state",J.C);ʁ.ʂ=ɱ
-;Program.L($"Precision mode state is {ʁ.ʂ}",J.ȴ);}static M(){}private static Dictionary<string,object>ə(){return new
-Dictionary<string,object>{["String Config"]=new Dictionary<string,object>{["ArgumentTarget"]=ɝ,["ArgumentUnTarget"]=ɞ,["GroupName"
-]=ɟ,["TrackerGroupName"]=ɠ},["Behavior Config"]=new Dictionary<string,object>{["MaxWeaponRange"]=ɡ,["LockRange"]=ɢ,[
-"LockAngle"]=ɣ,["MinFireDot"]=ɤ,},["Tracker Config"]=new Dictionary<string,object>{["TrackingName"]=ɥ,["SearchingName"]=ɦ,[
-"StandbyName"]=ɧ,["ScannedBlockMaxValidFrames"]=ɨ},["PID Config"]=new Dictionary<string,object>{["ProportionalGain"]=ɩ,[
-"IntegralGain"]=ɪ,["DerivativeGain"]=ɫ,["IntegralLowerLimit"]=ɬ,["IntegralUpperLimit"]=ɭ,["MaxAngularVelocityRPM"]=ɮ}};}private static
-void ɛ(Dictionary<string,object>f){Ǝ.Ɖ(f);var ʃ=f.ContainsKey("String Config")?f["String Config"]as Dictionary<string,object
->:null;if(ʃ!=null){ɝ=Ǝ.ƍ(ʃ,"ArgumentTarget",ɝ);ɞ=Ǝ.ƍ(ʃ,"ArgumentUnTarget",ɞ);ɟ=Ǝ.ƍ(ʃ,"GroupName",ɟ);ɠ=Ǝ.ƍ(ʃ,
-"TrackerGroupName",ɠ);}var ʄ=f.ContainsKey("Behavior Config")?f["Behavior Config"]as Dictionary<string,object>:null;if(ʄ!=null){ɡ=Ǝ.ƍ(ʄ,
-"MaxWeaponRange",ɡ);ɢ=Ǝ.ƍ(ʄ,"LockRange",ɢ);ɣ=Ǝ.ƍ(ʄ,"LockAngle",ɣ);ɤ=Ǝ.ƍ(ʄ,"MinFireDot",ɤ);}var ʅ=f.ContainsKey("Tracker Config")?f[
-"Tracker Config"]as Dictionary<string,object>:null;if(ʅ!=null){ɥ=Ǝ.ƍ(ʅ,"TrackingName",ɥ);ɦ=Ǝ.ƍ(ʅ,"SearchingName",ɦ);ɧ=Ǝ.ƍ(ʅ,
-"StandbyName",ɧ);ɨ=Ǝ.ƍ(ʅ,"ScannedBlockMaxValidFrames",ɨ);}var ʆ=f.ContainsKey("PID Config")?f["PID Config"]as Dictionary<string,
-object>:null;if(ʆ!=null){ɩ=Ǝ.ƍ(ʆ,"ProportionalGain",ɩ);ɪ=Ǝ.ƍ(ʆ,"IntegralGain",ɪ);ɫ=Ǝ.ƍ(ʆ,"DerivativeGain",ɫ);ɬ=Ǝ.ƍ(ʆ,
-"IntegralLowerLimit",ɬ);ɭ=Ǝ.ƍ(ʆ,"IntegralUpperLimit",ɭ);ɮ=Ǝ.ƍ(ʆ,"MaxAngularVelocityRPM",ɮ);}}}public class ɗ{private static readonly
-Dictionary<string,ɗ>ʇ=new Dictionary<string,ɗ>();public static string ɸ(){Program.L("Writing config",J.K);var ʈ=new Dictionary<
-string,object>();foreach(var ũ in ʇ){Program.L($"Collecting config: {ũ.Key}",J.C);ʈ.Add(ũ.Key,ũ.Value.ɘ());}return Ǝ.š(ʈ);}
-public static void ɷ(string ʈ){Program.L("Reading config from custom data",J.K);var ʉ=Ǝ.Ÿ(ʈ);Program.L(
-"DeltaWing Object Notation: Parsed successfully",J.C);var Ũ=ʉ as Dictionary<string,object>;if(Ũ==null){Program.L("Config malformed",J.ȷ);throw new Exception();}foreach(
-var ũ in Ũ){ɗ ʊ;if(!ʇ.TryGetValue(ũ.Key,out ʊ))continue;var ʋ=ũ.Value as Dictionary<string,object>;if(ʋ!=null){Program.L(
-"Config set: "+ũ.Key,J.C);ʊ.ɚ(ʋ);}}}public Func<Dictionary<string,object>>ɘ{get;set;}public Action<Dictionary<string,object>>ɚ{get;set
-;}public ɗ(string Ö,string ŝ){ʌ=Ö;Ş=ŝ;ʇ.Add(Ö,this);}public string ʌ{get;}public string Ş{get;}public Dictionary<string,
-object>ə()=>ɘ?.Invoke();public void ɛ(Dictionary<string,object>ů)=>ɚ?.Invoke(ů);}public class ɶ{private static readonly ɗ M=
-new ɗ("Projectile Data","The main list of known projectiles. Gun Data should reference these by name."){ɘ=ə,ɚ=ɛ};public
-static Dictionary<string,ɶ>ʍ=new Dictionary<string,ɶ>();public static readonly ɶ ʎ=new ɶ(0,0,0,0);static ɶ(){ʍ.Add("Default",ʎ
-);ʍ.Add("LargeRailgun",new ɶ(2000,2000,2000,0));ʍ.Add("Artillery",new ɶ(500,500,2000,0));ʍ.Add("SmallRailgun",new ɶ(1000,
-1000,1400,0));ʍ.Add("Gatling",new ɶ(400,400,800,0));ʍ.Add("AssaultCannon",new ɶ(500,500,1400,0));ʍ.Add("Rocket",new ɶ(100,
-200,800,1000));}public static void ɵ(){Program.L("Projectile data loaded",J.C);}public static ɶ ɘ(string ʏ){ɶ ʐ;return ʍ.
-TryGetValue(ʏ,out ʐ)?ʐ:ʎ;}public float ʑ{get;private set;}public float ʒ{get;private set;}public float ʓ{get;private set;}public
-float ʔ{get;private set;}public ɶ(float ʕ,float ʖ,float ʗ,float ʘ){ʑ=ʕ;ʒ=ʖ;ʓ=ʗ;ʔ=ʘ;}private static Dictionary<string,object>ə
-(){var ʙ=new Dictionary<string,object>();foreach(var ũ in ʍ){var Ö=ũ.Key;var ʚ=ũ.Value;ʙ[Ö]=new Dictionary<string,object>
-{["ProjectileVelocity"]=ʚ.ʑ,["MaxVelocity"]=ʚ.ʒ,["MaxRange"]=ʚ.ʓ,["Acceleration"]=ʚ.ʔ};}return ʙ;}private static void ɛ(
-Dictionary<string,object>ʈ){Ǝ.Ɖ(ʈ);foreach(var ũ in ʈ){var ʛ=(Dictionary<string,object>)ũ.Value;var ʜ=ʍ[ũ.Key]??ʎ;var ʕ=Ǝ.ƍ(ʛ,
-"ProjectileVelocity",ʜ.ʑ);var ʖ=Ǝ.ƍ(ʛ,"MaxVelocity",ʜ.ʒ);var ʗ=Ǝ.ƍ(ʛ,"MaxRange",ʜ.ʓ);var ʘ=Ǝ.ƍ(ʛ,"Acceleration",ʜ.ʔ);var ʝ=new ɶ(ʕ,ʖ,ʗ,ʘ);ʍ[
-ũ.Key]=ʝ;}}}public class ɴ{private static readonly ɗ M=new ɗ("Gun Data",
-"The main list of known gun types and their definition names. Should reference a known projectile type."){ɘ=ə,ɚ=ɛ};public static Dictionary<string,ɴ>ʍ=new Dictionary<string,ɴ>();public static readonly ɴ ʞ=new ɴ("Default",0,0
-,0f,0f);static ɴ(){ʍ.Add("Default",ʞ);ʍ.Add("LargeRailgun",new ɴ("LargeRailgun",ʟ.ʠ,ʡ.ʢ,2.0f,4.0f));ʍ.Add(
-"LargeBlockLargeCalibreGun",new ɴ("Artillery",0,0,0,12));ʍ.Add("LargeMissileLauncher",new ɴ("Rocket",0,0,0,0.5f));ʍ.Add("SmallRailgun",new ɴ(
-"SmallRailgun",ʟ.ʠ,ʡ.ʢ,0.5f,4.0f));ʍ.Add("SmallBlockAutocannon",new ɴ("Gatling",0,0,0.0f,0.4f));ʍ.Add("SmallBlockMediumCalibreGun",new
-ɴ("AssaultCannon",0,0,0.0f,6f));ʍ.Add("MyObjectBuilder_SmallGatlingGun",new ɴ("Gatling",0,0,0.0f,0.1f));ʍ.Add(
-"MyObjectBuilder_SmallMissileLauncher",new ɴ("Rocket",0,0,0.0f,1f));ʍ.Add("SmallRocketLauncherReload",ɘ("MyObjectBuilder_SmallMissileLauncher"));ʍ.Add(
-"SmallGatlingGunWarfare2",ɘ("MyObjectBuilder_SmallGatlingGun"));ʍ.Add("SmallMissileLauncherWarfare2",ɘ("MyObjectBuilder_SmallMissileLauncher"));}
-public static void ɵ(){Program.L("Gun data loaded",J.C);}public static ɴ ɘ(string ʏ){ɴ ʐ;return ʍ.TryGetValue(ʏ,out ʐ)?ʐ:ʞ;}
-string ʣ;public ɶ ɶ{get;}public ʟ ʤ{get;}public ʡ ʥ{get;}public int ʦ{get;}public float ʧ=>ʦ/60.0f;public int ʨ{get;}public
-float ʩ=>ʨ/60.0f;public ɴ(string ʪ,ʟ ʫ,ʡ ʬ,float ʭ,float ʮ){ʣ=ʪ;ɶ=ɶ.ɘ(ʪ);ʤ=ʫ;ʥ=ʬ;ʦ=(int)(ʭ*60);ʨ=(int)(ʮ*60);}private static
-Dictionary<string,object>ə(){var ʙ=new Dictionary<string,object>();foreach(var ũ in ʍ){var Ö=ũ.Key;var ʚ=ũ.Value;var ʝ=new
-Dictionary<string,object>();ʝ["Projectile"]=ʚ.ʣ;ʝ["ReloadType"]=new Ǝ.Ş((int)ʚ.ʤ,"0 = normal, 1 = charged");ʝ["FireType"]=new Ǝ.Ş(
-(int)ʚ.ʥ,"0 = normal, 1 = delay before firing");ʝ["FireTime"]=ʚ.ʧ;ʝ["ReloadTime"]=ʚ.ʩ;ʙ[Ö]=ʝ;}return ʙ;}private static
-void ɛ(Dictionary<string,object>ʈ){Ǝ.Ɖ(ʈ);foreach(var ũ in ʈ){var ʛ=(Dictionary<string,object>)ũ.Value;var ʜ=ʍ[ũ.Key]??ʞ;var
-ʯ=Ǝ.ƍ(ʛ,"Projectile",ʜ.ʣ);var ʰ=Ǝ.ƍ(ʛ,"ReloadType",ʜ.ʤ);var ʬ=Ǝ.ƍ(ʛ,"FireType",ʜ.ʥ);var ʭ=Ǝ.ƍ(ʛ,"FireTime",ʜ.ʧ);var ʮ=Ǝ.ƍ
-(ʛ,"ReloadTime",ʜ.ʩ);var ʝ=new ɴ(ʯ,ʰ,ʬ,ʭ,ʮ);ʍ[ũ.Key]=ʝ;}}}public static class ʁ{public static bool ʂ;}public abstract
-class ʷ{protected Vector3D ʱ;protected Vector3D ʲ;protected int ʳ;public ʴ ʶ=ʴ.ʵ;public ʷ(){Program.L("New ArgusShip",J.C);ʳ=
-Program.D.Next()%600;}public abstract Vector3D ʸ{get;}public abstract Vector3D ʹ{get;}public abstract Vector3D ʔ{get;}public
-abstract float ʺ{get;}public abstract string ʌ{get;}public abstract void Z(int ʻ);public abstract void a(int ʻ);public Vector3D
-ˌ(ʷ ʼ,float ʕ){Vector3D ʽ=this.ʸ;Vector3D ʾ=this.ʹ;Vector3D ʿ=ʼ.ʸ;Vector3D ˀ=ʼ.ʔ;Vector3D ˁ=ʼ.ʹ-ʾ;Vector3D ˆ=ʿ-ʽ;double Ů
-=ʕ;double ȓ=ˁ.LengthSquared()-Ů*Ů;double Ȕ=2.0*ˆ.Dot(ˁ);double Ź=ˆ.LengthSquared();double Ȯ;if(Math.Abs(ȓ)<1e-6){if(Math.
-Abs(Ȕ)<1e-6)Ȯ=0;else Ȯ=-Ź/Ȕ;}else{double ˇ=Ȕ*Ȕ-4*ȓ*Ź;if(ˇ<0)return ʿ;double ˈ=Math.Sqrt(ˇ);double ˉ=(-Ȕ+ˈ)/(2*ȓ);double ˊ=(
--Ȕ-ˈ)/(2*ȓ);Ȯ=Math.Min(ˉ,ˊ)>0?Math.Min(ˉ,ˊ):Math.Max(ˉ,ˊ);if(Ȯ<0)Ȯ=Math.Max(ˉ,ˊ);}Vector3D ˋ=ʿ+ˁ*Ȯ+0.5*ˀ*Ȯ*Ȯ;return ˋ;}}
-public struct ͱ{public readonly Vector3D ˍ;public readonly Vector3D ˎ;public readonly Vector3D ˏ;public readonly Vector3D ː;
-public readonly double ˑ;public readonly double ˠ;public MatrixD ˡ;public ͱ(Vector3D ˢ,Vector3D Ȁ,Vector3D ˣ,Vector3D ˤ,double
-ˬ,double ˮ,MatrixD Ͱ){ˍ=ˢ;ˎ=Ȁ;ˏ=ˣ;ː=ˤ;ˑ=ˬ;ˠ=ˮ;ˡ=Ͱ;}}public class ͻ{Ͳ ͳ;ʹ Ͷ;public ͻ(Ͳ ͷ,ʹ ͺ){Program.L($"Setting up FCS",
-J.K);ͳ=ͷ;Ͷ=ͺ;}public ͱ Θ(){Ͷ.ͼ();int Ά=Ͷ.ͽ;Έ Ί=Ͷ.Ή;var Ύ=Ͷ.Ό;var ΐ=ͳ.Ώ();var ˆ=ΐ-Ύ;var Α=ˆ.Length();var Β=ˆ/Α;var ˬ=Β.Dot
-(ͳ.Ə);var Δ=Ͷ.Γ();var Ε=(Δ-Ύ).Normalized();Program.c(Ε);if(ˬ>M.ɤ&&ΐ!=Vector3D.Zero)Ͷ.Ζ();else Ͷ.Η();return new ͱ(Ε,ΐ,Ύ,ͳ.
-Ə,ˬ,Α,ͳ.ˡ);}}public enum ʟ{Ι,ʠ}public enum ʡ{Ι,ʢ}public enum Π{Κ,Λ,Μ,Ν,Ξ,Ο}public class ΰ{private static readonly
-MyDefinitionId Ρ=new MyDefinitionId(typeof(MyObjectBuilder_GasProperties),"Electricity");IMyUserControllableGun Σ;ʟ Τ;ʡ Υ;
-MyResourceSinkComponent Φ;int Χ;int Ψ;Π Ω;bool Ϊ;bool Ϋ;ɴ ά;ʹ έ;public ΰ(IMyUserControllableGun ʐ,ʹ ή){var ί=ʐ.BlockDefinition;Program.L(
-$"Set up new gun {ί}",J.K);var ʝ=ɴ.ɘ(ί.SubtypeIdAttribute);if(ʝ==ɴ.ʞ)ʝ=ɴ.ɘ(ί.TypeIdString);ά=ʝ;έ=ή;Σ=ʐ;Φ=ʐ.Components.Get<
-MyResourceSinkComponent>();Τ=ά.ʤ;Υ=ά.ʥ;}public Vector3D β=>(Vector3)(Σ.Min+Σ.Max)/2*έ.α.ʺ;public Vector3D γ=>Σ.GetPosition();public Vector3D Ƒ{
-get;set;}public float ʹ=>ά.ɶ.ʑ;public float ʔ=>ά.ɶ.ʔ;public float ʒ=>ά.ɶ.ʒ;public float ʓ=>ά.ɶ.ʓ;public ɴ ɴ=>ά;public Π ε{
-get{if(!Ϊ){Ω=δ();Ϊ=true;}return Ω;}}public Vector3D Ə=>Σ.WorldMatrix.Forward;public void Z(int ʻ){Ϊ=false;}public void a(
-int ʻ){}public bool θ(){if(ε!=Π.Μ)return false;Σ.ShootOnce();Χ=X.ɐ(ά.ʨ,ζ);if(Υ==ʡ.ʢ){Ψ=X.ɐ(ά.ʦ,η);}else{Ψ=X.ɐ(0,η);}return
-true;}public bool κ(){if(ε!=Π.Κ)return false;Σ.Enabled=false;X.ɐ(0,ι);Ϋ=true;return true;}public bool λ(){if(ε!=Π.Κ)return
-false;if(X.ɖ(Ψ)>1)return false;Σ.Enabled=false;X.ɐ(0,ι);Ϋ=true;return true;}public Vector3D ξ(Vector3D μ){Vector3D ν=μ+Ƒ*ʹ;if
-(ν.LengthSquared()>ʹ*ʹ)ν=ν.Normalized()*ʹ;return ν;}Π δ(){bool ο=Σ.IsFunctional;if(!ο)return Π.Ο;if(Υ==ʡ.ʢ&&X.ɕ(Ψ))return
-Ϋ?Π.Λ:Π.Κ;switch(Τ){case ʟ.Ι:if(X.ɕ(Χ))return Π.Ν;break;case ʟ.ʠ:if(X.ɕ(Χ))return Π.Ν;if(Φ.CurrentInputByType(Ρ)>0.02f)
-return Π.Ξ;break;}return Π.Μ;}void η(){if(Ϋ){Ϋ=false;return;}}void ζ(){}void ι(){Σ.Enabled=true;}}public enum Έ{π,ρ,Κ}public
-enum ʥ{ς,σ,τ}public class ʹ{List<ΰ>Ͷ=new List<ΰ>();List<ΰ>υ=new List<ΰ>();Vector3D φ;Έ χ;int ψ;ɴ ά;public ʹ(List<
-IMyTerminalBlock>ω,Ͳ ϊ){Program.L("Setting up gun manager",J.K);foreach(var ϋ in ω){var ʐ=ϋ as IMyUserControllableGun;if(ʐ!=null)Ͷ.Add(
-new ΰ(ʐ,this));}if(Ͷ.Count<=0)Program.L($"No guns in group {M.ɟ}",J.ȵ);α=ϊ;}public Ͳ α{get;}public IMyCubeGrid ύ=>α.ό.
-CubeGrid;public int ώ=>Ͷ.Count;public Vector3D Ό=>φ;public Έ Ή=>χ;public int ͽ=>ψ;public void Z(int ʻ){foreach(var ʐ in Ͷ)ʐ.Z(ʻ)
-;}public void ͼ(){var Ί=Έ.π;var Ϗ=new Dictionary<ɴ,List<ΰ>>();var ϐ=new Dictionary<ɴ,List<ΰ>>();var ϑ=0;var ϒ=0;foreach(
-var ʐ in Ͷ){switch(ʐ.ε){case Π.Μ:if(!Ϗ.ContainsKey(ʐ.ɴ))Ϗ.Add(ʐ.ɴ,new List<ΰ>());Ϗ[ʐ.ɴ].Add(ʐ);ϑ++;break;case Π.Κ:if(!ϐ.
-ContainsKey(ʐ.ɴ))ϐ.Add(ʐ.ɴ,new List<ΰ>());ϐ[ʐ.ɴ].Add(ʐ);ϒ++;break;}}Program.c(ϑ);var ϓ=ϐ;if(ϑ>0){χ=Έ.ρ;ϓ=Ϗ;}if(ϒ>0){χ=Έ.Κ;ϓ=ϐ;}var
-ʼ=α.Ώ();var ϔ=α.ʸ;var ϕ=(ʼ-ϔ).LengthSquared();foreach(var ϖ in ϓ){var ʛ=ϖ.Key;var ͺ=ϖ.Value;var ʗ=ʛ.ɶ.ʓ;if(ʗ*ʗ<ϕ)continue
-;υ=ͺ;ά=ʛ;break;}ψ=υ.Count;if(ψ==0){φ=α.ʸ;return;}Vector3D ϗ=Vector3D.Zero;foreach(var ʐ in υ){ϗ+=ʐ.β;}ϗ/=ψ;φ=Vector3D.
-Transform(ϗ,α.ˡ);}public void a(int ʻ){foreach(var ʐ in Ͷ)ʐ.a(ʻ);}public void ɽ(){foreach(var ʐ in Ͷ)ʐ.θ();}public void ɾ(){
-foreach(var ʐ in Ͷ)ʐ.κ();}public void Ζ(){foreach(var ʐ in Ͷ)ʐ.θ();}public void Η(){foreach(var ʐ in Ͷ)ʐ.λ();}public Vector3D Γ
-(){if(ά==null)return Vector3D.Zero;var Ǽ=ά.ɶ.ʒ;var ʼ=α.Ώ();var ˆ=ʼ-φ;var Ϙ=υ[0];if(Ϙ==null)return Vector3D.Zero;var ȅ=α.ϙ
-;var Ȇ=ȅ.LengthSquared()!=0;return ȳ.Ȓ(Ǽ,Ϙ.ξ(α.ʹ)/60,ά.ɶ.ʔ*Ϙ.Ə,ˆ,α.Ϛ.ʸ,α.Ϛ.ʹ/60,α.Ϛ.ʔ/60,Vector3D.Zero,false,ȅ,Ȇ);}}
-public class ϟ{private readonly List<IMyGyro>ϛ;private readonly ǫ Ϝ;private readonly ǫ ϝ;public ϟ(List<IMyTerminalBlock>ω){
-Program.L("Setting up gyro manager",J.K);ϛ=new List<IMyGyro>();foreach(var Ȕ in ω){var Ϟ=Ȕ as IMyGyro;if(Ϟ!=null){ϛ.Add(Ϟ);}}if
-(ϛ.Count<=0)Program.L($"No gyroscopes found in group: {M.ɟ}",J.ȵ);Ϝ=new ǫ(M.ɩ,M.ɪ,M.ɫ,M.ɭ,M.ɬ);ϝ=new ǫ(M.ɩ,M.ɪ,M.ɫ,M.ɭ,M.
-ɬ);}public void Ϭ(ref ͱ Ϡ,double ϡ=0){int Ϣ=7;double ϣ=1.0;if(Ϡ.ˑ>0.9999){ϣ*=0.8;Ϣ=4;}if(Ϡ.ˑ>0.99999){ϣ*=0.8;Ϣ=3;}if(Ϡ.ˑ>
-0.999999){ϣ*=0.8;Ϣ=2;}if(Ϡ.ˑ>0.9999999){ϣ*=0.8;Ϣ=1;}double Ϥ;double ϥ;var Ϧ=ϡ;var ϧ=Vector3D.Cross(Ϡ.ː,Ϡ.ˍ);var Ϩ=Vector3D.
-TransformNormal(ϧ,MatrixD.Transpose(Ϡ.ˡ));var ϩ=Ϝ.ǰ(-Ϩ.X,Ϣ);var ț=ϝ.ǰ(-Ϩ.Y,Ϣ);Ϥ=MathHelper.Clamp(ϩ,-M.ɮ,M.ɮ);ϥ=MathHelper.Clamp(ț,-M.ɮ,
-M.ɮ);if(Math.Abs(ϥ)+Math.Abs(Ϥ)>M.ɮ){var Ϫ=M.ɮ/(Math.Abs(ϥ)+Math.Abs(Ϥ));ϥ*=Ϫ;Ϥ*=Ϫ;}Ϥ*=ϣ;ϥ*=ϣ;ϫ(Ϥ,ϥ,Ϧ,Ϡ.ˡ);}void ϫ(double
-ϭ,double Ϯ,double ϯ,MatrixD Ͱ){var ϰ=new Vector3D(ϭ,Ϯ,ϯ);var ϱ=Vector3D.TransformNormal(ϰ,Ͱ);foreach(var Ϟ in ϛ)if(Ϟ.
-IsFunctional&&Ϟ.IsWorking&&Ϟ.Enabled&&!Ϟ.Closed){var ϲ=Vector3D.TransformNormal(ϱ,MatrixD.Transpose(Ϟ.WorldMatrix));Ϟ.Pitch=(float)ϲ
-.X;Ϟ.Yaw=(float)ϲ.Y;Ϟ.Roll=(float)ϲ.Z;Ϟ.GyroOverride=true;return;}}public void ϳ(){foreach(var Ϟ in ϛ)if(Ϟ.IsFunctional&&
-Ϟ.IsWorking&&Ϟ.Enabled&&!Ϟ.Closed){Ϟ.GyroOverride=false;return;}}}public class ϻ{private readonly List<ϴ>ϵ;private
-readonly List<Ϸ>ϸ;public ϻ(List<IMyTerminalBlock>ω){ϵ=new List<ϴ>();ϸ=new List<Ϸ>();foreach(var ϋ in ω){var Ϲ=ϋ as IMySpaceBall;
-if(Ϲ!=null){ϸ.Add(new Ϸ(Ϲ,this));continue;}var Ϻ=ϋ as IMyArtificialMassBlock;if(Ϻ!=null){ϵ.Add(new ϴ(Ϻ,this));}}}public
-bool ϼ{get;set;}public void Z(int G){}public void a(int G){foreach(var ϋ in ϵ){ϋ.Ͻ();}foreach(var Ϲ in ϸ){Ϲ.Ͻ();}}}internal
-class Њ{List<Ͼ>Ͽ;bool Ѐ;float Ё;float Ђ;int Ѓ;public Њ(List<Ͼ>Є,Ƒ Ѕ){Ͽ=Є;І=0;Ƒ=Ѕ;foreach(var Ї in Є){var Љ=Ї as Ј;if(Љ!=null)
-І+=M.ɰ;}}public void Z(int ʻ){if(Ё==0)Ѓ++;else Ѓ=0;if(Ѓ>M.ɯ)ϼ=false;}public void a(int ʻ){if(Ѐ!=ϼ)foreach(var Ї in Ͽ)Ї.ϼ=
-ϼ;Ѐ=ϼ;if(Ђ!=Ё)foreach(var Ї in Ͽ)Ї.ʔ=Ё;Ђ=Ё;}public Ƒ Ƒ{get;private set;}public bool ϼ{get;private set;}public double І{
-get;private set;}public void Ћ(float ʘ){if(ʘ==Ё&&ʘ==0)return;ϼ=true;if(ʘ==Ё)return;Ё=ʘ;}}public class М{private readonly Њ
-Ќ;private readonly Њ Ѝ;private readonly Њ Ў;ϻ Џ;Ͳ ͳ;bool А;public М(List<IMyTerminalBlock>ω,Ͳ ͷ){Program.L(
-$"Setting up gravity drive",J.K);ͳ=ͷ;var Б=new List<Ͼ>();var В=new List<Ͼ>();var Г=new List<Ͼ>();var Д=new Dictionary<Ƒ,List<Ͼ>>{{Ƒ.Ē,Г},{Ƒ.Ĕ,Г},{Ƒ
-.đ,В},{Ƒ.ē,В},{Ƒ.Ə,Б},{Ƒ.Ɛ,Б}};foreach(var ϋ in ω){var Е=ϋ as IMyGravityGenerator;if(Е!=null){var Β=(Ƒ)Е.Orientation.Up;
-var Ū=Д[Β];bool Ж=(int)Β%2==0;Ū.Add(new Ј(Е,Β,Ж));}var З=ϋ as IMyGravityGeneratorSphere;if(З!=null){var Й=ͳ.И;var К=
-Base6Directions.Directions[(int)Й];var Ж=К.Dot(ͳ.ʸ-З.GetPosition())>0;var Ū=Д[Й];Ū.Add(new Л(З,Й,Ж));}}if(Б.Count==0)Program.L(
-$"No Forward/backward gravity generators",J.ȵ);if(В.Count==0)Program.L($"No Left/Right gravity generators",J.ȵ);if(Г.Count==0)Program.L(
-$"No Up/Down gravity generators",J.ȵ);Ќ=new Њ(Б,Ƒ.Ə);Ѝ=new Њ(В,Ƒ.đ);Ў=new Њ(Г,Ƒ.Ē);Џ=new ϻ(ω);}bool Н=>Ќ.ϼ||Ѝ.ϼ||Ў.ϼ;public void Z(int ʻ){Ќ.Z(ʻ);Ѝ.Z(ʻ);
-Ў.Z(ʻ);Џ.Z(ʻ);}public void a(int ʻ){Ќ.a(ʻ);Ѝ.a(ʻ);Ў.a(ʻ);if(Н!=А)Џ.ϼ=Н;Program.c(Џ.ϼ);А=Н;Џ.a(ʻ);}public void П(Vector3 О
-){О*=(float)M.ɰ;Ќ.Ћ(О.Dot(Vector3D.Forward));Ѝ.Ћ(О.Dot(Vector3D.Left));Ў.Ћ(О.Dot(Vector3D.Up));}}public class Ϸ:Р{
-IMySpaceBall С;ϻ Џ;public Ϸ(IMySpaceBall Ϲ,ϻ Т){С=Ϲ;Џ=Т;}public bool У{get;set;}=true;public bool Ф=>Џ.ϼ;public bool ɕ=>У&&Ф;public
-override double Х=>С.VirtualMass;public override double Ц=>У?С.VirtualMass:0;public void Ͻ(){С.Enabled=ɕ;}}public class ϴ:Р{
-IMyArtificialMassBlock Ч;ϻ Џ;bool Ш;public ϴ(IMyArtificialMassBlock Ϻ,ϻ Т){Ч=Ϻ;Џ=Т;}public bool У{get;set;}=true;public bool Ф=>Џ.ϼ;public
-bool ɕ=>У&&Ф;public override double Х=>Ч.VirtualMass;public override double Ц=>У?Ч.VirtualMass:0;public void Ͻ(){if(Ш!=ɕ)Ч.
-Enabled=ɕ;Ш=ɕ;}}public abstract class Ͼ{protected bool Щ;public IMyGravityGeneratorBase Ъ{get;protected set;}public Ƒ Ƒ{get;
-protected set;}public bool ϼ{get{return Ъ.Enabled;}set{Ъ.Enabled=value;}}public float ʔ{get{return Ъ.GravityAcceleration*(Щ?-1:1)
-;}set{Ъ.GravityAcceleration=value*(Щ?-1:1);}}}public class Ј:Ͼ{public Ј(IMyGravityGenerator Ы,Ƒ Β,bool Ж){Ъ=Ы;Ƒ=Β;Щ=Ж;}}
-public class Л:Ͼ{public Л(IMyGravityGeneratorSphere З,Ƒ Β,bool Ж){Ъ=З;Ƒ=Β;Щ=Ж;}}public abstract class Р{public abstract double
-Х{get;}public abstract double Ц{get;}}public class Я{М Ь;Э Ю;Ͳ ͳ;public Я(List<IMyTerminalBlock>ω,Ͳ ͷ){Program.L(
-$"Setting up propulsion controller",J.K);ͳ=ͷ;Ь=new М(ω,ͷ);Ю=new Э();}public void Z(int ʻ){Ь.Z(ʻ);Ю.Z(ʻ);}public void a(int ʻ){var а=ͳ.ό.MoveIndicator;
-Matrix Ò;ͳ.ό.Orientation.GetMatrix(out Ò);var б=Vector3.Transform(а,Ò);if(ͳ.ό.DampenersOverride){var в=ͳ.ʹ;var г=Vector3D.
-TransformNormal(в,MatrixD.Invert(ͳ.ˡ));var д=г*Vector3D.Forward;var е=г*Vector3D.Left;var ж=г*Vector3D.Down;if(б.Dot(Vector3D.Forward)
-==0)б+=д;if(б.Dot(Vector3D.Left)==0)б+=е;if(б.Dot(Vector3D.Down)==0)б+=ж;}Ь.П(б);Ь.a(ʻ);Ю.a(ʻ);}}public class Э{public
-void Z(int ʻ){}public void a(int ʻ){}}public enum ʴ{з,и,й,ʵ}public class м{public static int л(ʴ к){switch(к){case ʴ.з:
-return 600;case ʴ.и:return 60;case ʴ.й:return 10;case ʴ.ʵ:return 1;default:return Int32.MaxValue;}}}public class о{public о(
-IMyTurretControlBlock ϋ){н=ϋ;}public IMyTurretControlBlock н{get;}public bool п=>н.Closed;bool р;bool с=true;public bool т{get;private set;}
-public bool у{get;private set;}public bool ф{get;private set;}public bool х{get;private set;}public bool ϼ{get{return н.
-Enabled;}set{н.Enabled=value;}}public string ц{get{return н.CustomName;}set{н.CustomName=value;}}public long ч{get;set;}public
-ƒ ш{get;set;}public Vector3D ʸ=>н.GetPosition();public void Ͻ(){var щ=н.HasTarget;у=!щ&&р;р=щ;т=щ;var ы=ш!=null&&ш.ъ;х=ы
-&&с;с=!ы;ф=ы;if(!щ)ч=0;}public MyDetectedEntityInfo э(){var ь=н.GetTargetedEntity();ч=ь.EntityId;return ь;}}public class Ͳ
-:ю{ϟ я;public ʹ ɼ;ͻ ѐ;List<IMyLargeTurretBase>ё;Я ђ;ƒ ѓ;bool є;Vector3D ѕ;bool і=false;public Ͳ(IMyCubeGrid ї,List<
-IMyTerminalBlock>ω,List<IMyTerminalBlock>ј):base(ї,ј){Program.L("New ControllableShip : SupportingShip : ArgusShip",J.C);я=new ϟ(ω);ɼ=
-new ʹ(ω,this);ѐ=new ͻ(this,ɼ);foreach(var ϋ in ω){var љ=ϋ as IMyShipController;if(љ!=null)ό=љ;}if(ό==null)Program.L(
-$"WARNING: Controller not present in group: {M.ɟ}");ђ=new Я(ω,this);}public IMyShipController ό{get;set;}public Vector3D Ə=>ό.WorldMatrix.Forward;public Vector3 њ=>
-Base6Directions.Directions[(int)ό.Orientation.Forward];public Ƒ И=>(Ƒ)ό.Orientation.Forward;public Vector3D Ē=>ό.WorldMatrix.Up;public
-MatrixD ˡ=>ћ.WorldMatrix;public ƒ Ϛ=>ѓ;public Vector3D ϙ{get{if(!і){ѕ=ό.GetNaturalGravity();і=true;}return ѕ;}}public override
-void Z(int ʻ){base.Z(ʻ);ɼ.Z(ʻ);ђ.Z(ʻ);}public override void a(int ʻ){base.a(ʻ);if(є){і=false;var Ϡ=ѐ.Θ();if(Ϡ.ˎ==Vector3D.
-Zero)я.ϳ();else я.Ϭ(ref Ϡ);ɼ.a(ʻ);}ђ.a(ʻ);}public void ɻ(){ѓ=null;є=false;я.ϳ();}public void ɺ(){ѓ=O.ќ(this,M.ɢ,M.ɣ);є=true;
-if(ѓ==null){є=false;я.ϳ();Program.L("Couldn't find new target",J.ȵ);}else{Program.L("Got new target",J.K);}}public
-Vector3D Ώ(){return ѓ?.ʸ??Vector3D.Zero;}}public class ю:ʷ{private readonly List<о>ѝ;protected readonly IMyCubeGrid ћ;public ю(
-IMyCubeGrid ї,List<IMyTerminalBlock>ј){Program.L("New SupportingShip : ArgusShip",J.C);IMyUserControllableGun ʐ=null;IMyMotorStator
-ў=null;ѝ=new List<о>();foreach(var ϋ in ј){var љ=ϋ as IMyTurretControlBlock;if(љ!=null){ѝ.Add(new о(љ));continue;}ʐ=ʐ??ϋ
-as IMyUserControllableGun;ў=ў??ϋ as IMyMotorStator;}if(ʐ!=null&&ў!=null){Program.L("Setting up trackers",J.C);foreach(var
-џ in ѝ){Program.L($"Set up tracker: {џ.ц}");var ϋ=џ.н;ϋ.ClearTools();ϋ.AddTool(ʐ);ϋ.AzimuthRotor=null;ϋ.ElevationRotor=ў;
-ϋ.AIEnabled=true;ϋ.CustomName=M.ɦ;}if(ѝ.Count<=0)Program.L("No target trackers in group",J.ȵ);}else Program.L(
-$"Gun/rotor not present in group: {M.ɠ}, cannot setup trackers",J.ȵ);ћ=ї;}public override Vector3D ʸ=>ћ.GetPosition();public override Vector3D ʹ=>ʲ;public override Vector3D ʔ=>(ʲ-ʱ)*
-60;public override float ʺ=>ћ.GridSize;public override string ʌ=>ћ.CustomName;public override string ToString()=>ʌ;public
-override void Z(int ʻ){ʱ=ʲ;ʲ=ћ.LinearVelocity;}public override void a(int ʻ){for(int Ƅ=ѝ.Count-1;Ƅ>=0;Ƅ--){var џ=ѝ[Ƅ];if(џ.п){ѝ.
-RemoveAt(Ƅ);continue;}џ.Ͻ();if(!џ.т||џ.ф){if(џ.у&&!џ.ϼ){џ.ϼ=true;џ.ц=M.ɦ;if(џ.ш!=null){џ.ш.Ѡ=true;џ.ш.ѡ=null;}џ.ш=null;}else if(
-џ.х){џ.ϼ=true;џ.ц=M.ɦ;}continue;}if(џ.ч!=0)continue;var ʼ=џ.э();о Ѣ;if(O.ѣ(ʼ.EntityId,out Ѣ)){if(Ѣ==џ&&џ.ϼ)џ.ϼ=false;Ѣ.ш.
-Ѥ(ʼ,null,џ);continue;}var Ѧ=O.ѥ(џ,ʼ.EntityId,ʼ);џ.ш=Ѧ;џ.ц=M.ɥ;џ.ϼ=false;џ.ч=ʼ.EntityId;}}}enum Ѭ{ѧ,Ѩ,ѩ,Ѫ,ѫ}class ѱ{int ѭ;
-private readonly int Ѯ;public Ѭ ѯ;public ѱ(int ɏ,Ѭ Ѱ){ѭ=ɏ;Ѯ=ɏ;ѯ=Ѱ;}public void Ѳ(){ѭ=Ѯ;}public bool ѳ(){ѭ--;return ѭ<=0;}}
-public class ƒ:ʷ{Dictionary<Vector3I,ѱ>Ѵ=new Dictionary<Vector3I,ѱ>();Dictionary<Vector3I,ѱ>ѵ=new Dictionary<Vector3I,ѱ>();
-public ю Ѷ;public MyDetectedEntityInfo K;public long ѷ;bool Ѹ=true;BoundingBoxD ѹ;Vector3D Ѻ;Vector3D ѻ;private readonly float
-Ѽ=1f;public ƒ(о џ,long ѽ,MyDetectedEntityInfo ã){ѡ=џ;ѷ=ѽ;ʶ=ʴ.и;switch(ã.Type){case MyDetectedEntityType.SmallGrid:Ѽ=0.5f;
-break;case MyDetectedEntityType.LargeGrid:Ѽ=2.5f;break;}K=ã;Ѿ=K.Orientation;Ѿ.Translation=K.Position;}public override
-Vector3D ʸ=>K.Position;public override Vector3D ʹ=>ʲ;public override Vector3D ʔ=>(ʲ-ʱ)*60;public override float ʺ=>Ѽ;public
-override string ʌ=>$"Trackable ship {ѷ}";public bool Ѡ{get;set;}=false;public override string ToString()=>ʌ;public о ѡ{get;set;}
-public bool ъ{get;set;}public BoundingBoxD ѿ=>K.BoundingBox;public Vector3D ҁ=>Ҁ.Extents;public Vector3D Ҋ=>Ҁ.HalfExtents;
-public int ҋ{get;set;}=0;public BoundingBoxD Ҁ{get{if(Ѹ)Ҍ();return ѹ;}}public Vector3D ҍ{get{if(Ѹ)Ҍ();return Ѻ;}}Vector3D Ҏ;
-MatrixD Ѿ;public Vector3D Ґ(){var ҏ=Ҏ;Ҏ=Vector3D.Zero;return ҏ;}void Ҍ(){ѹ=ǜ.Ǜ(ѿ,K.Orientation,Ѽ);Ѹ=false;var ґ=Ҋ;var Ȳ=Ѽ/2;Ѻ=
-new Vector3D(Ȳ-ґ.X%Ѽ,Ȳ-ґ.Y%Ѽ,Ȳ-ґ.Z%Ѽ);}public override void Z(int ʻ){if(Ѡ)return;if((ʻ+ʳ)%м.л(ʶ)!=0)return;K=ѡ.э();if(ѡ.п||
-K.EntityId!=ѷ)Ѡ=true;ʱ=ʲ;ʲ=K.Velocity;Ҏ=ʸ-ѻ;if(ʶ==ʴ.ʵ&&(Ҏ*60-ʲ).LengthSquared()>10000){Ѹ=true;Vector3I ˆ=(Vector3I)(
-Vector3D.Transform(Ҏ-(ʲ/60),MatrixD.Invert(Ѿ))*2);Ғ(ˆ);}Ѿ=K.Orientation;Ѿ.Translation+=K.Position;ѻ=ʸ;}public override void a(
-int ʻ){ѵ.Clear();foreach(var ũ in Ѵ){var ғ=Vector3D.Transform((Vector3D)(Vector3)ũ.Key*(double)Ѽ+ҍ,Ѿ);if(ũ.Value.ѳ())
-continue;ѵ[ũ.Key]=ũ.Value;Program.C.µ(ғ,Color.White,0.2f,0.016f,true);}var ҏ=Ѵ;Ѵ=ѵ;ѵ=ҏ;Program.C.Ê(ѿ,Color.Green,B.Æ.Ç,0.02f,
-0.016f);var Ҕ=new MyOrientedBoundingBoxD(Ҁ,K.Orientation);Ҕ.Center=ѿ.Center;Program.C.Í(Ҕ,Color.Red,B.Æ.Ç,0.02f,0.016f);}
-public void Ѥ(MyDetectedEntityInfo ь,IMyLargeTurretBase ҕ=null,о љ=null){if(ь.EntityId!=K.EntityId||ь.HitPosition==null)return
-;var Җ=(Vector3D)ь.HitPosition;var җ=Җ-ʸ;var Ҙ=Vector3D.TransformNormal(җ,MatrixD.Transpose(Ѿ));Ҙ-=ҍ;var ҙ=new Vector3I((
-int)Math.Round(Ҙ.X/Ѽ),(int)Math.Round(Ҙ.Y/Ѽ),(int)Math.Round(Ҙ.Z/Ѽ));var Ѱ=Ѭ.ѧ;var Қ=ҕ!=null?ҕ.GetTargetingGroup():љ!=null?
-љ.н.GetTargetingGroup():"";switch(Қ){case"Weapons":Ѱ=Ѭ.Ѩ;break;case"Propulsion":Ѱ=Ѭ.ѩ;break;case"Power Systems":Ѱ=Ѭ.Ѫ;
-break;}if(Ѵ.ContainsKey(ҙ)){var ʜ=Ѵ[ҙ];if(Ѱ!=ʜ.ѯ)ʜ.ѯ=Ѭ.ѫ;ʜ.Ѳ();return;}else{Ѵ.Add(ҙ,new ѱ(M.ɨ,Ѱ));}}void Ғ(Vector3I ˆ){var қ=
-new Dictionary<Vector3I,ѱ>();foreach(var ϋ in Ѵ){қ.Add(ϋ.Key+ˆ,ϋ.Value);}Ѵ=қ;}}public static class O{public static readonly
-List<ʷ>Ҝ=new List<ʷ>();private static List<ƒ>ҝ=new List<ƒ>();public static Dictionary<long,ƒ>Ҟ=new Dictionary<long,ƒ>();
-private static IEnumerator<ƒ>ҟ;private static MyDynamicAABBTreeD Ҡ=new MyDynamicAABBTreeD();static O(){}public static Ͳ ɹ{get;
-set;}public static void Z(int ʻ){ҡ();for(var Ң=Ҝ.Count-1;Ң>=0;Ң--){var ͷ=Ҝ[Ң];ͷ.Z(ʻ);}foreach(var ͷ in Ҝ){var ң=ͷ as ƒ;if(ң
-==null)continue;var Ɵ=ң.ѿ;if(ң.ҋ!=0){var ˆ=ң.Ґ();Ҡ.MoveProxy(ң.ҋ,ref Ɵ,ˆ);}else{ң.ҋ=Ҡ.AddProxy(ref Ɵ,ң,0U);}}foreach(var ɓ
-in ơ.ƞ(Ҡ)){var Ҥ=ɓ.Key;var ҥ=ɓ.Value;var Ҧ=Ҥ.ѿ.Size.LengthSquared();foreach(var ҧ in ҥ){var Ҩ=ҧ.ѿ.Size.LengthSquared();if(
-Ҩ>Ҧ){Ҥ.ъ=true;return;}}Ҥ.ъ=false;}}private static void ҡ(){if(!ҟ.MoveNext()){ҟ=ҩ().GetEnumerator();ҟ.MoveNext();}}public
-static void a(int ʻ){for(var Ң=Ҝ.Count-1;Ң>=0;Ң--){var ͷ=Ҝ[Ң];ͷ.a(ʻ);}}private static IEnumerable<ƒ>ҩ(){var Ҫ=M.ɡ*M.ɡ;for(var
-Ң=Ҝ.Count-1;Ң>=0;Ң--){if(Ң>=Ҝ.Count)continue;var ͷ=Ҝ[Ң];var Ѧ=ͷ as ƒ;if(Ѧ==null)continue;var Ύ=Ѧ.ʸ;var ҫ=ɹ.ʸ;var Ҭ=(Ύ-ҫ).
-LengthSquared();if(Ҭ>Ҫ)Ѧ.ʶ=ʴ.и;else Ѧ.ʶ=ʴ.ʵ;yield return Ѧ;}}public static List<ƒ>ү(ю ͷ,double ˮ){ҝ.Clear();foreach(var ҭ in Ҝ){var Ү
-=ҭ as ƒ;if(Ү==null)continue;if((Ү.ʸ-ͷ.ʸ).LengthSquared()<ˮ*ˮ)ҝ.Add(Ү);}return ҝ;}public static ƒ ќ(Ͳ ͷ,double ˮ,float Ұ){
-var ұ=ү(ͷ,ˮ);if(ұ.Count<1)return null;var Й=ͷ.Ə;double Ҳ=Math.Cos(Ұ*Math.PI/180.0);double ҳ=double.MaxValue;ƒ Ҵ=null;
-foreach(var ҵ in ұ){var Ҷ=(ҵ.ʸ-ͷ.ʸ);var Ó=Ҷ.Length();var ˬ=(Ҷ/Ó).Dot(Й);ˬ=MathHelperD.Clamp(ˬ,-1.0,1.0);if(ˬ<Ҳ)continue;var ҷ=(
-1-ˬ)*Ó;if(ҷ<ҳ){Ҵ=ҵ;ҳ=ҷ;}}return Ҵ;}public static void P(IMyCubeGrid ї,IMyGridTerminalSystem Ҹ){var ϖ=Ҹ.
-GetBlockGroupWithName(M.ɟ);Program.L($"Getting group : {M.ɟ}",J.ȴ);var ҹ=Ҹ.GetBlockGroupWithName(M.ɠ);Program.L($"Getting group : {M.ɠ}",J.ȴ)
-;var ω=new List<IMyTerminalBlock>();var ј=new List<IMyTerminalBlock>();if(ϖ!=null){ϖ.GetBlocks(ω);Program.L(
-$"Got group: {M.ɟ}",J.C);}else Program.L($"Group not present: {M.ɟ}",J.ȵ);if(ҹ!=null){ҹ.GetBlocks(ј);Program.L($"Got group: {M.ɠ}",J.C);}
-else Program.L($"Group not present: {M.ɠ}",J.ȵ);var ͷ=new Ͳ(ї,ω,ј);Ҝ.Add(ͷ);ɹ=ͷ;ҟ=ҩ().GetEnumerator();}public static ƒ ѥ(о џ
-,long ѽ,MyDetectedEntityInfo ã){ƒ Ѧ;if(Ҟ.TryGetValue(ѽ,out Ѧ)){Program.L("Restoring defunct ship"+ѽ,J.C);if(!Ѧ.Ѡ)return
-null;Ѧ.ѡ=џ;Ѧ.Ѡ=false;return Ѧ;}Program.L("Creating new ship "+ѽ,J.C);Ѧ=new ƒ(џ,ѽ,ã);Ҝ.Add(Ѧ);Ҟ.Add(ѽ,Ѧ);return Ѧ;}public
-static void Һ(ƒ Ѧ){Ҝ.Remove(Ѧ);Ҟ.Remove(Ѧ.ѷ);Ҡ.RemoveProxy(Ѧ.ҋ);}public static bool ѣ(long һ,out о Ѣ){ƒ Ѧ;var Ҽ=Ҟ.TryGetValue(
-һ,out Ѧ);Ѣ=Ҽ?Ѧ.ѡ:null;return Ҽ&&!Ѧ.Ѡ;}}
+(string U,UpdateType V){try{if((V&UpdateType.Update1)!=0)W();if((V&(UpdateType.Trigger|UpdateType.Terminal))!=0)X(U);}
+catch(Exception T){Echo(T.ToString());Runtime.UpdateFrequency=UpdateFrequency.None;}}void W(){using(C.Y(Z=>{G.Enqueue(Z.
+TotalMilliseconds);})){a.b();P.c(H);P.d(H++);}if(G.Count>600)G.Dequeue();e(G.Average());F.f();e(F);}void X(string U){Action g;if(N.h.
+TryGetValue(U,out g)){g();}else{}}public static void e(object i){A.Echo(i.ToString());}public static void e(TimeSpan R,string j){
+double k=R.Ticks/10.0;A.Echo($"{j}: {k} µs");}public static void M(object l,K m=K.L){A.F.J(l.ToString(),m);}}
+public class B{public readonly bool n;public void q()=>o?.Invoke(p);Action<IMyProgrammableBlock>o;public void s()=>r?.
+Invoke(p);Action<IMyProgrammableBlock>r;public void v(int t)=>u?.Invoke(p,t);Action<IMyProgrammableBlock,int>u;public int Á(
+Vector3D w,Color x,float y=0.2f,float ª=z,bool?µ=null)=>º?.Invoke(p,w,x,y,ª,µ??À)??-1;Func<IMyProgrammableBlock,Vector3D,Color,
+float,float,bool,int>º;public int Ç(Vector3D Â,Vector3D Ã,Color x,float Å=Ä,float ª=z,bool?µ=null)=>Æ?.Invoke(p,Â,Ã,x,Å,ª,µ??
+À)??-1;Func<IMyProgrammableBlock,Vector3D,Vector3D,Color,float,float,bool,int>Æ;public int Í(BoundingBoxD È,Color x,É Ë=É
+.Ê,float Å=Ä,float ª=z,bool?µ=null)=>Ì?.Invoke(p,È,x,(int)Ë,Å,ª,µ??À)??-1;Func<IMyProgrammableBlock,BoundingBoxD,Color,
+int,float,float,bool,int>Ì;public int Ð(MyOrientedBoundingBoxD Î,Color x,É Ë=É.Ê,float Å=Ä,float ª=z,bool?µ=null)=>Ï?.
+Invoke(p,Î,x,(int)Ë,Å,ª,µ??À)??-1;Func<IMyProgrammableBlock,MyOrientedBoundingBoxD,Color,int,float,float,bool,int>Ï;public int
+Ô(BoundingSphereD Ñ,Color x,É Ë=É.Ê,float Å=Ä,int Ò=15,float ª=z,bool?µ=null)=>Ó?.Invoke(p,Ñ,x,(int)Ë,Å,Ò,ª,µ??À)??-1;
+Func<IMyProgrammableBlock,BoundingSphereD,Color,int,float,int,float,bool,int>Ó;public int Ù(MatrixD Õ,float Ö=1f,float Å=Ä,
+float ª=z,bool?µ=null)=>Ø?.Invoke(p,Õ,Ö,Å,ª,µ??À)??-1;Func<IMyProgrammableBlock,MatrixD,float,float,float,bool,int>Ø;public
+int Ü(string Ú,Vector3D w,Color?x=null,float ª=z)=>Û?.Invoke(p,Ú,w,x,ª)??-1;Func<IMyProgrammableBlock,string,Vector3D,Color
+?,float,int>Û;public int á(string Ý,Þ ß=Þ.C,float ª=2)=>à?.Invoke(p,Ý,ß.ToString(),ª)??-1;Func<IMyProgrammableBlock,
+string,string,float,int>à;public void å(string Ý,string â=null,Color?ã=null,Þ ß=Þ.C)=>ä?.Invoke(p,Ý,â,ã,ß.ToString());Action<
+IMyProgrammableBlock,string,string,Color?,string>ä;public void í(out int t,double æ,double ç=0.05,è ê=è.é,string ë=null)=>t=ì?.Invoke(p,æ,ç,
+ê.ToString(),ë)??-1;Func<IMyProgrammableBlock,double,double,string,string,int>ì;public double ð(int t,double î=1)=>ï?.
+Invoke(p,t)??î;Func<IMyProgrammableBlock,int,double>ï;public int ò()=>ñ?.Invoke()??-1;Func<int>ñ;public TimeSpan ô()=>ó?.
+Invoke()??TimeSpan.Zero;Func<TimeSpan>ó;public õ Y(Action<TimeSpan>ö)=>new õ(this,ö);public struct õ:IDisposable{B ø;TimeSpan
+ù;Action<TimeSpan>ú;public õ(B û,Action<TimeSpan>ö){ø=û;ú=ö;ù=ø.ô();}public void Dispose(){ú?.Invoke(ø.ô()-ù);}}public
+enum É{ü,Ê,ý}public enum è{þ,ÿ,Ā,ā,Ă,ă,Ą,ą,Ć,ć,Ĉ,ĉ,Ċ,é,ċ,Č,č,Ď,ď,Đ,đ,Ē,ē,Ĕ,ĕ,Ė,ė,Ę,ę,Ě,ě,Ĝ,ĝ,Ğ,ğ,Ġ,ø,ġ,ú,Ģ,ģ,Ĥ,ĥ,Ħ,A,ħ,Ĩ,ĩ,Ī
+,ī,Ĭ,ĭ,Į,į,ù,İ,ı,Ĳ,ĳ,Ĵ,ĵ,Ķ,ķ,ĸ,Ĺ,ĺ,Ļ,ļ,Ľ,ľ,Ŀ,ŀ,Ł,J,ł,Ń,ń,Ņ,ņ,Ň,ň,ŉ,Ŋ,ŋ,Ō,ō,Ŏ,ŏ,Ő,ő}public enum Þ{C,Œ,œ,Ŕ,ŕ,Ŗ}const float
+Ä=0.02f;const float z=-1;IMyProgrammableBlock p;bool À;public B(MyGridProgram ŗ,bool Ř=false){if(ŗ==null)throw new
+Exception("Pass `this` into the API, not null.");À=Ř;p=ŗ.Me;var ř=p.GetProperty("DebugAPI")?.As<IReadOnlyDictionary<string,
+Delegate>>()?.GetValue(p);if(ř!=null){Ś(out r,ř["RemoveAll"]);Ś(out o,ř["RemoveDraw"]);Ś(out u,ř["Remove"]);Ś(out º,ř["Point"]);
+Ś(out Æ,ř["Line"]);Ś(out Ì,ř["AABB"]);Ś(out Ï,ř["OBB"]);Ś(out Ó,ř["Sphere"]);Ś(out Ø,ř["Matrix"]);Ś(out Û,ř["GPS"]);Ś(out
+à,ř["HUDNotification"]);Ś(out ä,ř["Chat"]);Ś(out ì,ř["DeclareAdjustNumber"]);Ś(out ï,ř["GetAdjustNumber"]);Ś(out ñ,ř[
+"Tick"]);Ś(out ó,ř["Timestamp"]);s();n=true;}}void Ś<İ>(out İ ś,object Ŝ)=>ś=(İ)Ŝ;}public static class Ɛ{public class Š{public
+object ŝ;public string Ş;public Š(object i,string ş){ŝ=i;Ş=ş;}}public static string ţ(object i,int š=-1){var Ţ=new
+StringBuilder();ţ(i,Ţ,š,null);Program.M("Serialized successfully",K.C);return Ţ.ToString();}private static void ţ(object i,
+StringBuilder Ţ,int š,string Ť){string ť=new string(' ',Math.Max(š,0));if(i==null){if(Ť!=null)Ţ.AppendLine(ť+Ť+" = null");return;}Š Ŧ
+=i as Š;if(Ŧ!=null){bool Ũ=ŧ(Ŧ.ŝ);if(Ũ&&Ť!=null){Ţ.AppendLine(ť+Ť+" = "+ũ(Ŧ.ŝ)+"   # "+Ŧ.Ş);}else{if(!string.
+IsNullOrEmpty(Ŧ.Ş))Ţ.AppendLine(ť+"# "+Ŧ.Ş);ţ(Ŧ.ŝ,Ţ,š,Ť);}return;}IDictionary<string,object>Ū=i as IDictionary<string,object>;if(Ū!=
+null){if(Ť!=null)Ţ.AppendLine(ť+Ť+" = [");foreach(var ū in Ū){ţ(ū.Value,Ţ,š+2,ū.Key);}if(Ť!=null)Ţ.AppendLine(ť+"]");return;
+}IEnumerable<object>Ŭ=i as IEnumerable<object>;if(Ŭ!=null){if(Ť!=null){Ţ.Append(ť+Ť+" = { ");bool ŭ=true;foreach(object Ů
+in Ŭ){if(!ŭ)Ţ.Append(", ");Ţ.Append(ũ(Ů));ŭ=false;}Ţ.AppendLine(" }");}else{foreach(object Ů in Ŭ)ţ(Ů,Ţ,š,null);}return;}
+if(Ť!=null){Ţ.AppendLine(ť+Ť+" = "+ũ(i));}}private static string ũ(object i){if(i==null)return"null";if(i is string)return
+"\""+ů((string)i)+"\"";if(i is bool)return((bool)i?"true":"false");if(i is float)return((float)i).ToString("0.#####",System.
+Globalization.CultureInfo.InvariantCulture);if(i is double)return((double)i).ToString("0.##########",System.Globalization.CultureInfo
+.InvariantCulture);if(i is int||i is long||i is short||i is byte)return i.ToString();return"\""+ů(i.ToString())+"\"";}
+private static string ů(string Ű){return Ű.Replace("\\","\\\\").Replace("\"","\\\"");}private static bool ŧ(object ű){return ű
+is string||ű is bool||ű is int||ű is long||ű is short||ű is byte||ű is float||ű is double;}public static object ź(string Ų
+){int ų=0;var Ŵ=new Dictionary<string,object>();while(ų<Ų.Length){ŵ(Ų,ref ų);if(ų>=Ų.Length)break;string Ť=Ŷ(Ų,ref ų);
+Program.e(Ť);ŷ(Ų,ref ų,'=');object ű=Ÿ(Ų,ref ų);string ş=Ź(Ų,ref ų);if(ş!=null&&ŧ(ű))ű=new Š(ű,ş);Ŵ[Ť]=ű;}return Ŵ;}private
+static object Ÿ(string Ű,ref int ų){ŵ(Ű,ref ų);if(ų>=Ű.Length)return null;char Ż=Ű[ų];switch(Ż){case'[':{ų++;var Ū=new
+Dictionary<string,object>();while(true){ŵ(Ű,ref ų);if(ų>=Ű.Length)break;if(Ű[ų]==']'){ų++;break;}string Ť=Ŷ(Ű,ref ų);ŷ(Ű,ref ų,'='
+);object ű=Ÿ(Ű,ref ų);string ş=Ź(Ű,ref ų);if(ş!=null&&ŧ(ű))ű=new Š(ű,ş);Ū[Ť]=ű;}return Ū;}case'{':{ų++;var Ŭ=new List<
+object>();while(true){ŵ(Ű,ref ų);if(ų>=Ű.Length)break;if(Ű[ų]=='}'){ų++;break;}object ű=Ÿ(Ű,ref ų);string ş=Ź(Ű,ref ų);if(ş!=
+null&&ŧ(ű))ű=new Š(ű,ş);Ŭ.Add(ű);ŵ(Ű,ref ų);if(ų<Ű.Length&&Ű[ų]==',')ų++;}return Ŭ;}}string Ž=ż(Ű,ref ų);string ž=Ź(Ű,ref ų)
+;object ƀ=ſ(Ž);if(ž!=null&&ŧ(ƀ))ƀ=new Š(ƀ,ž);return ƀ;}private static void ŵ(string Ű,ref int ų){while(ų<Ű.Length){if(Ű[ų
+]==' '||Ű[ų]=='\t'||Ű[ų]=='\r'||Ű[ų]=='\n'){ų++;continue;}if(Ű[ų]=='#'){while(ų<Ű.Length&&Ű[ų]!='\n')ų++;continue;}break;
+}}private static string Ŷ(string Ű,ref int ų){Ɓ(Ű,ref ų);int Â=ų;while(ų<Ű.Length){char Ż=Ű[ų];if(Ż=='=')break;if(Ż=='\n'
+||Ż=='\r')throw new Exception("Unexpected newline while reading key");ų++;}if(ų==Â)throw new Exception(
+$"Empty key at index {ų}");string Ť=Ű.Substring(Â,ų-Â).Trim();return Ť;}private static string ż(string Ű,ref int ų){Ɓ(Ű,ref ų);if(ų>=Ű.Length)
+return"";char Ż=Ű[ų];if(Ż=='"'||Ż=='\''){char Ƃ=Ż;ų++;int Â=ų;while(ų<Ű.Length&&Ű[ų]!=Ƃ)ų++;string ƃ=Ű.Substring(Â,ų-Â);if(ų<Ű
+.Length)ų++;return ƃ;}int Ƅ=ų;while(ų<Ű.Length&&Ű[ų]!='\n'&&Ű[ų]!='\r'&&Ű[ų]!='#'&&Ű[ų]!=','&&Ű[ų]!='}'&&Ű[ų]!=']')ų++;
+string Ž=Ű.Substring(Ƅ,ų-Ƅ).Trim();return Ž;}private static string Ź(string Ű,ref int ų){Ɓ(Ű,ref ų);if(ų<Ű.Length&&Ű[ų]=='#'){
+ų++;int Â=ų;while(ų<Ű.Length&&Ű[ų]!='\n'&&Ű[ų]!='\r')ų++;return Ű.Substring(Â,ų-Â).Trim();}return null;}private static
+void Ɓ(string Ű,ref int ų){while(ų<Ű.Length&&(Ű[ų]==' '||Ű[ų]=='\t'||Ű[ų]=='\r'||Ű[ų]=='\n'))ų++;}private static void ŷ(
+string Ű,ref int ų,char ƅ){Ɓ(Ű,ref ų);if(ų>=Ű.Length||Ű[ų]!=ƅ)throw new Exception("Expected '"+ƅ+"' at index "+ų);ų++;}private
+static object ſ(string Ž){if(Ž.Length==0)return null;if(Ž=="true")return true;if(Ž=="false")return false;int Ɔ;if(int.TryParse
+(Ž,out Ɔ))return Ɔ;double Ƈ;if(double.TryParse(Ž,System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo
+.InvariantCulture,out Ƈ))return Ƈ;return Ž;}public static void Ƌ(Dictionary<string,object>Ū){var ƈ=new List<string>(Ū.
+Keys);foreach(var Ť in ƈ){var Ɖ=Ū[Ť];var Ż=Ɖ as Š;var Ɗ=Ɖ as Dictionary<string,object>;var Ŭ=Ɖ as List<object>;if(Ż!=null)Ū[
+Ť]=Ż.ŝ;else if(Ɗ!=null)Ƌ(Ɗ);else if(Ŭ!=null){for(int Ɔ=0;Ɔ<Ŭ.Count;Ɔ++){var ƌ=Ŭ[Ɔ];var ƍ=ƌ as Š;Ŭ[Ɔ]=ƍ!=null?ƍ.ŝ:Ŭ[Ɔ];}}}
+}public static İ Ə<İ>(Dictionary<string,object>Ū,string Ť,İ Ǝ=default(İ)){object ű;if(Ū.TryGetValue(Ť,out ű)){if(ű is İ)
+return(İ)ű;try{return(İ)Convert.ChangeType(ű,typeof(İ));}catch{return Ǝ;}}return Ǝ;}}public enum Ɠ:byte{Ƒ,ƒ,ē,ĕ,Ĕ,Ė,}public
+static class ƣ{private static readonly List<Ɣ>ƕ=new List<Ɣ>();private static readonly List<BoundingBoxD>Ɩ=new List<
+BoundingBoxD>();private static readonly Dictionary<Ɣ,List<Ɣ>>Ɨ=new Dictionary<Ɣ,List<Ɣ>>();private static readonly List<List<Ɣ>>Ƙ=
+new List<List<Ɣ>>();private static int ƙ=0;private static List<Ɣ>ƚ(){if(ƙ>=Ƙ.Count)Ƙ.Add(new List<Ɣ>(8));var Ŭ=Ƙ[ƙ++];Ŭ.
+Clear();return Ŭ;}public static Dictionary<Ɣ,List<Ɣ>>Ơ(MyDynamicAABBTreeD ƛ){ƙ=0;Ɨ.Clear();ƛ.GetAll(ƕ,clear:true,boxsList:Ɩ);
+for(int Ɔ=0;Ɔ<ƕ.Count;Ɔ++){var Ɯ=ƕ[Ɔ];var Ɲ=Ɩ[Ɔ];var ƞ=ƚ();ƛ.OverlapAllBoundingBox(ref Ɲ,ƞ,0U,false);foreach(var Ɵ in ƞ){if
+(Ɯ==Ɵ)continue;if(!Ɨ.ContainsKey(Ɯ))Ɨ.Add(Ɯ,ƚ());Ɨ[Ɯ].Add(Ɵ);if(!Ɨ.ContainsKey(Ɵ))Ɨ.Add(Ɵ,ƚ());Ɨ[Ɵ].Add(Ɯ);}}return Ɨ;}
+public static List<Ɣ>Ƣ(MyDynamicAABBTreeD ƛ,BoundingBoxD ơ){ƙ=0;var ƞ=ƚ();ƛ.OverlapAllBoundingBox(ref ơ,ƞ,0U,false);return ƞ;}
+}public static class Ʀ{public static double ƥ(double ű,double Ƥ){return(double)(Math.Round(ű/Ƥ)*Ƥ);}}public static class
+ǡ{private static bool ƺ(long Ƨ,long ƨ,long Ʃ,double ƪ,MatrixD ƫ,Vector3D Ƭ){double ƭ=Ƨ*ƪ;double Ʈ=ƨ*ƪ;double Ư=Ʃ*ƪ;
+Vector3D ư=ƫ.Right;Vector3D Ʊ=ƫ.Up;Vector3D Ʋ=ƫ.Forward;Vector3D Ƴ=Vector3D.Abs(ư);Vector3D ƴ=Vector3D.Abs(Ʊ);Vector3D Ƶ=
+Vector3D.Abs(Ʋ);const double ƶ=1e-8;double Ʒ=ƭ*Ƴ.X+Ʈ*ƴ.X+Ư*Ƶ.X;if(Ʒ>Ƭ.X+ƶ)return false;double Ƹ=ƭ*Ƴ.Y+Ʈ*ƴ.Y+Ư*Ƶ.Y;if(Ƹ>Ƭ.Y+ƶ)
+return false;double ƹ=ƭ*Ƴ.Z+Ʈ*ƴ.Z+Ư*Ƶ.Z;if(ƹ>Ƭ.Z+ƶ)return false;return true;}private static bool Ǔ(Vector3D ư,Vector3D Ʊ,
+Vector3D Ʋ,Vector3D Ƭ,out double ƭ,out double Ʈ,out double Ư){var ƻ=Math.Abs(ư.X);var Ƽ=Math.Abs(Ʊ.X);var ƽ=Math.Abs(Ʋ.X);var ƾ=
+Math.Abs(ư.Y);var ƿ=Math.Abs(Ʊ.Y);var ǀ=Math.Abs(Ʋ.Y);var ǁ=Math.Abs(ư.Z);var ǂ=Math.Abs(Ʊ.Z);var ǃ=Math.Abs(Ʋ.Z);double Ǆ=Ƭ
+.X,ǅ=Ƭ.Y,ǆ=Ƭ.Z;double Ǉ=ƻ*(ƿ*ǃ-ǀ*ǂ)-Ƽ*(ƾ*ǃ-ǀ*ǁ)+ƽ*(ƾ*ǂ-ƿ*ǁ);const double ǈ=1e-12;if(Math.Abs(Ǉ)<ǈ){ƭ=Ʈ=Ư=0.0;return false
+;}double ǉ=(ƿ*ǃ-ǀ*ǂ)/Ǉ;double Ǌ=-(Ƽ*ǃ-ƽ*ǂ)/Ǉ;double ǋ=(Ƽ*ǀ-ƽ*ƿ)/Ǉ;double ǌ=-(ƾ*ǃ-ǀ*ǁ)/Ǉ;double Ǎ=(ƻ*ǃ-ƽ*ǁ)/Ǉ;double ǎ=-(ƻ
+*ǀ-ƽ*ƾ)/Ǉ;double Ǐ=(ƾ*ǂ-ƿ*ǁ)/Ǉ;double ǐ=-(ƻ*ǂ-Ƽ*ǁ)/Ǉ;double Ǒ=(ƻ*ƿ-Ƽ*ƾ)/Ǉ;ƭ=ǉ*Ǆ+Ǌ*ǅ+ǋ*ǆ;Ʈ=ǌ*Ǆ+Ǎ*ǅ+ǎ*ǆ;Ư=Ǐ*Ǆ+ǐ*ǅ+Ǒ*ǆ;const
+double ǒ=-1e-9;if(ƭ<ǒ||Ʈ<ǒ||Ư<ǒ)return false;ƭ=Math.Max(0.0,ƭ);Ʈ=Math.Max(0.0,Ʈ);Ư=Math.Max(0.0,Ư);return true;}public static
+BoundingBoxD Ǡ(BoundingBoxD ǔ,MatrixD ƫ,double ƪ){ƪ/=2;Vector3D Ƭ=ǔ.HalfExtents;Vector3D ư=ƫ.Right;Vector3D Ʊ=ƫ.Up;Vector3D Ʋ=ƫ.
+Forward;double Ǖ,ǖ,Ǘ;if(Ǔ(ư,Ʊ,Ʋ,Ƭ,out Ǖ,out ǖ,out Ǘ)){long Ƨ=Math.Max(0,(long)(Ǖ/ƪ+1e-12));long ƨ=Math.Max(0,(long)(ǖ/ƪ+1e-12))
+;long Ʃ=Math.Max(0,(long)(Ǘ/ƪ+1e-12));bool ǘ;do{ǘ=false;if(ƺ(Ƨ+1,ƨ,Ʃ,ƪ,ƫ,Ƭ)){Ƨ++;ǘ=true;}if(ƺ(Ƨ,ƨ+1,Ʃ,ƪ,ƫ,Ƭ)){ƨ++;ǘ=true;
+}if(ƺ(Ƨ,ƨ,Ʃ+1,ƪ,ƫ,Ƭ)){Ʃ++;ǘ=true;}}while(ǘ);var Ǚ=new Vector3D(Ƨ*ƪ,ƨ*ƪ,Ʃ*ƪ);return new BoundingBoxD(-Ǚ,Ǚ);}double ǚ=Ƭ.X/(
+Math.Abs(ư.X)+Math.Abs(Ʊ.X)+Math.Abs(Ʋ.X));double Ǜ=Ƭ.Y/(Math.Abs(ư.Y)+Math.Abs(Ʊ.Y)+Math.Abs(Ʋ.Y));double ǜ=Ƭ.Z/(Math.Abs(ư
+.Z)+Math.Abs(Ʊ.Z)+Math.Abs(Ʋ.Z));double ǝ=Math.Min(Math.Min(ǚ,Ǜ),ǜ);long Ǟ=Math.Max(0,(long)Math.Floor(ǝ/ƪ));var ǟ=new
+Vector3D(Ǟ*ƪ,Ǟ*ƪ,Ǟ*ƪ);return new BoundingBoxD(-ǟ,ǟ);}}public class ǰ{double Ǣ;double ǣ;public double Ǥ;double ǥ;public double Ǧ;
+double ǧ;double Ǩ;double ǩ;public ǰ(double Ǫ,double ǫ,double Ǭ,double ǭ=0,double Ǯ=0,double ǯ=60){Ǥ=Ǫ;ǥ=ǫ;Ǧ=Ǭ;ǧ=ǭ;Ǩ=Ǯ;ǩ=ǯ;}
+public double ǵ(double Ǳ,int ǲ){double ǳ=Math.Round(Ǳ,ǲ);Ǣ=Ǣ+(Ǳ/ǩ);Ǣ=(ǧ>0&&Ǣ>ǧ?ǧ:Ǣ);Ǣ=(Ǩ<0&&Ǣ<Ǩ?Ǩ:Ǣ);double Ǵ=(ǳ-ǣ)*ǩ;ǣ=ǳ;
+return(Ǥ*Ǳ)+(ǥ*Ǣ)+(Ǧ*Ǵ);}public void Ƕ(){Ǣ=ǣ=0;}}public static class ȸ{private static double Ƿ=104;public static double Ǹ=>
+Double.MaxValue;public const double ǹ=1e-6,Ǻ=-0.5,ǻ=1.73205,Ǽ=ǻ/2,ǽ=1.0/3.0,Ǿ=1.0/9.0,ǿ=1.0/6.0,Ȁ=1.0/54.0;public static
+Vector3D ȗ(double ȁ,Vector3D Ȃ,Vector3D ȃ,Vector3D Ȅ,Vector3D ȅ,Vector3D Ȇ,Vector3D ȇ,Vector3D Ȉ,bool ȉ,Vector3D Ȋ=default(
+Vector3D),bool ȋ=false){double Ȍ=0;Vector3D ȍ=Vector3D.Zero,Ȏ=ȇ,ȏ=Ȇ,Ȑ,ȑ;if(ȇ.LengthSquared()>1){Ȍ=Math.Min((Vector3D.Normalize(ȇ
+)*Ƿ-Vector3D.ProjectOnVector(ref Ȇ,ref ȇ)).Length(),2*Ƿ)/ȇ.Length();Ȇ=Vector3D.ClampToSphere(Ȇ+ȇ*Ȍ,Ƿ);ȏ+=ȇ*Ȍ*0.5;ȇ=
+Vector3D.Zero;}if(ȃ.LengthSquared()>1){double Ȓ=Math.Max((Vector3D.Normalize(ȃ)*ȁ-Vector3D.ProjectOnVector(ref Ȃ,ref ȃ)).Length(
+),0)/ȃ.Length(),ȓ=(Ȃ*Ȓ+ȃ*Ȓ*Ȓ).Length();Vector3D Ȕ=Ȅ+Ȇ*Ȓ+0.5*ȇ*Ȓ*Ȓ;if(Ȕ.Length()>ȓ){ȃ=Vector3D.Zero;Ȃ=Vector3D.
+ClampToSphere(Ȃ+ȃ*Ȓ,ȁ);Ȅ-=Vector3D.Normalize(Ȅ)*ȓ;}}Ȑ=Ȇ-Ȃ;ȑ=ȇ-ȃ;double Ȗ=ȕ(ȑ.LengthSquared()*0.25,ȑ.X*Ȑ.X+ȑ.Y*Ȑ.Y+ȑ.Z*Ȑ.Z,Ȑ.
+LengthSquared()-Ȃ.LengthSquared()+Ȅ.X*ȑ.X+Ȅ.Y*ȑ.Y+Ȅ.Z*ȑ.Z,2*(Ȅ.X*Ȑ.X+Ȅ.Y*Ȑ.Y+Ȅ.Z*Ȑ.Z),Ȅ.LengthSquared());if(Ȗ==Ǹ||double.IsNaN(Ȗ)||Ȗ>
+100)Ȗ=100;if(Ȍ>Ȗ){Ȍ=Ȗ;Ȗ=0;}else Ȗ-=Ȍ;return ȉ?Ȅ+Ȇ*Ȗ+ȏ*Ȍ+0.5*Ȏ*Ȍ*Ȍ+0.5*ȇ*Ȗ*Ȗ+ȍ:ȅ+(Ȇ-Ȃ)*Ȗ+(ȏ-Ȃ)*Ȍ+0.5*Ȏ*Ȍ*Ȍ+0.5*ȇ*Ȗ*Ȗ+-0.5*Ȋ*
+(Ȗ+Ȍ)*(Ȗ+Ȍ)*Convert.ToDouble(ȋ)+ȍ;}public static double ȕ(double Ș,double ș,double Ż,double Ț,double ț){if(Math.Abs(Ș)<ǹ)
+Ș=Ș>=0?ǹ:-ǹ;double Ȝ=1/Ș;ș*=Ȝ;Ż*=Ȝ;Ț*=Ȝ;ț*=Ȝ;double ȝ=-Ż,Ȟ=ș*Ț-4*ț,ȟ=-ș*ș*ț-Ț*Ț+4*Ż*ț,Ƞ;double[]ȡ;bool ȣ=Ȣ(ȝ,Ȟ,ȟ,out ȡ);Ƞ
+=ȡ[0];if(ȣ){if(Math.Abs(ȡ[1])>Math.Abs(Ƞ))Ƞ=ȡ[1];if(Math.Abs(ȡ[2])>Math.Abs(Ƞ))Ƞ=ȡ[2];}double Ȥ,ȥ,Ȧ,ȧ,Ȩ;double ȩ=Ƞ*Ƞ-4*ț;
+if(Math.Abs(ȩ)<ǹ){Ȥ=ȥ=Ƞ*0.5;ȩ=ș*ș-4*(Ż-Ƞ);if(Math.Abs(ȩ)<ǹ)Ȧ=ȧ=ș*0.5;else{Ȩ=Math.Sqrt(ȩ);Ȧ=(ș+Ȩ)*0.5;ȧ=(ș-Ȩ)*0.5;}}else{Ȩ=
+Math.Sqrt(ȩ);Ȥ=(Ƞ+Ȩ)*0.5;ȥ=(Ƞ-Ȩ)*0.5;double Ȫ=1/(Ȥ-ȥ);Ȧ=(ș*Ȥ-Ț)*Ȫ;ȧ=(Ț-ș*ȥ)*Ȫ;}double ȫ,Ȭ;ȩ=Ȧ*Ȧ-4*Ȥ;if(ȩ<0)ȫ=Ǹ;else{Ȩ=Math.
+Sqrt(ȩ);ȫ=ȭ(-Ȧ+Ȩ,-Ȧ-Ȩ)*0.5;}ȩ=ȧ*ȧ-4*ȥ;if(ȩ<0)Ȭ=Ǹ;else{Ȩ=Math.Sqrt(ȩ);Ȭ=ȭ(-ȧ+Ȩ,-ȧ-Ȩ)*0.5;}return ȭ(ȫ,Ȭ);}private static bool
+Ȣ(double Ș,double ș,double Ż,out double[]ȡ){ȡ=new double[4];double Ȯ=Ș*Ș,ȯ=(Ȯ-3*ș)*Ǿ,Ȱ=(Ș*(2*Ȯ-9*ș)+27*Ż)*Ȁ,Ʈ=Ȱ*Ȱ,ȱ=ȯ*ȯ*ȯ
+;if(Ʈ<ȱ){double Ȳ=Math.Sqrt(ȯ),ȳ=Ȱ/(Ȳ*Ȳ*Ȳ);if(ȳ<-1)ȳ=-1;else if(ȳ>1)ȳ=1;ȳ=Math.Acos(ȳ);Ș*=ǽ;ȯ=-2*Ȳ;double ȴ=Math.Cos(ȳ*ǽ)
+,ȵ=Math.Sin(ȳ*ǽ);ȡ[0]=ȯ*ȴ-Ș;ȡ[1]=ȯ*((ȴ*Ǻ)-(ȵ*Ǽ))-Ș;ȡ[2]=ȯ*((ȴ*Ǻ)+(ȵ*Ǽ))-Ș;return true;}else{double ȶ=-Math.Pow(Math.Abs(Ȱ
+)+Math.Sqrt(Ʈ-ȱ),ǽ),ȷ;if(Ȱ<0)ȶ=-ȶ;ȷ=ȶ==0?0:ȯ/ȶ;Ș*=ǽ;ȡ[0]=ȶ+ȷ-Ș;ȡ[1]=-0.5*(ȶ+ȷ)-Ș;ȡ[2]=0.5*ǻ*(ȶ-ȷ);if(Math.Abs(ȡ[2])<ǹ){ȡ[
+2]=ȡ[1];return true;}return false;}}private static double ȭ(double Ș,double ș){if(Ș<=0)return ș>0?ș:Ǹ;else if(ș<=0)return
+Ș;else return Math.Min(Ș,ș);}}public enum K{ȹ,C,L,Ⱥ,Ȼ,ȼ,S}public class E{Dictionary<K,string>Ⱦ=new Dictionary<K,string>()
+{{K.ȹ,$"{Ƚ(Color.Gray)}"},{K.C,$"{Ƚ(Color.DarkSeaGreen)}"},{K.L,$"{Ƚ(Color.White)}"},{K.Ⱥ,$"{Ƚ(Color.Gold)}"},{K.Ȼ,
+$"{Ƚ(Color.Red)}"},{K.ȼ,$"{Ƚ(Color.DarkRed)}"},{K.S,$"{Ƚ(Color.Aquamarine)}"}};private static string Ƚ(Color x){return
+$"[color=#{x.A:X2}{x.R:X2}{x.G:X2}{x.B:X2}]";}private static string ȿ="[/color]\n";class Ʌ{internal readonly string ɀ;internal readonly double Ɂ;internal readonly K
+ɂ;public Ʌ(string Ƀ,double Ʉ,K m){ɀ=Ƀ;Ɂ=Ʉ;ɂ=m;}}private readonly List<Ʌ>Ɇ=new List<Ʌ>();private readonly double ɇ;public
+E(double Ɉ){ɇ=Ɉ;}public void J(string Ý,K m){if(m<N.K)return;double ɉ=(System.DateTime.UtcNow-new System.DateTime(1970,1,
+1)).TotalSeconds;Ɇ.Add(new Ʌ(Ý,ɉ,m));}public void f(){double ɉ=(System.DateTime.UtcNow-new System.DateTime(1970,1,1)).
+TotalSeconds;Ɇ.RemoveAll(ț=>ɉ-ț.Ɂ>ɇ);}public List<string>Ɋ(){return Ɇ.Select(ț=>ț.ɀ).ToList();}public override string ToString(){
+string ű="";foreach(var ɋ in Ɇ){ű+=Ⱦ[ɋ.ɂ]+ɋ.ɀ+ȿ;}return ű;}}public class Ɏ{public int Ɍ;public Action ɍ;}public static class a
+{private static readonly Dictionary<int,Ɏ>ɏ=new Dictionary<int,Ɏ>();private static readonly Dictionary<int,Ɏ>ɐ=new
+Dictionary<int,Ɏ>();private static int ɑ=1;public static int ɔ(int Z,Action ɒ=null){if(Z<=0){if(ɒ!=null)ɒ();return-1;}int t=ɑ++;
+var ɓ=new Ɏ{Ɍ=Z,ɍ=ɒ};ɐ[t]=ɓ;return t;}public static int ɕ(float Z,Action ɒ=null){return ɔ((int)(Z*60),ɒ);}public static
+void ɖ(int t){ɏ.Remove(t);ɐ.Remove(t);}public static void b(){if(ɐ.Count>0){foreach(var ɗ in ɐ){ɏ[ɗ.Key]=ɗ.Value;}ɐ.Clear();
+}var ɘ=new List<int>();foreach(var ɗ in ɏ){var ɓ=ɗ.Value;ɓ.Ɍ--;if(ɓ.Ɍ<=0){ɓ.ɍ?.Invoke();ɘ.Add(ɗ.Key);}}foreach(var t in ɘ
+){ɏ.Remove(t);}}public static bool ə(int t){return ɏ.ContainsKey(t)||ɐ.ContainsKey(t);}public static int ɚ(int t){Ɏ ɓ;if(
+ɏ.TryGetValue(t,out ɓ))return ɓ.Ɍ;if(ɐ.TryGetValue(t,out ɓ))return ɓ.Ɍ;return-1;}}public static class N{private static ɛ
+ɠ=new ɛ("General Config",""){ɜ=ɝ,ɞ=ɟ};public static Dictionary<string,Action>h;public static K K=K.ȹ;public static string
+ɡ="Target";public static string ɢ="Untarget";public static string ɣ="ArgusV2";public static string ɤ="TrackerGroup";
+public static double ɥ=2000;public static double ɦ=3000;public static float ɧ=40;public static double ɨ=0.999999;public static
+string ɩ="CTC: Tracking";public static string ɪ="CTC: Searching";public static string ɫ="CTC: Standby";public static int ɬ=
+3600;public static double ɭ=500;public static double ɮ=0;public static double ɯ=30;public static double ɰ=-0.05;public
+static double ɱ=0.05;public static double ɲ=30;public static int ɳ=300;public static double ɴ=9.81;public static bool ɵ=false;
+public static bool ɶ=false;public static double ɷ=0.005;public static int ɸ=300;public static int ɹ=600;public static void O(
+IMyProgrammableBlock ɺ){Program.M("Setting up config");ɻ.ɼ();ɽ.ɼ();if(ɺ.CustomData.Length>0)ɛ.ɾ(ɺ.CustomData);ɺ.CustomData=ɛ.ɿ();Program.M(
+"Written config to custom data",K.C);h=new Dictionary<string,Action>{{ɡ,()=>P.ʀ.ʁ()},{ɢ,()=>P.ʀ.ʂ()},{"FireAllTest",()=>P.ʀ.ʃ.ʄ()},{"CancelAllTest",()
+=>P.ʀ.ʃ.ʅ()}};if(K.ȹ<=K){foreach(var ʆ in h){Program.M($"Command: {ʆ.Key}",K.ȹ);}}Program.M("Commands set up",K.C);ʇ(ɺ);
+Program.M("Config setup done",K.L);}public static void ʇ(IMyProgrammableBlock ɺ){Program.M("Setting up global state",K.C);ʈ.ʉ=ɵ
+;Program.M($"Precision mode state is {ʈ.ʉ}",K.ȹ);}static N(){}private static Dictionary<string,object>ɝ(){return new
+Dictionary<string,object>{["String Config"]=new Dictionary<string,object>{["ArgumentTarget"]=ɡ,["ArgumentUnTarget"]=ɢ,["GroupName"
+]=ɣ,["TrackerGroupName"]=ɤ},["Behavior Config"]=new Dictionary<string,object>{["MaxWeaponRange"]=ɥ,["LockRange"]=ɦ,[
+"LockAngle"]=ɧ,["MinFireDot"]=ɨ,},["Tracker Config"]=new Dictionary<string,object>{["TrackingName"]=ɩ,["SearchingName"]=ɪ,[
+"StandbyName"]=ɫ,["ScannedBlockMaxValidFrames"]=ɬ},["PID Config"]=new Dictionary<string,object>{["ProportionalGain"]=ɭ,[
+"IntegralGain"]=ɮ,["DerivativeGain"]=ɯ,["IntegralLowerLimit"]=ɰ,["IntegralUpperLimit"]=ɱ,["MaxAngularVelocityRPM"]=ɲ}};}private static
+void ɟ(Dictionary<string,object>i){Ɛ.Ƌ(i);var ʊ=i.ContainsKey("String Config")?i["String Config"]as Dictionary<string,object
+>:null;if(ʊ!=null){ɡ=Ɛ.Ə(ʊ,"ArgumentTarget",ɡ);ɢ=Ɛ.Ə(ʊ,"ArgumentUnTarget",ɢ);ɣ=Ɛ.Ə(ʊ,"GroupName",ɣ);ɤ=Ɛ.Ə(ʊ,
+"TrackerGroupName",ɤ);}var ʋ=i.ContainsKey("Behavior Config")?i["Behavior Config"]as Dictionary<string,object>:null;if(ʋ!=null){ɥ=Ɛ.Ə(ʋ,
+"MaxWeaponRange",ɥ);ɦ=Ɛ.Ə(ʋ,"LockRange",ɦ);ɧ=Ɛ.Ə(ʋ,"LockAngle",ɧ);ɨ=Ɛ.Ə(ʋ,"MinFireDot",ɨ);}var ʌ=i.ContainsKey("Tracker Config")?i[
+"Tracker Config"]as Dictionary<string,object>:null;if(ʌ!=null){ɩ=Ɛ.Ə(ʌ,"TrackingName",ɩ);ɪ=Ɛ.Ə(ʌ,"SearchingName",ɪ);ɫ=Ɛ.Ə(ʌ,
+"StandbyName",ɫ);ɬ=Ɛ.Ə(ʌ,"ScannedBlockMaxValidFrames",ɬ);}var ʍ=i.ContainsKey("PID Config")?i["PID Config"]as Dictionary<string,
+object>:null;if(ʍ!=null){ɭ=Ɛ.Ə(ʍ,"ProportionalGain",ɭ);ɮ=Ɛ.Ə(ʍ,"IntegralGain",ɮ);ɯ=Ɛ.Ə(ʍ,"DerivativeGain",ɯ);ɰ=Ɛ.Ə(ʍ,
+"IntegralLowerLimit",ɰ);ɱ=Ɛ.Ə(ʍ,"IntegralUpperLimit",ɱ);ɲ=Ɛ.Ə(ʍ,"MaxAngularVelocityRPM",ɲ);}}}public class ɛ{private static readonly
+Dictionary<string,ɛ>ʎ=new Dictionary<string,ɛ>();public static string ɿ(){Program.M("Writing config",K.L);var ʏ=new Dictionary<
+string,object>();foreach(var ū in ʎ){Program.M($"Collecting config: {ū.Key}",K.C);ʏ.Add(ū.Key,ū.Value.ɜ());}return Ɛ.ţ(ʏ);}
+public static void ɾ(string ʏ){Program.M("Reading config from custom data",K.L);var ʐ=Ɛ.ź(ʏ);Program.M(
+"DeltaWing Object Notation: Parsed successfully",K.C);var Ū=ʐ as Dictionary<string,object>;if(Ū==null){Program.M("Config malformed",K.ȼ);throw new Exception();}foreach(
+var ū in Ū){ɛ ʑ;if(!ʎ.TryGetValue(ū.Key,out ʑ))continue;var ʒ=ū.Value as Dictionary<string,object>;if(ʒ!=null){Program.M(
+"Config set: "+ū.Key,K.C);ʑ.ɞ(ʒ);}}}public Func<Dictionary<string,object>>ɜ{get;set;}public Action<Dictionary<string,object>>ɞ{get;set
+;}public ɛ(string Ú,string ş){ʓ=Ú;Š=ş;ʎ.Add(Ú,this);}public string ʓ{get;}public string Š{get;}public Dictionary<string,
+object>ɝ()=>ɜ?.Invoke();public void ɟ(Dictionary<string,object>ű)=>ɞ?.Invoke(ű);}public class ɽ{private static readonly ɛ N=
+new ɛ("Projectile Data","The main list of known projectiles. Gun Data should reference these by name."){ɜ=ɝ,ɞ=ɟ};public
+static Dictionary<string,ɽ>ʔ=new Dictionary<string,ɽ>();public static readonly ɽ ʕ=new ɽ(0,0,0,0);static ɽ(){ʔ.Add("Default",ʕ
+);ʔ.Add("LargeRailgun",new ɽ(2000,2000,2000,0));ʔ.Add("Artillery",new ɽ(500,500,2000,0));ʔ.Add("SmallRailgun",new ɽ(1000,
+1000,1400,0));ʔ.Add("Gatling",new ɽ(400,400,800,0));ʔ.Add("AssaultCannon",new ɽ(500,500,1400,0));ʔ.Add("Rocket",new ɽ(100,
+200,800,1000));}public static void ɼ(){Program.M("Projectile data loaded",K.C);}public static ɽ ɜ(string ʖ){ɽ ʗ;return ʔ.
+TryGetValue(ʖ,out ʗ)?ʗ:ʕ;}public float ʘ{get;private set;}public float ʙ{get;private set;}public float ʚ{get;private set;}public
+float ʛ{get;private set;}public ɽ(float ʜ,float ʝ,float ʞ,float ʟ){ʘ=ʜ;ʙ=ʝ;ʚ=ʞ;ʛ=ʟ;}private static Dictionary<string,object>ɝ
+(){var ʠ=new Dictionary<string,object>();foreach(var ū in ʔ){var Ú=ū.Key;var ʡ=ū.Value;ʠ[Ú]=new Dictionary<string,object>
+{["ProjectileVelocity"]=ʡ.ʘ,["MaxVelocity"]=ʡ.ʙ,["MaxRange"]=ʡ.ʚ,["Acceleration"]=ʡ.ʛ};}return ʠ;}private static void ɟ(
+Dictionary<string,object>ʏ){Ɛ.Ƌ(ʏ);foreach(var ū in ʏ){var ʢ=(Dictionary<string,object>)ū.Value;var ʣ=ʔ[ū.Key]??ʕ;var ʜ=Ɛ.Ə(ʢ,
+"ProjectileVelocity",ʣ.ʘ);var ʝ=Ɛ.Ə(ʢ,"MaxVelocity",ʣ.ʙ);var ʞ=Ɛ.Ə(ʢ,"MaxRange",ʣ.ʚ);var ʟ=Ɛ.Ə(ʢ,"Acceleration",ʣ.ʛ);var ʤ=new ɽ(ʜ,ʝ,ʞ,ʟ);ʔ[
+ū.Key]=ʤ;}}}public class ɻ{private static readonly ɛ N=new ɛ("Gun Data",
+"The main list of known gun types and their definition names. Should reference a known projectile type."){ɜ=ɝ,ɞ=ɟ};public static Dictionary<string,ɻ>ʔ=new Dictionary<string,ɻ>();public static readonly ɻ ʥ=new ɻ("Default",0,0
+,0f,0f);static ɻ(){ʔ.Add("Default",ʥ);ʔ.Add("LargeRailgun",new ɻ("LargeRailgun",ʦ.ʧ,ʨ.ʩ,2.0f,4.0f));ʔ.Add(
+"LargeBlockLargeCalibreGun",new ɻ("Artillery",0,0,0,12));ʔ.Add("LargeMissileLauncher",new ɻ("Rocket",0,0,0,0.5f));ʔ.Add("SmallRailgun",new ɻ(
+"SmallRailgun",ʦ.ʧ,ʨ.ʩ,0.5f,4.0f));ʔ.Add("SmallBlockAutocannon",new ɻ("Gatling",0,0,0.0f,0.4f));ʔ.Add("SmallBlockMediumCalibreGun",new
+ɻ("AssaultCannon",0,0,0.0f,6f));ʔ.Add("MyObjectBuilder_SmallGatlingGun",new ɻ("Gatling",0,0,0.0f,0.1f));ʔ.Add(
+"MyObjectBuilder_SmallMissileLauncher",new ɻ("Rocket",0,0,0.0f,1f));ʔ.Add("SmallRocketLauncherReload",ɜ("MyObjectBuilder_SmallMissileLauncher"));ʔ.Add(
+"SmallGatlingGunWarfare2",ɜ("MyObjectBuilder_SmallGatlingGun"));ʔ.Add("SmallMissileLauncherWarfare2",ɜ("MyObjectBuilder_SmallMissileLauncher"));}
+public static void ɼ(){Program.M("Gun data loaded",K.C);}public static ɻ ɜ(string ʖ){ɻ ʗ;return ʔ.TryGetValue(ʖ,out ʗ)?ʗ:ʥ;}
+string ʪ;public ɽ ɽ{get;}public ʦ ʫ{get;}public ʨ ʬ{get;}public int ʭ{get;}public float ʮ=>ʭ/60.0f;public int ʯ{get;}public
+float ʰ=>ʯ/60.0f;public ɻ(string ʱ,ʦ ʲ,ʨ ʳ,float ʴ,float ʵ){ʪ=ʱ;ɽ=ɽ.ɜ(ʱ);ʫ=ʲ;ʬ=ʳ;ʭ=(int)(ʴ*60);ʯ=(int)(ʵ*60);}private static
+Dictionary<string,object>ɝ(){var ʠ=new Dictionary<string,object>();foreach(var ū in ʔ){var Ú=ū.Key;var ʡ=ū.Value;var ʤ=new
+Dictionary<string,object>();ʤ["Projectile"]=ʡ.ʪ;ʤ["ReloadType"]=new Ɛ.Š((int)ʡ.ʫ,"0 = normal, 1 = charged");ʤ["FireType"]=new Ɛ.Š(
+(int)ʡ.ʬ,"0 = normal, 1 = delay before firing");ʤ["FireTime"]=ʡ.ʮ;ʤ["ReloadTime"]=ʡ.ʰ;ʠ[Ú]=ʤ;}return ʠ;}private static
+void ɟ(Dictionary<string,object>ʏ){Ɛ.Ƌ(ʏ);foreach(var ū in ʏ){var ʢ=(Dictionary<string,object>)ū.Value;var ʣ=ʔ[ū.Key]??ʥ;var
+ʶ=Ɛ.Ə(ʢ,"Projectile",ʣ.ʪ);var ʷ=Ɛ.Ə(ʢ,"ReloadType",ʣ.ʫ);var ʳ=Ɛ.Ə(ʢ,"FireType",ʣ.ʬ);var ʴ=Ɛ.Ə(ʢ,"FireTime",ʣ.ʮ);var ʵ=Ɛ.Ə
+(ʢ,"ReloadTime",ʣ.ʰ);var ʤ=new ɻ(ʶ,ʷ,ʳ,ʴ,ʵ);ʔ[ū.Key]=ʤ;}}}public static class ʈ{public static bool ʉ;}public abstract
+class ʽ{protected Vector3D ʸ;protected Vector3D ʹ;protected int ʺ;public ʻ ʻ=ʻ.ʼ;public ʽ(){Program.M("New ArgusShip",K.C);ʺ=
+Program.D.Next()%6000;}public abstract Vector3D ʾ{get;}public abstract Vector3D ʿ{get;}public abstract Vector3D ʛ{get;}public
+abstract float ˀ{get;}public abstract string ʓ{get;}public abstract void c(int ˁ);public abstract void d(int ˁ);public Vector3D
+ˠ(ʽ ˆ,float ʜ){Vector3D ˇ=this.ʾ;Vector3D ˈ=this.ʿ;Vector3D ˉ=ˆ.ʾ;Vector3D ˊ=ˆ.ʛ;Vector3D ˋ=ˆ.ʿ-ˈ;Vector3D ˌ=ˉ-ˇ;double Ű
+=ʜ;double Ș=ˋ.LengthSquared()-Ű*Ű;double ș=2.0*ˌ.Dot(ˋ);double Ż=ˌ.LengthSquared();double ȳ;if(Math.Abs(Ș)<1e-6){if(Math.
+Abs(ș)<1e-6)ȳ=0;else ȳ=-Ż/ș;}else{double ˍ=ș*ș-4*Ș*Ż;if(ˍ<0)return ˉ;double ˎ=Math.Sqrt(ˍ);double ˏ=(-ș+ˎ)/(2*Ș);double ː=(
+-ș-ˎ)/(2*Ș);ȳ=Math.Min(ˏ,ː)>0?Math.Min(ˏ,ː):Math.Max(ˏ,ː);if(ȳ<0)ȳ=Math.Max(ˏ,ː);}Vector3D ˑ=ˉ+ˋ*ȳ+0.5*ˊ*ȳ*ȳ;return ˑ;}}
+public struct ͺ{public readonly Vector3D ˡ;public readonly Vector3D ˢ;public readonly Vector3D ˣ;public readonly Vector3D ˤ;
+public readonly double ˬ;public readonly double ˮ;public MatrixD Ͱ;public ͺ(Vector3D ͱ,Vector3D ȅ,Vector3D Ͳ,Vector3D ͳ,double
+ʹ,double Ͷ,MatrixD ͷ){ˡ=ͱ;ˢ=ȅ;ˣ=Ͳ;ˤ=ͳ;ˬ=ʹ;ˮ=Ͷ;Ͱ=ͷ;}}public class Ί{ͻ ͼ;ͽ Ά;public Ί(ͻ Έ,ͽ Ή){Program.M($"Setting up FCS",
+K.L);ͼ=Έ;Ά=Ή;}public ͺ Ξ(){Ά.Ό();int Ώ=Ά.Ύ;ΐ Β=Ά.Α;var Δ=Ά.Γ;var Ζ=ͼ.Ε();var ˌ=Ζ-Δ;var Η=ˌ.Length();var Θ=ˌ/Η;var ʹ=Θ.Dot
+(ͼ.Ƒ);var Κ=Ά.Ι();var Λ=(Κ-Δ).Normalized();Program.e(Λ);if(ʹ>N.ɨ&&Ζ!=Vector3D.Zero)Ά.Μ();else Ά.Ν();return new ͺ(Λ,Ζ,Δ,ͼ.
+Ƒ,ʹ,Η,ͼ.Ͱ);}}public enum ʦ{Ο,ʧ}public enum ʨ{Ο,ʩ}public enum Χ{Π,Ρ,Σ,Τ,Υ,Φ}public class ζ{private static readonly
+MyDefinitionId Ψ=new MyDefinitionId(typeof(MyObjectBuilder_GasProperties),"Electricity");IMyUserControllableGun Ω;ʦ Ϊ;ʨ Ϋ;
+MyResourceSinkComponent ά;int έ;int ή;Χ ί;bool ΰ;bool α;ɻ β;ͽ γ;public ζ(IMyUserControllableGun ʗ,ͽ δ){var ε=ʗ.BlockDefinition;Program.M(
+$"Set up new gun {ε}",K.ȹ);var ʤ=ɻ.ɜ(ε.SubtypeIdAttribute);if(ʤ==ɻ.ʥ)ʤ=ɻ.ɜ(ε.TypeIdString);β=ʤ;γ=δ;Ω=ʗ;ά=ʗ.Components.Get<
+MyResourceSinkComponent>();Ϊ=β.ʫ;Ϋ=β.ʬ;}public Vector3D θ=>(Vector3)(Ω.Min+Ω.Max)/2*γ.η.ˀ;public Vector3D ι=>Ω.GetPosition();public Vector3D Ɠ{
+get;set;}public float ʿ=>β.ɽ.ʘ;public float ʛ=>β.ɽ.ʛ;public float ʙ=>β.ɽ.ʙ;public float ʚ=>β.ɽ.ʚ;public ɻ ɻ=>β;public Χ λ{
+get{if(!ΰ){ί=κ();ΰ=true;}return ί;}}public Vector3D Ƒ=>Ω.WorldMatrix.Forward;public void c(int ˁ){ΰ=false;}public void d(
+int ˁ){}public bool ξ(){if(λ!=Χ.Σ)return false;Ω.ShootOnce();έ=a.ɔ(β.ʯ,μ);if(Ϋ==ʨ.ʩ){ή=a.ɔ(β.ʭ,ν);}else{ή=a.ɔ(0,ν);}return
+true;}public bool π(){if(λ!=Χ.Π)return false;Ω.Enabled=false;a.ɔ(0,ο);α=true;return true;}public bool ρ(){if(λ!=Χ.Π)return
+false;if(a.ɚ(ή)>1)return false;Ω.Enabled=false;a.ɔ(0,ο);α=true;return true;}public Vector3D τ(Vector3D ς){Vector3D σ=ς+Ɠ*ʿ;if
+(σ.LengthSquared()>ʿ*ʿ)σ=σ.Normalized()*ʿ;return σ;}Χ κ(){bool υ=Ω.IsFunctional;if(!υ)return Χ.Φ;if(Ϋ==ʨ.ʩ&&a.ə(ή))return
+α?Χ.Ρ:Χ.Π;switch(Ϊ){case ʦ.Ο:if(a.ə(έ))return Χ.Τ;break;case ʦ.ʧ:if(a.ə(έ))return Χ.Τ;if(ά.CurrentInputByType(Ψ)>0.02f)
+return Χ.Υ;break;}return Χ.Σ;}void ν(){if(α){α=false;return;}}void μ(){}void ο(){Ω.Enabled=true;}}public enum ΐ{φ,χ,Π}public
+enum ʬ{ψ,ω,ϊ}public class ͽ{List<ζ>Ά=new List<ζ>();List<ζ>ϋ=new List<ζ>();Vector3D ό;ΐ ύ;int ώ;ɻ β;public ͽ(List<
+IMyTerminalBlock>Ϗ,ͻ ϐ){Program.M("Setting up gun manager",K.L);foreach(var ϑ in Ϗ){var ʗ=ϑ as IMyUserControllableGun;if(ʗ!=null)Ά.Add(
+new ζ(ʗ,this));}if(Ά.Count<=0)Program.M($"No guns in group {N.ɣ}",K.Ⱥ);η=ϐ;}public ͻ η{get;}public IMyCubeGrid ϓ=>η.ϒ.
+CubeGrid;public int ϔ=>Ά.Count;public Vector3D Γ=>ό;public ΐ Α=>ύ;public int Ύ=>ώ;public void c(int ˁ){foreach(var ʗ in Ά)ʗ.c(ˁ)
+;}public void Ό(){var Β=ΐ.φ;var ϕ=new Dictionary<ɻ,List<ζ>>();var ϖ=new Dictionary<ɻ,List<ζ>>();var ϗ=0;var Ϙ=0;foreach(
+var ʗ in Ά){switch(ʗ.λ){case Χ.Σ:if(!ϕ.ContainsKey(ʗ.ɻ))ϕ.Add(ʗ.ɻ,new List<ζ>());ϕ[ʗ.ɻ].Add(ʗ);ϗ++;break;case Χ.Π:if(!ϖ.
+ContainsKey(ʗ.ɻ))ϖ.Add(ʗ.ɻ,new List<ζ>());ϖ[ʗ.ɻ].Add(ʗ);Ϙ++;break;}}Program.e(ϗ);var ϙ=ϖ;if(ϗ>0){ύ=ΐ.χ;ϙ=ϕ;}if(Ϙ>0){ύ=ΐ.Π;ϙ=ϖ;}var
+ˆ=η.Ε();var Ϛ=η.ʾ;var ϛ=(ˆ-Ϛ).LengthSquared();foreach(var Ϝ in ϙ){var ʢ=Ϝ.Key;var Ή=Ϝ.Value;var ʞ=ʢ.ɽ.ʚ;if(ʞ*ʞ<ϛ)continue
+;ϋ=Ή;β=ʢ;break;}ώ=ϋ.Count;if(ώ==0){ό=η.ʾ;return;}Vector3D ϝ=Vector3D.Zero;foreach(var ʗ in ϋ){ϝ+=ʗ.θ;}ϝ/=ώ;ό=Vector3D.
+Transform(ϝ,η.Ͱ);}public void d(int ˁ){foreach(var ʗ in Ά)ʗ.d(ˁ);}public void ʄ(){foreach(var ʗ in Ά)ʗ.ξ();}public void ʅ(){
+foreach(var ʗ in Ά)ʗ.π();}public void Μ(){foreach(var ʗ in Ά)ʗ.ξ();}public void Ν(){foreach(var ʗ in Ά)ʗ.ρ();}public Vector3D Ι
+(){if(β==null)return Vector3D.Zero;var ȁ=β.ɽ.ʙ;var ˆ=η.Ε();var ˌ=ˆ-ό;var Ϟ=ϋ[0];if(Ϟ==null)return Vector3D.Zero;var Ȋ=η.ϟ
+;var ȋ=Ȋ.LengthSquared()!=0;return ȸ.ȗ(ȁ,Ϟ.τ(η.ʿ)/60,β.ɽ.ʛ*Ϟ.Ƒ,ˌ,η.Ϡ.ʾ,η.Ϡ.ʿ/60,η.Ϡ.ʛ/60,Vector3D.Zero,false,Ȋ,ȋ);}}
+public class ϥ{private readonly List<IMyGyro>ϡ;private readonly ǰ Ϣ;private readonly ǰ ϣ;public ϥ(List<IMyTerminalBlock>Ϗ){
+Program.M("Setting up gyro manager",K.L);ϡ=new List<IMyGyro>();foreach(var ș in Ϗ){var Ϥ=ș as IMyGyro;if(Ϥ!=null){ϡ.Add(Ϥ);}}if
+(ϡ.Count<=0)Program.M($"No gyroscopes found in group: {N.ɣ}",K.Ⱥ);Ϣ=new ǰ(N.ɭ,N.ɮ,N.ɯ,N.ɱ,N.ɰ);ϣ=new ǰ(N.ɭ,N.ɮ,N.ɯ,N.ɱ,N.
+ɰ);}public void ϲ(ref ͺ Ϧ,double ϧ=0){int Ϩ=7;double ϩ=1.0;if(Ϧ.ˬ>0.9999){ϩ*=0.8;Ϩ=4;}if(Ϧ.ˬ>0.99999){ϩ*=0.8;Ϩ=3;}if(Ϧ.ˬ>
+0.999999){ϩ*=0.8;Ϩ=2;}if(Ϧ.ˬ>0.9999999){ϩ*=0.8;Ϩ=1;}double Ϫ;double ϫ;var Ϭ=ϧ;var ϭ=Vector3D.Cross(Ϧ.ˤ,Ϧ.ˡ);var Ϯ=Vector3D.
+TransformNormal(ϭ,MatrixD.Transpose(Ϧ.Ͱ));var ϯ=Ϣ.ǵ(-Ϯ.X,Ϩ);var Ƞ=ϣ.ǵ(-Ϯ.Y,Ϩ);Ϫ=MathHelper.Clamp(ϯ,-N.ɲ,N.ɲ);ϫ=MathHelper.Clamp(Ƞ,-N.ɲ,
+N.ɲ);if(Math.Abs(ϫ)+Math.Abs(Ϫ)>N.ɲ){var ϰ=N.ɲ/(Math.Abs(ϫ)+Math.Abs(Ϫ));ϫ*=ϰ;Ϫ*=ϰ;}Ϫ*=ϩ;ϫ*=ϩ;ϱ(Ϫ,ϫ,Ϭ,Ϧ.Ͱ);}void ϱ(double
+ϳ,double ϴ,double ϵ,MatrixD ͷ){var Ϸ=new Vector3D(ϳ,ϴ,ϵ);var ϸ=Vector3D.TransformNormal(Ϸ,ͷ);foreach(var Ϥ in ϡ)if(Ϥ.
+IsFunctional&&Ϥ.IsWorking&&Ϥ.Enabled&&!Ϥ.Closed){var Ϲ=Vector3D.TransformNormal(ϸ,MatrixD.Transpose(Ϥ.WorldMatrix));Ϥ.Pitch=(float)Ϲ
+.X;Ϥ.Yaw=(float)Ϲ.Y;Ϥ.Roll=(float)Ϲ.Z;Ϥ.GyroOverride=true;return;}}public void Ϻ(){foreach(var Ϥ in ϡ)if(Ϥ.IsFunctional&&
+Ϥ.IsWorking&&Ϥ.Enabled&&!Ϥ.Closed){Ϥ.GyroOverride=false;return;}}}public enum ʻ{ϻ,ϼ,Ͻ,ʼ}public class Ѐ{public static int
+Ͽ(ʻ Ͼ){switch(Ͼ){case ʻ.ϻ:return 600;case ʻ.ϼ:return 60;case ʻ.Ͻ:return 10;case ʻ.ʼ:return 1;default:return Int32.
+MaxValue;}}}public class Ќ{private readonly List<Ё>Ђ;private readonly List<Ѓ>Є;int Ѕ=0;Vector3D І=Vector3D.Zero;ͻ ͼ;public Ќ(
+List<IMyTerminalBlock>Ϗ,ͻ Έ){Ђ=new List<Ё>();Є=new List<Ѓ>();ͼ=Έ;foreach(var ϑ in Ϗ){var Ї=ϑ as IMySpaceBall;if(Ї!=null){var
+Ј=new Ѓ(Ї,this,ͼ);Є.Add(Ј);І+=Ј.Љ;continue;}var Њ=ϑ as IMyArtificialMassBlock;if(Њ!=null){var Ј=new Ё(Њ,this,ͼ);Ђ.Add(Ј);
+І+=Ј.Љ;}}Ѕ=Program.D.Next()%(Math.Max(N.ɸ,N.ɹ)-1);Ћ();}public bool Ѝ{get;set;}public double Ў{get;private set;}public
+void c(int ˁ){if((ˁ+Ѕ)%N.ɸ==0)Џ();if((ˁ+Ѕ)%N.ɹ==0)А();}public void d(int ˁ){bool Б=false;foreach(var ϑ in Ђ){Б|=ϑ.В();}
+foreach(var Ї in Є){Б|=Ї.В();}if(Б){Ћ();}}void Ћ(){Ў=0;foreach(var ϑ in Ђ){Ў+=ϑ.Г;}foreach(var Ї in Є){Ў+=Ї.Г;}}void Џ(){
+foreach(var ϑ in Ђ){Vector3D Д=І;Vector3D Ж=ϑ.Е?Vector3D.Zero:ϑ.Љ;if((І-(ϑ.Е?ϑ.Љ:Vector3D.Zero)+Ж).LengthSquared()<І.
+LengthSquared()){ϑ.Е=!ϑ.Е;І=І-(ϑ.Е?Vector3D.Zero:ϑ.Љ)+Ж;}}}void А(){}}internal class У{List<З>И;bool Й;float К;float Л;int М;public У
+(List<З>Н,Ɠ О){И=Н;П=0;Ɠ=О;foreach(var Р in Н){var Т=Р as С;if(Т!=null)П+=N.ɴ;}}public void c(int ˁ){if(К==0)М++;else М=0
+;if(М>N.ɳ)Ѝ=false;}public void d(int ˁ){if(Й!=Ѝ)foreach(var Р in И)Р.Ѝ=Ѝ;Й=Ѝ;if(Л!=К)foreach(var Р in И)Р.ʛ=(float)(К*N.ɴ
+);Л=К;}public Ɠ Ɠ{get;private set;}public bool Ѝ{get;private set;}public double П{get;private set;}public void Ф(float ʟ)
+{ʟ=(float)MathHelperD.Clamp(Ʀ.ƥ(ʟ,N.ɷ),-1,1);if(ʟ==К&&ʟ==0)return;Ѝ=true;if(ʟ==К)return;К=ʟ;}}public class е{private
+readonly У Х;private readonly У Ц;private readonly У Ч;Ќ Ш;ͻ ͼ;bool Щ;public е(List<IMyTerminalBlock>Ϗ,ͻ Έ){Program.M(
+$"Setting up gravity drive",K.L);ͼ=Έ;var Ъ=new List<З>();var Ы=new List<З>();var Ь=new List<З>();var Э=new Dictionary<Ɠ,List<З>>{{Ɠ.Ĕ,Ь},{Ɠ.Ė,Ь},{Ɠ
+.ē,Ы},{Ɠ.ĕ,Ы},{Ɠ.Ƒ,Ъ},{Ɠ.ƒ,Ъ}};foreach(var ϑ in Ϗ){var Ю=ϑ as IMyGravityGenerator;if(Ю!=null){var Θ=(Ɠ)Ю.Orientation.Up;
+var Ŭ=Э[Θ];bool Я=(int)Θ%2==0;Ŭ.Add(new С(Ю,Θ,Я));}var а=ϑ as IMyGravityGeneratorSphere;if(а!=null){var в=ͼ.б;var г=
+Base6Directions.Directions[(int)в];var Я=г.Dot(ͼ.ʾ-а.GetPosition())>0;var Ŭ=Э[в];Ŭ.Add(new д(а,в,Я));}}if(Ъ.Count==0)Program.M(
+$"No Forward/backward gravity generators",K.Ⱥ);if(Ы.Count==0)Program.M($"No Left/Right gravity generators",K.Ⱥ);if(Ь.Count==0)Program.M(
+$"No Up/Down gravity generators",K.Ⱥ);Х=new У(Ъ,Ɠ.Ƒ);Ц=new У(Ы,Ɠ.ē);Ч=new У(Ь,Ɠ.Ĕ);Ш=new Ќ(Ϗ,Έ);}bool ж=>Х.Ѝ||Ц.Ѝ||Ч.Ѝ;public double Ў=>Ш.Ў;public void
+c(int ˁ){Х.c(ˁ);Ц.c(ˁ);Ч.c(ˁ);Ш.c(ˁ);}public void d(int ˁ){Х.d(ˁ);Ц.d(ˁ);Ч.d(ˁ);if(ж!=Щ)Ш.Ѝ=ж;Program.e(Ш.Ѝ);Щ=ж;Ш.d(ˁ);}
+public void и(Vector3 з){Х.Ф(з.Dot(Vector3D.Forward));Ц.Ф(з.Dot(Vector3D.Left));Ч.Ф(з.Dot(Vector3D.Up));}public double к(){var
+й=Ў*Х.П;if(й==0)й=1;return й;}public double л(){var й=Ў*Ц.П;if(й==0)й=1;return й;}public double м(){var й=Ў*Ч.П;if(й==0)й
+=1;return й;}}public class Ѓ:н{IMySpaceBall о;Ќ Ш;ͻ ͼ;public Ѓ(IMySpaceBall Ї,Ќ п,ͻ Έ){о=Ї;Ш=п;ͼ=ͼ;}public bool Е{get;set
+;}=true;public bool р=>Ш.Ѝ;public bool ə=>Е&&р;public override double с=>о.VirtualMass;public override double Г=>Е?о.
+VirtualMass:0;public Vector3D Љ=>с*(о.GetPosition()-ͼ.ϒ.CenterOfMass);public bool В(){var Ȱ=false;о.Enabled=ə;return Ȱ;}}public
+class Ё:н{IMyArtificialMassBlock т;Ќ Ш;ͻ ͼ;bool у;public Ё(IMyArtificialMassBlock Њ,Ќ п,ͻ Έ){т=Њ;Ш=п;ͼ=Έ;т.Enabled=false;}
+public bool Е{get;set;}=true;public bool р=>Ш.Ѝ;public bool ə=>Е&&р;public override double с=>т.VirtualMass;public override
+double Г=>Е?т.VirtualMass:0;public Vector3D Љ=>с*(т.GetPosition()-ͼ.ϒ.CenterOfMass);public bool В(){var Б=false;if(у!=ə){т.
+Enabled=ə;Б=true;}у=ə;return Б;}}public abstract class З{protected bool ф;public IMyGravityGeneratorBase х{get;protected set;}
+public Ɠ Ɠ{get;protected set;}public bool Ѝ{get{return х.Enabled;}set{х.Enabled=value;}}public float ʛ{get{return х.
+GravityAcceleration*(ф?-1:1);}set{х.GravityAcceleration=value*(ф?-1:1);}}}public class С:З{public С(IMyGravityGenerator ц,Ɠ Θ,bool Я){х=ц;Ɠ
+=Θ;ф=Я;}}public class д:З{public д(IMyGravityGeneratorSphere а,Ɠ Θ,bool Я){х=а;Ɠ=Θ;ф=Я;}}public abstract class н{public
+abstract double с{get;}public abstract double Г{get;}}public class ъ{е ч;ш щ;ͻ ͼ;public ъ(List<IMyTerminalBlock>Ϗ,ͻ Έ){Program.M
+($"Setting up propulsion controller",K.L);ͼ=Έ;ч=new е(Ϗ,Έ);щ=new ш();}public void c(int ˁ){ч.c(ˁ);щ.c(ˁ);}public void d(
+int ˁ){var ы=ͼ.ϒ.MoveIndicator;Matrix Õ;ͼ.ϒ.Orientation.GetMatrix(out Õ);var ь=Vector3.Transform(ы,Õ);if(ͼ.ϒ.
+DampenersOverride){var э=ͼ.ʿ;var ю=Vector3D.TransformNormal(э,MatrixD.Invert(ͼ.Ͱ));var ѐ=ю*Vector3D.Forward*10*я();var ђ=ю*Vector3D.Left*
+20*ё();var є=ю*Vector3D.Down*20*ѓ();if(ь.Dot(Vector3D.Forward)==0)ь+=ѐ;if(ь.Dot(Vector3D.Left)==0)ь+=ђ;if(ь.Dot(Vector3D.
+Down)==0)ь+=є;}ч.и(ь);ч.d(ˁ);щ.d(ˁ);}double я(){return ͼ.н.TotalMass/ч.к();}double ё(){return ͼ.н.TotalMass/ч.л();}double ѓ(
+){return ͼ.н.TotalMass/ч.м();}}public class ш{public void c(int ˁ){}public void d(int ˁ){}}public class і{public і(
+IMyTurretControlBlock ϑ){ѕ=ϑ;}public IMyTurretControlBlock ѕ{get;}public bool ї=>ѕ.Closed;bool ј;bool љ=true;public bool њ{get;private set;}
+public bool ћ{get;private set;}public bool ќ{get;private set;}public bool ѝ{get;private set;}public bool Ѝ{get{return ѕ.
+Enabled;}set{ѕ.Enabled=value;}}public string ў{get{return ѕ.CustomName;}set{ѕ.CustomName=value;}}public long џ{get;set;}public
+Ɣ Ѡ{get;set;}public Vector3D ʾ=>ѕ.GetPosition();public void В(){var ѡ=ѕ.HasTarget;ћ=!ѡ&&ј;ј=ѡ;њ=ѡ;var ѣ=Ѡ!=null&&Ѡ.Ѣ;ѝ=ѣ
+&&љ;љ=!ѣ;ќ=ѣ;if(!ѡ)џ=0;}public MyDetectedEntityInfo ѥ(){var Ѥ=ѕ.GetTargetedEntity();џ=Ѥ.EntityId;return Ѥ;}}public class ͻ
+:Ѧ{ϥ ѧ;public ͽ ʃ;Ί Ѩ;List<IMyLargeTurretBase>ѩ;ъ Ѫ;Ɣ ѫ;bool Ѭ;Vector3D ѭ;bool Ѯ=false;public ͻ(IMyCubeGrid ѯ,List<
+IMyTerminalBlock>Ϗ,List<IMyTerminalBlock>Ѱ):base(ѯ,Ѱ){Program.M("New ControllableShip : SupportingShip : ArgusShip",K.C);ѧ=new ϥ(Ϗ);ʃ=
+new ͽ(Ϗ,this);Ѩ=new Ί(this,ʃ);foreach(var ϑ in Ϗ){var ѱ=ϑ as IMyShipController;if(ѱ!=null)ϒ=ѱ;}if(ϒ==null){Program.M(
+$"WARNING: Controller not present in group: {N.ɣ}");return;}н=ϒ.CalculateShipMass();Ѫ=new ъ(Ϗ,this);}public IMyShipController ϒ{get;set;}public Vector3D Ƒ=>ϒ.WorldMatrix.
+Forward;public Vector3 Ѳ=>Base6Directions.Directions[(int)ϒ.Orientation.Forward];public Ɠ б=>(Ɠ)ϒ.Orientation.Forward;public
+Vector3D Ĕ=>ϒ.WorldMatrix.Up;public MatrixD Ͱ=>ѳ.WorldMatrix;public Ɣ Ϡ=>ѫ;public Vector3D ϟ{get{if(!Ѯ){ѭ=ϒ.GetNaturalGravity();
+Ѯ=true;}return ѭ;}}public MyShipMass н{get;private set;}public override void c(int ˁ){base.c(ˁ);ʃ.c(ˁ);Ѫ.c(ˁ);if((ˁ+ʺ)%Ѐ.
+Ͽ(ʻ)==0){н=ϒ.CalculateShipMass();}}public override void d(int ˁ){base.d(ˁ);if(Ѭ){Ѯ=false;var Ϧ=Ѩ.Ξ();if(Ϧ.ˢ==Vector3D.
+Zero)ѧ.Ϻ();else ѧ.ϲ(ref Ϧ);ʃ.d(ˁ);}Ѫ.d(ˁ);}public void ʂ(){ѫ=null;Ѭ=false;ѧ.Ϻ();}public void ʁ(){ѫ=P.Ѵ(this,N.ɦ,N.ɧ);Ѭ=true;
+if(ѫ==null){Ѭ=false;ѧ.Ϻ();Program.M("Couldn't find new target",K.Ⱥ);}else{Program.M("Got new target",K.L);}}public
+Vector3D Ε(){return ѫ?.ʾ??Vector3D.Zero;}}public class Ѧ:ʽ{private readonly List<і>ѵ;protected readonly IMyCubeGrid ѳ;public Ѧ(
+IMyCubeGrid ѯ,List<IMyTerminalBlock>Ѱ){Program.M("New SupportingShip : ArgusShip",K.C);IMyUserControllableGun ʗ=null;IMyMotorStator
+Ѷ=null;ѵ=new List<і>();foreach(var ϑ in Ѱ){var ѱ=ϑ as IMyTurretControlBlock;if(ѱ!=null){ѵ.Add(new і(ѱ));continue;}ʗ=ʗ??ϑ
+as IMyUserControllableGun;Ѷ=Ѷ??ϑ as IMyMotorStator;}if(ʗ!=null&&Ѷ!=null){Program.M("Setting up trackers",K.C);foreach(var
+ѷ in ѵ){Program.M($"Set up tracker: {ѷ.ў}");var ϑ=ѷ.ѕ;ϑ.ClearTools();ϑ.AddTool(ʗ);ϑ.AzimuthRotor=null;ϑ.ElevationRotor=Ѷ;
+ϑ.AIEnabled=true;ϑ.CustomName=N.ɪ;}if(ѵ.Count<=0)Program.M("No target trackers in group",K.Ⱥ);}else Program.M(
+$"Gun/rotor not present in group: {N.ɤ}, cannot setup trackers",K.Ⱥ);ѳ=ѯ;}public override Vector3D ʾ=>ѳ.GetPosition();public override Vector3D ʿ=>ʹ;public override Vector3D ʛ=>(ʹ-ʸ)*
+60;public override float ˀ=>ѳ.GridSize;public override string ʓ=>ѳ.CustomName;public override string ToString()=>ʓ;public
+override void c(int ˁ){ʸ=ʹ;ʹ=ѳ.LinearVelocity;}public override void d(int ˁ){for(int Ɔ=ѵ.Count-1;Ɔ>=0;Ɔ--){var ѷ=ѵ[Ɔ];if(ѷ.ї){ѵ.
+RemoveAt(Ɔ);continue;}ѷ.В();if(!ѷ.њ||ѷ.ќ){if(ѷ.ћ&&!ѷ.Ѝ){ѷ.Ѝ=true;ѷ.ў=N.ɪ;if(ѷ.Ѡ!=null){ѷ.Ѡ.Ѹ=true;ѷ.Ѡ.ѹ=null;}ѷ.Ѡ=null;}else if(
+ѷ.ѝ){ѷ.Ѝ=true;ѷ.ў=N.ɪ;}continue;}if(ѷ.џ!=0)continue;var ˆ=ѷ.ѥ();і Ѻ;if(P.ѻ(ˆ.EntityId,out Ѻ)){if(Ѻ==ѷ&&ѷ.Ѝ)ѷ.Ѝ=false;Ѻ.Ѡ.
+Ѽ(ˆ,null,ѷ);continue;}var Ѿ=P.ѽ(ѷ,ˆ.EntityId,ˆ);ѷ.Ѡ=Ѿ;ѷ.ў=N.ɩ;ѷ.Ѝ=false;ѷ.џ=ˆ.EntityId;}}}enum Ҍ{ѿ,Ҁ,ҁ,Ҋ,ҋ}class ґ{int ҍ;
+private readonly int Ҏ;public Ҍ ҏ;public ґ(int ɓ,Ҍ Ґ){ҍ=ɓ;Ҏ=ɓ;ҏ=Ґ;}public void Ғ(){ҍ=Ҏ;}public bool ғ(){ҍ--;return ҍ<=0;}}
+public class Ɣ:ʽ{Dictionary<Vector3I,ґ>Ҕ=new Dictionary<Vector3I,ґ>();Dictionary<Vector3I,ґ>ҕ=new Dictionary<Vector3I,ґ>();
+public Ѧ Җ;public MyDetectedEntityInfo L;public long җ;bool Ҙ=true;BoundingBoxD ҙ;Vector3D Қ;Vector3D қ;private readonly float
+Ҝ=1f;public Ɣ(і ѷ,long ҝ,MyDetectedEntityInfo æ){ѹ=ѷ;җ=ҝ;ʻ=ʻ.ϼ;switch(æ.Type){case MyDetectedEntityType.SmallGrid:Ҝ=0.5f;
+break;case MyDetectedEntityType.LargeGrid:Ҝ=2.5f;break;}L=æ;Ҟ=L.Orientation;Ҟ.Translation=L.Position;}public override
+Vector3D ʾ=>L.Position;public override Vector3D ʿ=>ʹ;public override Vector3D ʛ=>(ʹ-ʸ)*60;public override float ˀ=>Ҝ;public
+override string ʓ=>$"Trackable ship {җ}";public bool Ѹ{get;set;}=false;public override string ToString()=>ʓ;public і ѹ{get;set;}
+public bool Ѣ{get;set;}public BoundingBoxD ҟ=>L.BoundingBox;public Vector3D ҡ=>Ҡ.Extents;public Vector3D Ң=>Ҡ.HalfExtents;
+public int ң{get;set;}=0;public BoundingBoxD Ҡ{get{if(Ҙ)Ҥ();return ҙ;}}public Vector3D ҥ{get{if(Ҙ)Ҥ();return Қ;}}Vector3D Ҧ;
+MatrixD Ҟ;public Vector3D Ҩ(){var ҧ=Ҧ;Ҧ=Vector3D.Zero;return ҧ;}void Ҥ(){ҙ=ǡ.Ǡ(ҟ,L.Orientation,Ҝ);Ҙ=false;var ҩ=Ң;var ȷ=Ҝ/2;Қ=
+new Vector3D(ȷ-ҩ.X%Ҝ,ȷ-ҩ.Y%Ҝ,ȷ-ҩ.Z%Ҝ);}public override void c(int ˁ){if(Ѹ)return;if((ˁ+ʺ)%Ѐ.Ͽ(ʻ)!=0)return;L=ѹ.ѥ();if(ѹ.ї||
+L.EntityId!=җ)Ѹ=true;ʸ=ʹ;ʹ=L.Velocity;Ҧ=ʾ-қ;if(ʻ==ʻ.ʼ&&(Ҧ*60-ʹ).LengthSquared()>10000){Ҙ=true;Vector3I ˌ=(Vector3I)(
+Vector3D.Transform(Ҧ-(ʹ/60),MatrixD.Invert(Ҟ))*2);Ҫ(ˌ);}Ҟ=L.Orientation;Ҟ.Translation+=L.Position;қ=ʾ;}public override void d(
+int ˁ){ҕ.Clear();foreach(var ū in Ҕ){var ҫ=Vector3D.Transform((Vector3D)(Vector3)ū.Key*(double)Ҝ+ҥ,Ҟ);if(ū.Value.ғ())
+continue;ҕ[ū.Key]=ū.Value;Program.C.Á(ҫ,Color.White,0.2f,0.016f,true);}var ҧ=Ҕ;Ҕ=ҕ;ҕ=ҧ;Program.C.Í(ҟ,Color.Green,B.É.Ê,0.02f,
+0.016f);var Ҭ=new MyOrientedBoundingBoxD(Ҡ,L.Orientation);Ҭ.Center=ҟ.Center;Program.C.Ð(Ҭ,Color.Red,B.É.Ê,0.02f,0.016f);}
+public void Ѽ(MyDetectedEntityInfo Ѥ,IMyLargeTurretBase ҭ=null,і ѱ=null){if(Ѥ.EntityId!=L.EntityId||Ѥ.HitPosition==null)return
+;var Ү=(Vector3D)Ѥ.HitPosition;var ү=Ү-ʾ;var Ұ=Vector3D.TransformNormal(ү,MatrixD.Transpose(Ҟ));Ұ-=ҥ;var ұ=new Vector3I((
+int)Math.Round(Ұ.X/Ҝ),(int)Math.Round(Ұ.Y/Ҝ),(int)Math.Round(Ұ.Z/Ҝ));var Ґ=Ҍ.ѿ;var Ҳ=ҭ!=null?ҭ.GetTargetingGroup():ѱ!=null?
+ѱ.ѕ.GetTargetingGroup():"";switch(Ҳ){case"Weapons":Ґ=Ҍ.Ҁ;break;case"Propulsion":Ґ=Ҍ.ҁ;break;case"Power Systems":Ґ=Ҍ.Ҋ;
+break;}if(Ҕ.ContainsKey(ұ)){var ʣ=Ҕ[ұ];if(Ґ!=ʣ.ҏ)ʣ.ҏ=Ҍ.ҋ;ʣ.Ғ();return;}else{Ҕ.Add(ұ,new ґ(N.ɬ,Ґ));}}void Ҫ(Vector3I ˌ){var ҳ=
+new Dictionary<Vector3I,ґ>();foreach(var ϑ in Ҕ){ҳ.Add(ϑ.Key+ˌ,ϑ.Value);}Ҕ=ҳ;}}public static class P{public static readonly
+List<ʽ>Ҵ=new List<ʽ>();private static List<Ɣ>ҵ=new List<Ɣ>();public static Dictionary<long,Ɣ>Ҷ=new Dictionary<long,Ɣ>();
+private static IEnumerator<Ɣ>ҷ;private static MyDynamicAABBTreeD Ҹ=new MyDynamicAABBTreeD();static P(){}public static ͻ ʀ{get;
+set;}public static void c(int ˁ){ҹ();for(var Һ=Ҵ.Count-1;Һ>=0;Һ--){var Έ=Ҵ[Һ];Έ.c(ˁ);}foreach(var Έ in Ҵ){var һ=Έ as Ɣ;if(һ
+==null)continue;var ơ=һ.ҟ;if(һ.ң!=0){var ˌ=һ.Ҩ();Ҹ.MoveProxy(һ.ң,ref ơ,ˌ);}else{һ.ң=Ҹ.AddProxy(ref ơ,һ,0U);}}foreach(var ɗ
+in ƣ.Ơ(Ҹ)){var Ҽ=ɗ.Key;var ҽ=ɗ.Value;var Ҿ=Ҽ.ҟ.Size.LengthSquared();foreach(var ҿ in ҽ){var Ӏ=ҿ.ҟ.Size.LengthSquared();if(
+Ӏ>Ҿ){Ҽ.Ѣ=true;return;}}Ҽ.Ѣ=false;}}private static void ҹ(){if(!ҷ.MoveNext()){ҷ=Ӂ().GetEnumerator();ҷ.MoveNext();}}public
+static void d(int ˁ){for(var Һ=Ҵ.Count-1;Һ>=0;Һ--){var Έ=Ҵ[Һ];Έ.d(ˁ);}}private static IEnumerable<Ɣ>Ӂ(){var ӂ=N.ɥ*N.ɥ;for(var
+Һ=Ҵ.Count-1;Һ>=0;Һ--){if(Һ>=Ҵ.Count)continue;var Έ=Ҵ[Һ];var Ѿ=Έ as Ɣ;if(Ѿ==null)continue;var Δ=Ѿ.ʾ;var Ӄ=ʀ.ʾ;var ӄ=(Δ-Ӄ).
+LengthSquared();if(ӄ>ӂ)Ѿ.ʻ=ʻ.ϼ;else Ѿ.ʻ=ʻ.ʼ;yield return Ѿ;}}public static List<Ɣ>Ӈ(Ѧ Έ,double Ͷ){ҵ.Clear();foreach(var Ӆ in Ҵ){var ӆ
+=Ӆ as Ɣ;if(ӆ==null)continue;if((ӆ.ʾ-Έ.ʾ).LengthSquared()<Ͷ*Ͷ)ҵ.Add(ӆ);}return ҵ;}public static Ɣ Ѵ(ͻ Έ,double Ͷ,float ӈ){
+var Ӊ=Ӈ(Έ,Ͷ);if(Ӊ.Count<1)return null;var в=Έ.Ƒ;double ӊ=Math.Cos(ӈ*Math.PI/180.0);double Ӌ=double.MaxValue;Ɣ ӌ=null;
+foreach(var Ӎ in Ӊ){var ӎ=(Ӎ.ʾ-Έ.ʾ);var Ö=ӎ.Length();var ʹ=(ӎ/Ö).Dot(в);ʹ=MathHelperD.Clamp(ʹ,-1.0,1.0);if(ʹ<ӊ)continue;var ӏ=(
+1-ʹ)*Ö;if(ӏ<Ӌ){ӌ=Ӎ;Ӌ=ӏ;}}return ӌ;}public static void Q(IMyCubeGrid ѯ,IMyGridTerminalSystem Ӑ){var Ϝ=Ӑ.
+GetBlockGroupWithName(N.ɣ);Program.M($"Getting group : {N.ɣ}",K.ȹ);var ӑ=Ӑ.GetBlockGroupWithName(N.ɤ);Program.M($"Getting group : {N.ɤ}",K.ȹ)
+;var Ϗ=new List<IMyTerminalBlock>();var Ѱ=new List<IMyTerminalBlock>();if(Ϝ!=null){Ϝ.GetBlocks(Ϗ);Program.M(
+$"Got group: {N.ɣ}",K.C);}else Program.M($"Group not present: {N.ɣ}",K.Ⱥ);if(ӑ!=null){ӑ.GetBlocks(Ѱ);Program.M($"Got group: {N.ɤ}",K.C);}
+else Program.M($"Group not present: {N.ɤ}",K.Ⱥ);var Έ=new ͻ(ѯ,Ϗ,Ѱ);Ҵ.Add(Έ);ʀ=Έ;ҷ=Ӂ().GetEnumerator();}public static Ɣ ѽ(і ѷ
+,long ҝ,MyDetectedEntityInfo æ){Ɣ Ѿ;if(Ҷ.TryGetValue(ҝ,out Ѿ)){Program.M("Restoring defunct ship"+ҝ,K.C);if(!Ѿ.Ѹ)return
+null;Ѿ.ѹ=ѷ;Ѿ.Ѹ=false;return Ѿ;}Program.M("Creating new ship "+ҝ,K.C);Ѿ=new Ɣ(ѷ,ҝ,æ);Ҵ.Add(Ѿ);Ҷ.Add(ҝ,Ѿ);return Ѿ;}public
+static void Ӓ(Ɣ Ѿ){Ҵ.Remove(Ѿ);Ҷ.Remove(Ѿ.җ);Ҹ.RemoveProxy(Ѿ.ң);}public static bool ѻ(long ӓ,out і Ѻ){Ɣ Ѿ;var Ӕ=Ҷ.TryGetValue(
+ӓ,out Ѿ);Ѻ=Ӕ?Ѿ.ѹ:null;return Ӕ&&!Ѿ.Ѹ;}}

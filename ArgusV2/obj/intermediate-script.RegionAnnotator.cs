@@ -589,6 +589,13 @@ public static class DynamicAABBTreeDHelper
         return overlapping;
     }
 }
+public static class ArgusMath
+{
+    public static double SnapToMultiple(double value, double multiple)
+    {
+        return (double)(Math.Round(value / multiple) * multiple);
+    }
+}
 public static class OBBReconstructor
 {
         
@@ -1156,7 +1163,6 @@ public static class TimerManager
     /// </summary>
     public static void TickAll()
     {
-        // First, add any timers that were scheduled since last tick
         if (_pendingAdditions.Count > 0)
         {
             foreach (var kvp in _pendingAdditions)
@@ -1167,21 +1173,18 @@ public static class TimerManager
         }
 
         var finished = new List<int>();
-
-        // Tick timers
+            
         foreach (var kvp in Timers)
         {
             var timer = kvp.Value;
             timer.Remaining--;
             if (timer.Remaining <= 0)
             {
-                // Safe to invoke callbacks here; any new timers go into _pendingAdditions
                 timer.OnComplete?.Invoke();
                 finished.Add(kvp.Key);
             }
         }
-
-        // Remove finished timers after enumeration
+            
         foreach (var id in finished)
         {
             Timers.Remove(id);
@@ -1207,6 +1210,8 @@ partial class Program : MyGridProgram
     public static DebugAPI Debug;
     public static Random RNG;
     public TimedLog _Log = new TimedLog(10);
+
+    private static Queue<double> updateTimes = new Queue<double>();
         
     private int _frame;
     public Program()
@@ -1236,10 +1241,11 @@ partial class Program : MyGridProgram
         
     public void Main(string argument, UpdateType updateSource)
     {
+
         try
         {
-            if ((updateSource & UpdateType.Update1) != 0) RunUpdate();
-            if ((updateSource & (UpdateType.Trigger | UpdateType.Terminal)) != 0) RunCommand(argument);
+                if ((updateSource & UpdateType.Update1) != 0) RunUpdate();
+                if ((updateSource & (UpdateType.Trigger | UpdateType.Terminal)) != 0) RunCommand(argument);
         }
         catch (Exception ex)
         {
@@ -1252,11 +1258,15 @@ partial class Program : MyGridProgram
 
     private void RunUpdate()
     {
-            
-        TimerManager.TickAll();
-        ShipManager.EarlyUpdate(_frame);
-        ShipManager.LateUpdate(_frame++);
-            
+        using (Debug.Measure(duration => { updateTimes.Enqueue(duration.TotalMilliseconds); }))
+        {
+            TimerManager.TickAll();
+            ShipManager.EarlyUpdate(_frame);
+            ShipManager.LateUpdate(_frame++);
+        }
+
+        if (updateTimes.Count > 600) updateTimes.Dequeue();
+        Log(updateTimes.Average());
         _Log.Update();
         Log(_Log);
     }
@@ -1292,6 +1302,7 @@ partial class Program : MyGridProgram
 public static class Config
 {
         
+
 
     private static ConfigTool _configTool = new ConfigTool("General Config", "")
     {
@@ -1332,8 +1343,12 @@ public static class Config
     public static int GdriveTimeoutFrames = 300; // TODO: Hook me up
     public static double GravityAcceleration = 9.81; // TODO: Hook me up
     public static bool DefaultPrecisionMode = false; // TODO: Hook me up
-    public static bool DisablePrecisionModeOnEnemyDetected = false; // TODO: Hook me up
-
+    public static bool DisablePrecisionModeOnEnemyDetected = false; // TODO: Hook me up TODO: Set me up
+    public static double GdriveStep = 0.005;
+    public static int GdriveArtificialMassBalanceFrequencyFrames = 300;
+    public static int GdriveSpaceBallBalanceFrequencyFrames = 600;
+        
+        
     public static void Setup(IMyProgrammableBlock me)
     {
         Program.LogLine("Setting up config");
@@ -1735,12 +1750,12 @@ public abstract class ArgusShip
     protected Vector3D CPreviousVelocity;
     protected Vector3D CVelocity;
     protected int RandomUpdateJitter;
-    public SensorPollFrequency PollFrequency = SensorPollFrequency.Realtime;
+    public PollFrequency PollFrequency = PollFrequency.Realtime;
 
     public ArgusShip()
     {
         Program.LogLine("New ArgusShip", LogLevel.Debug);
-        RandomUpdateJitter = Program.RNG.Next() % 600;
+        RandomUpdateJitter = Program.RNG.Next() % 6000;
     }
         
     public abstract Vector3D Position { get; }
@@ -1928,7 +1943,7 @@ public class Gun
     {
             
         var blockDefinition = gun.BlockDefinition;
-        Program.LogLine($"Set up new gun {blockDefinition}", LogLevel.Info);
+        Program.LogLine($"Set up new gun {blockDefinition}", LogLevel.Trace);
         var gunData = GunData.Get(blockDefinition.SubtypeIdAttribute);
         if (gunData == GunData.DefaultGun) gunData = GunData.Get(blockDefinition.TypeIdString);
         _gunData = gunData;
@@ -1984,7 +1999,7 @@ public class Gun
         _reloadTimerId = TimerManager.Start(_gunData.ReloadTimeFrames, OnReloadComplete);
         if (_fireType == GunFireType.Delay)
         {
-            _firingTimerId = TimerManager.Start(_gunData.FireTimeFrames, OnFireComplete); // Temporary delay value
+            _firingTimerId = TimerManager.Start(_gunData.FireTimeFrames, OnFireComplete);
         }
         else
         {
@@ -2366,54 +2381,143 @@ public class GyroManager
         
         
 }
+public enum PollFrequency
+{
+    Low,        // For targets veeery far away (>10x max weapon range)
+    Medium,     // For targets out of immediate gun range (>max weapon range)
+    High,       // For targets out of gun range but being tracked by missiles in a non terminal phase
+    Realtime    // For targets in gun range or being tracked by missiles in a terminal phase
+}
+public class Polling
+{
+    public static int GetFramesBetweenPolls(PollFrequency freq)
+    {
+        switch (freq)
+        {
+            case PollFrequency.Low:      return 600;  // 10 seconds
+            case PollFrequency.Medium:   return 60;   // 1 second
+            case PollFrequency.High:     return 10;   // every 10 frames
+            case PollFrequency.Realtime: return 1;    // every frame
+            default: return Int32.MaxValue;                 // Fuck you (sanity default case, shouldn't ever actually happen but making it virtually never trigger is probably the best way to catch unintended behavior early)
+        }
+    }
+
+}
 public class BalancedMassSystem
 {
     private readonly List<BlockMass> _blocks;
     private readonly List<BallMass> _balls;
+    private int _updateJitter = 0;
+        
+    private Vector3D _currentMoment = Vector3D.Zero; // running moment
 
+    private ControllableShip _ship;
 
-
-    public BalancedMassSystem(List<IMyTerminalBlock> blocks)
+    public BalancedMassSystem(List<IMyTerminalBlock> blocks, ControllableShip ship)
     {
+            
         _blocks = new List<BlockMass>();
         _balls = new List<BallMass>();
+        _ship = ship;
 
         foreach (var block in blocks)
         {
             var ball = block as IMySpaceBall;
             if (ball != null)
             {
-                _balls.Add(new BallMass(ball, this));
+                var wrap = new BallMass(ball, this, _ship);
+                _balls.Add(wrap);
+                _currentMoment += wrap.Moment;
                 continue;
             }
 
             var mass = block as IMyArtificialMassBlock;
             if (mass != null)
             {
-                _blocks.Add(new BlockMass(mass, this));
+                var wrap = new BlockMass(mass, this, _ship);
+                _blocks.Add(wrap);
+                _currentMoment += wrap.Moment;
             }
 
         }
+
+        _updateJitter = Program.RNG.Next() % (Math.Max(Config.GdriveArtificialMassBalanceFrequencyFrames, Config.GdriveSpaceBallBalanceFrequencyFrames) - 1);
+        CalculateTotalMass();
+
     }
         
     public bool Enabled { get; set; }
+    public double TotalMass { get; private set; }
 
-    public void EarlyUpdate(int _frame)
+    public void EarlyUpdate(int frame)
     {
         // TODO: Balancer logic
+        if ((frame + _updateJitter) % Config.GdriveArtificialMassBalanceFrequencyFrames == 0)
+            BalanceMassBlocks();
+        if ((frame + _updateJitter) % Config.GdriveSpaceBallBalanceFrequencyFrames == 0)
+            BalanceSpaceBalls();
     }
 
-    public void LateUpdate(int _frame)
+
+
+    public void LateUpdate(int frame)
     {
+
+        bool stateChanged = false;
         foreach (var block in _blocks)
         {
-            block.UpdateState();
+            stateChanged |= block.UpdateState();
         }
         foreach (var ball in _balls)
         {
-            ball.UpdateState();
+            stateChanged |= ball.UpdateState();
+        }
+
+        if (stateChanged)
+        {
+            CalculateTotalMass();
         }
     }
+
+    private void CalculateTotalMass()
+    {
+        TotalMass = 0;
+
+        foreach (var block in _blocks)
+        {
+            TotalMass += block.BalancerVirtualMass;
+        }
+
+        foreach (var ball in _balls)
+        {
+            TotalMass += ball.BalancerVirtualMass;
+        }
+    }
+        
+    private void BalanceMassBlocks()
+    {
+        // _currentMoment persists across frames
+        // Each iteration nudges blocks on/off
+        foreach (var block in _blocks)
+        {
+            // Example: check if toggling reduces moment
+            Vector3D momentBefore = _currentMoment;
+            Vector3D momentToggle = block.BalancerAllowed ? Vector3D.Zero : block.Moment;
+
+            if ((_currentMoment - (block.BalancerAllowed ? block.Moment : Vector3D.Zero) + momentToggle).LengthSquared() <
+                _currentMoment.LengthSquared())
+            {
+                block.BalancerAllowed = !block.BalancerAllowed;
+                _currentMoment = _currentMoment - (block.BalancerAllowed ? Vector3D.Zero : block.Moment) + momentToggle;
+            }
+        }
+    }
+    private void BalanceSpaceBalls()
+    {
+            
+    }
+
+
 }
 internal class DirectionalDrive
 {
@@ -2428,7 +2532,7 @@ internal class DirectionalDrive
         _generators = generators;
         TotalAcceleration = 0;
         Direction = direction;
-        foreach (var generator in generators)
+        foreach (var generator in generators) // TODO: This might need an update when generators are added
         {
             var linear = generator as GravityGeneratorLinear;
 
@@ -2450,7 +2554,7 @@ internal class DirectionalDrive
         _previousEnabled = Enabled;
         if (_previousAcceleration != _acceleration)
             foreach (var generator in _generators)
-                generator.Acceleration = _acceleration;
+                generator.Acceleration = (float)(_acceleration * Config.GravityAcceleration);
         _previousAcceleration = _acceleration;
     }
         
@@ -2460,9 +2564,10 @@ internal class DirectionalDrive
 
     public void SetAcceleration(float acceleration)
     {
-        if (acceleration == _acceleration && acceleration == 0) return;
+        acceleration = (float)MathHelperD.Clamp(ArgusMath.SnapToMultiple(acceleration, Config.GdriveStep), -1, 1);
+        if (acceleration == _acceleration && acceleration == 0) return; // If idle
         Enabled = true;
-        if (acceleration == _acceleration) return; // Could possibly round this to maybe 2 dp to reduce polling rate
+        if (acceleration == _acceleration) return; // If hasn't changed
         _acceleration = acceleration;
     }
 }
@@ -2530,10 +2635,12 @@ public class GDrive
         _upDown = new DirectionalDrive(upDown, Direction.Up);
 
 
-        _massSystem = new BalancedMassSystem(blocks);
+        _massSystem = new BalancedMassSystem(blocks, ship);
     }
 
     private bool MassEnabled => _forwardBackward.Enabled || _leftRight.Enabled || _upDown.Enabled;
+
+    public double TotalMass => _massSystem.TotalMass;
 
     public void EarlyUpdate(int frame)
     {
@@ -2560,20 +2667,42 @@ public class GDrive
 
     public void ApplyPropulsion(Vector3 propLocal)
     {
-        propLocal *= (float)Config.GravityAcceleration;
         _forwardBackward.SetAcceleration(propLocal.Dot(Vector3D.Forward));
         _leftRight.SetAcceleration(propLocal.Dot(Vector3D.Left));
         _upDown.SetAcceleration(propLocal.Dot(Vector3D.Up));
+    }
+
+    public double GetForwardBackwardForce()
+    {
+        var force = TotalMass * _forwardBackward.TotalAcceleration;
+        if (force == 0) force = 1;
+        return force;
+    }
+
+    public double GetLeftRightForce()
+    {
+        var force = TotalMass * _leftRight.TotalAcceleration;
+        if (force == 0) force = 1;
+        return force;
+    }
+
+    public double GetUpDownForce()
+    {
+        var force = TotalMass * _upDown.TotalAcceleration;
+        if (force == 0) force = 1;
+        return force;
     }
 }
 public class BallMass : Mass
 {
     private IMySpaceBall _ball;
     private BalancedMassSystem _massSystem;
-    public BallMass(IMySpaceBall ball, BalancedMassSystem massSystem)
+    private ControllableShip _ship;
+    public BallMass(IMySpaceBall ball, BalancedMassSystem massSystem, ControllableShip ship)
     {
         _ball = ball;
         _massSystem = massSystem;
+        _ship = _ship;
     }
 
     public bool BalancerAllowed { get; set; } = true;
@@ -2583,22 +2712,28 @@ public class BallMass : Mass
     public bool IsActive => BalancerAllowed && GeneratorRequested;
     public override double AbsoluteVirtualMass => _ball.VirtualMass;
     public override double BalancerVirtualMass => BalancerAllowed ? _ball.VirtualMass : 0;
+    public Vector3D Moment => AbsoluteVirtualMass * (_ball.GetPosition() - _ship.Controller.CenterOfMass);
 
-    public void UpdateState()
+    public bool UpdateState()
     {
+        var r = false;
         _ball.Enabled = IsActive;
+        return r;
     }
 }
 public class BlockMass : Mass
 {
     private IMyArtificialMassBlock _mass;
     private BalancedMassSystem _massSystem;
+    private ControllableShip _ship;
 
     private bool _previousActive;
-    public BlockMass(IMyArtificialMassBlock mass, BalancedMassSystem massSystem)
+    public BlockMass(IMyArtificialMassBlock mass, BalancedMassSystem massSystem, ControllableShip ship)
     {
         _mass = mass;
         _massSystem = massSystem;
+        _ship = ship;
+        _mass.Enabled = false;
     }
         
     public bool BalancerAllowed { get; set; } = true;
@@ -2608,14 +2743,20 @@ public class BlockMass : Mass
     public bool IsActive => BalancerAllowed && GeneratorRequested;
     public override double AbsoluteVirtualMass => _mass.VirtualMass;
     public override double BalancerVirtualMass => BalancerAllowed ? _mass.VirtualMass : 0;
+        
+    public Vector3D Moment => AbsoluteVirtualMass * (_mass.GetPosition() - _ship.Controller.CenterOfMass);
 
-    public void UpdateState()
+    public bool UpdateState()
     {
-            
+        var stateChanged = false;
 
         if (_previousActive != IsActive)
+        {
             _mass.Enabled = IsActive;
+            stateChanged = true;
+        }
         _previousActive = IsActive;
+        return stateChanged;
     }
 }
 public abstract class GravityGenerator
@@ -2710,9 +2851,11 @@ public class PropulsionController
             var localVelocity = Vector3D.TransformNormal(velocity, MatrixD.Invert(_ship.WorldMatrix)); // TODO: Cache inverted matrix somewhere in ship
 
             // TODO: Integrate ship mass and total force in each direction for proper dampening results
-            var dampenValueForwardBackward = localVelocity * Vector3D.Forward;
-            var dampenValueLeftRight = localVelocity * Vector3D.Left;
-            var dampenValueUpDown = localVelocity * Vector3D.Down;
+            //var dampenerForce = transformedVelocity.Y == 0 ? 0 : (float)(transformedVelocity.Y * 10 * acceleration);
+            var dampenValueForwardBackward =
+                localVelocity * Vector3D.Forward * 10 * GetForwardBackwardAcceleration();
+            var dampenValueLeftRight = localVelocity * Vector3D.Left * 20 * GetLeftRightAcceleration();
+            var dampenValueUpDown = localVelocity * Vector3D.Down * 20 * GetUpDownAcceleration();
 
             if (desiredMovement.Dot(Vector3D.Forward) == 0) desiredMovement += dampenValueForwardBackward;
             if (desiredMovement.Dot(Vector3D.Left) == 0) desiredMovement += dampenValueLeftRight;
@@ -2725,7 +2868,24 @@ public class PropulsionController
         _gDrive.LateUpdate(frame);
         _tDrive.LateUpdate(frame);
     }
-        
+
+    private double GetForwardBackwardAcceleration()
+    {
+        // TODO: Implement thruster drive acceleration
+        return _ship.Mass.TotalMass / _gDrive.GetForwardBackwardForce();
+    }
+
+    private double GetLeftRightAcceleration()
+    {
+        // TODO: Implement thruster drive acceleration
+        return _ship.Mass.TotalMass / _gDrive.GetLeftRightForce();
+    }
+
+    private double GetUpDownAcceleration()
+    {
+        // TODO: Implement thruster drive acceleration
+        return _ship.Mass.TotalMass / _gDrive.GetUpDownForce();
+    }
 }
 public class TDrive
 {
@@ -2737,28 +2897,6 @@ public class TDrive
     public void LateUpdate(int frame)
     {
     }
-}
-public enum SensorPollFrequency
-{
-    Low,        // For targets veeery far away (>10x max weapon range)
-    Medium,     // For targets out of immediate gun range (>max weapon range)
-    High,       // For targets out of gun range but being tracked by missiles in a non terminal phase
-    Realtime    // For targets in gun range or being tracked by missiles in a terminal phase
-}
-public class SensorPolling
-{
-    public static int GetFramesBetweenPolls(SensorPollFrequency freq)
-    {
-        switch (freq)
-        {
-            case SensorPollFrequency.Low:      return 600;  // 10 seconds
-            case SensorPollFrequency.Medium:   return 60;   // 1 second
-            case SensorPollFrequency.High:     return 10;   // every 10 frames
-            case SensorPollFrequency.Realtime: return 1;    // every frame
-            default: return Int32.MaxValue;                 // Fuck you
-        }
-    }
-
 }
 public class TargetTracker
 {
@@ -2854,8 +2992,15 @@ public class ControllableShip : SupportingShip
             // var aiOffensive = block as IMyOffensiveCombatBlock;
             if (controller != null) Controller = controller;
         }
-        if (Controller == null) Program.LogLine($"WARNING: Controller not present in group: {Config.GroupName}");
+
+        if (Controller == null)
+        {
+            Program.LogLine($"WARNING: Controller not present in group: {Config.GroupName}");
+            return;
+        }
+        Mass = Controller.CalculateShipMass();
         _propulsionController = new PropulsionController(blocks, this);
+            
     }
 
     public IMyShipController Controller { get; set; }
@@ -2882,11 +3027,18 @@ public class ControllableShip : SupportingShip
         }
     }
 
+    public MyShipMass Mass { get; private set; }
+
     public override void EarlyUpdate(int frame)
     {
         base.EarlyUpdate(frame);
         Guns.EarlyUpdate(frame);
         _propulsionController.EarlyUpdate(frame);
+            
+        if ((frame + RandomUpdateJitter) % Polling.GetFramesBetweenPolls(PollFrequency) == 0)
+        {
+            Mass = Controller.CalculateShipMass();
+        }
     }
 
     public override void LateUpdate(int frame)
@@ -2902,7 +3054,8 @@ public class ControllableShip : SupportingShip
             else _gyroManager.Rotate(ref solution);
             Guns.LateUpdate(frame);
         }
-            
+
+
         _propulsionController.LateUpdate(frame);
     }
 
@@ -3118,7 +3271,7 @@ public class TrackableShip : ArgusShip
     {
         Tracker = tracker;
         EntityId = entityId;
-        PollFrequency = SensorPollFrequency.Medium;
+        PollFrequency = PollFrequency.Medium;
 
             
         switch (initial.Type)
@@ -3199,14 +3352,14 @@ public class TrackableShip : ArgusShip
     public override void EarlyUpdate(int frame)
     {
         if (Defunct) return;
-        if ((frame + RandomUpdateJitter) % SensorPolling.GetFramesBetweenPolls(PollFrequency) != 0) return;
+        if ((frame + RandomUpdateJitter) % Polling.GetFramesBetweenPolls(PollFrequency) != 0) return;
         Info = Tracker.GetTargetedEntity();
         if (Tracker.Closed || Info.EntityId != EntityId) Defunct = true;
         CPreviousVelocity = CVelocity;
         CVelocity = Info.Velocity;
         _displacement = Position - _previousPosition;
 
-        if (PollFrequency == SensorPollFrequency.Realtime && (_displacement * 60 - CVelocity).LengthSquared() > 10000)
+        if (PollFrequency == PollFrequency.Realtime && (_displacement * 60 - CVelocity).LengthSquared() > 10000)
         {
             _aabbNeedsRecalc = true;
             Vector3I displacement =
@@ -3425,9 +3578,9 @@ public static class ShipManager
             var distSqr = (pos - ourPos).LengthSquared();
 
             if (distSqr > maxSqr)
-                trackableShip.PollFrequency = SensorPollFrequency.Medium;
+                trackableShip.PollFrequency = PollFrequency.Medium;
             else
-                trackableShip.PollFrequency = SensorPollFrequency.Realtime;
+                trackableShip.PollFrequency = PollFrequency.Realtime;
 
             yield return trackableShip; // yields one ship per call
         }

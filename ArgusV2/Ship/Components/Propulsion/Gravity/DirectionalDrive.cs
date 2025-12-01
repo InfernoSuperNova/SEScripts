@@ -19,7 +19,7 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
             _generators = generators;
             TotalAcceleration = 0;
             Direction = direction;
-            foreach (var generator in generators)
+            foreach (var generator in generators) // TODO: This might need an update when generators are added
             {
                 var linear = generator as GravityGeneratorLinear;
 
@@ -41,7 +41,7 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
             _previousEnabled = Enabled;
             if (_previousAcceleration != _acceleration)
                 foreach (var generator in _generators)
-                    generator.Acceleration = _acceleration;
+                    generator.Acceleration = (float)(_acceleration * Config.GravityAcceleration);
             _previousAcceleration = _acceleration;
         }
         
@@ -51,9 +51,10 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
 
         public void SetAcceleration(float acceleration)
         {
-            if (acceleration == _acceleration && acceleration == 0) return;
+            acceleration = (float)MathHelperD.Clamp(ArgusMath.SnapToMultiple(acceleration, Config.GdriveStep), -1, 1);
+            if (acceleration == _acceleration && acceleration == 0) return; // If idle
             Enabled = true;
-            if (acceleration == _acceleration) return; // Could possibly round this to maybe 2 dp to reduce polling rate
+            if (acceleration == _acceleration) return; // If hasn't changed
             _acceleration = acceleration;
         }
     }

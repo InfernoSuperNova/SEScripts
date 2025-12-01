@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using IngameScript.Helper;
 using IngameScript.Ship.Components.Propulsion.Gravity.Wrapper;
@@ -55,7 +56,7 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
                 var sphericalGen = block as IMyGravityGeneratorSphere;
                 if (sphericalGen != null)
                 {
-                    var forward = _ship.LocalOrientationForward;
+                    var forward = _ship.LocalDirectionForward;
                     var forwardDir = Base6Directions.Directions[(int)forward];
                     var inverted = forwardDir.Dot(_ship.Position - sphericalGen.GetPosition()) > 0;
                     var list = genCastArray[forward];
@@ -73,10 +74,12 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
             _upDown = new DirectionalDrive(upDown, Direction.Up);
 
 
-            _massSystem = new BalancedMassSystem(blocks);
+            _massSystem = new BalancedMassSystem(blocks, ship);
         }
 
         private bool MassEnabled => _forwardBackward.Enabled || _leftRight.Enabled || _upDown.Enabled;
+
+        public double TotalMass => _massSystem.TotalMass;
 
         public void EarlyUpdate(int frame)
         {
@@ -103,10 +106,30 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
 
         public void ApplyPropulsion(Vector3 propLocal)
         {
-            propLocal *= (float)Config.GravityAcceleration;
             _forwardBackward.SetAcceleration(propLocal.Dot(Vector3D.Forward));
             _leftRight.SetAcceleration(propLocal.Dot(Vector3D.Left));
             _upDown.SetAcceleration(propLocal.Dot(Vector3D.Up));
+        }
+
+        public double GetForwardBackwardForce()
+        {
+            var force = TotalMass * _forwardBackward.TotalAcceleration;
+            if (force == 0) force = 1;
+            return force;
+        }
+
+        public double GetLeftRightForce()
+        {
+            var force = TotalMass * _leftRight.TotalAcceleration;
+            if (force == 0) force = 1;
+            return force;
+        }
+
+        public double GetUpDownForce()
+        {
+            var force = TotalMass * _upDown.TotalAcceleration;
+            if (force == 0) force = 1;
+            return force;
         }
     }
 }

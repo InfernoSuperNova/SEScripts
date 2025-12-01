@@ -46,9 +46,11 @@ namespace IngameScript.Ship.Components.Propulsion
                 var localVelocity = Vector3D.TransformNormal(velocity, MatrixD.Invert(_ship.WorldMatrix)); // TODO: Cache inverted matrix somewhere in ship
 
                 // TODO: Integrate ship mass and total force in each direction for proper dampening results
-                var dampenValueForwardBackward = localVelocity * Vector3D.Forward;
-                var dampenValueLeftRight = localVelocity * Vector3D.Left;
-                var dampenValueUpDown = localVelocity * Vector3D.Down;
+                //var dampenerForce = transformedVelocity.Y == 0 ? 0 : (float)(transformedVelocity.Y * 10 * acceleration);
+                var dampenValueForwardBackward =
+                    localVelocity * Vector3D.Forward * 10 * GetForwardBackwardAcceleration();
+                var dampenValueLeftRight = localVelocity * Vector3D.Left * 20 * GetLeftRightAcceleration();
+                var dampenValueUpDown = localVelocity * Vector3D.Down * 20 * GetUpDownAcceleration();
 
                 if (desiredMovement.Dot(Vector3D.Forward) == 0) desiredMovement += dampenValueForwardBackward;
                 if (desiredMovement.Dot(Vector3D.Left) == 0) desiredMovement += dampenValueLeftRight;
@@ -61,6 +63,23 @@ namespace IngameScript.Ship.Components.Propulsion
             _gDrive.LateUpdate(frame);
             _tDrive.LateUpdate(frame);
         }
-        
+
+        private double GetForwardBackwardAcceleration()
+        {
+            // TODO: Implement thruster drive acceleration
+            return _ship.Mass.TotalMass / _gDrive.GetForwardBackwardForce();
+        }
+
+        private double GetLeftRightAcceleration()
+        {
+            // TODO: Implement thruster drive acceleration
+            return _ship.Mass.TotalMass / _gDrive.GetLeftRightForce();
+        }
+
+        private double GetUpDownAcceleration()
+        {
+            // TODO: Implement thruster drive acceleration
+            return _ship.Mass.TotalMass / _gDrive.GetUpDownForce();
+        }
     }
 }

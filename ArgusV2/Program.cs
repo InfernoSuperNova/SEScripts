@@ -1,6 +1,9 @@
 ﻿
 using Sandbox.ModAPI.Ingame;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using IngameScript.Helper;
 using IngameScript.SConfig;
 using VRageMath;
@@ -14,6 +17,8 @@ namespace IngameScript
         public static DebugAPI Debug;
         public static Random RNG;
         public TimedLog _Log = new TimedLog(10);
+
+        private static Queue<double> updateTimes = new Queue<double>();
         
         private int _frame;
         public Program()
@@ -43,10 +48,11 @@ namespace IngameScript
         
         public void Main(string argument, UpdateType updateSource)
         {
+
             try
             {
-                if ((updateSource & UpdateType.Update1) != 0) RunUpdate();
-                if ((updateSource & (UpdateType.Trigger | UpdateType.Terminal)) != 0) RunCommand(argument);
+                    if ((updateSource & UpdateType.Update1) != 0) RunUpdate();
+                    if ((updateSource & (UpdateType.Trigger | UpdateType.Terminal)) != 0) RunCommand(argument);
             }
             catch (Exception ex)
             {
@@ -56,14 +62,26 @@ namespace IngameScript
         }
 
 
-
+        // TODO to be feature parity with arguslite:
+        // Finish auto balance (add space ball balance, mass block pair reenable)
+        // Handle block removal in all systems
+        // UI, switches (hud LCD probably)
+        // Finish hooking up variables in config
+        // Fix aimbot
+        // Auto dodge
+        // Turret override
+        
         private void RunUpdate()
         {
-            
-            TimerManager.TickAll();
-            ShipManager.EarlyUpdate(_frame);
-            ShipManager.LateUpdate(_frame++);
-            
+            using (Debug.Measure(duration => { updateTimes.Enqueue(duration.TotalMilliseconds); }))
+            {
+                TimerManager.TickAll();
+                ShipManager.EarlyUpdate(_frame);
+                ShipManager.LateUpdate(_frame++);
+            }
+
+            if (updateTimes.Count > 600) updateTimes.Dequeue();
+            Log(updateTimes.Average());
             _Log.Update();
             Log(_Log);
         }

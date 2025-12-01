@@ -127,9 +127,9 @@ namespace IngameScript
                 var distSqr = (pos - ourPos).LengthSquared();
 
                 if (distSqr > maxSqr)
-                    trackableShip.PollFrequency = SensorPollFrequency.Medium;
+                    trackableShip.PollFrequency = PollFrequency.Medium;
                 else
-                    trackableShip.PollFrequency = SensorPollFrequency.Realtime;
+                    trackableShip.PollFrequency = PollFrequency.Realtime;
 
                 yield return trackableShip; // yields one ship per call
             }
@@ -163,7 +163,7 @@ namespace IngameScript
             if (candidates.Count < 1) return null;
             
             
-            var forward = ship.Forward;
+            var forward = ship.WorldForward;
             double cosCone = Math.Cos(coneAngleDegrees * Math.PI / 180.0);
             
             double bestScore = double.MaxValue;

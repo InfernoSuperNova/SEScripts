@@ -58,7 +58,6 @@ namespace IngameScript
         /// </summary>
         public static void TickAll()
         {
-            // First, add any timers that were scheduled since last tick
             if (_pendingAdditions.Count > 0)
             {
                 foreach (var kvp in _pendingAdditions)
@@ -69,21 +68,18 @@ namespace IngameScript
             }
 
             var finished = new List<int>();
-
-            // Tick timers
+            
             foreach (var kvp in Timers)
             {
                 var timer = kvp.Value;
                 timer.Remaining--;
                 if (timer.Remaining <= 0)
                 {
-                    // Safe to invoke callbacks here; any new timers go into _pendingAdditions
                     timer.OnComplete?.Invoke();
                     finished.Add(kvp.Key);
                 }
             }
-
-            // Remove finished timers after enumeration
+            
             foreach (var id in finished)
             {
                 Timers.Remove(id);

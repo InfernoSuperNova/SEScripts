@@ -11,6 +11,7 @@ namespace IngameScript
     {
         
 
+
         private static ConfigTool _configTool = new ConfigTool("General Config", "")
         {
             Get = GetConfig,
@@ -50,8 +51,12 @@ namespace IngameScript
         public static int GdriveTimeoutFrames = 300; // TODO: Hook me up
         public static double GravityAcceleration = 9.81; // TODO: Hook me up
         public static bool DefaultPrecisionMode = false; // TODO: Hook me up
-        public static bool DisablePrecisionModeOnEnemyDetected = false; // TODO: Hook me up
-
+        public static bool DisablePrecisionModeOnEnemyDetected = false; // TODO: Hook me up TODO: Set me up
+        public static double GdriveStep = 0.005;
+        public static int GdriveArtificialMassBalanceFrequencyFrames = 300;
+        public static int GdriveSpaceBallBalanceFrequencyFrames = 600;
+        
+        
         public static void Setup(IMyProgrammableBlock me)
         {
             Program.LogLine("Setting up config");

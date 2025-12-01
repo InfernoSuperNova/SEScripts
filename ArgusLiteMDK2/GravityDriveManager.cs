@@ -903,8 +903,8 @@ namespace IngameScript
             var acceleration = 9.81 * gravityGenerators.Count;
 
             double mass = 0;
-            foreach (var block in massBlocks) mass += block.Enabled ? 50000 : 0;
-            foreach (var ball in spaceBalls) mass += ball.block.VirtualMass;
+            foreach (var block in massBlocks) mass += block.Enabled ? block.block.VirtualMass : 0;
+            foreach (var ball in spaceBalls) mass += ball.Enabled ? ball.block.VirtualMass : 0;
             return mass * acceleration;
         }
 

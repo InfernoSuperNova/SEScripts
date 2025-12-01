@@ -71,7 +71,7 @@ namespace IngameScript.Ship
         {
             Tracker = tracker;
             EntityId = entityId;
-            PollFrequency = SensorPollFrequency.Medium;
+            PollFrequency = PollFrequency.Medium;
 
             
             switch (initial.Type)
@@ -152,14 +152,14 @@ namespace IngameScript.Ship
         public override void EarlyUpdate(int frame)
         {
             if (Defunct) return;
-            if ((frame + RandomUpdateJitter) % SensorPolling.GetFramesBetweenPolls(PollFrequency) != 0) return;
+            if ((frame + RandomUpdateJitter) % Polling.GetFramesBetweenPolls(PollFrequency) != 0) return;
             Info = Tracker.GetTargetedEntity();
             if (Tracker.Closed || Info.EntityId != EntityId) Defunct = true;
             CPreviousVelocity = CVelocity;
             CVelocity = Info.Velocity;
             _displacement = Position - _previousPosition;
 
-            if (PollFrequency == SensorPollFrequency.Realtime && (_displacement * 60 - CVelocity).LengthSquared() > 10000)
+            if (PollFrequency == PollFrequency.Realtime && (_displacement * 60 - CVelocity).LengthSquared() > 10000)
             {
                 _aabbNeedsRecalc = true;
                 Vector3I displacement =

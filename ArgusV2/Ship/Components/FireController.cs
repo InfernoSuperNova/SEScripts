@@ -57,7 +57,7 @@ namespace IngameScript.Ship.Components
 
             var dir = displacement / dist;
 
-            var dot = dir.Dot(_ship.Forward);
+            var dot = dir.Dot(_ship.WorldForward);
 
             var solvedPos = _guns.GetBallisticSolution();
             var solvedForward = (solvedPos - pos).Normalized();
@@ -66,7 +66,7 @@ namespace IngameScript.Ship.Components
             if (dot > Config.MinFireDot && enemyPos != Vector3D.Zero) _guns.TryFire();
             else _guns.TryCancel();
 
-            return new FiringSolution(solvedForward, enemyPos, pos, _ship.Forward, dot, dist, _ship.WorldMatrix);
+            return new FiringSolution(solvedForward, enemyPos, pos, _ship.WorldForward, dot, dist, _ship.WorldMatrix);
         }
     }
 }
