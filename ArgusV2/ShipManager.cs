@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using IngameScript.Helper;
 using IngameScript.Ship;
 using IngameScript.Ship.Components;
+using IngameScript.TruncationWrappers;
 using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame;
@@ -113,7 +114,7 @@ namespace IngameScript
         
         private static IEnumerable<TrackableShip> UpdatePollFrequenciesOneByOne()
         {
-            var maxSqr = Config.MaxWeaponRange * Config.MaxWeaponRange;
+            var maxSqr = Config.General.MaxWeaponRange * Config.General.MaxWeaponRange;
 
             for (var index = AllShips.Count - 1; index >= 0; index--)
             {
@@ -191,16 +192,16 @@ namespace IngameScript
 
         public static void CreateControllableShip(IMyCubeGrid grid, IMyGridTerminalSystem gridTerminalSystem)
         {
-            var group = gridTerminalSystem.GetBlockGroupWithName(Config.GroupName);
-            Program.LogLine($"Getting group : {Config.GroupName}", LogLevel.Trace);
-            var trackerGroup = gridTerminalSystem.GetBlockGroupWithName(Config.TrackerGroupName);
-            Program.LogLine($"Getting group : {Config.TrackerGroupName}", LogLevel.Trace);
+            var group = gridTerminalSystem.GetBlockGroupWithName(Config.String.GroupName);
+            Program.LogLine($"Getting group : {Config.String.GroupName}", LogLevel.Trace);
+            var trackerGroup = gridTerminalSystem.GetBlockGroupWithName(Config.String.TrackerGroupName);
+            Program.LogLine($"Getting group : {Config.String.TrackerGroupName}", LogLevel.Trace);
             var blocks = new List<IMyTerminalBlock>();
             var trackerBlocks = new List<IMyTerminalBlock>();
-            if (group != null) {group.GetBlocks(blocks); Program.LogLine($"Got group: {Config.GroupName}", LogLevel.Debug);}
-            else Program.LogLine($"Group not present: {Config.GroupName}", LogLevel.Warning);
-            if (trackerGroup != null) {trackerGroup.GetBlocks(trackerBlocks); Program.LogLine($"Got group: {Config.TrackerGroupName}", LogLevel.Debug);}
-            else Program.LogLine($"Group not present: {Config.TrackerGroupName}", LogLevel.Warning);
+            if (group != null) {group.GetBlocks(blocks); Program.LogLine($"Got group: {Config.String.GroupName}", LogLevel.Debug);}
+            else Program.LogLine($"Group not present: {Config.String.GroupName}", LogLevel.Warning);
+            if (trackerGroup != null) {trackerGroup.GetBlocks(trackerBlocks); Program.LogLine($"Got group: {Config.String.TrackerGroupName}", LogLevel.Debug);}
+            else Program.LogLine($"Group not present: {Config.String.TrackerGroupName}", LogLevel.Warning);
             var ship = new ControllableShip(grid, blocks, trackerBlocks);
             AllShips.Add(ship);
             PrimaryShip = ship;
@@ -209,7 +210,7 @@ namespace IngameScript
             _pollEnumerator = UpdatePollFrequenciesOneByOne().GetEnumerator();
         }
 
-        public static TrackableShip AddTrackableShip(TargetTracker tracker, long entityId, MyDetectedEntityInfo initial)
+        public static TrackableShip AddTrackableShip(TargetTracker tracker, long entityId, AT_DetectedEntityInfo initial)
         {
             TrackableShip trackableShip;
             if (EntityIdToTrackableShip.TryGetValue(entityId, out trackableShip))

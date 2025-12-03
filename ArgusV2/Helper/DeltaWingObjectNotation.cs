@@ -362,14 +362,21 @@ namespace IngameScript.Helper
         }
 
 // Helper: safely get value, returns default if missing
-        public static T GetValue<T>(Dictionary<string, object> dict, string key, T defaultValue = default(T))
+        public static T GetValue<T>(Dictionary<string, object> dict, string key, ref string comment, T defaultValue = default(T))
         {
+            comment = "";
             object value;
             if (dict.TryGetValue(key, out value))
             {
                 // Handle value types and reference types separately
+                var temp = value as Comment;
+                if (temp != null)
+                {
+                    value = temp.Obj;
+                    comment = temp.Com;
+                }
                 if (value is T) return (T)value;
-
+                
                 try
                 {
                     return (T)Convert.ChangeType(value, typeof(T));
@@ -380,6 +387,39 @@ namespace IngameScript.Helper
                 }
             }
             return defaultValue;
+        }
+    }
+    class ConfigCategory
+    {
+        private readonly Dictionary<string, object> _values;
+
+        private ConfigCategory(Dictionary<string, object> values)
+        {
+            _values = values;
+        }
+
+        public static ConfigCategory From(Dictionary<string, object> root, string name)
+        {
+            Dwon.UnwrapAllComments(root);
+
+            Dictionary<string, object> dict;
+            object obj;
+
+            if (!root.TryGetValue(name, out obj) || (dict = obj as Dictionary<string, object>) == null)
+            {
+                dict = new Dictionary<string, object>();
+                root[name] = dict;
+            }
+
+            return new ConfigCategory(dict);
+        }
+
+        public void Sync<T>(string key, ref T field, string comment = "")
+        {
+            var temp = Dwon.GetValue(_values, key, ref comment, field);
+
+            if (comment != "") _values[key] = new Dwon.Comment(temp, comment);
+            else _values[key] = temp;
         }
     }
 }

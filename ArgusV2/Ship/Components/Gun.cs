@@ -1,6 +1,7 @@
 
 using IngameScript.Helper;
 using IngameScript.SConfig.Database;
+using IngameScript.TruncationWrappers;
 using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI.Ingame;
 using VRage.Game;
@@ -36,14 +37,19 @@ namespace IngameScript.Ship.Components
     {
         private static readonly MyDefinitionId ElectricityId =
             new MyDefinitionId(typeof(MyObjectBuilder_GasProperties), "Electricity");
+        
+        
         private IMyUserControllableGun _gun;
         private GunReloadType _reloadType;
         private GunFireType _fireType;
         private MyResourceSinkComponent _gunSinkComponent;
         private int _reloadTimerId;
         private int _firingTimerId;
-        private GunState _cachedState;
-        private bool _stateValid;
+        private CachedValue<GunState> _state;
+        
+        
+        
+        
         private bool _cancelled;
         private GunData _gunData;
         private GunManager _manager;
@@ -62,37 +68,27 @@ namespace IngameScript.Ship.Components
             _gunSinkComponent = gun.Components.Get<MyResourceSinkComponent>();
             _reloadType = _gunData.ReloadType;
             _fireType = _gunData.FireType;
+
+            _state = new CachedValue<GunState>(EvaluateState);
         }
         
-        public Vector3D GridPosition => (Vector3)(_gun.Min + _gun.Max) / 2 * _manager.ThisShip.GridSize;
-        public Vector3D WorldPosition => _gun.GetPosition();
-        public Vector3D Direction { get; set; }
+        public AT_Vector3D GridPosition => (Vector3)(_gun.Min + _gun.Max) / 2 * _manager.ThisShip.GridSize;
+        public AT_Vector3D WorldPosition => _gun.GetPosition();
+        public AT_Vector3D Direction { get; set; }
         public float Velocity => _gunData.ProjectileData.ProjectileVelocity;
         public float Acceleration => _gunData.ProjectileData.Acceleration;
         public float MaxVelocity => _gunData.ProjectileData.MaxVelocity;
         public float MaxRange => _gunData.ProjectileData.MaxRange;
 
         public GunData GunData => _gunData;
-        
-        public GunState State
-        {
-            get
-            {
-                if (!_stateValid)
-                {
-                    _cachedState = EvaluateState();
-                    _stateValid = true;
-                }
-                return _cachedState;
 
-            }
-        }
+        public GunState State => _state.Value;
 
-        public Vector3D Forward => _gun.WorldMatrix.Forward;
+        public AT_Vector3D Forward => _gun.WorldMatrix.Forward;
 
         public void EarlyUpdate(int frame)
         {
-            _stateValid = false;
+            _state.Invalidate();
         }
 
         public void LateUpdate(int frame)
@@ -144,9 +140,9 @@ namespace IngameScript.Ship.Components
         
         
         
-        public Vector3D GetFireVelocity(Vector3D shipVelocity)
+        public AT_Vector3D GetFireVelocity(AT_Vector3D shipVelocity)
         {
-            Vector3D combinedVelocity = shipVelocity + Direction * Velocity;
+            AT_Vector3D combinedVelocity = shipVelocity + Direction * Velocity;
             if (combinedVelocity.LengthSquared() > Velocity * Velocity)
                 combinedVelocity = combinedVelocity.Normalized() * Velocity;
             return combinedVelocity;

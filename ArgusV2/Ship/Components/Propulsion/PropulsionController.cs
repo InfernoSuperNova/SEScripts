@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using IngameScript.Helper;
 using IngameScript.Ship.Components.Propulsion.Gravity;
 using IngameScript.Ship.Components.Propulsion.Thruster;
+using IngameScript.TruncationWrappers;
 using Sandbox.ModAPI.Ingame;
 using VRageMath;
 
@@ -38,23 +39,20 @@ namespace IngameScript.Ship.Components.Propulsion
             Matrix matrix; // TODO: Cache cockpit local orientation matrix
             _ship.Controller.Orientation.GetMatrix(out matrix);
 
-            var desiredMovement = Vector3.Transform(userInput, matrix);
+            AT_Vector3D desiredMovement = AT_Vector3D.Transform(userInput, matrix);
 
             if (_ship.Controller.DampenersOverride)
             {
                 var velocity = _ship.Velocity;
-                var localVelocity = Vector3D.TransformNormal(velocity, MatrixD.Invert(_ship.WorldMatrix)); // TODO: Cache inverted matrix somewhere in ship
+                var localVelocity = AT_Vector3D.TransformNormal(velocity, MatrixD.Invert(_ship.WorldMatrix)); // TODO: Cache inverted matrix somewhere in ship
+                
+                var dampenValueForwardBackward = localVelocity * AT_Vector3D.Forward * 10 * GetForwardBackwardAcceleration();
+                var dampenValueLeftRight = localVelocity * AT_Vector3D.Left * 10 * GetLeftRightAcceleration();
+                var dampenValueUpDown = localVelocity * AT_Vector3D.Up * 10 * GetUpDownAcceleration();
 
-                // TODO: Integrate ship mass and total force in each direction for proper dampening results
-                //var dampenerForce = transformedVelocity.Y == 0 ? 0 : (float)(transformedVelocity.Y * 10 * acceleration);
-                var dampenValueForwardBackward =
-                    localVelocity * Vector3D.Forward * 10 * GetForwardBackwardAcceleration();
-                var dampenValueLeftRight = localVelocity * Vector3D.Left * 20 * GetLeftRightAcceleration();
-                var dampenValueUpDown = localVelocity * Vector3D.Down * 20 * GetUpDownAcceleration();
-
-                if (desiredMovement.Dot(Vector3D.Forward) == 0) desiredMovement += dampenValueForwardBackward;
-                if (desiredMovement.Dot(Vector3D.Left) == 0) desiredMovement += dampenValueLeftRight;
-                if (desiredMovement.Dot(Vector3D.Down) == 0) desiredMovement += dampenValueUpDown;
+                if (desiredMovement.Dot(AT_Vector3D.Forward) == 0) desiredMovement += dampenValueForwardBackward;
+                if (desiredMovement.Dot(AT_Vector3D.Left) == 0) desiredMovement += dampenValueLeftRight;
+                if (desiredMovement.Dot(AT_Vector3D.Up) == 0) desiredMovement += dampenValueUpDown;
             }
             
             

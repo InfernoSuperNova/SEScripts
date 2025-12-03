@@ -9,48 +9,8 @@ namespace IngameScript.SConfig
     {
         private static readonly Dictionary<string, ConfigTool> Configs = new Dictionary<string, ConfigTool>();
 
-        public static string SerializeAll()
-        {
-            Program.LogLine("Writing config", LogLevel.Info);
-            var config = new Dictionary<string, object>();
-            foreach (var kv in Configs)
-            {
-                Program.LogLine($"Collecting config: {kv.Key}", LogLevel.Debug);
-                config.Add(kv.Key, kv.Value.Get());
-            }
-
-            //return TestDwon();
-            return Dwon.Serialize(config);
-        }
-
-        public static void DeserializeAll(string config)
-        {
-            Program.LogLine("Reading config from custom data", LogLevel.Info);
-            var parsed = Dwon.Parse(config);
-            Program.LogLine("DeltaWing Object Notation: Parsed successfully", LogLevel.Debug);
-            var dict = parsed as Dictionary<string, object>;
-            if (dict == null)
-            {
-                Program.LogLine("Config malformed", LogLevel.Critical);
-                throw new Exception();
-            }
-            foreach (var kv in dict)
-            {
-                ConfigTool config1;
-                if (!Configs.TryGetValue(kv.Key, out config1)) continue;
-                var dict3 = kv.Value as Dictionary<string, object>;
-                if (dict3 != null)
-                {
-                    Program.LogLine("Config set: " + kv.Key, LogLevel.Debug);
-                    config1.Set(dict3);
-                }
-            }
-        }
-        
-        
-        
-        public Func<Dictionary<string, object>> Get { get; set; }
-        public Action<Dictionary<string, object>> Set { get; set; }
+        public delegate void ConfigSync(Dictionary<string, object> dict);
+        public ConfigSync Sync { get; set; }
 
         public ConfigTool(string name, string comment)
         {
@@ -58,12 +18,29 @@ namespace IngameScript.SConfig
             Comment = comment;
             Configs.Add(name, this);
         }
-        
+
         public string Name { get; }
         public string Comment { get; }
-        
-        
-        public Dictionary<string, object> GetConfig() => Get?.Invoke();
-        public void SetConfig( Dictionary<string, object> value) => Set?.Invoke(value);
+
+        public static string SyncConfig(string input)
+        {
+            var parsed = Dwon.Parse(input);
+            
+            var dict = parsed as Dictionary<string, object>;
+            if (dict == null)
+            {
+                Program.LogLine("Config malformed", LogLevel.Critical);
+                throw new Exception();
+            }
+
+            foreach (var kv in Configs)
+            {
+                if (!dict.ContainsKey(kv.Key))
+                    dict[kv.Key] = new Dictionary<string, object>();
+                kv.Value.Sync?.Invoke((Dictionary<string, object>)dict[kv.Key]); // sync fields < - > dictionary
+            }
+
+            return Dwon.Serialize(parsed);
+        }
     }
 }

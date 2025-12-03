@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using IngameScript.Helper;
 using IngameScript.Ship.Components;
+using IngameScript.TruncationWrappers;
 using VRageMath;
 
 namespace IngameScript.Ship
@@ -11,8 +12,8 @@ namespace IngameScript.Ship
     /// </summary>
     public abstract class ArgusShip
     {
-        protected Vector3D CPreviousVelocity;
-        protected Vector3D CVelocity;
+        protected AT_Vector3D CPreviousVelocity;
+        protected AT_Vector3D CVelocity;
         protected int RandomUpdateJitter;
         public PollFrequency PollFrequency = PollFrequency.Realtime;
 
@@ -22,9 +23,9 @@ namespace IngameScript.Ship
             RandomUpdateJitter = Program.RNG.Next() % 6000;
         }
         
-        public abstract Vector3D Position { get; }
-        public abstract Vector3D Velocity { get; }
-        public abstract Vector3D Acceleration { get; }
+        public abstract AT_Vector3D Position { get; }
+        public abstract AT_Vector3D Velocity { get; }
+        public abstract AT_Vector3D Acceleration { get; }
         public abstract float GridSize { get; }
         public abstract string Name { get; }
 
@@ -52,17 +53,17 @@ namespace IngameScript.Ship
         /// <param name="target">The target ship to hit.</param>
         /// <param name="projectileVelocity">The speed of the projectile.</param>
         /// <returns>A normalized direction vector to aim at for impact.</returns>
-        public Vector3D GetTargetLeadPosition(ArgusShip target, float projectileVelocity)
+        public AT_Vector3D GetTargetLeadPosition(ArgusShip target, float projectileVelocity)
         {
-            Vector3D shooterPos = this.Position;
-            Vector3D shooterVel = this.Velocity;
+            AT_Vector3D shooterPos = this.Position;
+            AT_Vector3D shooterVel = this.Velocity;
             
-            Vector3D targetPos = target.Position;
-            Vector3D targetAcc = target.Acceleration;
+            AT_Vector3D targetPos = target.Position;
+            AT_Vector3D targetAcc = target.Acceleration;
 
-            Vector3D relativeVel = target.Velocity - shooterVel; // target motion relative to shooter
+            AT_Vector3D relativeVel = target.Velocity - shooterVel; // target motion relative to shooter
             
-            Vector3D displacement = targetPos - shooterPos;
+            AT_Vector3D displacement = targetPos - shooterPos;
             double s = projectileVelocity;
 
             // Quadratic coefficients: a t^2 + b t + c = 0
@@ -94,7 +95,7 @@ namespace IngameScript.Ship
             }
 
             // Include acceleration via a single-step approximation
-            Vector3D intercept = targetPos + relativeVel * t + 0.5 * targetAcc * t * t;
+            AT_Vector3D intercept = targetPos + relativeVel * t + 0.5 * targetAcc * t * t;
             return intercept;
         }
 

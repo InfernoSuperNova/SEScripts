@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using IngameScript.Ship.Components.Propulsion.Gravity.Wrapper;
+using IngameScript.TruncationWrappers;
 using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using VRageMath;
@@ -11,15 +12,17 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
     {
         private readonly List<BlockMass> _blocks;
         private readonly List<BallMass> _balls;
+        private readonly List<Mass> _allBlocks;
+        private bool _stateChanged;
         private int _updateJitter = 0;
         
-        private Vector3D _currentMoment = Vector3D.Zero; // running moment
+        private AT_Vector3D _currentMoment = AT_Vector3D.Zero; // running moment
 
         private ControllableShip _ship;
 
         public BalancedMassSystem(List<IMyTerminalBlock> blocks, ControllableShip ship)
         {
-            
+            _allBlocks = new List<Mass>();
             _blocks = new List<BlockMass>();
             _balls = new List<BallMass>();
             _ship = ship;
@@ -31,6 +34,7 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
                 {
                     var wrap = new BallMass(ball, this, _ship);
                     _balls.Add(wrap);
+                    _allBlocks.Add(wrap);
                     _currentMoment += wrap.Moment;
                     continue;
                 }
@@ -40,12 +44,13 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
                 {
                     var wrap = new BlockMass(mass, this, _ship);
                     _blocks.Add(wrap);
+                    _allBlocks.Add(wrap);
                     _currentMoment += wrap.Moment;
                 }
 
             }
 
-            _updateJitter = Program.RNG.Next() % (Math.Max(Config.GdriveArtificialMassBalanceFrequencyFrames, Config.GdriveSpaceBallBalanceFrequencyFrames) - 1);
+            _updateJitter = Program.RNG.Next() % (Math.Max(Config.Gdrive.MassBalanceFrequencyFrames, Config.Gdrive.BallBalanceFrequencyFrames) - 1);
             CalculateTotalMass();
 
         }
@@ -53,12 +58,13 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
         public bool Enabled { get; set; }
         public double TotalMass { get; private set; }
 
+        public List<Mass> AllBlocks => _allBlocks;
+
         public void EarlyUpdate(int frame)
         {
-            // TODO: Balancer logic
-            if ((frame + _updateJitter) % Config.GdriveArtificialMassBalanceFrequencyFrames == 0)
+            if ((frame + _updateJitter) % Config.Gdrive.MassBalanceFrequencyFrames == 0)
                 BalanceMassBlocks();
-            if ((frame + _updateJitter) % Config.GdriveSpaceBallBalanceFrequencyFrames == 0)
+            if ((frame + _updateJitter) % Config.Gdrive.BallBalanceFrequencyFrames == 0)
                 BalanceSpaceBalls();
         }
 
@@ -82,6 +88,16 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
                 CalculateTotalMass();
             }
         }
+        /// <summary>
+        /// Returns true if the mass state of the generator has changed since this function was last called.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasStateChanged()
+        {
+            var state = _stateChanged;
+            _stateChanged = false;
+            return state;
+        }
 
         private void CalculateTotalMass()
         {
@@ -102,23 +118,27 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
         {
             // _currentMoment persists across frames
             // Each iteration nudges blocks on/off
+            AT_Vector3D momentBefore = _currentMoment;
             foreach (var block in _blocks)
             {
-                // Example: check if toggling reduces moment
-                Vector3D momentBefore = _currentMoment;
-                Vector3D momentToggle = block.BalancerAllowed ? Vector3D.Zero : block.Moment;
+                AT_Vector3D momentToggle = block.BalancerAllowed ? AT_Vector3D.Zero : block.Moment;
 
-                if ((_currentMoment - (block.BalancerAllowed ? block.Moment : Vector3D.Zero) + momentToggle).LengthSquared() <
+                if ((_currentMoment - (block.BalancerAllowed ? block.Moment : AT_Vector3D.Zero) + momentToggle).LengthSquared() <
                     _currentMoment.LengthSquared())
                 {
                     block.BalancerAllowed = !block.BalancerAllowed;
-                    _currentMoment = _currentMoment - (block.BalancerAllowed ? Vector3D.Zero : block.Moment) + momentToggle;
+                    _currentMoment = _currentMoment - (block.BalancerAllowed ? AT_Vector3D.Zero : block.Moment) + momentToggle;
                 }
             }
+            _stateChanged |= momentBefore != _currentMoment;
         }
         private void BalanceSpaceBalls()
         {
+            AT_Vector3D momentBefore = _currentMoment;
+                // TODO: Space ball balance logic
             
+            
+            _stateChanged |= momentBefore != _currentMoment;
         }
 
 

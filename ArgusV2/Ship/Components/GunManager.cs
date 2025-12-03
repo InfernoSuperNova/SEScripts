@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using IngameScript.Helper;
 using IngameScript.SConfig.Database;
+using IngameScript.TruncationWrappers;
 using Sandbox.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame;
 using VRageMath;
@@ -29,7 +30,7 @@ namespace IngameScript.Ship.Components
         
         private List<Gun> _currentFiringGroup = new List<Gun>();
 
-        private Vector3D _firingReferencePosition;
+        private AT_Vector3D _firingReferencePosition;
         private PositionValidity _fireGroupValidity;
         private int _fireGroupCount;
         private GunData _gunData;
@@ -42,7 +43,7 @@ namespace IngameScript.Ship.Components
                 var gun = block as IMyUserControllableGun;
                 if (gun != null) _guns.Add(new Gun(gun, this));
             }
-            if (_guns.Count <= 0) Program.LogLine($"No guns in group {Config.GroupName}", LogLevel.Warning);
+            if (_guns.Count <= 0) Program.LogLine($"No guns in group {Config.String.GroupName}", LogLevel.Warning);
             ThisShip = thisShip;
         }
 
@@ -50,7 +51,7 @@ namespace IngameScript.Ship.Components
         public IMyCubeGrid Grid => ThisShip.Controller.CubeGrid;
         public int GunCount => _guns.Count;
         
-        public Vector3D FireRefPos => _firingReferencePosition;
+        public AT_Vector3D FireRefPos => _firingReferencePosition;
         public PositionValidity FireGroupValidity => _fireGroupValidity;
         public int FireGroupCount => _fireGroupCount;
 
@@ -133,7 +134,7 @@ namespace IngameScript.Ship.Components
                 return;
             }
             
-            Vector3D average = Vector3D.Zero;
+            AT_Vector3D average = AT_Vector3D.Zero;
 
             foreach (var gun in _currentFiringGroup)
             {
@@ -142,7 +143,7 @@ namespace IngameScript.Ship.Components
 
             average /= _fireGroupCount;
 
-            _firingReferencePosition = Vector3D.Transform(average, ThisShip.WorldMatrix);
+            _firingReferencePosition = AT_Vector3D.Transform(average, ThisShip.WorldMatrix);
 
         }
         
@@ -176,17 +177,17 @@ namespace IngameScript.Ship.Components
         }
 
 
-        public Vector3D GetBallisticSolution()
+        public AT_Vector3D GetBallisticSolution()
         {
 
-            if (_gunData == null) return Vector3D.Zero;
+            if (_gunData == null) return AT_Vector3D.Zero;
             var maxSpeed = _gunData.ProjectileData.MaxVelocity;
             var target = ThisShip.GetTargetPosition();
             var displacement = target - _firingReferencePosition;
 
             var refGun = _currentFiringGroup[0];
 
-            if (refGun == null) return Vector3D.Zero;
+            if (refGun == null) return AT_Vector3D.Zero;
 
             var gravity = ThisShip.Gravity;
             var hasGravity = gravity.LengthSquared() != 0;
@@ -195,7 +196,7 @@ namespace IngameScript.Ship.Components
                 _gunData.ProjectileData.Acceleration * refGun.Forward,
                 displacement,
                 ThisShip.CurrentTarget.Position, ThisShip.CurrentTarget.Velocity / 60, ThisShip.CurrentTarget.Acceleration / 60,
-                Vector3D.Zero, false, gravity, hasGravity);
+                AT_Vector3D.Zero, false, gravity, hasGravity);
         }
     }
 }

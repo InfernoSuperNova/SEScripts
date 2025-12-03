@@ -1,4 +1,5 @@
 using System;
+using IngameScript.TruncationWrappers;
 using VRageMath;
 
 namespace IngameScript.Helper
@@ -9,7 +10,6 @@ namespace IngameScript.Helper
        
         public static class Solver
         {
-            private static double dGridSpeedLimit = 104; // TODO: Set this up properly bozo
             public static double MaxValueD => Double.MaxValue;
             
             public const double
@@ -24,11 +24,11 @@ namespace IngameScript.Helper
                 inv6 = 1.0 / 6.0,
                 inv54 = 1.0 / 54.0;
 
-            public static Vector3D BallisticSolver(double maxSpeed, Vector3D missileVelocity, Vector3D missileAcceleration, Vector3D displacementVector, Vector3D targetPosition, Vector3D targetVelocity, Vector3D targetAcceleration, Vector3D targetJerk, bool isMissile, Vector3D gravity = default(Vector3D), bool hasGravity = false)
+            public static AT_Vector3D BallisticSolver(double maxSpeed, AT_Vector3D missileVelocity, AT_Vector3D missileAcceleration, AT_Vector3D displacementVector, AT_Vector3D targetPosition, AT_Vector3D targetVelocity, AT_Vector3D targetAcceleration, AT_Vector3D targetJerk, bool isMissile, AT_Vector3D gravity = default(AT_Vector3D), bool hasGravity = false)
             {
                 double tmaxT = 0;
-                Vector3D
-                    dOffset = Vector3D.Zero,    
+                AT_Vector3D
+                    dOffset = AT_Vector3D.Zero,    
                     targetAccelerationS = targetAcceleration,
                     targetVelocityS = targetVelocity,
                     relativeVelocity, relativeAcceleration;
@@ -36,23 +36,23 @@ namespace IngameScript.Helper
                 if (targetAcceleration.LengthSquared() > 1)
                 {
                     //Target Max Speed Math
-                    tmaxT = Math.Min((Vector3D.Normalize(targetAcceleration) * dGridSpeedLimit - Vector3D.ProjectOnVector(ref targetVelocity, ref targetAcceleration)).Length(), 2 * dGridSpeedLimit) / targetAcceleration.Length();
-                    targetVelocity = Vector3D.ClampToSphere(targetVelocity + targetAcceleration * tmaxT, dGridSpeedLimit);
+                    tmaxT = Math.Min((AT_Vector3D.Normalize(targetAcceleration) * Config.General.GridSpeedLimit - AT_Vector3D.ProjectOnVector(ref targetVelocity, ref targetAcceleration)).Length(), 2 * Config.General.GridSpeedLimit) / targetAcceleration.Length();
+                    targetVelocity = AT_Vector3D.ClampToSphere(targetVelocity + targetAcceleration * tmaxT, Config.General.GridSpeedLimit);
                     targetVelocityS += targetAcceleration * tmaxT * 0.5;
-                    targetAcceleration = Vector3D.Zero;
+                    targetAcceleration = AT_Vector3D.Zero;
                 }
 
                 if (missileAcceleration.LengthSquared() > 1)
                 {
                     double
-                        Tmax = Math.Max((Vector3D.Normalize(missileAcceleration) * maxSpeed - Vector3D.ProjectOnVector(ref missileVelocity, ref missileAcceleration)).Length(), 0) / missileAcceleration.Length(),
+                        Tmax = Math.Max((AT_Vector3D.Normalize(missileAcceleration) * maxSpeed - AT_Vector3D.ProjectOnVector(ref missileVelocity, ref missileAcceleration)).Length(), 0) / missileAcceleration.Length(),
                         Dmax = (missileVelocity * Tmax + missileAcceleration * Tmax * Tmax).Length();
-                    Vector3D posAtTmax = displacementVector + targetVelocity * Tmax + 0.5 * targetAcceleration * Tmax * Tmax;
+                    AT_Vector3D posAtTmax = displacementVector + targetVelocity * Tmax + 0.5 * targetAcceleration * Tmax * Tmax;
                     if (posAtTmax.Length() > Dmax)
                     {
-                        missileAcceleration = Vector3D.Zero;
-                        missileVelocity = Vector3D.ClampToSphere(missileVelocity + missileAcceleration * Tmax, maxSpeed);
-                        displacementVector -= Vector3D.Normalize(displacementVector) * Dmax;
+                        missileAcceleration = AT_Vector3D.Zero;
+                        missileVelocity = AT_Vector3D.ClampToSphere(missileVelocity + missileAcceleration * Tmax, maxSpeed);
+                        displacementVector -= (AT_Vector3D)AT_Vector3D.Normalize(displacementVector) * Dmax;
                     }
                 }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using IngameScript.Helper;
 using IngameScript.Ship.Components.Propulsion.Gravity.Wrapper;
+using IngameScript.TruncationWrappers;
 using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using VRageMath;
@@ -58,7 +59,7 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
                 {
                     var forward = _ship.LocalDirectionForward;
                     var forwardDir = Base6Directions.Directions[(int)forward];
-                    var inverted = forwardDir.Dot(_ship.Position - sphericalGen.GetPosition()) > 0;
+                    var inverted = forwardDir.Dot((Vector3D)_ship.Position - sphericalGen.GetPosition()) > 0;
                     var list = genCastArray[forward];
                     list.Add(new GravityGeneratorSpherical(sphericalGen, forward, inverted));
                     
@@ -69,12 +70,13 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
             if (leftRight.Count == 0) Program.LogLine($"No Left/Right gravity generators", LogLevel.Warning);
             if (upDown.Count == 0) Program.LogLine($"No Up/Down gravity generators", LogLevel.Warning);
             
-            _forwardBackward = new DirectionalDrive(forwardBackward, Direction.Forward);
-            _leftRight = new DirectionalDrive(leftRight, Direction.Left);
-            _upDown = new DirectionalDrive(upDown, Direction.Up);
-
-
+            
+            
             _massSystem = new BalancedMassSystem(blocks, ship);
+            
+            _forwardBackward = new DirectionalDrive(forwardBackward, Direction.Forward, _massSystem);
+            _leftRight = new DirectionalDrive(leftRight, Direction.Left, _massSystem);
+            _upDown = new DirectionalDrive(upDown, Direction.Up, _massSystem);
         }
 
         private bool MassEnabled => _forwardBackward.Enabled || _leftRight.Enabled || _upDown.Enabled;
@@ -104,30 +106,30 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
         }
 
 
-        public void ApplyPropulsion(Vector3 propLocal)
+        public void ApplyPropulsion(AT_Vector3D propLocal)
         {
-            _forwardBackward.SetAcceleration(propLocal.Dot(Vector3D.Forward));
-            _leftRight.SetAcceleration(propLocal.Dot(Vector3D.Left));
-            _upDown.SetAcceleration(propLocal.Dot(Vector3D.Up));
+            _forwardBackward.SetAcceleration((float)propLocal.Dot(AT_Vector3D.Forward));
+            _leftRight.SetAcceleration((float)propLocal.Dot(AT_Vector3D.Left));
+            _upDown.SetAcceleration((float)propLocal.Dot(-AT_Vector3D.Up));
         }
 
         public double GetForwardBackwardForce()
         {
-            var force = TotalMass * _forwardBackward.TotalAcceleration;
+            var force = _forwardBackward.MaxForce;
             if (force == 0) force = 1;
             return force;
         }
 
         public double GetLeftRightForce()
         {
-            var force = TotalMass * _leftRight.TotalAcceleration;
+            var force = _leftRight.MaxForce;
             if (force == 0) force = 1;
             return force;
         }
 
         public double GetUpDownForce()
         {
-            var force = TotalMass * _upDown.TotalAcceleration;
+            var force = _upDown.MaxForce;
             if (force == 0) force = 1;
             return force;
         }

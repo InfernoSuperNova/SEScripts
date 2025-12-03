@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using IngameScript.TruncationWrappers;
 using VRageMath;
 
 namespace IngameScript.Helper
@@ -15,7 +16,7 @@ namespace IngameScript.Helper
             long i1, long i2, long i3,
             double gridSize,
             MatrixD obbRotation,
-            Vector3D worldHalfExtents)
+            AT_Vector3D worldHalfExtents)
         {
             // 1. Calculate the OBB's continuous half-extents.
             double r1 = i1 * gridSize;
@@ -23,13 +24,13 @@ namespace IngameScript.Helper
             double r3 = i3 * gridSize;
         
             // 2. Get the OBB's local axes and absolute components.
-            Vector3D u1 = obbRotation.Right;
-            Vector3D u2 = obbRotation.Up;
-            Vector3D u3 = obbRotation.Forward;
+            AT_Vector3D u1 = obbRotation.Right;
+            AT_Vector3D u2 = obbRotation.Up;
+            AT_Vector3D u3 = obbRotation.Forward;
         
-            Vector3D abs_u1 = Vector3D.Abs(u1);
-            Vector3D abs_u2 = Vector3D.Abs(u2);
-            Vector3D abs_u3 = Vector3D.Abs(u3);
+            AT_Vector3D abs_u1 = AT_Vector3D.Abs(u1);
+            AT_Vector3D abs_u2 = AT_Vector3D.Abs(u2);
+            AT_Vector3D abs_u3 = AT_Vector3D.Abs(u3);
         
             // 3. Perform the Separating Axis Theorem (SAT) check.
             // Check projection onto World X, Y, Z axes.
@@ -56,8 +57,8 @@ namespace IngameScript.Helper
         // Helper: Try to solve A * r = H for r = [r1,r2,r3].
         // A_{row, col} = abs(u_col.{X,Y,Z})
         private static bool TrySolveContinuousHalfExtents(
-            Vector3D u1, Vector3D u2, Vector3D u3,
-            Vector3D worldHalfExtents,
+            AT_Vector3D u1, AT_Vector3D u2, AT_Vector3D u3,
+            AT_Vector3D worldHalfExtents,
             out double r1, out double r2, out double r3)
         {
             var a11 = Math.Abs(u1.X); var a12 = Math.Abs(u2.X); var a13 = Math.Abs(u3.X);
@@ -113,10 +114,10 @@ namespace IngameScript.Helper
         {
             gridSize /= 2;
             
-            Vector3D worldHalfExtents = worldAabb.HalfExtents;
-            Vector3D u1 = obbRotation.Right;
-            Vector3D u2 = obbRotation.Up;
-            Vector3D u3 = obbRotation.Forward;
+            AT_Vector3D worldHalfExtents = worldAabb.HalfExtents;
+            AT_Vector3D u1 = obbRotation.Right;
+            AT_Vector3D u2 = obbRotation.Up;
+            AT_Vector3D u3 = obbRotation.Forward;
 
             // Try direct linear solve first (this will typically recover the original slender box)
             double r1c, r2c, r3c;
@@ -138,7 +139,7 @@ namespace IngameScript.Helper
                 } while (changed);
                 
                 
-                var obbHalfExtents = new Vector3D(i1 * gridSize, i2 * gridSize, i3 * gridSize);
+                var obbHalfExtents = new AT_Vector3D(i1 * gridSize, i2 * gridSize, i3 * gridSize);
                 return new BoundingBoxD(-obbHalfExtents, obbHalfExtents);
             }
             
@@ -149,7 +150,7 @@ namespace IngameScript.Helper
             double maxFittingRadius = Math.Min(Math.Min(maxRadiusWorldX, maxRadiusWorldY), maxRadiusWorldZ);
             long I_max = Math.Max(0, (long)Math.Floor(maxFittingRadius / gridSize));
             
-            var conservativeHalf = new Vector3D(I_max * gridSize, I_max * gridSize, I_max * gridSize);
+            var conservativeHalf = new AT_Vector3D(I_max * gridSize, I_max * gridSize, I_max * gridSize);
             return new BoundingBoxD(-conservativeHalf, conservativeHalf);
         }
     }

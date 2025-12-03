@@ -1,3 +1,4 @@
+using IngameScript.TruncationWrappers;
 using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using VRageMath;
@@ -40,7 +41,7 @@ namespace IngameScript.Ship.Components
         public TrackableShip TrackedShip { get; set; }
         
         
-        public Vector3D Position => Block.GetPosition();
+        public AT_Vector3D Position => Block.GetPosition();
 
         /// <summary>Updates the HasTarget / JustLostTarget / TargetedEntity state.</summary>
         public void UpdateState()
@@ -63,7 +64,7 @@ namespace IngameScript.Ship.Components
         }
 
         /// <summary>Gets the currently targeted entity and updates TargetedEntity.</summary>
-        public MyDetectedEntityInfo GetTargetedEntity()
+        public AT_DetectedEntityInfo GetTargetedEntity()
         {
             var info = Block.GetTargetedEntity();
             TargetedEntity = info.EntityId;

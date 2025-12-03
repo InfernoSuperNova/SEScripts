@@ -10,18 +10,17 @@ namespace IngameScript.SConfig.Database
         private static readonly ConfigTool Config = new ConfigTool("Projectile Data",
             "The main list of known projectiles. Gun Data should reference these by name.")
         {
-            Get = GetConfig,
-            Set = SetConfig
+            Sync = SyncConfig,
         };
-        
-        
+
+
         public static Dictionary<string, ProjectileData> LookupTable = new Dictionary<string, ProjectileData>();
         public static readonly ProjectileData DefaultProjectile = new ProjectileData(0, 0, 0, 0);
-        
+
         static ProjectileData()
         {
             LookupTable.Add("Default", DefaultProjectile);
-            
+
             LookupTable.Add("LargeRailgun", new ProjectileData(2000, 2000, 2000, 0));
             LookupTable.Add("Artillery", new ProjectileData(500, 500, 2000, 0));
             LookupTable.Add("SmallRailgun", new ProjectileData(1000, 1000, 1400, 0));
@@ -34,15 +33,16 @@ namespace IngameScript.SConfig.Database
         {
             Program.LogLine("Projectile data loaded", LogLevel.Debug);
         }
-        
-        
+
+
         public static ProjectileData Get(string nameThing)
         {
             ProjectileData gun;
             return LookupTable.TryGetValue(nameThing, out gun) ? gun : DefaultProjectile;
         }
+
         public float ProjectileVelocity { get; private set; }
-        public float MaxVelocity { get; private set;}
+        public float MaxVelocity { get; private set; }
         public float MaxRange { get; private set; }
         public float Acceleration { get; private set; }
 
@@ -53,46 +53,50 @@ namespace IngameScript.SConfig.Database
             MaxRange = maxRange;
             Acceleration = acceleration;
         }
-        
-        private static Dictionary<string, object> GetConfig()
-        {
-            var root = new Dictionary<string, object>();
 
-            foreach (var kv in LookupTable)
+        private static void SyncConfig(Dictionary<string, object> root)
+        {
+            var copy = new Dictionary<string, ProjectileData>(LookupTable);
+
+            foreach (var kv in copy)
             {
                 var name = kv.Key;
-                var values = kv.Value;
+                var existing = kv.Value;
 
-                root[name] = new Dictionary<string, object>
-                {
-                    ["ProjectileVelocity"] = values.ProjectileVelocity,
-                    ["MaxVelocity"] = values.MaxVelocity,
-                    ["MaxRange"] = values.MaxRange,
-                    ["Acceleration"] = values.Acceleration
-                };
+                // Get or create dictionary for this projectile
+                var category = ConfigCategory.From(root, name);
+
+                // Sync each property
+                var projectileVelocity = existing.ProjectileVelocity;
+                var maxVelocity = existing.MaxVelocity;
+                var maxRange = existing.MaxRange;
+                var acceleration = existing.Acceleration;
+
+                category.Sync("ProjectileVelocity", ref projectileVelocity);
+                category.Sync("MaxVelocity", ref maxVelocity);
+                category.Sync("MaxRange", ref maxRange);
+                category.Sync("Acceleration", ref acceleration);
+
+                // Update the LookupTable with the synced values
+                LookupTable[name] = new ProjectileData(projectileVelocity, maxVelocity, maxRange, acceleration);
             }
 
-            return root;
-        }
-        private static void SetConfig(Dictionary<string, object> config)
-        {
-            Dwon.UnwrapAllComments(config);
-
-            foreach (var kv in config)
+            // Handle any new entries in the dictionary that aren't in LookupTable yet
+            foreach (var kv in root)
             {
-                var data = (Dictionary<string, object>)kv.Value;
-                
-                var existing  = LookupTable[kv.Key] ?? DefaultProjectile;
-                
-                var projectileVelocity = Dwon.GetValue(data,  "ProjectileVelocity", existing.ProjectileVelocity);
-                var maxVelocity = Dwon.GetValue(data,  "MaxVelocity", existing.MaxVelocity);
-                var maxRange = Dwon.GetValue(data,  "MaxRange", existing.MaxRange);
-                var acceleration = Dwon.GetValue(data, "Acceleration", existing.Acceleration);
-                
-                
-                
-                var gunData = new ProjectileData(projectileVelocity, maxVelocity, maxRange, acceleration);
-                LookupTable[kv.Key] = gunData;
+                string empty = "";
+                if (!LookupTable.ContainsKey(kv.Key))
+                {
+                    var data = kv.Value as Dictionary<string, object>;
+                    if (data == null) continue;
+
+                    var projectileVelocity = Dwon.GetValue(data, "ProjectileVelocity", ref empty, 0.0f);
+                    var maxVelocity = Dwon.GetValue(data, "MaxVelocity", ref empty, 0.0f);
+                    var maxRange = Dwon.GetValue(data, "MaxRange", ref empty, 0.0f);
+                    var acceleration = Dwon.GetValue(data, "Acceleration", ref empty, 0.0f);
+
+                    LookupTable[kv.Key] = new ProjectileData(projectileVelocity, maxVelocity, maxRange, acceleration);
+                }
             }
         }
     }
@@ -102,8 +106,7 @@ namespace IngameScript.SConfig.Database
         private static readonly ConfigTool Config = new ConfigTool("Gun Data",
             "The main list of known gun types and their definition names. Should reference a known projectile type.")
         {
-            Get = GetConfig,
-            Set = SetConfig
+            Sync = SyncConfig
         };
         public static Dictionary<string, GunData> LookupTable = new Dictionary<string, GunData>();
         public static readonly GunData DefaultGun = new GunData("Default", 0, 0, 0f, 0f);
@@ -161,50 +164,56 @@ namespace IngameScript.SConfig.Database
         }
         
         
-        private static Dictionary<string, object> GetConfig()
+        private static void SyncConfig(Dictionary<string, object> root)
         {
-            var root = new Dictionary<string, object>();
 
-            foreach (var kv in LookupTable)
+
+            var copy = new Dictionary<string, GunData>(LookupTable);
+            foreach (var kv in copy)
             {
                 var name = kv.Key;
-                var values = kv.Value;
+                var existing = kv.Value;
 
-                var gunData = new Dictionary<string, object>();
-                gunData["Projectile"] = values._projectileDataString;
-                gunData["ReloadType"] = new Dwon.Comment((int)values.ReloadType, "0 = normal, 1 = charged");
-                gunData["FireType"] = new Dwon.Comment((int)values.FireType,"0 = normal, 1 = delay before firing") ;
-                gunData["FireTime"] = values.FireTime;
-                gunData["ReloadTime"] = values.ReloadTime;
+                // Get or create dictionary for this gun
+                var category = ConfigCategory.From(root, name);
 
-                root[name] = gunData;
+                // Sync each property
+                var projectile = existing._projectileDataString;
+                var reloadType = existing.ReloadType;
+                var fireType = existing.FireType;
+                var fireTime = existing.FireTime;
+                var reloadTime = existing.ReloadTime;
+
+                category.Sync("Projectile", ref projectile);
+                category.Sync("ReloadType", ref reloadType, "0 = normal, 1 = charged");
+                category.Sync("FireType", ref fireType, "0 = normal, 1 = delay before firing");
+                category.Sync("FireTime", ref fireTime);
+                category.Sync("ReloadTime", ref reloadTime);
+
+                // Update the LookupTable with the synced values
+                LookupTable[name] = new GunData(projectile, reloadType, fireType, fireTime, reloadTime);
             }
 
-            return root;
-        }
-        
-        private static void SetConfig(Dictionary<string, object> config)
-        {
-            Dwon.UnwrapAllComments(config);
-
-            foreach (var kv in config)
+            // Handle any new entries in the dictionary not in LookupTable yet
+            foreach (var kv in root)
             {
-                var data = (Dictionary<string, object>)kv.Value;
-                
-                var existing  = LookupTable[kv.Key] ?? DefaultGun;
+                if (!LookupTable.ContainsKey(kv.Key))
+                {
+                    var data = kv.Value as Dictionary<string, object>;
+                    if (data == null) continue;
 
+                    var emptyStr = "";
+                    var projectile = Dwon.GetValue(data, "Projectile", ref emptyStr, "");
+                    var reloadType = Dwon.GetValue(data, "ReloadType", ref emptyStr, 0);
+                    var fireType = Dwon.GetValue(data, "FireType", ref emptyStr, 0);
+                    var fireTime = Dwon.GetValue(data, "FireTime", ref emptyStr, 0.0f);
+                    var reloadTime = Dwon.GetValue(data, "ReloadTime", ref emptyStr, 0.0f);
 
-                var projectile = Dwon.GetValue(data, "Projectile", existing._projectileDataString);
-                var gunReloadType = Dwon.GetValue(data,  "ReloadType", existing.ReloadType);
-                var fireType = Dwon.GetValue(data,  "FireType", existing.FireType);
-                var fireTime = Dwon.GetValue(data,  "FireTime", existing.FireTime);
-                var reloadTime = Dwon.GetValue(data,  "ReloadTime", existing.ReloadTime);
-                
-                
-                var gunData = new GunData(projectile, gunReloadType, fireType, fireTime, reloadTime);
-                LookupTable[kv.Key] = gunData;
+                    LookupTable[kv.Key] = new GunData(projectile, (GunReloadType)reloadType, (GunFireType)fireType, fireTime, reloadTime);
+                }
             }
         }
+
         
     }
 }

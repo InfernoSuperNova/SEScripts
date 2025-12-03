@@ -39,6 +39,8 @@ class Program : MyGridProgram
             Config.Setup(Me);
             Program.LogLine("Creating this ship as controllable ship", LogLevel.Info);
             ShipManager.CreateControllableShip(Me.CubeGrid, GridTerminalSystem);
+            Program.LogLine("Creating commands", LogLevel.Info);
+            Commands.Setup();
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
                 
             var elapsed = DateTime.UtcNow - startTime;
@@ -67,7 +69,7 @@ class Program : MyGridProgram
     }
 
 
-
+        
     void RunUpdate()
     {
         using (Debug.Measure(duration => { updateTimes.Enqueue(duration.TotalMilliseconds); }))
@@ -85,7 +87,7 @@ class Program : MyGridProgram
     void RunCommand(string argument)
     {
         Action action;
-        if (Config.Commands.TryGetValue(argument, out action))
+        if (Commands.TryGetValue(argument, out action))
         {
             action();
         }
@@ -122,10 +124,10 @@ public class DebugAPI
         public void Remove(int id) => _rm?.Invoke(_pb, id);
         Action<IMyProgrammableBlock, int> _rm;
 
-        public int DrawPoint(Vector3D origin, Color color, float radius = 0.2f, float seconds = DefaultSeconds, bool? onTop = null) => _p?.Invoke(_pb, origin, color, radius, seconds, onTop ?? _defTop) ?? -1;
+        public int DrawPoint(AT_Vector3D origin, Color color, float radius = 0.2f, float seconds = DefaultSeconds, bool? onTop = null) => _p?.Invoke(_pb, origin, color, radius, seconds, onTop ?? _defTop) ?? -1;
         Func<IMyProgrammableBlock, Vector3D, Color, float, float, bool, int> _p;
 
-        public int DrawLine(Vector3D start, Vector3D end, Color color, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _ln?.Invoke(_pb, start, end, color, thickness, seconds, onTop ?? _defTop) ?? -1;
+        public int DrawLine(AT_Vector3D start, AT_Vector3D end, Color color, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _ln?.Invoke(_pb, start, end, color, thickness, seconds, onTop ?? _defTop) ?? -1;
         Func<IMyProgrammableBlock, Vector3D, Vector3D, Color, float, float, bool, int> _ln;
 
         public int DrawAABB(BoundingBoxD bb, Color color, Style style = Style.Wireframe, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _bb?.Invoke(_pb, bb, color, (int)style, thickness, seconds, onTop ?? _defTop) ?? -1;
@@ -140,7 +142,7 @@ public class DebugAPI
         public int DrawMatrix(MatrixD matrix, float length = 1f, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _m?.Invoke(_pb, matrix, length, thickness, seconds, onTop ?? _defTop) ?? -1;
         Func<IMyProgrammableBlock, MatrixD, float, float, float, bool, int> _m;
 
-        public int DrawGPS(string name, Vector3D origin, Color? color = null, float seconds = DefaultSeconds) => _gps?.Invoke(_pb, name, origin, color, seconds) ?? -1;
+        public int DrawGPS(string name, AT_Vector3D origin, Color? color = null, float seconds = DefaultSeconds) => _gps?.Invoke(_pb, name, origin, color, seconds) ?? -1;
         Func<IMyProgrammableBlock, string, Vector3D, Color?, float, int> _gps;
 
         public int PrintHUD(string message, Font font = Font.Debug, float seconds = 2) => _hud?.Invoke(_pb, message, font.ToString(), seconds) ?? -1;
@@ -206,6 +208,37 @@ public class DebugAPI
         }
         void Assign<T>(out T field, object method) => field = (T)method;
     }
+public struct CachedValue<T>
+{
+    T _value;
+    bool _valid;
+    private readonly Func<T> _getter;
+
+    public CachedValue(Func<T> getter)
+    {
+        if (getter == null)
+            throw new ArgumentNullException("getter");
+
+        _getter = getter;
+        _value = default(T);
+        _valid = false;
+    }
+
+    public T Value
+    {
+        get
+        {
+            if (!_valid)
+            {
+                _value = _getter();
+                _valid = true;
+            }
+            return _value;
+        }
+    }
+
+    public void Invalidate() => _valid = false;
+}
     public static class Dwon
     {
         public class Comment
@@ -548,13 +581,20 @@ public class DebugAPI
             }
         }
 
-        public static T GetValue<T>(Dictionary<string, object> dict, string key, T defaultValue = default(T))
+        public static T GetValue<T>(Dictionary<string, object> dict, string key, ref string comment, T defaultValue = default(T))
         {
+            comment = "";
             object value;
             if (dict.TryGetValue(key, out value))
             {
+                var temp = value as Comment;
+                if (temp != null)
+                {
+                    value = temp.Obj;
+                    comment = temp.Com;
+                }
                 if (value is T) return (T)value;
-
+                
                 try
                 {
                     return (T)Convert.ChangeType(value, typeof(T));
@@ -567,6 +607,39 @@ public class DebugAPI
             return defaultValue;
         }
     }
+class ConfigCategory
+{
+    private readonly Dictionary<string, object> _values;
+
+    ConfigCategory(Dictionary<string, object> values)
+    {
+        _values = values;
+    }
+
+    public static ConfigCategory From(Dictionary<string, object> root, string name)
+    {
+        Dwon.UnwrapAllComments(root);
+
+        Dictionary<string, object> dict;
+        object obj;
+
+        if (!root.TryGetValue(name, out obj) || (dict = obj as Dictionary<string, object>) == null)
+        {
+            dict = new Dictionary<string, object>();
+            root[name] = dict;
+        }
+
+        return new ConfigCategory(dict);
+    }
+
+    public void Sync<T>(string key, ref T field, string comment = "")
+    {
+        var temp = Dwon.GetValue(_values, key, ref comment, field);
+
+        if (comment != "") _values[key] = new Dwon.Comment(temp, comment);
+        else _values[key] = temp;
+    }
+}
 public enum Direction : byte
 {
 Forward,
@@ -640,7 +713,7 @@ public static class ArgusMath
 {
     public static double SnapToMultiple(double value, double multiple)
     {
-        return (double)(Math.Round(value / multiple) * multiple);
+        return (Math.Round(value / multiple) * multiple);
     }
 }
 public static class OBBReconstructor
@@ -650,19 +723,19 @@ private static bool IsObbContained(
         long i1, long i2, long i3,
         double gridSize,
         MatrixD obbRotation,
-        Vector3D worldHalfExtents)
+        AT_Vector3D worldHalfExtents)
     {
         double r1 = i1 * gridSize;
         double r2 = i2 * gridSize;
         double r3 = i3 * gridSize;
         
-        Vector3D u1 = obbRotation.Right;
-        Vector3D u2 = obbRotation.Up;
-        Vector3D u3 = obbRotation.Forward;
+        AT_Vector3D u1 = obbRotation.Right;
+        AT_Vector3D u2 = obbRotation.Up;
+        AT_Vector3D u3 = obbRotation.Forward;
         
-        Vector3D abs_u1 = Vector3D.Abs(u1);
-        Vector3D abs_u2 = Vector3D.Abs(u2);
-        Vector3D abs_u3 = Vector3D.Abs(u3);
+        AT_Vector3D abs_u1 = AT_Vector3D.Abs(u1);
+        AT_Vector3D abs_u2 = AT_Vector3D.Abs(u2);
+        AT_Vector3D abs_u3 = AT_Vector3D.Abs(u3);
         
             
         const double RobustTolerance = 1e-8; 
@@ -680,8 +753,8 @@ private static bool IsObbContained(
     }
         
     private static bool TrySolveContinuousHalfExtents(
-        Vector3D u1, Vector3D u2, Vector3D u3,
-        Vector3D worldHalfExtents,
+        AT_Vector3D u1, AT_Vector3D u2, AT_Vector3D u3,
+        AT_Vector3D worldHalfExtents,
         out double r1, out double r2, out double r3)
     {
         var a11 = Math.Abs(u1.X); var a12 = Math.Abs(u2.X); var a13 = Math.Abs(u3.X);
@@ -734,10 +807,10 @@ private static bool IsObbContained(
     {
         gridSize /= 2;
             
-        Vector3D worldHalfExtents = worldAabb.HalfExtents;
-        Vector3D u1 = obbRotation.Right;
-        Vector3D u2 = obbRotation.Up;
-        Vector3D u3 = obbRotation.Forward;
+        AT_Vector3D worldHalfExtents = worldAabb.HalfExtents;
+        AT_Vector3D u1 = obbRotation.Right;
+        AT_Vector3D u2 = obbRotation.Up;
+        AT_Vector3D u3 = obbRotation.Forward;
 
         double r1c, r2c, r3c;
         if (TrySolveContinuousHalfExtents(u1, u2, u3, worldHalfExtents, out r1c, out r2c, out r3c))
@@ -757,7 +830,7 @@ private static bool IsObbContained(
             } while (changed);
                 
                 
-            var obbHalfExtents = new Vector3D(i1 * gridSize, i2 * gridSize, i3 * gridSize);
+            var obbHalfExtents = new AT_Vector3D(i1 * gridSize, i2 * gridSize, i3 * gridSize);
             return new BoundingBoxD(-obbHalfExtents, obbHalfExtents);
         }
             
@@ -768,7 +841,7 @@ private static bool IsObbContained(
         double maxFittingRadius = Math.Min(Math.Min(maxRadiusWorldX, maxRadiusWorldY), maxRadiusWorldZ);
         long I_max = Math.Max(0, (long)Math.Floor(maxFittingRadius / gridSize));
             
-        var conservativeHalf = new Vector3D(I_max * gridSize, I_max * gridSize, I_max * gridSize);
+        var conservativeHalf = new AT_Vector3D(I_max * gridSize, I_max * gridSize, I_max * gridSize);
         return new BoundingBoxD(-conservativeHalf, conservativeHalf);
     }
 }
@@ -814,7 +887,6 @@ public class PIDController
 }
     public static class Solver
     {
-        private static double dGridSpeedLimit = 104;
         public static double MaxValueD => Double.MaxValue;
             
         public const double
@@ -829,34 +901,34 @@ public class PIDController
             inv6 = 1.0 / 6.0,
             inv54 = 1.0 / 54.0;
 
-        public static Vector3D BallisticSolver(double maxSpeed, Vector3D missileVelocity, Vector3D missileAcceleration, Vector3D displacementVector, Vector3D targetPosition, Vector3D targetVelocity, Vector3D targetAcceleration, Vector3D targetJerk, bool isMissile, Vector3D gravity = default(Vector3D), bool hasGravity = false)
+        public static AT_Vector3D BallisticSolver(double maxSpeed, AT_Vector3D missileVelocity, AT_Vector3D missileAcceleration, AT_Vector3D displacementVector, AT_Vector3D targetPosition, AT_Vector3D targetVelocity, AT_Vector3D targetAcceleration, AT_Vector3D targetJerk, bool isMissile, AT_Vector3D gravity = default(AT_Vector3D), bool hasGravity = false)
         {
             double tmaxT = 0;
-            Vector3D
-                dOffset = Vector3D.Zero,    
+            AT_Vector3D
+                dOffset = AT_Vector3D.Zero,    
                 targetAccelerationS = targetAcceleration,
                 targetVelocityS = targetVelocity,
                 relativeVelocity, relativeAcceleration;
 
             if (targetAcceleration.LengthSquared() > 1)
             {
-                tmaxT = Math.Min((Vector3D.Normalize(targetAcceleration) * dGridSpeedLimit - Vector3D.ProjectOnVector(ref targetVelocity, ref targetAcceleration)).Length(), 2 * dGridSpeedLimit) / targetAcceleration.Length();
-                targetVelocity = Vector3D.ClampToSphere(targetVelocity + targetAcceleration * tmaxT, dGridSpeedLimit);
+                tmaxT = Math.Min((AT_Vector3D.Normalize(targetAcceleration) * Config.General.GridSpeedLimit - AT_Vector3D.ProjectOnVector(ref targetVelocity, ref targetAcceleration)).Length(), 2 * Config.General.GridSpeedLimit) / targetAcceleration.Length();
+                targetVelocity = AT_Vector3D.ClampToSphere(targetVelocity + targetAcceleration * tmaxT, Config.General.GridSpeedLimit);
                 targetVelocityS += targetAcceleration * tmaxT * 0.5;
-                targetAcceleration = Vector3D.Zero;
+                targetAcceleration = AT_Vector3D.Zero;
             }
 
             if (missileAcceleration.LengthSquared() > 1)
             {
                 double
-                    Tmax = Math.Max((Vector3D.Normalize(missileAcceleration) * maxSpeed - Vector3D.ProjectOnVector(ref missileVelocity, ref missileAcceleration)).Length(), 0) / missileAcceleration.Length(),
+                    Tmax = Math.Max((AT_Vector3D.Normalize(missileAcceleration) * maxSpeed - AT_Vector3D.ProjectOnVector(ref missileVelocity, ref missileAcceleration)).Length(), 0) / missileAcceleration.Length(),
                     Dmax = (missileVelocity * Tmax + missileAcceleration * Tmax * Tmax).Length();
-                Vector3D posAtTmax = displacementVector + targetVelocity * Tmax + 0.5 * targetAcceleration * Tmax * Tmax;
+                AT_Vector3D posAtTmax = displacementVector + targetVelocity * Tmax + 0.5 * targetAcceleration * Tmax * Tmax;
                 if (posAtTmax.Length() > Dmax)
                 {
-                    missileAcceleration = Vector3D.Zero;
-                    missileVelocity = Vector3D.ClampToSphere(missileVelocity + missileAcceleration * Tmax, maxSpeed);
-                    displacementVector -= Vector3D.Normalize(displacementVector) * Dmax;
+                    missileAcceleration = AT_Vector3D.Zero;
+                    missileVelocity = AT_Vector3D.ClampToSphere(missileVelocity + missileAcceleration * Tmax, maxSpeed);
+                    displacementVector -= (AT_Vector3D)AT_Vector3D.Normalize(displacementVector) * Dmax;
                 }
             }
 
@@ -1088,7 +1160,7 @@ public class TimedLog
 
     public void Add(string message, LogLevel level)
     {
-        if (level < Config.LogLevel) return;
+        if (level < Config.General.LogLevel) return;
         double now = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
         _entries.Add(new Entry(message, now, level));
     }
@@ -1199,177 +1271,195 @@ public static void TickAll()
         return -1;
     }
 }
+public static class Commands
+{
+    private static Dictionary<string, Action> _commands;
+        
+        
+    public static void Setup()
+    {
+        _commands = new Dictionary<string, Action>
+        {
+            { Config.String.ArgumentUnTarget, ShipManager.PrimaryShip.Target },
+            { Config.String.ArgumentTarget, ShipManager.PrimaryShip.UnTarget },
+            { "FireAllTest", ShipManager.PrimaryShip.Guns.FireAll },
+            { "CancelAllTest", ShipManager.PrimaryShip.Guns.CancelAll }
+        };
+
+        if (LogLevel.Trace <= Config.General.LogLevel)
+        {
+            foreach (var command in _commands)
+            {
+                Program.LogLine($"Command: {command.Key}", LogLevel.Trace);
+            }
+        }
+            
+    }
+
+
+    public static bool TryGetValue(string argument, out Action action)
+    {
+        return _commands.TryGetValue(argument, out action);
+    }
+}
 public static class Config
 {
-        
-
-
     private static ConfigTool _configTool = new ConfigTool("General Config", "")
     {
-        Get = GetConfig,
-        Set = SetConfig
+        Sync = SyncConfig
     };
 
-        
-    public static Dictionary<string, Action> Commands;
-        
-    public static LogLevel LogLevel = LogLevel.Trace;
-        
-    public static string ArgumentTarget = "Target";
-    public static string ArgumentUnTarget = "Untarget";
-    public static string GroupName = "ArgusV2";
-    public static string TrackerGroupName = "TrackerGroup";
+    public static readonly GeneralConfig General = new GeneralConfig();
+    public static readonly StringConfig String = new StringConfig();
+    public static readonly BehaviorConfig Behavior = new BehaviorConfig();
+    public static readonly TrackerConfig Tracker = new TrackerConfig();
+    public static readonly GdriveConfig Gdrive = new GdriveConfig();
+    public static readonly PidConfig Pid = new PidConfig();
 
-        
-    public static double MaxWeaponRange = 2000;
-    public static double LockRange = 3000;
-    public static float LockAngle = 40;
-    public static double MinFireDot = 0.999999;
-        
-        
-    public static string TrackingName = "CTC: Tracking";
-    public static string SearchingName = "CTC: Searching";
-    public static string StandbyName = "CTC: Standby";
-    public static int ScannedBlockMaximumValidTimeFrames = 3600;
-
-    public static double ProportialGain = 500;
-    public static double IntegralGain = 0;
-    public static double DerivativeGain = 30;
-    public static double IntegralLowerLimit = -0.05;
-    public static double IntegralUpperLimit = 0.05;
-    public static double MaxAngularVelocityRpm = 30;
-
-
-    public static int GdriveTimeoutFrames = 300;
-    public static double GravityAcceleration = 9.81;
-    public static bool DefaultPrecisionMode = false;
-    public static bool DisablePrecisionModeOnEnemyDetected = false;
-    public static double GdriveStep = 0.005;
-    public static int GdriveArtificialMassBalanceFrequencyFrames = 300;
-    public static int GdriveSpaceBallBalanceFrequencyFrames = 600;
-        
-        
     public static void Setup(IMyProgrammableBlock me)
     {
         Program.LogLine("Setting up config");
         GunData.Init();
         ProjectileData.Init();
             
-        if (me.CustomData.Length > 0)
-            ConfigTool.DeserializeAll(me.CustomData);
-        me.CustomData = ConfigTool.SerializeAll();
+        me.CustomData = ConfigTool.SyncConfig(me.CustomData);
+            
         Program.LogLine("Written config to custom data", LogLevel.Debug);
-        Commands = new Dictionary<string, Action>
-        {
-            { ArgumentTarget,     () => ShipManager.PrimaryShip.Target() },
-            { ArgumentUnTarget,   () => ShipManager.PrimaryShip.UnTarget() },
-            { "FireAllTest",             () => ShipManager.PrimaryShip.Guns.FireAll() },
-            { "CancelAllTest",           () => ShipManager.PrimaryShip.Guns.CancelAll() }
-        };
-        if (LogLevel.Trace <= LogLevel)
-        {
-            foreach (var command in Commands)
-            {
-                Program.LogLine($"Command: {command.Key}", LogLevel.Trace);
-            }
-        }
         Program.LogLine("Commands set up", LogLevel.Debug);
         SetupGlobalState(me);
         Program.LogLine("Config setup done", LogLevel.Info);
             
     }
 
-    public static void SetupGlobalState(IMyProgrammableBlock me)
+    private static void SetupGlobalState(IMyProgrammableBlock me)
     {
         Program.LogLine("Setting up global state", LogLevel.Debug);
-        GlobalState.PrecisionMode = DefaultPrecisionMode;
+        GlobalState.PrecisionMode = Gdrive.DefaultPrecisionMode;
         Program.LogLine($"Precision mode state is {GlobalState.PrecisionMode}", LogLevel.Trace);
     }
 
-    static Config()
+    private static void SyncConfig(Dictionary<string, object> obj)
     {
-            
+        General.Sync(obj);
+        String.Sync(obj);
+        Behavior.Sync(obj);
+        Tracker.Sync(obj);
+        Gdrive.Sync(obj);
+        Pid.Sync(obj);
     }
 
-
-    private static Dictionary<string, object> GetConfig()
+    public class GeneralConfig
     {
-        return new Dictionary<string, object>
+        public LogLevel LogLevel = LogLevel.Trace;
+        public double MaxWeaponRange = 2000;
+        public double GridSpeedLimit = 104;
+        public double MaxAngularVelocityRpm = 30;
+            
+        internal void Sync(Dictionary<string, object> obj)
         {
-            ["String Config"] = new Dictionary<string, object>
-            {
-                ["ArgumentTarget"] = ArgumentTarget,
-                ["ArgumentUnTarget"] = ArgumentUnTarget,
-                ["GroupName"] = GroupName,
-                ["TrackerGroupName"] = TrackerGroupName
-            },
-            ["Behavior Config"] = new Dictionary<string, object>
-            {
-                ["MaxWeaponRange"] = MaxWeaponRange,
-                ["LockRange"] = LockRange,
-                ["LockAngle"] = LockAngle,
-                ["MinFireDot"] = MinFireDot,
-            },
-            ["Tracker Config"] = new Dictionary<string, object>
-            {
-                ["TrackingName"] = TrackingName,
-                ["SearchingName"] = SearchingName,
-                ["StandbyName"] = StandbyName,
-                ["ScannedBlockMaxValidFrames"] = ScannedBlockMaximumValidTimeFrames
-            },
-            ["PID Config"] = new Dictionary<string, object>
-            {
-                ["ProportionalGain"] = ProportialGain,
-                ["IntegralGain"] = IntegralGain,
-                ["DerivativeGain"] = DerivativeGain,
-                ["IntegralLowerLimit"] = IntegralLowerLimit,
-                ["IntegralUpperLimit"] = IntegralUpperLimit,
-                ["MaxAngularVelocityRPM"] = MaxAngularVelocityRpm
-            }
-        };
+            var config = ConfigCategory.From(obj, "General Config");
+                
+            config.Sync("LogLevel", ref LogLevel);
+            config.Sync("MaxWeaponRange", ref MaxWeaponRange);
+            config.Sync("GridSpeedLimit", ref GridSpeedLimit);
+            config.Sync("MaxAngularVelocityRPM", ref MaxAngularVelocityRpm);
+        }
     }
-    private static void SetConfig(Dictionary<string, object> obj)
+    public class StringConfig
     {
+        public string ArgumentTarget = "Target";
+        public string ArgumentUnTarget = "Untarget";
+        public string GroupName = "ArgusV2";
+        public string TrackerGroupName = "TrackerGroup";
             
-        Dwon.UnwrapAllComments(obj);
+        internal void Sync(Dictionary<string, object> obj)
+        {
+            var config = ConfigCategory.From(obj, "String Config");
+                
+            config.Sync("ArgumentTarget", ref ArgumentTarget);
+            config.Sync("ArgumentUnTarget", ref ArgumentUnTarget);
+            config.Sync("GroupName", ref GroupName);
+            config.Sync("TrackerGroupName", ref TrackerGroupName);
+        }
+    }
 
+    public class BehaviorConfig
+    {
+        public double LockRange = 3000;
+        public float LockAngle = 40;
+        public double MinFireDot = 0.999999;
             
-        var stringConfig = obj.ContainsKey("String Config") ? obj["String Config"] as Dictionary<string, object> : null;
-        if (stringConfig != null)
+        internal void Sync(Dictionary<string, object> obj)
         {
-            ArgumentTarget       = Dwon.GetValue(stringConfig, "ArgumentTarget", ArgumentTarget);
-            ArgumentUnTarget     = Dwon.GetValue(stringConfig, "ArgumentUnTarget", ArgumentUnTarget);
-            GroupName            = Dwon.GetValue(stringConfig, "GroupName", GroupName);
-            TrackerGroupName     = Dwon.GetValue(stringConfig, "TrackerGroupName", TrackerGroupName);
+            var config = ConfigCategory.From(obj, "Behavior Config");
+                
+            config.Sync("LockRange", ref LockRange);
+            config.Sync("LockAngle", ref LockAngle);
+            config.Sync("MinFireDot", ref MinFireDot);
         }
+    }
 
-        var behaviorConfig = obj.ContainsKey("Behavior Config") ? obj["Behavior Config"] as Dictionary<string, object> : null;
-        if (behaviorConfig != null)
+    public class TrackerConfig
+    {
+        public string TrackingName = "CTC: Tracking";
+        public string SearchingName = "CTC: Searching";
+        public string StandbyName = "CTC: Standby";
+        public int ScannedBlockMaxValidFrames = 3600;
+            
+        internal void Sync(Dictionary<string, object> obj)
         {
-            MaxWeaponRange = Dwon.GetValue(behaviorConfig, "MaxWeaponRange", MaxWeaponRange);
-            LockRange      = Dwon.GetValue(behaviorConfig, "LockRange", LockRange);
-            LockAngle      = Dwon.GetValue(behaviorConfig, "LockAngle", LockAngle);
-            MinFireDot     = Dwon.GetValue(behaviorConfig, "MinFireDot", MinFireDot);
+            var config = ConfigCategory.From(obj, "Tracker Config");
+                
+            config.Sync("TrackingName", ref TrackingName);
+            config.Sync("SearchingName", ref SearchingName);
+            config.Sync("StandbyName", ref StandbyName);
+            config.Sync("ScannedBlockMaxValidFrames", ref ScannedBlockMaxValidFrames);
         }
+    }
 
-        var trackerConfig = obj.ContainsKey("Tracker Config") ? obj["Tracker Config"] as Dictionary<string, object> : null;
-        if (trackerConfig != null)
+    public class GdriveConfig
+    {
+        public int TimeoutFrames = 300;
+        public double Acceleration = 9.81;
+        public bool DefaultPrecisionMode = false;
+        public bool DisablePrecisionModeOnEnemyDetected = false;
+        public double Step = 0.005;
+        public int MassBalanceFrequencyFrames = 300;
+        public int BallBalanceFrequencyFrames = 600;
+        public int AccelerationRecalcDelay = 600;
+
+        internal void Sync(Dictionary<string, object> obj)
         {
-            TrackingName                 = Dwon.GetValue(trackerConfig, "TrackingName", TrackingName);
-            SearchingName                = Dwon.GetValue(trackerConfig, "SearchingName", SearchingName);
-            StandbyName                  = Dwon.GetValue(trackerConfig, "StandbyName", StandbyName);
-            ScannedBlockMaximumValidTimeFrames = Dwon.GetValue(trackerConfig, "ScannedBlockMaxValidFrames", ScannedBlockMaximumValidTimeFrames);
+            var config = ConfigCategory.From(obj, "Gravity Config");
+                
+            config.Sync("TimeoutFrames", ref TimeoutFrames);
+            config.Sync("Acceleration", ref Acceleration);
+            config.Sync("DefaultPrecisionMode", ref DefaultPrecisionMode);
+            config.Sync("DisablePrecisionModeOnEnemyDetected", ref DisablePrecisionModeOnEnemyDetected);
+            config.Sync("Step", ref Step);
+            config.Sync("MassBalanceFrequencyFrames", ref MassBalanceFrequencyFrames);
+            config.Sync("BallBalanceFrequencyFrames", ref BallBalanceFrequencyFrames);
+            config.Sync("AccelerationRecalcDelay", ref AccelerationRecalcDelay);
         }
+    }
 
-        var pidConfig = obj.ContainsKey("PID Config") ? obj["PID Config"] as Dictionary<string, object> : null;
-        if (pidConfig != null)
+    public class PidConfig
+    {
+        public double ProportionalGain = 500;
+        public double IntegralGain = 0;
+        public double DerivativeGain = 30;
+        public double IntegralLowerLimit = -0.05;
+        public double IntegralUpperLimit = 0.05;
+            
+        internal void Sync(Dictionary<string, object> obj)
         {
-            ProportialGain        = Dwon.GetValue(pidConfig, "ProportionalGain", ProportialGain);
-            IntegralGain          = Dwon.GetValue(pidConfig, "IntegralGain", IntegralGain);
-            DerivativeGain        = Dwon.GetValue(pidConfig, "DerivativeGain", DerivativeGain);
-            IntegralLowerLimit    = Dwon.GetValue(pidConfig, "IntegralLowerLimit", IntegralLowerLimit);
-            IntegralUpperLimit    = Dwon.GetValue(pidConfig, "IntegralUpperLimit", IntegralUpperLimit);
-            MaxAngularVelocityRpm = Dwon.GetValue(pidConfig, "MaxAngularVelocityRPM", MaxAngularVelocityRpm);
+            var config = ConfigCategory.From(obj, "PID Config");
+                
+            config.Sync("ProportionalGain", ref ProportionalGain);
+            config.Sync("IntegralGain", ref IntegralGain);
+            config.Sync("DerivativeGain", ref DerivativeGain);
+            config.Sync("IntegralLowerLimit", ref IntegralLowerLimit);
+            config.Sync("IntegralUpperLimit", ref IntegralUpperLimit);
         }
     }
 }
@@ -1377,47 +1467,8 @@ public class ConfigTool
 {
     private static readonly Dictionary<string, ConfigTool> Configs = new Dictionary<string, ConfigTool>();
 
-    public static string SerializeAll()
-    {
-        Program.LogLine("Writing config", LogLevel.Info);
-        var config = new Dictionary<string, object>();
-        foreach (var kv in Configs)
-        {
-            Program.LogLine($"Collecting config: {kv.Key}", LogLevel.Debug);
-            config.Add(kv.Key, kv.Value.Get());
-        }
-
-        return Dwon.Serialize(config);
-    }
-
-    public static void DeserializeAll(string config)
-    {
-        Program.LogLine("Reading config from custom data", LogLevel.Info);
-        var parsed = Dwon.Parse(config);
-        Program.LogLine("DeltaWing Object Notation: Parsed successfully", LogLevel.Debug);
-        var dict = parsed as Dictionary<string, object>;
-        if (dict == null)
-        {
-            Program.LogLine("Config malformed", LogLevel.Critical);
-            throw new Exception();
-        }
-        foreach (var kv in dict)
-        {
-            ConfigTool config1;
-            if (!Configs.TryGetValue(kv.Key, out config1)) continue;
-            var dict3 = kv.Value as Dictionary<string, object>;
-            if (dict3 != null)
-            {
-                Program.LogLine("Config set: " + kv.Key, LogLevel.Debug);
-                config1.Set(dict3);
-            }
-        }
-    }
-        
-        
-        
-    public Func<Dictionary<string, object>> Get { get; set; }
-    public Action<Dictionary<string, object>> Set { get; set; }
+    public delegate void ConfigSync(Dictionary<string, object> dict);
+    public ConfigSync Sync { get; set; }
 
     public ConfigTool(string name, string comment)
     {
@@ -1425,31 +1476,47 @@ public class ConfigTool
         Comment = comment;
         Configs.Add(name, this);
     }
-        
+
     public string Name { get; }
     public string Comment { get; }
-        
-        
-    public Dictionary<string, object> GetConfig() => Get?.Invoke();
-    public void SetConfig( Dictionary<string, object> value) => Set?.Invoke(value);
+
+    public static string SyncConfig(string input)
+    {
+        var parsed = Dwon.Parse(input);
+            
+        var dict = parsed as Dictionary<string, object>;
+        if (dict == null)
+        {
+            Program.LogLine("Config malformed", LogLevel.Critical);
+            throw new Exception();
+        }
+
+        foreach (var kv in Configs)
+        {
+            if (!dict.ContainsKey(kv.Key))
+                dict[kv.Key] = new Dictionary<string, object>();
+            kv.Value.Sync?.Invoke((Dictionary<string, object>)dict[kv.Key]);
+        }
+
+        return Dwon.Serialize(parsed);
+    }
 }
 public class ProjectileData
 {
     private static readonly ConfigTool Config = new ConfigTool("Projectile Data",
         "The main list of known projectiles. Gun Data should reference these by name.")
     {
-        Get = GetConfig,
-        Set = SetConfig
+        Sync = SyncConfig,
     };
-        
-        
+
+
     public static Dictionary<string, ProjectileData> LookupTable = new Dictionary<string, ProjectileData>();
     public static readonly ProjectileData DefaultProjectile = new ProjectileData(0, 0, 0, 0);
-        
+
     static ProjectileData()
     {
         LookupTable.Add("Default", DefaultProjectile);
-            
+
         LookupTable.Add("LargeRailgun", new ProjectileData(2000, 2000, 2000, 0));
         LookupTable.Add("Artillery", new ProjectileData(500, 500, 2000, 0));
         LookupTable.Add("SmallRailgun", new ProjectileData(1000, 1000, 1400, 0));
@@ -1462,15 +1529,16 @@ public class ProjectileData
     {
         Program.LogLine("Projectile data loaded", LogLevel.Debug);
     }
-        
-        
+
+
     public static ProjectileData Get(string nameThing)
     {
         ProjectileData gun;
         return LookupTable.TryGetValue(nameThing, out gun) ? gun : DefaultProjectile;
     }
+
     public float ProjectileVelocity { get; private set; }
-    public float MaxVelocity { get; private set;}
+    public float MaxVelocity { get; private set; }
     public float MaxRange { get; private set; }
     public float Acceleration { get; private set; }
 
@@ -1481,46 +1549,46 @@ public class ProjectileData
         MaxRange = maxRange;
         Acceleration = acceleration;
     }
-        
-    private static Dictionary<string, object> GetConfig()
-    {
-        var root = new Dictionary<string, object>();
 
-        foreach (var kv in LookupTable)
+    private static void SyncConfig(Dictionary<string, object> root)
+    {
+        var copy = new Dictionary<string, ProjectileData>(LookupTable);
+
+        foreach (var kv in copy)
         {
             var name = kv.Key;
-            var values = kv.Value;
+            var existing = kv.Value;
 
-            root[name] = new Dictionary<string, object>
-            {
-                ["ProjectileVelocity"] = values.ProjectileVelocity,
-                ["MaxVelocity"] = values.MaxVelocity,
-                ["MaxRange"] = values.MaxRange,
-                ["Acceleration"] = values.Acceleration
-            };
+            var category = ConfigCategory.From(root, name);
+
+            var projectileVelocity = existing.ProjectileVelocity;
+            var maxVelocity = existing.MaxVelocity;
+            var maxRange = existing.MaxRange;
+            var acceleration = existing.Acceleration;
+
+            category.Sync("ProjectileVelocity", ref projectileVelocity);
+            category.Sync("MaxVelocity", ref maxVelocity);
+            category.Sync("MaxRange", ref maxRange);
+            category.Sync("Acceleration", ref acceleration);
+
+            LookupTable[name] = new ProjectileData(projectileVelocity, maxVelocity, maxRange, acceleration);
         }
 
-        return root;
-    }
-    private static void SetConfig(Dictionary<string, object> config)
-    {
-        Dwon.UnwrapAllComments(config);
-
-        foreach (var kv in config)
+        foreach (var kv in root)
         {
-            var data = (Dictionary<string, object>)kv.Value;
-                
-            var existing  = LookupTable[kv.Key] ?? DefaultProjectile;
-                
-            var projectileVelocity = Dwon.GetValue(data,  "ProjectileVelocity", existing.ProjectileVelocity);
-            var maxVelocity = Dwon.GetValue(data,  "MaxVelocity", existing.MaxVelocity);
-            var maxRange = Dwon.GetValue(data,  "MaxRange", existing.MaxRange);
-            var acceleration = Dwon.GetValue(data, "Acceleration", existing.Acceleration);
-                
-                
-                
-            var gunData = new ProjectileData(projectileVelocity, maxVelocity, maxRange, acceleration);
-            LookupTable[kv.Key] = gunData;
+            string empty = "";
+            if (!LookupTable.ContainsKey(kv.Key))
+            {
+                var data = kv.Value as Dictionary<string, object>;
+                if (data == null) continue;
+
+                var projectileVelocity = Dwon.GetValue(data, "ProjectileVelocity", ref empty, 0.0f);
+                var maxVelocity = Dwon.GetValue(data, "MaxVelocity", ref empty, 0.0f);
+                var maxRange = Dwon.GetValue(data, "MaxRange", ref empty, 0.0f);
+                var acceleration = Dwon.GetValue(data, "Acceleration", ref empty, 0.0f);
+
+                LookupTable[kv.Key] = new ProjectileData(projectileVelocity, maxVelocity, maxRange, acceleration);
+            }
         }
     }
 }
@@ -1529,8 +1597,7 @@ public class GunData
     private static readonly ConfigTool Config = new ConfigTool("Gun Data",
         "The main list of known gun types and their definition names. Should reference a known projectile type.")
     {
-        Get = GetConfig,
-        Set = SetConfig
+        Sync = SyncConfig
     };
     public static Dictionary<string, GunData> LookupTable = new Dictionary<string, GunData>();
     public static readonly GunData DefaultGun = new GunData("Default", 0, 0, 0f, 0f);
@@ -1586,50 +1653,52 @@ public class GunData
     }
         
         
-    private static Dictionary<string, object> GetConfig()
+    private static void SyncConfig(Dictionary<string, object> root)
     {
-        var root = new Dictionary<string, object>();
 
-        foreach (var kv in LookupTable)
+
+        var copy = new Dictionary<string, GunData>(LookupTable);
+        foreach (var kv in copy)
         {
             var name = kv.Key;
-            var values = kv.Value;
+            var existing = kv.Value;
 
-            var gunData = new Dictionary<string, object>();
-            gunData["Projectile"] = values._projectileDataString;
-            gunData["ReloadType"] = new Dwon.Comment((int)values.ReloadType, "0 = normal, 1 = charged");
-            gunData["FireType"] = new Dwon.Comment((int)values.FireType,"0 = normal, 1 = delay before firing") ;
-            gunData["FireTime"] = values.FireTime;
-            gunData["ReloadTime"] = values.ReloadTime;
+            var category = ConfigCategory.From(root, name);
 
-            root[name] = gunData;
+            var projectile = existing._projectileDataString;
+            var reloadType = existing.ReloadType;
+            var fireType = existing.FireType;
+            var fireTime = existing.FireTime;
+            var reloadTime = existing.ReloadTime;
+
+            category.Sync("Projectile", ref projectile);
+            category.Sync("ReloadType", ref reloadType, "0 = normal, 1 = charged");
+            category.Sync("FireType", ref fireType, "0 = normal, 1 = delay before firing");
+            category.Sync("FireTime", ref fireTime);
+            category.Sync("ReloadTime", ref reloadTime);
+
+            LookupTable[name] = new GunData(projectile, reloadType, fireType, fireTime, reloadTime);
         }
 
-        return root;
-    }
-        
-    private static void SetConfig(Dictionary<string, object> config)
-    {
-        Dwon.UnwrapAllComments(config);
-
-        foreach (var kv in config)
+        foreach (var kv in root)
         {
-            var data = (Dictionary<string, object>)kv.Value;
-                
-            var existing  = LookupTable[kv.Key] ?? DefaultGun;
+            if (!LookupTable.ContainsKey(kv.Key))
+            {
+                var data = kv.Value as Dictionary<string, object>;
+                if (data == null) continue;
 
+                var emptyStr = "";
+                var projectile = Dwon.GetValue(data, "Projectile", ref emptyStr, "");
+                var reloadType = Dwon.GetValue(data, "ReloadType", ref emptyStr, 0);
+                var fireType = Dwon.GetValue(data, "FireType", ref emptyStr, 0);
+                var fireTime = Dwon.GetValue(data, "FireTime", ref emptyStr, 0.0f);
+                var reloadTime = Dwon.GetValue(data, "ReloadTime", ref emptyStr, 0.0f);
 
-            var projectile = Dwon.GetValue(data, "Projectile", existing._projectileDataString);
-            var gunReloadType = Dwon.GetValue(data,  "ReloadType", existing.ReloadType);
-            var fireType = Dwon.GetValue(data,  "FireType", existing.FireType);
-            var fireTime = Dwon.GetValue(data,  "FireTime", existing.FireTime);
-            var reloadTime = Dwon.GetValue(data,  "ReloadTime", existing.ReloadTime);
-                
-                
-            var gunData = new GunData(projectile, gunReloadType, fireType, fireTime, reloadTime);
-            LookupTable[kv.Key] = gunData;
+                LookupTable[kv.Key] = new GunData(projectile, (GunReloadType)reloadType, (GunFireType)fireType, fireTime, reloadTime);
+            }
         }
     }
+
         
 }
 public static class GlobalState
@@ -1638,8 +1707,8 @@ public static class GlobalState
 }
 public abstract class ArgusShip
 {
-    protected Vector3D CPreviousVelocity;
-    protected Vector3D CVelocity;
+    protected AT_Vector3D CPreviousVelocity;
+    protected AT_Vector3D CVelocity;
     protected int RandomUpdateJitter;
     public PollFrequency PollFrequency = PollFrequency.Realtime;
 
@@ -1649,9 +1718,9 @@ public abstract class ArgusShip
         RandomUpdateJitter = Program.RNG.Next() % 6000;
     }
         
-    public abstract Vector3D Position { get; }
-    public abstract Vector3D Velocity { get; }
-    public abstract Vector3D Acceleration { get; }
+    public abstract AT_Vector3D Position { get; }
+    public abstract AT_Vector3D Velocity { get; }
+    public abstract AT_Vector3D Acceleration { get; }
     public abstract float GridSize { get; }
     public abstract string Name { get; }
 
@@ -1661,17 +1730,17 @@ public abstract void EarlyUpdate(int frame);
 public abstract void LateUpdate(int frame);
         
         
-public Vector3D GetTargetLeadPosition(ArgusShip target, float projectileVelocity)
+public AT_Vector3D GetTargetLeadPosition(ArgusShip target, float projectileVelocity)
     {
-        Vector3D shooterPos = this.Position;
-        Vector3D shooterVel = this.Velocity;
+        AT_Vector3D shooterPos = this.Position;
+        AT_Vector3D shooterVel = this.Velocity;
             
-        Vector3D targetPos = target.Position;
-        Vector3D targetAcc = target.Acceleration;
+        AT_Vector3D targetPos = target.Position;
+        AT_Vector3D targetAcc = target.Acceleration;
 
-        Vector3D relativeVel = target.Velocity - shooterVel;
+        AT_Vector3D relativeVel = target.Velocity - shooterVel;
             
-        Vector3D displacement = targetPos - shooterPos;
+        AT_Vector3D displacement = targetPos - shooterPos;
         double s = projectileVelocity;
 
         double a = relativeVel.LengthSquared() - s * s;
@@ -1700,7 +1769,7 @@ public Vector3D GetTargetLeadPosition(ArgusShip target, float projectileVelocity
             if (t < 0) t = Math.Max(t1, t2);
         }
 
-        Vector3D intercept = targetPos + relativeVel * t + 0.5 * targetAcc * t * t;
+        AT_Vector3D intercept = targetPos + relativeVel * t + 0.5 * targetAcc * t * t;
         return intercept;
     }
 
@@ -1711,15 +1780,15 @@ public Vector3D GetTargetLeadPosition(ArgusShip target, float projectileVelocity
 }
 public struct FiringSolution
 {
-    public readonly Vector3D DesiredForward;
-    public readonly Vector3D TargetPosition;
-    public readonly Vector3D ShooterPosition;
-    public readonly Vector3D CurrentForward;
+    public readonly AT_Vector3D DesiredForward;
+    public readonly AT_Vector3D TargetPosition;
+    public readonly AT_Vector3D ShooterPosition;
+    public readonly AT_Vector3D CurrentForward;
     public readonly double Dot;
     public readonly double Range;
     public MatrixD WorldMatrix;
 
-    public FiringSolution(Vector3D desiredForward, Vector3D targetPosition, Vector3D shooterPosition, Vector3D currentForward, double dot, double range, MatrixD worldMatrix)
+    public FiringSolution(AT_Vector3D desiredForward, AT_Vector3D targetPosition, AT_Vector3D shooterPosition, AT_Vector3D currentForward, double dot, double range, MatrixD worldMatrix)
     {
         DesiredForward = desiredForward;
         TargetPosition = targetPosition;
@@ -1759,16 +1828,16 @@ public FiringSolution ArbitrateFiringSolution()
 
         var dir = displacement / dist;
 
-        var dot = dir.Dot(_ship.Forward);
+        var dot = dir.Dot(_ship.WorldForward);
 
         var solvedPos = _guns.GetBallisticSolution();
         var solvedForward = (solvedPos - pos).Normalized();
         Program.Log(solvedForward);
 
-        if (dot > Config.MinFireDot && enemyPos != Vector3D.Zero) _guns.TryFire();
+        if (dot > Config.Behavior.MinFireDot && enemyPos != AT_Vector3D.Zero) _guns.TryFire();
         else _guns.TryCancel();
 
-        return new FiringSolution(solvedForward, enemyPos, pos, _ship.Forward, dot, dist, _ship.WorldMatrix);
+        return new FiringSolution(solvedForward, enemyPos, pos, _ship.WorldForward, dot, dist, _ship.WorldMatrix);
     }
 }
 public enum GunReloadType
@@ -1794,14 +1863,19 @@ public class Gun
 {
     private static readonly MyDefinitionId ElectricityId =
         new MyDefinitionId(typeof(MyObjectBuilder_GasProperties), "Electricity");
+        
+        
     IMyUserControllableGun _gun;
     GunReloadType _reloadType;
     GunFireType _fireType;
     MyResourceSinkComponent _gunSinkComponent;
     int _reloadTimerId;
     int _firingTimerId;
-    GunState _cachedState;
-    bool _stateValid;
+    CachedValue<GunState> _state;
+        
+        
+        
+        
     bool _cancelled;
     GunData _gunData;
     GunManager _manager;
@@ -1820,37 +1894,27 @@ public class Gun
         _gunSinkComponent = gun.Components.Get<MyResourceSinkComponent>();
         _reloadType = _gunData.ReloadType;
         _fireType = _gunData.FireType;
+
+        _state = new CachedValue<GunState>(EvaluateState);
     }
         
-    public Vector3D GridPosition => (Vector3)(_gun.Min + _gun.Max) / 2 * _manager.ThisShip.GridSize;
-    public Vector3D WorldPosition => _gun.GetPosition();
-    public Vector3D Direction { get; set; }
+    public AT_Vector3D GridPosition => (Vector3)(_gun.Min + _gun.Max) / 2 * _manager.ThisShip.GridSize;
+    public AT_Vector3D WorldPosition => _gun.GetPosition();
+    public AT_Vector3D Direction { get; set; }
     public float Velocity => _gunData.ProjectileData.ProjectileVelocity;
     public float Acceleration => _gunData.ProjectileData.Acceleration;
     public float MaxVelocity => _gunData.ProjectileData.MaxVelocity;
     public float MaxRange => _gunData.ProjectileData.MaxRange;
 
     public GunData GunData => _gunData;
-        
-    public GunState State
-    {
-        get
-        {
-            if (!_stateValid)
-            {
-                _cachedState = EvaluateState();
-                _stateValid = true;
-            }
-            return _cachedState;
 
-        }
-    }
+    public GunState State => _state.Value;
 
-    public Vector3D Forward => _gun.WorldMatrix.Forward;
+    public AT_Vector3D Forward => _gun.WorldMatrix.Forward;
 
     public void EarlyUpdate(int frame)
     {
-        _stateValid = false;
+        _state.Invalidate();
     }
 
     public void LateUpdate(int frame)
@@ -1902,9 +1966,9 @@ public class Gun
         
         
         
-    public Vector3D GetFireVelocity(Vector3D shipVelocity)
+    public AT_Vector3D GetFireVelocity(AT_Vector3D shipVelocity)
     {
-        Vector3D combinedVelocity = shipVelocity + Direction * Velocity;
+        AT_Vector3D combinedVelocity = shipVelocity + Direction * Velocity;
         if (combinedVelocity.LengthSquared() > Velocity * Velocity)
             combinedVelocity = combinedVelocity.Normalized() * Velocity;
         return combinedVelocity;
@@ -1969,7 +2033,7 @@ public class GunManager
         
     List<Gun> _currentFiringGroup = new List<Gun>();
 
-    Vector3D _firingReferencePosition;
+    AT_Vector3D _firingReferencePosition;
     PositionValidity _fireGroupValidity;
     int _fireGroupCount;
     GunData _gunData;
@@ -1982,7 +2046,7 @@ public class GunManager
             var gun = block as IMyUserControllableGun;
             if (gun != null) _guns.Add(new Gun(gun, this));
         }
-        if (_guns.Count <= 0) Program.LogLine($"No guns in group {Config.GroupName}", LogLevel.Warning);
+        if (_guns.Count <= 0) Program.LogLine($"No guns in group {Config.String.GroupName}", LogLevel.Warning);
         ThisShip = thisShip;
     }
 
@@ -1990,7 +2054,7 @@ public class GunManager
     public IMyCubeGrid Grid => ThisShip.Controller.CubeGrid;
     public int GunCount => _guns.Count;
         
-    public Vector3D FireRefPos => _firingReferencePosition;
+    public AT_Vector3D FireRefPos => _firingReferencePosition;
     public PositionValidity FireGroupValidity => _fireGroupValidity;
     public int FireGroupCount => _fireGroupCount;
 
@@ -2069,7 +2133,7 @@ public class GunManager
             return;
         }
             
-        Vector3D average = Vector3D.Zero;
+        AT_Vector3D average = AT_Vector3D.Zero;
 
         foreach (var gun in _currentFiringGroup)
         {
@@ -2078,7 +2142,7 @@ public class GunManager
 
         average /= _fireGroupCount;
 
-        _firingReferencePosition = Vector3D.Transform(average, ThisShip.WorldMatrix);
+        _firingReferencePosition = AT_Vector3D.Transform(average, ThisShip.WorldMatrix);
 
     }
         
@@ -2111,17 +2175,17 @@ public class GunManager
     }
 
 
-    public Vector3D GetBallisticSolution()
+    public AT_Vector3D GetBallisticSolution()
     {
 
-        if (_gunData == null) return Vector3D.Zero;
+        if (_gunData == null) return AT_Vector3D.Zero;
         var maxSpeed = _gunData.ProjectileData.MaxVelocity;
         var target = ThisShip.GetTargetPosition();
         var displacement = target - _firingReferencePosition;
 
         var refGun = _currentFiringGroup[0];
 
-        if (refGun == null) return Vector3D.Zero;
+        if (refGun == null) return AT_Vector3D.Zero;
 
         var gravity = ThisShip.Gravity;
         var hasGravity = gravity.LengthSquared() != 0;
@@ -2130,7 +2194,7 @@ public class GunManager
             _gunData.ProjectileData.Acceleration * refGun.Forward,
             displacement,
             ThisShip.CurrentTarget.Position, ThisShip.CurrentTarget.Velocity / 60, ThisShip.CurrentTarget.Acceleration / 60,
-            Vector3D.Zero, false, gravity, hasGravity);
+            AT_Vector3D.Zero, false, gravity, hasGravity);
     }
 }
 public class GyroManager
@@ -2153,13 +2217,13 @@ public class GyroManager
             }
         }
             
-        if (_gyros.Count <= 0) Program.LogLine($"No gyroscopes found in group: {Config.GroupName}", LogLevel.Warning);
+        if (_gyros.Count <= 0) Program.LogLine($"No gyroscopes found in group: {Config.String.GroupName}", LogLevel.Warning);
             
             
-        _pitch = new PIDController(Config.ProportialGain, Config.IntegralGain, Config.DerivativeGain, 
-            Config.IntegralUpperLimit, Config.IntegralLowerLimit);
-        _yaw = new PIDController(Config.ProportialGain, Config.IntegralGain, Config.DerivativeGain,
-            Config.IntegralUpperLimit, Config.IntegralLowerLimit);
+        _pitch = new PIDController(Config.Pid.ProportionalGain, Config.Pid.IntegralGain, Config.Pid.DerivativeGain, 
+            Config.Pid.IntegralUpperLimit, Config.Pid.IntegralLowerLimit);
+        _yaw = new PIDController(Config.Pid.ProportionalGain, Config.Pid.IntegralGain, Config.Pid.DerivativeGain,
+            Config.Pid.IntegralUpperLimit, Config.Pid.IntegralLowerLimit);
     }
         
     public void Rotate(ref FiringSolution solution, double roll = 0)
@@ -2193,17 +2257,17 @@ public class GyroManager
         var gr = roll;
 
 
-        var waxis = Vector3D.Cross(solution.CurrentForward, solution.DesiredForward);
-        var axis = Vector3D.TransformNormal(waxis, MatrixD.Transpose(solution.WorldMatrix));
+        var waxis = AT_Vector3D.Cross(solution.CurrentForward, solution.DesiredForward);
+        var axis = AT_Vector3D.TransformNormal(waxis, MatrixD.Transpose(solution.WorldMatrix));
         var x = _pitch.Filter(-axis.X, roundValue);
         var y = _yaw.Filter(-axis.Y, roundValue);
 
-        gp = MathHelper.Clamp(x, -Config.MaxAngularVelocityRpm, Config.MaxAngularVelocityRpm);
-        gy = MathHelper.Clamp(y, -Config.MaxAngularVelocityRpm, Config.MaxAngularVelocityRpm);
+        gp = MathHelper.Clamp(x, -Config.General.MaxAngularVelocityRpm, Config.General.MaxAngularVelocityRpm);
+        gy = MathHelper.Clamp(y, -Config.General.MaxAngularVelocityRpm, Config.General.MaxAngularVelocityRpm);
 
-        if (Math.Abs(gy) + Math.Abs(gp) > Config.MaxAngularVelocityRpm)
+        if (Math.Abs(gy) + Math.Abs(gp) > Config.General.MaxAngularVelocityRpm)
         {
-            var adjust = Config.MaxAngularVelocityRpm / (Math.Abs(gy) + Math.Abs(gp));
+            var adjust = Config.General.MaxAngularVelocityRpm / (Math.Abs(gy) + Math.Abs(gp));
             gy *= adjust;
             gp *= adjust;
         }
@@ -2215,13 +2279,13 @@ public class GyroManager
 
     void ApplyGyroOverride(double pitchSpeed, double yawSpeed, double rollSpeed, MatrixD worldMatrix)
     {
-        var rotationVec = new Vector3D(pitchSpeed, yawSpeed, rollSpeed);
-        var relativeRotationVec = Vector3D.TransformNormal(rotationVec, worldMatrix);
+        var rotationVec = new AT_Vector3D(pitchSpeed, yawSpeed, rollSpeed);
+        var relativeRotationVec = AT_Vector3D.TransformNormal(rotationVec, worldMatrix);
         foreach (var gyro in _gyros)
             if (gyro.IsFunctional && gyro.IsWorking && gyro.Enabled && !gyro.Closed)
             {
                 var transformedRotationVec =
-                    Vector3D.TransformNormal(relativeRotationVec, MatrixD.Transpose(gyro.WorldMatrix));
+                    AT_Vector3D.TransformNormal(relativeRotationVec, MatrixD.Transpose(gyro.WorldMatrix));
                 gyro.Pitch = (float)transformedRotationVec.X;
                 gyro.Yaw = (float)transformedRotationVec.Y;
                 gyro.Roll = (float)transformedRotationVec.Z;
@@ -2268,15 +2332,17 @@ public class BalancedMassSystem
 {
     private readonly List<BlockMass> _blocks;
     private readonly List<BallMass> _balls;
+    private readonly List<Mass> _allBlocks;
+    bool _stateChanged;
     int _updateJitter = 0;
         
-    Vector3D _currentMoment = Vector3D.Zero;
+    AT_Vector3D _currentMoment = AT_Vector3D.Zero;
 
     ControllableShip _ship;
 
     public BalancedMassSystem(List<IMyTerminalBlock> blocks, ControllableShip ship)
     {
-            
+        _allBlocks = new List<Mass>();
         _blocks = new List<BlockMass>();
         _balls = new List<BallMass>();
         _ship = ship;
@@ -2288,6 +2354,7 @@ public class BalancedMassSystem
             {
                 var wrap = new BallMass(ball, this, _ship);
                 _balls.Add(wrap);
+                _allBlocks.Add(wrap);
                 _currentMoment += wrap.Moment;
                 continue;
             }
@@ -2297,12 +2364,13 @@ public class BalancedMassSystem
             {
                 var wrap = new BlockMass(mass, this, _ship);
                 _blocks.Add(wrap);
+                _allBlocks.Add(wrap);
                 _currentMoment += wrap.Moment;
             }
 
         }
 
-        _updateJitter = Program.RNG.Next() % (Math.Max(Config.GdriveArtificialMassBalanceFrequencyFrames, Config.GdriveSpaceBallBalanceFrequencyFrames) - 1);
+        _updateJitter = Program.RNG.Next() % (Math.Max(Config.Gdrive.MassBalanceFrequencyFrames, Config.Gdrive.BallBalanceFrequencyFrames) - 1);
         CalculateTotalMass();
 
     }
@@ -2310,11 +2378,13 @@ public class BalancedMassSystem
     public bool Enabled { get; set; }
     public double TotalMass { get; private set; }
 
+    public List<Mass> AllBlocks => _allBlocks;
+
     public void EarlyUpdate(int frame)
     {
-        if ((frame + _updateJitter) % Config.GdriveArtificialMassBalanceFrequencyFrames == 0)
+        if ((frame + _updateJitter) % Config.Gdrive.MassBalanceFrequencyFrames == 0)
             BalanceMassBlocks();
-        if ((frame + _updateJitter) % Config.GdriveSpaceBallBalanceFrequencyFrames == 0)
+        if ((frame + _updateJitter) % Config.Gdrive.BallBalanceFrequencyFrames == 0)
             BalanceSpaceBalls();
     }
 
@@ -2338,6 +2408,12 @@ public class BalancedMassSystem
             CalculateTotalMass();
         }
     }
+public bool HasStateChanged()
+    {
+        var state = _stateChanged;
+        _stateChanged = false;
+        return state;
+    }
 
     void CalculateTotalMass()
     {
@@ -2356,54 +2432,75 @@ public class BalancedMassSystem
         
     void BalanceMassBlocks()
     {
+        AT_Vector3D momentBefore = _currentMoment;
         foreach (var block in _blocks)
         {
-            Vector3D momentBefore = _currentMoment;
-            Vector3D momentToggle = block.BalancerAllowed ? Vector3D.Zero : block.Moment;
+            AT_Vector3D momentToggle = block.BalancerAllowed ? AT_Vector3D.Zero : block.Moment;
 
-            if ((_currentMoment - (block.BalancerAllowed ? block.Moment : Vector3D.Zero) + momentToggle).LengthSquared() <
+            if ((_currentMoment - (block.BalancerAllowed ? block.Moment : AT_Vector3D.Zero) + momentToggle).LengthSquared() <
                 _currentMoment.LengthSquared())
             {
                 block.BalancerAllowed = !block.BalancerAllowed;
-                _currentMoment = _currentMoment - (block.BalancerAllowed ? Vector3D.Zero : block.Moment) + momentToggle;
+                _currentMoment = _currentMoment - (block.BalancerAllowed ? AT_Vector3D.Zero : block.Moment) + momentToggle;
             }
         }
+        _stateChanged |= momentBefore != _currentMoment;
     }
     void BalanceSpaceBalls()
     {
+        AT_Vector3D momentBefore = _currentMoment;
             
+            
+        _stateChanged |= momentBefore != _currentMoment;
     }
 
 
 }
 internal class DirectionalDrive
 {
-    List<GravityGenerator> _generators;
+    BalancedMassSystem _massSystem;
+        
+    private readonly List<GravityGenerator> _generators;
     bool _previousEnabled;
     float _acceleration;
     float _previousAcceleration;
     int _framesOff;
+        
+    CachedValue<double> _linearForce;
+    CachedValue<double> _sphericalForce;
+        
 
-    public DirectionalDrive(List<GravityGenerator> generators, Direction direction)
+    public DirectionalDrive(List<GravityGenerator> generators, Direction direction, BalancedMassSystem massSystem)
     {
         _generators = generators;
-        TotalAcceleration = 0;
         Direction = direction;
-        foreach (var generator in generators)
-        {
-            var linear = generator as GravityGeneratorLinear;
+            
+        _linearForce = new CachedValue<double>(() => CalculateLinearForce(massSystem.TotalMass));
+        _sphericalForce = new CachedValue<double>(() => CalculateSphericalForce(massSystem.AllBlocks));
 
-            if (linear != null) TotalAcceleration += Config.GravityAcceleration;
-        }
+        _massSystem = massSystem;
     }
-
+        
+    public Direction Direction { get; private set; }
+    public bool Enabled { get; private set; }
+    public double MaxLinearForce => _linearForce.Value;
+    public double MaxSphericalForce => _sphericalForce.Value;
+    public double MaxForce => MaxLinearForce + MaxSphericalForce;
+        
     public void EarlyUpdate(int frame)
     {
         if (_acceleration == 0) _framesOff++;
         else _framesOff = 0;
-        if (_framesOff > Config.GdriveTimeoutFrames) Enabled = false;
-    }
+        if (_framesOff > Config.Gdrive.TimeoutFrames) Enabled = false;
+        _generators.RemoveAll(g => g.Closed);
 
+        if (frame % Config.Gdrive.AccelerationRecalcDelay == 0 && _massSystem.HasStateChanged())
+        {
+            _linearForce.Invalidate();
+            _sphericalForce.Invalidate();
+        }
+    }
+        
     public void LateUpdate(int frame)
     {
         if (_previousEnabled != Enabled) 
@@ -2411,21 +2508,49 @@ internal class DirectionalDrive
         _previousEnabled = Enabled;
         if (_previousAcceleration != _acceleration)
             foreach (var generator in _generators)
-                generator.Acceleration = (float)(_acceleration * Config.GravityAcceleration);
+                generator.Acceleration = (float)(_acceleration * Config.Gdrive.Acceleration);
         _previousAcceleration = _acceleration;
     }
-        
-    public Direction Direction { get; private set; }
-    public bool Enabled { get; private set; }
-    public double TotalAcceleration { get; private set; }
 
     public void SetAcceleration(float acceleration)
     {
-        acceleration = (float)MathHelperD.Clamp(ArgusMath.SnapToMultiple(acceleration, Config.GdriveStep), -1, 1);
+        acceleration = (float)MathHelperD.Clamp(ArgusMath.SnapToMultiple(acceleration, Config.Gdrive.Step), -1, 1);
         if (acceleration == _acceleration && acceleration == 0) return;
         Enabled = true;
         if (acceleration == _acceleration) return;
         _acceleration = acceleration;
+    }
+
+
+    double CalculateSphericalForce(List<Mass> masses)
+    {
+        var netForce = AT_Vector3D.Zero;
+        foreach (var generator in _generators)
+        {
+            if (generator is GravityGeneratorSpherical)
+            {
+                foreach (var mass in masses)
+                {
+                    var dir = ((AT_Vector3D)(mass.GridPosition - generator.GridPosition)).Normalized();
+                    var force = dir * mass.BalancerVirtualMass * Config.Gdrive.Acceleration *
+                                generator.InvertedSign;
+                    netForce += force;
+                }
+            }
+        }
+            
+        return netForce.Dot(Base6Directions.Directions[(int)Direction]);
+    }
+    double CalculateLinearForce(double mass)
+    {
+        double acceleration = 0;
+        foreach (var generator in _generators)
+        {
+            var linear = generator as GravityGeneratorLinear;
+            if (linear != null) acceleration += Config.Gdrive.Acceleration;
+        }
+
+        return acceleration * mass;
     }
 }
 public class GDrive
@@ -2474,9 +2599,9 @@ public class GDrive
             var sphericalGen = block as IMyGravityGeneratorSphere;
             if (sphericalGen != null)
             {
-                var forward = _ship.LocalOrientationForward;
+                var forward = _ship.LocalDirectionForward;
                 var forwardDir = Base6Directions.Directions[(int)forward];
-                var inverted = forwardDir.Dot(_ship.Position - sphericalGen.GetPosition()) > 0;
+                var inverted = forwardDir.Dot((Vector3D)_ship.Position - sphericalGen.GetPosition()) > 0;
                 var list = genCastArray[forward];
                 list.Add(new GravityGeneratorSpherical(sphericalGen, forward, inverted));
                     
@@ -2487,12 +2612,13 @@ public class GDrive
         if (leftRight.Count == 0) Program.LogLine($"No Left/Right gravity generators", LogLevel.Warning);
         if (upDown.Count == 0) Program.LogLine($"No Up/Down gravity generators", LogLevel.Warning);
             
-        _forwardBackward = new DirectionalDrive(forwardBackward, Direction.Forward);
-        _leftRight = new DirectionalDrive(leftRight, Direction.Left);
-        _upDown = new DirectionalDrive(upDown, Direction.Up);
-
-
+            
+            
         _massSystem = new BalancedMassSystem(blocks, ship);
+            
+        _forwardBackward = new DirectionalDrive(forwardBackward, Direction.Forward, _massSystem);
+        _leftRight = new DirectionalDrive(leftRight, Direction.Left, _massSystem);
+        _upDown = new DirectionalDrive(upDown, Direction.Up, _massSystem);
     }
 
     bool MassEnabled => _forwardBackward.Enabled || _leftRight.Enabled || _upDown.Enabled;
@@ -2522,30 +2648,30 @@ public class GDrive
     }
 
 
-    public void ApplyPropulsion(Vector3 propLocal)
+    public void ApplyPropulsion(AT_Vector3D propLocal)
     {
-        _forwardBackward.SetAcceleration(propLocal.Dot(Vector3D.Forward));
-        _leftRight.SetAcceleration(propLocal.Dot(Vector3D.Left));
-        _upDown.SetAcceleration(propLocal.Dot(Vector3D.Up));
+        _forwardBackward.SetAcceleration((float)propLocal.Dot(AT_Vector3D.Forward));
+        _leftRight.SetAcceleration((float)propLocal.Dot(AT_Vector3D.Left));
+        _upDown.SetAcceleration((float)propLocal.Dot(-AT_Vector3D.Up));
     }
 
     public double GetForwardBackwardForce()
     {
-        var force = TotalMass * _forwardBackward.TotalAcceleration;
+        var force = _forwardBackward.MaxForce;
         if (force == 0) force = 1;
         return force;
     }
 
     public double GetLeftRightForce()
     {
-        var force = TotalMass * _leftRight.TotalAcceleration;
+        var force = _leftRight.MaxForce;
         if (force == 0) force = 1;
         return force;
     }
 
     public double GetUpDownForce()
     {
-        var force = TotalMass * _upDown.TotalAcceleration;
+        var force = _upDown.MaxForce;
         if (force == 0) force = 1;
         return force;
     }
@@ -2567,9 +2693,11 @@ public class BallMass : Mass
     public bool GeneratorRequested => _massSystem.Enabled;
 
     public bool IsActive => BalancerAllowed && GeneratorRequested;
+    public override AT_Vector3D Position => _ball.GetPosition();
     public override double AbsoluteVirtualMass => _ball.VirtualMass;
     public override double BalancerVirtualMass => BalancerAllowed ? _ball.VirtualMass : 0;
-    public Vector3D Moment => AbsoluteVirtualMass * (_ball.GetPosition() - _ship.Controller.CenterOfMass);
+    public override Vector3I GridPosition => _ball.Position;
+    public AT_Vector3D Moment => AbsoluteVirtualMass * (_ball.GetPosition() - _ship.Controller.CenterOfMass);
 
     public bool UpdateState()
     {
@@ -2598,10 +2726,11 @@ public class BlockMass : Mass
     public bool GeneratorRequested => _massSystem.Enabled;
 
     public bool IsActive => BalancerAllowed && GeneratorRequested;
+    public override AT_Vector3D Position => _mass.GetPosition();
     public override double AbsoluteVirtualMass => _mass.VirtualMass;
     public override double BalancerVirtualMass => BalancerAllowed ? _mass.VirtualMass : 0;
-        
-    public Vector3D Moment => AbsoluteVirtualMass * (_mass.GetPosition() - _ship.Controller.CenterOfMass);
+    public override Vector3I GridPosition => _mass.Position;
+    public AT_Vector3D Moment => AbsoluteVirtualMass * (_mass.GetPosition() - _ship.Controller.CenterOfMass);
 
     public bool UpdateState()
     {
@@ -2634,14 +2763,19 @@ public abstract class GravityGenerator
     {
         get
         {
-            return Generator.GravityAcceleration * (IsInverted ? -1 : 1);
+            return Generator.GravityAcceleration * InvertedSign;
         }
         set
         {
-            Generator.GravityAcceleration = value * (IsInverted ? -1 : 1);
+            Generator.GravityAcceleration = value * InvertedSign;
         }
     }
 
+    public AT_Vector3D Position => Generator.GetPosition();
+    public bool Closed => Generator.Closed;
+
+    public int InvertedSign => IsInverted ? -1 : 1;
+    public Vector3I GridPosition => Generator.Position;
 }
 public class GravityGeneratorLinear : GravityGenerator
 {
@@ -2666,9 +2800,10 @@ public class GravityGeneratorSpherical : GravityGenerator
 }
 public abstract class Mass
 {
-        
+    public abstract AT_Vector3D Position { get; }
     public abstract double AbsoluteVirtualMass { get; }
     public abstract double BalancerVirtualMass { get; }
+    public abstract Vector3I GridPosition { get; }
 }
 public class PropulsionController
 {
@@ -2698,21 +2833,20 @@ public class PropulsionController
         Matrix matrix;
         _ship.Controller.Orientation.GetMatrix(out matrix);
 
-        var desiredMovement = Vector3.Transform(userInput, matrix);
+        AT_Vector3D desiredMovement = AT_Vector3D.Transform(userInput, matrix);
 
         if (_ship.Controller.DampenersOverride)
         {
             var velocity = _ship.Velocity;
-            var localVelocity = Vector3D.TransformNormal(velocity, MatrixD.Invert(_ship.WorldMatrix));
+            var localVelocity = AT_Vector3D.TransformNormal(velocity, MatrixD.Invert(_ship.WorldMatrix));
+                
+            var dampenValueForwardBackward = localVelocity * AT_Vector3D.Forward * 10 * GetForwardBackwardAcceleration();
+            var dampenValueLeftRight = localVelocity * AT_Vector3D.Left * 10 * GetLeftRightAcceleration();
+            var dampenValueUpDown = localVelocity * AT_Vector3D.Up * 10 * GetUpDownAcceleration();
 
-            var dampenValueForwardBackward =
-                localVelocity * Vector3D.Forward * 10 * GetForwardBackwardAcceleration();
-            var dampenValueLeftRight = localVelocity * Vector3D.Left * 20 * GetLeftRightAcceleration();
-            var dampenValueUpDown = localVelocity * Vector3D.Down * 20 * GetUpDownAcceleration();
-
-            if (desiredMovement.Dot(Vector3D.Forward) == 0) desiredMovement += dampenValueForwardBackward;
-            if (desiredMovement.Dot(Vector3D.Left) == 0) desiredMovement += dampenValueLeftRight;
-            if (desiredMovement.Dot(Vector3D.Down) == 0) desiredMovement += dampenValueUpDown;
+            if (desiredMovement.Dot(AT_Vector3D.Forward) == 0) desiredMovement += dampenValueForwardBackward;
+            if (desiredMovement.Dot(AT_Vector3D.Left) == 0) desiredMovement += dampenValueLeftRight;
+            if (desiredMovement.Dot(AT_Vector3D.Up) == 0) desiredMovement += dampenValueUpDown;
         }
             
             
@@ -2781,7 +2915,7 @@ public class TargetTracker
     public TrackableShip TrackedShip { get; set; }
         
         
-    public Vector3D Position => Block.GetPosition();
+    public AT_Vector3D Position => Block.GetPosition();
 
 public void UpdateState()
     {
@@ -2802,7 +2936,7 @@ public void UpdateState()
             TargetedEntity = 0;
     }
 
-public MyDetectedEntityInfo GetTargetedEntity()
+public AT_DetectedEntityInfo GetTargetedEntity()
     {
         var info = Block.GetTargetedEntity();
         TargetedEntity = info.EntityId;
@@ -2811,25 +2945,20 @@ public MyDetectedEntityInfo GetTargetedEntity()
 }
 public class ControllableShip : SupportingShip
 {
-    GyroManager _gyroManager;
-    public GunManager Guns;
-    FireController _fireController;
-    List<IMyLargeTurretBase> _turrets;
-    PropulsionController _propulsionController;
-
-    TrackableShip _currentTarget;
-    bool _hasTarget;
-
-    Vector3D _cachedGravity;
-    bool _gravityValid = false;
         
-
+        
+    public readonly GunManager Guns;
+    private readonly GyroManager _gyroManager;
+    private readonly FireController _fireController;
+    private readonly PropulsionController _propulsionController;
+    List<IMyLargeTurretBase> _turrets;
+        
+    CachedValue<AT_Vector3D> _gravity;
+    CachedValue<MyShipMass> _mass;
+        
     public ControllableShip(IMyCubeGrid grid, List<IMyTerminalBlock> blocks, List<IMyTerminalBlock> trackerBlocks) : base(grid, trackerBlocks)
     {
         Program.LogLine("New ControllableShip : SupportingShip : ArgusShip", LogLevel.Debug);
-        _gyroManager = new GyroManager(blocks);
-        Guns = new GunManager(blocks, this);
-        _fireController = new FireController(this, Guns);
         foreach (var block in blocks)
         {
             var controller = block as IMyShipController;
@@ -2838,39 +2967,35 @@ public class ControllableShip : SupportingShip
 
         if (Controller == null)
         {
-            Program.LogLine($"WARNING: Controller not present in group: {Config.GroupName}");
+            Program.LogLine($"WARNING: Controller not present in group: {Config.String.GroupName}");
             return;
         }
-        Mass = Controller.CalculateShipMass();
+        _gyroManager = new GyroManager(blocks);
+        Guns = new GunManager(blocks, this);
+        _fireController = new FireController(this, Guns);
+            
+        _gravity = new CachedValue<AT_Vector3D>(() => Controller.GetNaturalGravity());
+        _mass = new CachedValue<MyShipMass>(() => Controller.CalculateShipMass());
+            
         _propulsionController = new PropulsionController(blocks, this);
             
     }
-
-    public IMyShipController Controller { get; set; }
-    public Vector3D Forward => Controller.WorldMatrix.Forward;
-
-    public Vector3 LocalForward => Base6Directions.Directions[(int)Controller.Orientation.Forward];
-    public Direction LocalOrientationForward => (Direction)Controller.Orientation.Forward;
-    public Vector3D Up => Controller.WorldMatrix.Up;
-    public MatrixD WorldMatrix => _grid.WorldMatrix;
-    public TrackableShip CurrentTarget => _currentTarget;
         
-    public Vector3D Gravity 
-    {
-        get
-        {
-            if (!_gravityValid)
-            {
-                _cachedGravity = Controller.GetNaturalGravity();
-                _gravityValid = true; 
-            }
+public IMyShipController Controller { get; private set; }
+        
+public MatrixD WorldMatrix => _grid.WorldMatrix;
+public AT_Vector3D WorldForward => Controller.WorldMatrix.Forward; 
+public AT_Vector3D WorldUp => Controller.WorldMatrix.Up;
+public Vector3 LocalForward => Base6Directions.Directions[(int)Controller.Orientation.Forward];
+public Direction LocalDirectionForward => (Direction)Controller.Orientation.Forward;
+public TrackableShip CurrentTarget { get; private set; }
 
-            return _cachedGravity;
-        }
-    }
+public bool HasTarget => CurrentTarget != null;
 
-    public MyShipMass Mass { get; private set; }
+public AT_Vector3D Gravity => _gravity.Value;
 
+public MyShipMass Mass => _mass.Value;
+        
     public override void EarlyUpdate(int frame)
     {
         base.EarlyUpdate(frame);
@@ -2879,43 +3004,33 @@ public class ControllableShip : SupportingShip
             
         if ((frame + RandomUpdateJitter) % Polling.GetFramesBetweenPolls(PollFrequency) == 0)
         {
-            Mass = Controller.CalculateShipMass();
+            _gravity.Invalidate();
+            _mass.Invalidate();
         }
     }
-
     public override void LateUpdate(int frame)
     {
         base.LateUpdate(frame);
-        if (_hasTarget)
+        if (HasTarget)
         {
-            _gravityValid = false;
-            
-            
+                
             var solution = _fireController.ArbitrateFiringSolution();
-            if (solution.TargetPosition == Vector3D.Zero) _gyroManager.ResetGyroOverrides();
+            if (solution.TargetPosition == AT_Vector3D.Zero) _gyroManager.ResetGyroOverrides();
             else _gyroManager.Rotate(ref solution);
-            Guns.LateUpdate(frame);
+                
+            Guns.LateUpdate(frame); 
+                
         }
-
-
         _propulsionController.LateUpdate(frame);
     }
-
-    public void UnTarget()
-    {
-        _currentTarget = null;
-        _hasTarget = false;
-        _gyroManager.ResetGyroOverrides();
-    }
-
-    public void Target()
+        
+        
+public void Target()
     {
             
-        _currentTarget = ShipManager.GetForwardTarget(this, Config.LockRange, Config.LockAngle);
-        _hasTarget = true;
-        if (_currentTarget == null)
+        CurrentTarget = ShipManager.GetForwardTarget(this, Config.Behavior.LockRange, Config.Behavior.LockAngle);
+        if (CurrentTarget == null)
         {
-            _hasTarget = false;
             _gyroManager.ResetGyroOverrides();
             Program.LogLine("Couldn't find new target", LogLevel.Warning);
         }
@@ -2924,10 +3039,16 @@ public class ControllableShip : SupportingShip
             Program.LogLine("Got new target", LogLevel.Info);
         }
     }
-
-    public Vector3D GetTargetPosition()
+        
+public void UnTarget()
     {
-        return _currentTarget?.Position ?? Vector3D.Zero;
+        CurrentTarget = null;
+        _gyroManager.ResetGyroOverrides();
+    }
+
+public AT_Vector3D GetTargetPosition()
+    {
+        return CurrentTarget?.Position ?? AT_Vector3D.Zero;
     }
 }
 public class SupportingShip : ArgusShip 
@@ -2969,20 +3090,20 @@ public class SupportingShip : ArgusShip
                 block.AzimuthRotor = null;
                 block.ElevationRotor = rotor;
                 block.AIEnabled = true;
-                block.CustomName = Config.SearchingName;
+                block.CustomName = Config.Tracker.SearchingName;
             }
 
             if (_targetTrackers.Count <= 0) Program.LogLine("No target trackers in group", LogLevel.Warning);
         }
-        else Program.LogLine($"Gun/rotor not present in group: {Config.TrackerGroupName}, cannot setup trackers", LogLevel.Warning);
+        else Program.LogLine($"Gun/rotor not present in group: {Config.String.TrackerGroupName}, cannot setup trackers", LogLevel.Warning);
             
         _grid = grid;
     }
         
         
-    public override Vector3D Position => _grid.GetPosition();
-    public override Vector3D Velocity => CVelocity;
-    public override Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
+    public override AT_Vector3D Position => _grid.GetPosition();
+    public override AT_Vector3D Velocity => CVelocity;
+    public override AT_Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
     public override float GridSize => _grid.GridSize;
 
     public override string Name => _grid.CustomName;
@@ -3012,7 +3133,7 @@ public class SupportingShip : ArgusShip
                 if (tracker.JustLostTarget && !tracker.Enabled)
                 {
                     tracker.Enabled = true;
-                    tracker.CustomName = Config.SearchingName;
+                    tracker.CustomName = Config.Tracker.SearchingName;
 
                     if (tracker.TrackedShip != null)
                     {
@@ -3027,14 +3148,14 @@ public class SupportingShip : ArgusShip
                 else if (tracker.JustInvalidated)
                 {
                     tracker.Enabled = true;
-                    tracker.CustomName = Config.SearchingName;
+                    tracker.CustomName = Config.Tracker.SearchingName;
                 }
 
                 continue;
             }
             if (tracker.TargetedEntity != 0) continue;
                 
-            var target = tracker.GetTargetedEntity();
+            AT_DetectedEntityInfo target = tracker.GetTargetedEntity();
                 
             TargetTracker existingTracker;
             if (ShipManager.HasNonDefunctTrackableShip(target.EntityId, out existingTracker))
@@ -3045,7 +3166,7 @@ public class SupportingShip : ArgusShip
             }
             var trackableShip = ShipManager.AddTrackableShip(tracker, target.EntityId, target);
             tracker.TrackedShip = trackableShip;
-            tracker.CustomName = Config.TrackingName;
+            tracker.CustomName = Config.Tracker.TrackingName;
             tracker.Enabled = false;
             tracker.TargetedEntity = target.EntityId;   
                 
@@ -3091,17 +3212,17 @@ public class TrackableShip : ArgusShip
 
     public SupportingShip TrackingShip;
 
-    public MyDetectedEntityInfo Info;
+    public AT_DetectedEntityInfo Info;
 
     public long EntityId;
     bool _aabbNeedsRecalc = true;
     BoundingBoxD _cachedAABB;
-    Vector3D _cachedGridOffset;
-    Vector3D _previousPosition;
+    AT_Vector3D _cachedGridOffset;
+    AT_Vector3D _previousPosition;
 
     private readonly float _gridSize = 1f;
 
-    public TrackableShip(TargetTracker tracker, long entityId, MyDetectedEntityInfo initial)
+    public TrackableShip(TargetTracker tracker, long entityId, AT_DetectedEntityInfo initial)
     {
         Tracker = tracker;
         EntityId = entityId;
@@ -3124,9 +3245,9 @@ public class TrackableShip : ArgusShip
     }
 
 
-    public override Vector3D Position => Info.Position;
-    public override Vector3D Velocity => CVelocity;
-    public override Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
+    public override AT_Vector3D Position => Info.Position;
+    public override AT_Vector3D Velocity => CVelocity;
+    public override AT_Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
     public override float GridSize => _gridSize;
 
     public override string Name => $"Trackable ship {EntityId}";
@@ -3140,8 +3261,8 @@ public class TrackableShip : ArgusShip
 
     public BoundingBoxD WorldAABB => Info.BoundingBox;
         
-    public Vector3D Extents => LocalAABB.Extents;
-    public Vector3D HalfExtents => LocalAABB.HalfExtents;
+    public AT_Vector3D Extents => LocalAABB.Extents;
+    public AT_Vector3D HalfExtents => LocalAABB.HalfExtents;
     public int ProxyId { get; set; } = 0;
         
 
@@ -3154,7 +3275,7 @@ public class TrackableShip : ArgusShip
         }
     }
 
-    public Vector3D GridOffset
+    public AT_Vector3D GridOffset
     {
         get
         {
@@ -3165,13 +3286,13 @@ public class TrackableShip : ArgusShip
 
 
 
-    Vector3D _displacement;
+    AT_Vector3D _displacement;
     MatrixD _worldMatrix;
 
-    public Vector3D TakeDisplacement()
+    public AT_Vector3D TakeDisplacement()
     {
         var temp = _displacement;
-        _displacement = Vector3D.Zero;
+        _displacement = AT_Vector3D.Zero;
         return temp;
     }
 
@@ -3181,7 +3302,7 @@ public class TrackableShip : ArgusShip
         _aabbNeedsRecalc = false;
         var extents = HalfExtents;
         var h = _gridSize / 2;
-        _cachedGridOffset = new Vector3D(h - extents.X % _gridSize, h - extents.Y % _gridSize, h - extents.Z % _gridSize);
+        _cachedGridOffset = new AT_Vector3D(h - extents.X % _gridSize, h - extents.Y % _gridSize, h - extents.Z % _gridSize);
     }
     public override void EarlyUpdate(int frame)
     {
@@ -3190,14 +3311,14 @@ public class TrackableShip : ArgusShip
         Info = Tracker.GetTargetedEntity();
         if (Tracker.Closed || Info.EntityId != EntityId) Defunct = true;
         CPreviousVelocity = CVelocity;
-        CVelocity = Info.Velocity;
+        CVelocity = (Vector3D)Info.Velocity;
         _displacement = Position - _previousPosition;
 
         if (PollFrequency == PollFrequency.Realtime && (_displacement * 60 - CVelocity).LengthSquared() > 10000)
         {
             _aabbNeedsRecalc = true;
             Vector3I displacement =
-                (Vector3I)(Vector3D.Transform(_displacement - (CVelocity / 60), MatrixD.Invert(_worldMatrix)) * 2);
+                (Vector3I)(AT_Vector3D.Transform(_displacement - (CVelocity / 60), MatrixD.Invert(_worldMatrix)) * 2);
             DisplaceTrackedBlocks(displacement);
         }
             
@@ -3212,8 +3333,8 @@ public class TrackableShip : ArgusShip
         _scannedBlocks_Swap.Clear();
         foreach (var kv in _scannedBlocks)
         {
-            var worldPos = Vector3D.Transform(
-                (Vector3D)(Vector3)kv.Key * (double)_gridSize + GridOffset,
+            var worldPos = AT_Vector3D.Transform(
+                (AT_Vector3D)kv.Key * _gridSize + GridOffset,
                 _worldMatrix
             );
 
@@ -3226,24 +3347,21 @@ public class TrackableShip : ArgusShip
         var temp = _scannedBlocks;
         _scannedBlocks = _scannedBlocks_Swap;
         _scannedBlocks_Swap = temp;
-
-        Program.Debug.DrawAABB(WorldAABB, Color.Green, DebugAPI.Style.Wireframe, 0.02f, 0.016f);
-
+            
         var tempobb = new MyOrientedBoundingBoxD(LocalAABB, Info.Orientation);
         tempobb.Center = WorldAABB.Center;
-        Program.Debug.DrawOBB(tempobb, Color.Red, DebugAPI.Style.Wireframe, 0.02f, 0.016f);
             
     }
 
-    public void AddTrackedBlock(MyDetectedEntityInfo info, IMyLargeTurretBase turret = null,
+    public void AddTrackedBlock(AT_DetectedEntityInfo info, IMyLargeTurretBase turret = null,
         TargetTracker controller = null)
     {
         if (info.EntityId != Info.EntityId || info.HitPosition == null) return;
 
-        var targetBlockPosition = (Vector3D)info.HitPosition;
+        var targetBlockPosition = (AT_Vector3D)info.HitPosition;
         var worldDirection = targetBlockPosition - Position;
         var positionInGridDouble =
-            Vector3D.TransformNormal(worldDirection,
+            AT_Vector3D.TransformNormal(worldDirection,
                 MatrixD.Transpose(
                     _worldMatrix));
         positionInGridDouble-= GridOffset;
@@ -3277,7 +3395,7 @@ public class TrackableShip : ArgusShip
         }
         else
         {
-            _scannedBlocks.Add(positionInGridInt, new ScannedBlockTracker(Config.ScannedBlockMaximumValidTimeFrames, type));
+            _scannedBlocks.Add(positionInGridInt, new ScannedBlockTracker(Config.Tracker.ScannedBlockMaxValidFrames, type));
         }
             
     }
@@ -3393,7 +3511,7 @@ public static class ShipManager
         
     private static IEnumerable<TrackableShip> UpdatePollFrequenciesOneByOne()
     {
-        var maxSqr = Config.MaxWeaponRange * Config.MaxWeaponRange;
+        var maxSqr = Config.General.MaxWeaponRange * Config.General.MaxWeaponRange;
 
         for (var index = AllShips.Count - 1; index >= 0; index--)
         {
@@ -3436,7 +3554,7 @@ public static List<TrackableShip> GetTargetsInRange(SupportingShip ship, double 
         if (candidates.Count < 1) return null;
             
             
-        var forward = ship.Forward;
+        var forward = ship.WorldForward;
         double cosCone = Math.Cos(coneAngleDegrees * Math.PI / 180.0);
             
         double bestScore = double.MaxValue;
@@ -3463,16 +3581,16 @@ public static List<TrackableShip> GetTargetsInRange(SupportingShip ship, double 
 
     public static void CreateControllableShip(IMyCubeGrid grid, IMyGridTerminalSystem gridTerminalSystem)
     {
-        var group = gridTerminalSystem.GetBlockGroupWithName(Config.GroupName);
-        Program.LogLine($"Getting group : {Config.GroupName}", LogLevel.Trace);
-        var trackerGroup = gridTerminalSystem.GetBlockGroupWithName(Config.TrackerGroupName);
-        Program.LogLine($"Getting group : {Config.TrackerGroupName}", LogLevel.Trace);
+        var group = gridTerminalSystem.GetBlockGroupWithName(Config.String.GroupName);
+        Program.LogLine($"Getting group : {Config.String.GroupName}", LogLevel.Trace);
+        var trackerGroup = gridTerminalSystem.GetBlockGroupWithName(Config.String.TrackerGroupName);
+        Program.LogLine($"Getting group : {Config.String.TrackerGroupName}", LogLevel.Trace);
         var blocks = new List<IMyTerminalBlock>();
         var trackerBlocks = new List<IMyTerminalBlock>();
-        if (group != null) {group.GetBlocks(blocks); Program.LogLine($"Got group: {Config.GroupName}", LogLevel.Debug);}
-        else Program.LogLine($"Group not present: {Config.GroupName}", LogLevel.Warning);
-        if (trackerGroup != null) {trackerGroup.GetBlocks(trackerBlocks); Program.LogLine($"Got group: {Config.TrackerGroupName}", LogLevel.Debug);}
-        else Program.LogLine($"Group not present: {Config.TrackerGroupName}", LogLevel.Warning);
+        if (group != null) {group.GetBlocks(blocks); Program.LogLine($"Got group: {Config.String.GroupName}", LogLevel.Debug);}
+        else Program.LogLine($"Group not present: {Config.String.GroupName}", LogLevel.Warning);
+        if (trackerGroup != null) {trackerGroup.GetBlocks(trackerBlocks); Program.LogLine($"Got group: {Config.String.TrackerGroupName}", LogLevel.Debug);}
+        else Program.LogLine($"Group not present: {Config.String.TrackerGroupName}", LogLevel.Warning);
         var ship = new ControllableShip(grid, blocks, trackerBlocks);
         AllShips.Add(ship);
         PrimaryShip = ship;
@@ -3481,7 +3599,7 @@ public static List<TrackableShip> GetTargetsInRange(SupportingShip ship, double 
         _pollEnumerator = UpdatePollFrequenciesOneByOne().GetEnumerator();
     }
 
-    public static TrackableShip AddTrackableShip(TargetTracker tracker, long entityId, MyDetectedEntityInfo initial)
+    public static TrackableShip AddTrackableShip(TargetTracker tracker, long entityId, AT_DetectedEntityInfo initial)
     {
         TrackableShip trackableShip;
         if (EntityIdToTrackableShip.TryGetValue(entityId, out trackableShip))
@@ -3515,4 +3633,108 @@ public static List<TrackableShip> GetTargetsInRange(SupportingShip ship, double 
         existingTracker = keyExists ? trackableShip.Tracker : null;
         return keyExists && !trackableShip.Defunct;
     }
+}
+public struct AT_DetectedEntityInfo
+{
+    MyDetectedEntityInfo _info;
+        AT_DetectedEntityInfo(MyDetectedEntityInfo info)
+    {
+        _info = info;
+    }
+    public static implicit operator AT_DetectedEntityInfo(MyDetectedEntityInfo info) => new AT_DetectedEntityInfo(info);
+    public long EntityId => _info.EntityId;
+    public MyDetectedEntityType Type => _info.Type;
+    public Vector3D? HitPosition => _info.HitPosition;
+    public MatrixD Orientation => _info.Orientation;
+    public Vector3 Velocity => _info.Velocity;
+    public BoundingBoxD BoundingBox => _info.BoundingBox;
+    public Vector3D Position => BoundingBox.Center;
+
+        
+
+}
+public struct AT_Vector3D
+{
+    Vector3D _value;  
+        
+
+
+    public AT_Vector3D(double x, double y, double z)
+    {
+      _value = new Vector3D(x, y, z);
+    }
+        
+    AT_Vector3D(Vector3D value)
+    {
+      _value = value;
+    }
+        
+    public static implicit operator AT_Vector3D(Vector3D value) => new AT_Vector3D(value);
+    public static implicit operator AT_Vector3D(Vector3 value) => (Vector3D)value;
+    public static implicit operator Vector3D(AT_Vector3D value) => value._value;
+    public static explicit operator Vector3I(AT_Vector3D value) => (Vector3I)value._value;
+    public static explicit operator AT_Vector3D(Vector3I value) => (Vector3D)value;
+
+
+    public static AT_Vector3D operator -(AT_Vector3D value) => -value._value;
+
+    public static bool operator ==(AT_Vector3D value1, AT_Vector3D value2) => value1._value == value2._value;
+        
+    public static bool operator !=(AT_Vector3D value1, AT_Vector3D value2) => value1._value != value2._value;
+        
+
+    public static AT_Vector3D operator +(AT_Vector3D value1, AT_Vector3D value2) => value1._value + value2._value;
+        
+
+        
+    public static AT_Vector3D operator -(AT_Vector3D value1, AT_Vector3D value2) => value1._value - value2._value;
+        
+        
+    public static AT_Vector3D operator *(AT_Vector3D value1, AT_Vector3D value2) => value1._value * value2._value;
+        
+    public static AT_Vector3D operator *(AT_Vector3D value, double scaleFactor) => value._value * scaleFactor;
+        
+    public static AT_Vector3D operator *(double scaleFactor, AT_Vector3D value) => value._value * scaleFactor;
+        
+    public static AT_Vector3D operator /(AT_Vector3D value1, AT_Vector3D value2) => value1._value / value2._value;
+        
+    public static AT_Vector3D operator /(AT_Vector3D value, double divider) => value._value / divider;
+
+
+    public double X => _value.X;
+    public double Y => _value.Y;
+    public double Z => _value.Z;
+        
+
+
+    public static AT_Vector3D Zero => Vector3D.Zero;
+    public static Vector3 Forward => Vector3D.Forward;
+    public static Vector3 Left => Vector3D.Left;
+    public static AT_Vector3D Up => Vector3D.Up;
+    public double Length() => _value.Length();
+
+    public double Dot(AT_Vector3D other) => _value.Dot(other._value);
+
+    public double LengthSquared() => _value.LengthSquared();
+
+    public static AT_Vector3D Transform(AT_Vector3D vec, MatrixD mat) => Vector3D.Transform(vec, mat);
+
+    public static AT_Vector3D TransformNormal(AT_Vector3D vec, MatrixD mat) => Vector3D.TransformNormal(vec, mat);
+
+    public static AT_Vector3D Abs(AT_Vector3D u1) => Vector3D.Abs(u1);
+
+    public static AT_Vector3D Normalize(AT_Vector3D val) => Vector3D.Normalize(val._value);
+
+    public static AT_Vector3D ClampToSphere(AT_Vector3D vec, double radius) =>
+      Vector3D.ClampToSphere(vec._value, radius);
+
+    public static AT_Vector3D ProjectOnVector(ref AT_Vector3D valA, ref AT_Vector3D valB) =>
+      Vector3D.ProjectOnVector(ref valA._value, ref valB._value);
+
+    public static AT_Vector3D Cross(AT_Vector3D vecA, AT_Vector3D vecB) => Vector3D.Cross(vecA, vecB);
+
+    public AT_Vector3D Normalized() => _value.Normalized();
+
+    public bool Equals(AT_Vector3D other) => _value == other._value;
+        
 }

@@ -1,19 +1,20 @@
 using IngameScript.Helper;
+using IngameScript.TruncationWrappers;
 using VRageMath;
 
 namespace IngameScript.Ship.Components
 {
     public struct FiringSolution
     {
-        public readonly Vector3D DesiredForward;
-        public readonly Vector3D TargetPosition;
-        public readonly Vector3D ShooterPosition;
-        public readonly Vector3D CurrentForward;
+        public readonly AT_Vector3D DesiredForward;
+        public readonly AT_Vector3D TargetPosition;
+        public readonly AT_Vector3D ShooterPosition;
+        public readonly AT_Vector3D CurrentForward;
         public readonly double Dot;
         public readonly double Range;
         public MatrixD WorldMatrix;
 
-        public FiringSolution(Vector3D desiredForward, Vector3D targetPosition, Vector3D shooterPosition, Vector3D currentForward, double dot, double range, MatrixD worldMatrix)
+        public FiringSolution(AT_Vector3D desiredForward, AT_Vector3D targetPosition, AT_Vector3D shooterPosition, AT_Vector3D currentForward, double dot, double range, MatrixD worldMatrix)
         {
             DesiredForward = desiredForward;
             TargetPosition = targetPosition;
@@ -63,7 +64,7 @@ namespace IngameScript.Ship.Components
             var solvedForward = (solvedPos - pos).Normalized();
             Program.Log(solvedForward);
 
-            if (dot > Config.MinFireDot && enemyPos != Vector3D.Zero) _guns.TryFire();
+            if (dot > Config.Behavior.MinFireDot && enemyPos != AT_Vector3D.Zero) _guns.TryFire();
             else _guns.TryCancel();
 
             return new FiringSolution(solvedForward, enemyPos, pos, _ship.WorldForward, dot, dist, _ship.WorldMatrix);

@@ -1,3 +1,4 @@
+using IngameScript.TruncationWrappers;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using VRageMath;
 
@@ -23,10 +24,11 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity.Wrapper
         public bool GeneratorRequested => _massSystem.Enabled;
 
         public bool IsActive => BalancerAllowed && GeneratorRequested;
+        public override AT_Vector3D Position => _mass.GetPosition();
         public override double AbsoluteVirtualMass => _mass.VirtualMass;
         public override double BalancerVirtualMass => BalancerAllowed ? _mass.VirtualMass : 0;
-        
-        public Vector3D Moment => AbsoluteVirtualMass * (_mass.GetPosition() - _ship.Controller.CenterOfMass);
+        public override Vector3I GridPosition => _mass.Position;
+        public AT_Vector3D Moment => AbsoluteVirtualMass * (_mass.GetPosition() - _ship.Controller.CenterOfMass);
 
         public bool UpdateState()
         {

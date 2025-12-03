@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using IngameScript.TruncationWrappers;
 using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
 using VRageMath;
@@ -19,10 +20,10 @@ namespace IngameScript
             public void Remove(int id) => _rm?.Invoke(_pb, id);
             Action<IMyProgrammableBlock, int> _rm;
 
-            public int DrawPoint(Vector3D origin, Color color, float radius = 0.2f, float seconds = DefaultSeconds, bool? onTop = null) => _p?.Invoke(_pb, origin, color, radius, seconds, onTop ?? _defTop) ?? -1;
+            public int DrawPoint(AT_Vector3D origin, Color color, float radius = 0.2f, float seconds = DefaultSeconds, bool? onTop = null) => _p?.Invoke(_pb, origin, color, radius, seconds, onTop ?? _defTop) ?? -1;
             Func<IMyProgrammableBlock, Vector3D, Color, float, float, bool, int> _p;
 
-            public int DrawLine(Vector3D start, Vector3D end, Color color, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _ln?.Invoke(_pb, start, end, color, thickness, seconds, onTop ?? _defTop) ?? -1;
+            public int DrawLine(AT_Vector3D start, AT_Vector3D end, Color color, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _ln?.Invoke(_pb, start, end, color, thickness, seconds, onTop ?? _defTop) ?? -1;
             Func<IMyProgrammableBlock, Vector3D, Vector3D, Color, float, float, bool, int> _ln;
 
             public int DrawAABB(BoundingBoxD bb, Color color, Style style = Style.Wireframe, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _bb?.Invoke(_pb, bb, color, (int)style, thickness, seconds, onTop ?? _defTop) ?? -1;
@@ -37,7 +38,7 @@ namespace IngameScript
             public int DrawMatrix(MatrixD matrix, float length = 1f, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _m?.Invoke(_pb, matrix, length, thickness, seconds, onTop ?? _defTop) ?? -1;
             Func<IMyProgrammableBlock, MatrixD, float, float, float, bool, int> _m;
 
-            public int DrawGPS(string name, Vector3D origin, Color? color = null, float seconds = DefaultSeconds) => _gps?.Invoke(_pb, name, origin, color, seconds) ?? -1;
+            public int DrawGPS(string name, AT_Vector3D origin, Color? color = null, float seconds = DefaultSeconds) => _gps?.Invoke(_pb, name, origin, color, seconds) ?? -1;
             Func<IMyProgrammableBlock, string, Vector3D, Color?, float, int> _gps;
 
             public int PrintHUD(string message, Font font = Font.Debug, float seconds = 2) => _hud?.Invoke(_pb, message, font.ToString(), seconds) ?? -1;

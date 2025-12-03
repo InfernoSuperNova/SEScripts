@@ -6,6 +6,7 @@ using IngameScript.Ship.Components;
 using VRage.Game.ModAPI.Ingame;
 using VRageMath;
 using IngameScript.Helper;
+using IngameScript.TruncationWrappers;
 
 namespace IngameScript
 {
@@ -53,20 +54,20 @@ namespace IngameScript
                     block.AzimuthRotor = null; // These aren't intended to actually shoot at anything, just used for target designation and scanning
                     block.ElevationRotor = rotor;
                     block.AIEnabled = true;
-                    block.CustomName = Config.SearchingName;
+                    block.CustomName = Config.Tracker.SearchingName;
                 }
 
                 if (_targetTrackers.Count <= 0) Program.LogLine("No target trackers in group", LogLevel.Warning);
             }
-            else Program.LogLine($"Gun/rotor not present in group: {Config.TrackerGroupName}, cannot setup trackers", LogLevel.Warning);
+            else Program.LogLine($"Gun/rotor not present in group: {Config.String.TrackerGroupName}, cannot setup trackers", LogLevel.Warning);
             
             _grid = grid;
         }
         
         
-        public override Vector3D Position => _grid.GetPosition();
-        public override Vector3D Velocity => CVelocity;
-        public override Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
+        public override AT_Vector3D Position => _grid.GetPosition();
+        public override AT_Vector3D Velocity => CVelocity;
+        public override AT_Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
         public override float GridSize => _grid.GridSize;
 
         public override string Name => _grid.CustomName;
@@ -99,7 +100,7 @@ namespace IngameScript
                     if (tracker.JustLostTarget && !tracker.Enabled)
                     {
                         tracker.Enabled = true;
-                        tracker.CustomName = Config.SearchingName;
+                        tracker.CustomName = Config.Tracker.SearchingName;
 
                         if (tracker.TrackedShip != null)
                         {
@@ -114,7 +115,7 @@ namespace IngameScript
                     else if (tracker.JustInvalidated)
                     {
                         tracker.Enabled = true;
-                        tracker.CustomName = Config.SearchingName;
+                        tracker.CustomName = Config.Tracker.SearchingName;
                     }
 
                     continue;
@@ -122,7 +123,7 @@ namespace IngameScript
                 // Tracker currently has a target
                 if (tracker.TargetedEntity != 0) continue;
                 
-                var target = tracker.GetTargetedEntity();
+                AT_DetectedEntityInfo target = tracker.GetTargetedEntity();
                 
                 TargetTracker existingTracker;
                 // Already tracked by this or another tracker
@@ -135,7 +136,7 @@ namespace IngameScript
                 // Newly detected ship — register it
                 var trackableShip = ShipManager.AddTrackableShip(tracker, target.EntityId, target);
                 tracker.TrackedShip = trackableShip;
-                tracker.CustomName = Config.TrackingName;
+                tracker.CustomName = Config.Tracker.TrackingName;
                 tracker.Enabled = false;
                 tracker.TargetedEntity = target.EntityId;   
                 

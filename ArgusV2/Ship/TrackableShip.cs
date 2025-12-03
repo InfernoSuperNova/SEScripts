@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using IngameScript.Helper;
 using IngameScript.Ship.Components;
+using IngameScript.TruncationWrappers;
 using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using VRage.Library.Collections;
@@ -57,17 +58,17 @@ namespace IngameScript.Ship
 
         public SupportingShip TrackingShip;
 
-        public MyDetectedEntityInfo Info;
+        public AT_DetectedEntityInfo Info;
 
         public long EntityId;
         private bool _aabbNeedsRecalc = true;
         private BoundingBoxD _cachedAABB;
-        private Vector3D _cachedGridOffset;
-        private Vector3D _previousPosition;
+        private AT_Vector3D _cachedGridOffset;
+        private AT_Vector3D _previousPosition;
 
         private readonly float _gridSize = 1f;
 
-        public TrackableShip(TargetTracker tracker, long entityId, MyDetectedEntityInfo initial)
+        public TrackableShip(TargetTracker tracker, long entityId, AT_DetectedEntityInfo initial)
         {
             Tracker = tracker;
             EntityId = entityId;
@@ -90,9 +91,9 @@ namespace IngameScript.Ship
         }
 
 
-        public override Vector3D Position => Info.Position;
-        public override Vector3D Velocity => CVelocity;
-        public override Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
+        public override AT_Vector3D Position => Info.Position;
+        public override AT_Vector3D Velocity => CVelocity;
+        public override AT_Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
         public override float GridSize => _gridSize;
 
         public override string Name => $"Trackable ship {EntityId}";
@@ -106,8 +107,8 @@ namespace IngameScript.Ship
 
         public BoundingBoxD WorldAABB => Info.BoundingBox;
         
-        public Vector3D Extents => LocalAABB.Extents;
-        public Vector3D HalfExtents => LocalAABB.HalfExtents;
+        public AT_Vector3D Extents => LocalAABB.Extents;
+        public AT_Vector3D HalfExtents => LocalAABB.HalfExtents;
         public int ProxyId { get; set; } = 0;
         
 
@@ -120,7 +121,7 @@ namespace IngameScript.Ship
             }
         }
 
-        public Vector3D GridOffset
+        public AT_Vector3D GridOffset
         {
             get
             {
@@ -131,13 +132,13 @@ namespace IngameScript.Ship
 
 
 
-        private Vector3D _displacement;
+        private AT_Vector3D _displacement;
         private MatrixD _worldMatrix;
 
-        public Vector3D TakeDisplacement()
+        public AT_Vector3D TakeDisplacement()
         {
             var temp = _displacement;
-            _displacement = Vector3D.Zero;
+            _displacement = AT_Vector3D.Zero;
             return temp;
         }
 
@@ -147,7 +148,7 @@ namespace IngameScript.Ship
             _aabbNeedsRecalc = false;
             var extents = HalfExtents;
             var h = _gridSize / 2;
-            _cachedGridOffset = new Vector3D(h - extents.X % _gridSize, h - extents.Y % _gridSize, h - extents.Z % _gridSize);
+            _cachedGridOffset = new AT_Vector3D(h - extents.X % _gridSize, h - extents.Y % _gridSize, h - extents.Z % _gridSize);
         }
         public override void EarlyUpdate(int frame)
         {
@@ -156,14 +157,14 @@ namespace IngameScript.Ship
             Info = Tracker.GetTargetedEntity();
             if (Tracker.Closed || Info.EntityId != EntityId) Defunct = true;
             CPreviousVelocity = CVelocity;
-            CVelocity = Info.Velocity;
+            CVelocity = (Vector3D)Info.Velocity;
             _displacement = Position - _previousPosition;
 
             if (PollFrequency == PollFrequency.Realtime && (_displacement * 60 - CVelocity).LengthSquared() > 10000)
             {
                 _aabbNeedsRecalc = true;
                 Vector3I displacement =
-                    (Vector3I)(Vector3D.Transform(_displacement - (CVelocity / 60), MatrixD.Invert(_worldMatrix)) * 2);
+                    (Vector3I)(AT_Vector3D.Transform(_displacement - (CVelocity / 60), MatrixD.Invert(_worldMatrix)) * 2);
                 DisplaceTrackedBlocks(displacement);
             }
             
@@ -178,8 +179,8 @@ namespace IngameScript.Ship
             _scannedBlocks_Swap.Clear();
             foreach (var kv in _scannedBlocks)
             {
-                var worldPos = Vector3D.Transform(
-                    (Vector3D)(Vector3)kv.Key * (double)_gridSize + GridOffset,
+                var worldPos = AT_Vector3D.Transform(
+                    (AT_Vector3D)kv.Key * _gridSize + GridOffset,
                     _worldMatrix
                 );
 
@@ -192,25 +193,22 @@ namespace IngameScript.Ship
             var temp = _scannedBlocks;
             _scannedBlocks = _scannedBlocks_Swap;
             _scannedBlocks_Swap = temp;
-
-            Program.Debug.DrawAABB(WorldAABB, Color.Green, DebugAPI.Style.Wireframe, 0.02f, 0.016f);
-
+            
             var tempobb = new MyOrientedBoundingBoxD(LocalAABB, Info.Orientation);
             tempobb.Center = WorldAABB.Center;
-            Program.Debug.DrawOBB(tempobb, Color.Red, DebugAPI.Style.Wireframe, 0.02f, 0.016f);
             
         }
 
-        public void AddTrackedBlock(MyDetectedEntityInfo info, IMyLargeTurretBase turret = null,
+        public void AddTrackedBlock(AT_DetectedEntityInfo info, IMyLargeTurretBase turret = null,
             TargetTracker controller = null)
         {
             if (info.EntityId != Info.EntityId || info.HitPosition == null) return;
 
-            var targetBlockPosition = (Vector3D)info.HitPosition;
+            var targetBlockPosition = (AT_Vector3D)info.HitPosition;
             //Program.Debug.DrawPoint(targetBlockPosition, Color.Red, 0.2f, 5f, true);
             var worldDirection = targetBlockPosition - Position;
             var positionInGridDouble =
-                Vector3D.TransformNormal(worldDirection,
+                AT_Vector3D.TransformNormal(worldDirection,
                     MatrixD.Transpose(
                         _worldMatrix));
             positionInGridDouble-= GridOffset;
@@ -244,7 +242,7 @@ namespace IngameScript.Ship
             }
             else
             {
-                _scannedBlocks.Add(positionInGridInt, new ScannedBlockTracker(Config.ScannedBlockMaximumValidTimeFrames, type));
+                _scannedBlocks.Add(positionInGridInt, new ScannedBlockTracker(Config.Tracker.ScannedBlockMaxValidFrames, type));
             }
             
         }

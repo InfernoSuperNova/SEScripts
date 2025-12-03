@@ -1,12 +1,10 @@
 ﻿
 using Sandbox.ModAPI.Ingame;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using IngameScript.Helper;
 using IngameScript.SConfig;
-using VRageMath;
 
 namespace IngameScript
 {
@@ -34,6 +32,8 @@ namespace IngameScript
                 Config.Setup(Me);
                 Program.LogLine("Creating this ship as controllable ship", LogLevel.Info);
                 ShipManager.CreateControllableShip(Me.CubeGrid, GridTerminalSystem);
+                Program.LogLine("Creating commands", LogLevel.Info);
+                Commands.Setup();
                 Runtime.UpdateFrequency = UpdateFrequency.Update1;
                 
                 var elapsed = DateTime.UtcNow - startTime;
@@ -64,6 +64,7 @@ namespace IngameScript
 
         // TODO to be feature parity with arguslite:
         // Finish auto balance (add space ball balance, mass block pair reenable)
+        // Get spherical force properly
         // Handle block removal in all systems
         // UI, switches (hud LCD probably)
         // Finish hooking up variables in config
@@ -88,7 +89,7 @@ namespace IngameScript
         private void RunCommand(string argument)
         {
             Action action;
-            if (Config.Commands.TryGetValue(argument, out action))
+            if (Commands.TryGetValue(argument, out action))
             {
                 action();
             }

@@ -6,7 +6,7 @@ namespace IngameScript.Helper
     {
         public static double SnapToMultiple(double value, double multiple)
         {
-            return (double)(Math.Round(value / multiple) * multiple);
+            return (Math.Round(value / multiple) * multiple);
         }
     }
 }

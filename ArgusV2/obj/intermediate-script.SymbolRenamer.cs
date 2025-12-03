@@ -39,1669 +39,1738 @@ class Program : MyGridProgram
             N.O(Me);
             Program.M("Creating this ship as controllable ship", K.L);
             P.Q(Me.CubeGrid, GridTerminalSystem);
+            Program.M("Creating commands", K.L);
+            R.O();
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
                 
-            var R = DateTime.UtcNow - I;
-            M($"Setup completed in {R.TotalMilliseconds:F1} ms", K.S);
+            var S = DateTime.UtcNow - I;
+            M($"Setup completed in {S.TotalMilliseconds:F1} ms", K.T);
         }
-        catch (Exception T)
+        catch (Exception U)
         {
-            Echo("Crashed: " + T);
+            Echo("Crashed: " + U);
         }
         Echo(F.ToString());
     }
         
-    public void Main(string U, UpdateType V)
+    public void Main(string V, UpdateType W)
     {
 
         try
         {
-                if ((V & UpdateType.Update1) != 0) W();
-                if ((V & (UpdateType.Trigger | UpdateType.Terminal)) != 0) X(U);
+                if ((W & UpdateType.Update1) != 0) X();
+                if ((W & (UpdateType.Trigger | UpdateType.Terminal)) != 0) Y(V);
         }
-        catch (Exception T)
+        catch (Exception U)
         {
-            Echo(T.ToString());
+            Echo(U.ToString());
             Runtime.UpdateFrequency = UpdateFrequency.None;
         }
     }
 
 
-
-    void W()
+        
+    void X()
     {
-        using (C.Y(Z => { G.Enqueue(Z.TotalMilliseconds); }))
+        using (C.Z(a => { G.Enqueue(a.TotalMilliseconds); }))
         {
-            a.b();
-            P.c(H);
-            P.d(H++);
+            b.c();
+            P.d(H);
+            P.e(H++);
         }
 
         if (G.Count > 600) G.Dequeue();
-        e(G.Average());
-        F.f();
-        e(F);
+        f(G.Average());
+        F.g();
+        f(F);
     }
-    void X(string U)
+    void Y(string V)
     {
-        Action g;
-        if (N.h.TryGetValue(U, out g))
+        Action h;
+        if (R.i(V, out h))
         {
-            g();
+            h();
         }
         else
         {
         }
     }
-    public static void e(object i)
+    public static void f(object j)
     {
-        A.Echo(i.ToString());
+        A.Echo(j.ToString());
     }
 
-    public static void e(TimeSpan R, string j)
+    public static void f(TimeSpan S, string k)
     {
-        double k = R.Ticks / 10.0;
-        A.Echo($"{j}: {k} µs");
+        double l = S.Ticks / 10.0;
+        A.Echo($"{k}: {l} µs");
     }
         
-    public static void M(object l, K m = K.L)
+    public static void M(object m, K n = K.L)
     {
-        A.F.J(l.ToString(), m);
+        A.F.J(m.ToString(), n);
     }
 }
 public class B
     {
-        public readonly bool n;
+        public readonly bool o;
 
-        public void q() => o?.Invoke(p);
-        Action<IMyProgrammableBlock> o;
+        public void r() => p?.Invoke(q);
+        Action<IMyProgrammableBlock> p;
 
-        public void s() => r?.Invoke(p);
-        Action<IMyProgrammableBlock> r;
+        public void t() => s?.Invoke(q);
+        Action<IMyProgrammableBlock> s;
 
-        public void v(int t) => u?.Invoke(p, t);
-        Action<IMyProgrammableBlock, int> u;
+        public void w(int u) => v?.Invoke(q, u);
+        Action<IMyProgrammableBlock, int> v;
 
-        public int Á(Vector3D w, Color x, float y = 0.2f, float ª = z, bool? µ = null) => º?.Invoke(p, w, x, y, ª, µ ?? À) ?? -1;
-        Func<IMyProgrammableBlock, Vector3D, Color, float, float, bool, int> º;
+        public int Ã(x y, Color z, float ª = 0.2f, float º = µ, bool? À = null) => Á?.Invoke(q, y, z, ª, º, À ?? Â) ?? -1;
+        Func<IMyProgrammableBlock, Vector3D, Color, float, float, bool, int> Á;
 
-        public int Ç(Vector3D Â, Vector3D Ã, Color x, float Å = Ä, float ª = z, bool? µ = null) => Æ?.Invoke(p, Â, Ã, x, Å, ª, µ ?? À) ?? -1;
-        Func<IMyProgrammableBlock, Vector3D, Vector3D, Color, float, float, bool, int> Æ;
+        public int É(x Ä, x Å, Color z, float Ç = Æ, float º = µ, bool? À = null) => È?.Invoke(q, Ä, Å, z, Ç, º, À ?? Â) ?? -1;
+        Func<IMyProgrammableBlock, Vector3D, Vector3D, Color, float, float, bool, int> È;
 
-        public int Í(BoundingBoxD È, Color x, É Ë = É.Ê, float Å = Ä, float ª = z, bool? µ = null) => Ì?.Invoke(p, È, x, (int)Ë, Å, ª, µ ?? À) ?? -1;
-        Func<IMyProgrammableBlock, BoundingBoxD, Color, int, float, float, bool, int> Ì;
+        public int Ï(BoundingBoxD Ê, Color z, Ë Í = Ë.Ì, float Ç = Æ, float º = µ, bool? À = null) => Î?.Invoke(q, Ê, z, (int)Í, Ç, º, À ?? Â) ?? -1;
+        Func<IMyProgrammableBlock, BoundingBoxD, Color, int, float, float, bool, int> Î;
 
-        public int Ð(MyOrientedBoundingBoxD Î, Color x, É Ë = É.Ê, float Å = Ä, float ª = z, bool? µ = null) => Ï?.Invoke(p, Î, x, (int)Ë, Å, ª, µ ?? À) ?? -1;
-        Func<IMyProgrammableBlock, MyOrientedBoundingBoxD, Color, int, float, float, bool, int> Ï;
+        public int Ò(MyOrientedBoundingBoxD Ð, Color z, Ë Í = Ë.Ì, float Ç = Æ, float º = µ, bool? À = null) => Ñ?.Invoke(q, Ð, z, (int)Í, Ç, º, À ?? Â) ?? -1;
+        Func<IMyProgrammableBlock, MyOrientedBoundingBoxD, Color, int, float, float, bool, int> Ñ;
 
-        public int Ô(BoundingSphereD Ñ, Color x, É Ë = É.Ê, float Å = Ä, int Ò = 15, float ª = z, bool? µ = null) => Ó?.Invoke(p, Ñ, x, (int)Ë, Å, Ò, ª, µ ?? À) ?? -1;
-        Func<IMyProgrammableBlock, BoundingSphereD, Color, int, float, int, float, bool, int> Ó;
+        public int Ö(BoundingSphereD Ó, Color z, Ë Í = Ë.Ì, float Ç = Æ, int Ô = 15, float º = µ, bool? À = null) => Õ?.Invoke(q, Ó, z, (int)Í, Ç, Ô, º, À ?? Â) ?? -1;
+        Func<IMyProgrammableBlock, BoundingSphereD, Color, int, float, int, float, bool, int> Õ;
 
-        public int Ù(MatrixD Õ, float Ö = 1f, float Å = Ä, float ª = z, bool? µ = null) => Ø?.Invoke(p, Õ, Ö, Å, ª, µ ?? À) ?? -1;
-        Func<IMyProgrammableBlock, MatrixD, float, float, float, bool, int> Ø;
+        public int Û(MatrixD Ø, float Ù = 1f, float Ç = Æ, float º = µ, bool? À = null) => Ú?.Invoke(q, Ø, Ù, Ç, º, À ?? Â) ?? -1;
+        Func<IMyProgrammableBlock, MatrixD, float, float, float, bool, int> Ú;
 
-        public int Ü(string Ú, Vector3D w, Color? x = null, float ª = z) => Û?.Invoke(p, Ú, w, x, ª) ?? -1;
-        Func<IMyProgrammableBlock, string, Vector3D, Color?, float, int> Û;
+        public int Þ(string Ü, x y, Color? z = null, float º = µ) => Ý?.Invoke(q, Ü, y, z, º) ?? -1;
+        Func<IMyProgrammableBlock, string, Vector3D, Color?, float, int> Ý;
 
-        public int á(string Ý, Þ ß = Þ.C, float ª = 2) => à?.Invoke(p, Ý, ß.ToString(), ª) ?? -1;
-        Func<IMyProgrammableBlock, string, string, float, int> à;
+        public int ã(string ß, à á = à.C, float º = 2) => â?.Invoke(q, ß, á.ToString(), º) ?? -1;
+        Func<IMyProgrammableBlock, string, string, float, int> â;
 
-        public void å(string Ý, string â = null, Color? ã = null, Þ ß = Þ.C) => ä?.Invoke(p, Ý, â, ã, ß.ToString());
-        Action<IMyProgrammableBlock, string, string, Color?, string> ä;
+        public void ç(string ß, string ä = null, Color? å = null, à á = à.C) => æ?.Invoke(q, ß, ä, å, á.ToString());
+        Action<IMyProgrammableBlock, string, string, Color?, string> æ;
 
-        public void í(out int t, double æ, double ç = 0.05, è ê = è.é, string ë = null) => t = ì?.Invoke(p, æ, ç, ê.ToString(), ë) ?? -1;
-        Func<IMyProgrammableBlock, double, double, string, string, int> ì;
+        public void ï(out int u, double è, double é = 0.05, ê ì = ê.ë, string í = null) => u = î?.Invoke(q, è, é, ì.ToString(), í) ?? -1;
+        Func<IMyProgrammableBlock, double, double, string, string, int> î;
 
-        public double ð(int t, double î = 1) => ï?.Invoke(p, t) ?? î;
-        Func<IMyProgrammableBlock, int, double> ï;
+        public double ò(int u, double ð = 1) => ñ?.Invoke(q, u) ?? ð;
+        Func<IMyProgrammableBlock, int, double> ñ;
 
-        public int ò() => ñ?.Invoke() ?? -1;
-        Func<int> ñ;
+        public int ô() => ó?.Invoke() ?? -1;
+        Func<int> ó;
 
-        public TimeSpan ô() => ó?.Invoke() ?? TimeSpan.Zero;
-        Func<TimeSpan> ó;
+        public TimeSpan ö() => õ?.Invoke() ?? TimeSpan.Zero;
+        Func<TimeSpan> õ;
 
-        public õ Y(Action<TimeSpan> ö) => new õ(this, ö);
-        public struct õ : IDisposable
+        public ø Z(Action<TimeSpan> ù) => new ø(this, ù);
+        public struct ø : IDisposable
         {
-            B ø; TimeSpan ù; Action<TimeSpan> ú;
-            public õ(B û, Action<TimeSpan> ö) { ø = û; ú = ö; ù = ø.ô(); }
-            public void Dispose() { ú?.Invoke(ø.ô() - ù); }
+            B ú; TimeSpan û; Action<TimeSpan> ü;
+            public ø(B ý, Action<TimeSpan> ù) { ú = ý; ü = ù; û = ú.ö(); }
+            public void Dispose() { ü?.Invoke(ú.ö() - û); }
         }
 
-        public enum É { ü, Ê, ý }
-        public enum è { þ, ÿ, Ā, ā, Ă, ă, Ą, ą, Ć, ć, Ĉ, ĉ, Ċ, é, ċ, Č, č, Ď, ď, Đ, đ, Ē, ē, Ĕ, ĕ, Ė, ė, Ę, ę, Ě, ě, Ĝ, ĝ, Ğ, ğ, Ġ, ø, ġ, ú, Ģ, ģ, Ĥ, ĥ, Ħ, A, ħ, Ĩ, ĩ, Ī, ī, Ĭ, ĭ, Į, į, ù, İ, ı, Ĳ, ĳ, Ĵ, ĵ, Ķ, ķ, ĸ, Ĺ, ĺ, Ļ, ļ, Ľ, ľ, Ŀ, ŀ, Ł, J, ł, Ń, ń, Ņ, ņ, Ň, ň, ŉ, Ŋ, ŋ, Ō, ō, Ŏ, ŏ, Ő, ő }
-        public enum Þ { C, Œ, œ, Ŕ, ŕ, Ŗ }
-        const float Ä = 0.02f;
-        const float z = -1;
-        IMyProgrammableBlock p;
-        bool À;
-        public B(MyGridProgram ŗ, bool Ř = false)
+        public enum Ë { þ, Ì, ÿ }
+        public enum ê { Ā, ā, Ă, ă, Ą, ą, Ć, ć, Ĉ, ĉ, Ċ, ċ, Č, ë, č, Ď, ď, Đ, đ, Ē, ē, Ĕ, ĕ, Ė, ė, Ę, ę, Ě, ě, Ĝ, ĝ, Ğ, ğ, Ġ, ġ, Ģ, ú, ģ, ü, Ĥ, ĥ, Ħ, ħ, Ĩ, A, ĩ, Ī, ī, Ĭ, ĭ, Į, į, İ, ı, û, Ĳ, ĳ, Ĵ, ĵ, Ķ, ķ, ĸ, Ĺ, ĺ, Ļ, ļ, Ľ, ľ, Ŀ, ŀ, Ł, ł, Ń, J, ń, Ņ, ņ, Ň, ň, ŉ, Ŋ, ŋ, Ō, ō, Ŏ, ŏ, Ő, ő, Œ, œ }
+        public enum à { C, Ŕ, ŕ, Ŗ, ŗ, Ř }
+        const float Æ = 0.02f;
+        const float µ = -1;
+        IMyProgrammableBlock q;
+        bool Â;
+        public B(MyGridProgram ř, bool Ś = false)
         {
-            if(ŗ == null) throw new Exception("Pass `this` into the API, not null.");
-            À = Ř;
-            p = ŗ.Me;
-            var ř = p.GetProperty("DebugAPI")?.As<IReadOnlyDictionary<string, Delegate>>()?.GetValue(p);
-            if(ř != null)
+            if(ř == null) throw new Exception("Pass `this` into the API, not null.");
+            Â = Ś;
+            q = ř.Me;
+            var ś = q.GetProperty("DebugAPI")?.As<IReadOnlyDictionary<string, Delegate>>()?.GetValue(q);
+            if(ś != null)
             {
-                Ś(out r, ř["RemoveAll"]);
-                Ś(out o, ř["RemoveDraw"]);
-                Ś(out u, ř["Remove"]);
-                Ś(out º, ř["Point"]);
-                Ś(out Æ, ř["Line"]);
-                Ś(out Ì, ř["AABB"]);
-                Ś(out Ï, ř["OBB"]);
-                Ś(out Ó, ř["Sphere"]);
-                Ś(out Ø, ř["Matrix"]);
-                Ś(out Û, ř["GPS"]);
-                Ś(out à, ř["HUDNotification"]);
-                Ś(out ä, ř["Chat"]);
-                Ś(out ì, ř["DeclareAdjustNumber"]);
-                Ś(out ï, ř["GetAdjustNumber"]);
-                Ś(out ñ, ř["Tick"]);
-                Ś(out ó, ř["Timestamp"]);
-                s();
-                n = true;
+                Ŝ(out s, ś["RemoveAll"]);
+                Ŝ(out p, ś["RemoveDraw"]);
+                Ŝ(out v, ś["Remove"]);
+                Ŝ(out Á, ś["Point"]);
+                Ŝ(out È, ś["Line"]);
+                Ŝ(out Î, ś["AABB"]);
+                Ŝ(out Ñ, ś["OBB"]);
+                Ŝ(out Õ, ś["Sphere"]);
+                Ŝ(out Ú, ś["Matrix"]);
+                Ŝ(out Ý, ś["GPS"]);
+                Ŝ(out â, ś["HUDNotification"]);
+                Ŝ(out æ, ś["Chat"]);
+                Ŝ(out î, ś["DeclareAdjustNumber"]);
+                Ŝ(out ñ, ś["GetAdjustNumber"]);
+                Ŝ(out ó, ś["Tick"]);
+                Ŝ(out õ, ś["Timestamp"]);
+                t();
+                o = true;
             }
         }
-        void Ś<İ>(out İ ś, object Ŝ) => ś = (İ)Ŝ;
+        void Ŝ<Ĳ>(out Ĳ ŝ, object Ş) => ŝ = (Ĳ)Ş;
     }
-    public static class Ɛ
+public struct ţ<Ĳ>
+{
+    Ĳ ş;
+    bool Š;
+    private readonly Func<Ĳ> š;
+
+    public ţ(Func<Ĳ> Ţ)
     {
-        public class Š
-        {
-            public object ŝ;
-            public string Ş;
+        if (Ţ == null)
+            throw new ArgumentNullException("getter");
 
-            public Š(object i, string ş)
+        š = Ţ;
+        ş = default(Ĳ);
+        Š = false;
+    }
+
+    public Ĳ Ť
+    {
+        get
+        {
+            if (!Š)
             {
-                ŝ = i;
-                Ş = ş;
+                ş = š();
+                Š = true;
+            }
+            return ş;
+        }
+    }
+
+    public void ť() => Š = false;
+}
+    public static class ƚ
+    {
+        public class ũ
+        {
+            public object Ŧ;
+            public string ŧ;
+
+            public ũ(object j, string Ũ)
+            {
+                Ŧ = j;
+                ŧ = Ũ;
             }
         }
 
 
-        public static string ţ(object i, int š = -1)
+        public static string Ŭ(object j, int Ū = -1)
         {
-            var Ţ = new StringBuilder();
-            ţ(i, Ţ, š, null);
+            var ū = new StringBuilder();
+            Ŭ(j, ū, Ū, null);
             Program.M("Serialized successfully", K.C);
-            return Ţ.ToString();
+            return ū.ToString();
         }
 
-        private static void ţ(object i, StringBuilder Ţ, int š, string Ť)
+        private static void Ŭ(object j, StringBuilder ū, int Ū, string ŭ)
         {
-            string ť = new string(' ', Math.Max(š, 0));
+            string Ů = new string(' ', Math.Max(Ū, 0));
 
-            if (i == null)
+            if (j == null)
             {
-                if (Ť != null) Ţ.AppendLine(ť + Ť + " = null");
+                if (ŭ != null) ū.AppendLine(Ů + ŭ + " = null");
                 return;
             }
 
-            Š Ŧ = i as Š;
-            if (Ŧ != null)
+            ũ ů = j as ũ;
+            if (ů != null)
             {
-                bool Ũ = ŧ(Ŧ.ŝ);
-                if (Ũ && Ť != null)
+                bool ű = Ű(ů.Ŧ);
+                if (ű && ŭ != null)
                 {
-                    Ţ.AppendLine(ť + Ť + " = " + ũ(Ŧ.ŝ) + "   # " + Ŧ.Ş);
+                    ū.AppendLine(Ů + ŭ + " = " + Ų(ů.Ŧ) + "   # " + ů.ŧ);
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(Ŧ.Ş))
-                        Ţ.AppendLine(ť + "# " + Ŧ.Ş);
-                    ţ(Ŧ.ŝ, Ţ, š, Ť);
+                    if (!string.IsNullOrEmpty(ů.ŧ))
+                        ū.AppendLine(Ů + "# " + ů.ŧ);
+                    Ŭ(ů.Ŧ, ū, Ū, ŭ);
                 }
                 return;
             }
 
-            IDictionary<string, object> Ū = i as IDictionary<string, object>;
-            if (Ū != null)
+            IDictionary<string, object> ų = j as IDictionary<string, object>;
+            if (ų != null)
             {
-                if (Ť != null) Ţ.AppendLine(ť + Ť + " = [");
-                foreach (var ū in Ū)
+                if (ŭ != null) ū.AppendLine(Ů + ŭ + " = [");
+                foreach (var Ŵ in ų)
                 {
-                    ţ(ū.Value, Ţ, š + 2, ū.Key);
+                    Ŭ(Ŵ.Value, ū, Ū + 2, Ŵ.Key);
                 }
-                if (Ť != null) Ţ.AppendLine(ť + "]");
+                if (ŭ != null) ū.AppendLine(Ů + "]");
                 return;
             }
 
-            IEnumerable<object> Ŭ = i as IEnumerable<object>;
-            if (Ŭ != null)
+            IEnumerable<object> ŵ = j as IEnumerable<object>;
+            if (ŵ != null)
             {
-                if (Ť != null)
+                if (ŭ != null)
                 {
-                    Ţ.Append(ť + Ť + " = { ");
-                    bool ŭ = true;
-                    foreach (object Ů in Ŭ)
+                    ū.Append(Ů + ŭ + " = { ");
+                    bool Ŷ = true;
+                    foreach (object ŷ in ŵ)
                     {
-                        if (!ŭ) Ţ.Append(", ");
-                        Ţ.Append(ũ(Ů));
-                        ŭ = false;
+                        if (!Ŷ) ū.Append(", ");
+                        ū.Append(Ų(ŷ));
+                        Ŷ = false;
                     }
-                    Ţ.AppendLine(" }");
+                    ū.AppendLine(" }");
                 }
                 else
                 {
-                    foreach (object Ů in Ŭ)
-                        ţ(Ů, Ţ, š, null);
+                    foreach (object ŷ in ŵ)
+                        Ŭ(ŷ, ū, Ū, null);
                 }
                 return;
             }
 
-            if (Ť != null)
+            if (ŭ != null)
             {
-                Ţ.AppendLine(ť + Ť + " = " + ũ(i));
+                ū.AppendLine(Ů + ŭ + " = " + Ų(j));
             }
         }
 
-        private static string ũ(object i)
+        private static string Ų(object j)
         {
-            if (i == null) return "null";
-            if (i is string) return "\"" + ů((string)i) + "\"";
-            if (i is bool) return ((bool)i ? "true" : "false");
-            if (i is float) return ((float)i).ToString("0.#####", System.Globalization.CultureInfo.InvariantCulture);
-            if (i is double) return ((double)i).ToString("0.##########", System.Globalization.CultureInfo.InvariantCulture); 
-            if (i is int || i is long || i is short || i is byte) return i.ToString();
-            return "\"" + ů(i.ToString()) + "\"";
+            if (j == null) return "null";
+            if (j is string) return "\"" + Ÿ((string)j) + "\"";
+            if (j is bool) return ((bool)j ? "true" : "false");
+            if (j is float) return ((float)j).ToString("0.#####", System.Globalization.CultureInfo.InvariantCulture);
+            if (j is double) return ((double)j).ToString("0.##########", System.Globalization.CultureInfo.InvariantCulture); 
+            if (j is int || j is long || j is short || j is byte) return j.ToString();
+            return "\"" + Ÿ(j.ToString()) + "\"";
         }
 
-        private static string ů(string Ű)
+        private static string Ÿ(string Ź)
         {
-            return Ű.Replace("\\", "\\\\").Replace("\"", "\\\"");
+            return Ź.Replace("\\", "\\\\").Replace("\"", "\\\"");
         }
 
-        private static bool ŧ(object ű)
+        private static bool Ű(object ź)
         {
-            return ű is string || ű is bool ||
-                   ű is int || ű is long || ű is short || ű is byte ||
-                   ű is float || ű is double;
+            return ź is string || ź is bool ||
+                   ź is int || ź is long || ź is short || ź is byte ||
+                   ź is float || ź is double;
         }
 
 
 
-        public static object ź(string Ų)
+        public static object ƃ(string Ż)
         {
-            int ų = 0;
-            var Ŵ = new Dictionary<string, object>();
-            while (ų < Ų.Length)
+            int ż = 0;
+            var Ž = new Dictionary<string, object>();
+            while (ż < Ż.Length)
             {
-                ŵ(Ų, ref ų);
-                if (ų >= Ų.Length) break;
+                ž(Ż, ref ż);
+                if (ż >= Ż.Length) break;
 
-                string Ť = Ŷ(Ų, ref ų);
-                Program.e(Ť);
-                ŷ(Ų, ref ų, '=');
-                object ű = Ÿ(Ų, ref ų);
-                string ş = Ź(Ų, ref ų);
-                if (ş != null && ŧ(ű))
-                    ű = new Š(ű, ş);
+                string ŭ = ſ(Ż, ref ż);
+                Program.f(ŭ);
+                ƀ(Ż, ref ż, '=');
+                object ź = Ɓ(Ż, ref ż);
+                string Ũ = Ƃ(Ż, ref ż);
+                if (Ũ != null && Ű(ź))
+                    ź = new ũ(ź, Ũ);
 
-                Ŵ[Ť] = ű;
+                Ž[ŭ] = ź;
             }
-            return Ŵ;
+            return Ž;
         }
 
-        private static object Ÿ(string Ű, ref int ų)
+        private static object Ɓ(string Ź, ref int ż)
         {
-            ŵ(Ű, ref ų);
+            ž(Ź, ref ż);
 
-            if (ų >= Ű.Length) return null;
+            if (ż >= Ź.Length) return null;
 
-            char Ż = Ű[ų];
+            char Ƅ = Ź[ż];
 
-            switch (Ż)
+            switch (Ƅ)
             {
                 case '[':
                 {
-                    ų++;
-                    var Ū = new Dictionary<string, object>();
+                    ż++;
+                    var ų = new Dictionary<string, object>();
                     while (true)
                     {
-                        ŵ(Ű, ref ų);
-                        if (ų >= Ű.Length) break;
-                        if (Ű[ų] == ']') { ų++; break; }
+                        ž(Ź, ref ż);
+                        if (ż >= Ź.Length) break;
+                        if (Ź[ż] == ']') { ż++; break; }
 
-                        string Ť = Ŷ(Ű, ref ų);
-                        ŷ(Ű, ref ų, '=');
-                        object ű = Ÿ(Ű, ref ų);
+                        string ŭ = ſ(Ź, ref ż);
+                        ƀ(Ź, ref ż, '=');
+                        object ź = Ɓ(Ź, ref ż);
 
-                        string ş = Ź(Ű, ref ų);
-                        if (ş != null && ŧ(ű))
-                            ű = new Š(ű, ş);
+                        string Ũ = Ƃ(Ź, ref ż);
+                        if (Ũ != null && Ű(ź))
+                            ź = new ũ(ź, Ũ);
 
-                        Ū[Ť] = ű;
+                        ų[ŭ] = ź;
                     }
-                    return Ū;
+                    return ų;
                 }
                 case '{':
                 {
-                    ų++;
-                    var Ŭ = new List<object>();
+                    ż++;
+                    var ŵ = new List<object>();
                     while (true)
                     {
-                        ŵ(Ű, ref ų);
-                        if (ų >= Ű.Length) break;
-                        if (Ű[ų] == '}') { ų++; break; }
+                        ž(Ź, ref ż);
+                        if (ż >= Ź.Length) break;
+                        if (Ź[ż] == '}') { ż++; break; }
 
-                        object ű = Ÿ(Ű, ref ų);
-                        string ş = Ź(Ű, ref ų);
-                        if (ş != null && ŧ(ű))
-                            ű = new Š(ű, ş);
+                        object ź = Ɓ(Ź, ref ż);
+                        string Ũ = Ƃ(Ź, ref ż);
+                        if (Ũ != null && Ű(ź))
+                            ź = new ũ(ź, Ũ);
 
-                        Ŭ.Add(ű);
+                        ŵ.Add(ź);
 
-                        ŵ(Ű, ref ų);
-                        if (ų < Ű.Length && Ű[ų] == ',') ų++;
+                        ž(Ź, ref ż);
+                        if (ż < Ź.Length && Ź[ż] == ',') ż++;
                     }
-                    return Ŭ;
+                    return ŵ;
                 }
             }
 
-            string Ž = ż(Ű, ref ų);
-            string ž = Ź(Ű, ref ų);
-            object ƀ = ſ(Ž);
-            if (ž != null && ŧ(ƀ))
-                ƀ = new Š(ƀ, ž);
-            return ƀ;
+            string Ɔ = ƅ(Ź, ref ż);
+            string Ƈ = Ƃ(Ź, ref ż);
+            object Ɖ = ƈ(Ɔ);
+            if (Ƈ != null && Ű(Ɖ))
+                Ɖ = new ũ(Ɖ, Ƈ);
+            return Ɖ;
         }
 
-        private static void ŵ(string Ű, ref int ų)
+        private static void ž(string Ź, ref int ż)
         {
-            while (ų < Ű.Length)
+            while (ż < Ź.Length)
             {
-                if (Ű[ų] == ' ' || Ű[ų] == '\t' || Ű[ų] == '\r' || Ű[ų] == '\n')
+                if (Ź[ż] == ' ' || Ź[ż] == '\t' || Ź[ż] == '\r' || Ź[ż] == '\n')
                 {
-                    ų++;
+                    ż++;
                     continue;
                 }
 
-                if (Ű[ų] == '#')
+                if (Ź[ż] == '#')
                 {
-                    while (ų < Ű.Length && Ű[ų] != '\n') ų++;
+                    while (ż < Ź.Length && Ź[ż] != '\n') ż++;
                     continue;
                 }
                 break;
             }
         }
 
-        private static string Ŷ(string Ű, ref int ų)
+        private static string ſ(string Ź, ref int ż)
         {
-            Ɓ(Ű, ref ų);
+            Ɗ(Ź, ref ż);
 
-            int Â = ų;
+            int Ä = ż;
 
-            while (ų < Ű.Length)
+            while (ż < Ź.Length)
             {
-                char Ż = Ű[ų];
+                char Ƅ = Ź[ż];
 
-                if (Ż == '=')
+                if (Ƅ == '=')
                     break;
 
-                if (Ż == '\n' || Ż == '\r')
+                if (Ƅ == '\n' || Ƅ == '\r')
                     throw new Exception("Unexpected newline while reading key");
 
-                ų++;
+                ż++;
             }
 
-            if (ų == Â)
-                throw new Exception($"Empty key at index {ų}");
+            if (ż == Ä)
+                throw new Exception($"Empty key at index {ż}");
 
-            string Ť = Ű.Substring(Â, ų - Â).Trim();
+            string ŭ = Ź.Substring(Ä, ż - Ä).Trim();
 
-            return Ť;
+            return ŭ;
         }
 
-        private static string ż(string Ű, ref int ų)
+        private static string ƅ(string Ź, ref int ż)
         {
-            Ɓ(Ű, ref ų);
-            if (ų >= Ű.Length) return "";
+            Ɗ(Ź, ref ż);
+            if (ż >= Ź.Length) return "";
 
-            char Ż = Ű[ų];
+            char Ƅ = Ź[ż];
 
-            if (Ż == '"' || Ż == '\'')
+            if (Ƅ == '"' || Ƅ == '\'')
             {
-                char Ƃ = Ż;
-                ų++;
-                int Â = ų;
-                while (ų < Ű.Length && Ű[ų] != Ƃ) ų++;
-                string ƃ = Ű.Substring(Â, ų - Â);
-                if (ų < Ű.Length) ų++;
-                return ƃ;
+                char Ƌ = Ƅ;
+                ż++;
+                int Ä = ż;
+                while (ż < Ź.Length && Ź[ż] != Ƌ) ż++;
+                string ƌ = Ź.Substring(Ä, ż - Ä);
+                if (ż < Ź.Length) ż++;
+                return ƌ;
             }
 
-            int Ƅ = ų;
-            while (ų < Ű.Length && Ű[ų] != '\n' && Ű[ų] != '\r' && Ű[ų] != '#' && Ű[ų] != ',' && Ű[ų] != '}' && Ű[ų] != ']') ų++;
-            string Ž = Ű.Substring(Ƅ, ų - Ƅ).Trim();
-            return Ž;
+            int ƍ = ż;
+            while (ż < Ź.Length && Ź[ż] != '\n' && Ź[ż] != '\r' && Ź[ż] != '#' && Ź[ż] != ',' && Ź[ż] != '}' && Ź[ż] != ']') ż++;
+            string Ɔ = Ź.Substring(ƍ, ż - ƍ).Trim();
+            return Ɔ;
         }
 
-        private static string Ź(string Ű, ref int ų)
+        private static string Ƃ(string Ź, ref int ż)
         {
-            Ɓ(Ű, ref ų);
-            if (ų < Ű.Length && Ű[ų] == '#')
+            Ɗ(Ź, ref ż);
+            if (ż < Ź.Length && Ź[ż] == '#')
             {
-                ų++;
-                int Â = ų;
-                while (ų < Ű.Length && Ű[ų] != '\n' && Ű[ų] != '\r') ų++;
-                return Ű.Substring(Â, ų - Â).Trim();
+                ż++;
+                int Ä = ż;
+                while (ż < Ź.Length && Ź[ż] != '\n' && Ź[ż] != '\r') ż++;
+                return Ź.Substring(Ä, ż - Ä).Trim();
             }
             return null;
         }
 
-        private static void Ɓ(string Ű, ref int ų)
+        private static void Ɗ(string Ź, ref int ż)
         {
-            while (ų < Ű.Length && (Ű[ų] == ' ' || Ű[ų] == '\t' || Ű[ų] == '\r' || Ű[ų] == '\n')) ų++;
+            while (ż < Ź.Length && (Ź[ż] == ' ' || Ź[ż] == '\t' || Ź[ż] == '\r' || Ź[ż] == '\n')) ż++;
         }
 
-        private static void ŷ(string Ű, ref int ų, char ƅ)
+        private static void ƀ(string Ź, ref int ż, char Ǝ)
         {
-            Ɓ(Ű, ref ų);
-            if (ų >= Ű.Length || Ű[ų] != ƅ) throw new Exception("Expected '" + ƅ + "' at index " + ų);
-            ų++;
+            Ɗ(Ź, ref ż);
+            if (ż >= Ź.Length || Ź[ż] != Ǝ) throw new Exception("Expected '" + Ǝ + "' at index " + ż);
+            ż++;
         }
 
-        private static object ſ(string Ž)
+        private static object ƈ(string Ɔ)
         {
-            if (Ž.Length == 0) return null;
+            if (Ɔ.Length == 0) return null;
 
-            if (Ž == "true") return true;
-            if (Ž == "false") return false;
+            if (Ɔ == "true") return true;
+            if (Ɔ == "false") return false;
 
-            int Ɔ;
-            if (int.TryParse(Ž, out Ɔ)) return Ɔ;
+            int Ə;
+            if (int.TryParse(Ɔ, out Ə)) return Ə;
 
-            double Ƈ;
-            if (double.TryParse(Ž, System.Globalization.NumberStyles.Float,
-                               System.Globalization.CultureInfo.InvariantCulture, out Ƈ)) return Ƈ;
+            double Ɛ;
+            if (double.TryParse(Ɔ, System.Globalization.NumberStyles.Float,
+                               System.Globalization.CultureInfo.InvariantCulture, out Ɛ)) return Ɛ;
 
-            return Ž;
+            return Ɔ;
         }
 
         
-        public static void Ƌ(Dictionary<string, object> Ū)
+        public static void Ɣ(Dictionary<string, object> ų)
         {
-            var ƈ = new List<string>(Ū.Keys);
-            foreach (var Ť in ƈ)
+            var Ƒ = new List<string>(ų.Keys);
+            foreach (var ŭ in Ƒ)
             {
-                var Ɖ = Ū[Ť];
-                var Ż = Ɖ as Š;
-                var Ɗ = Ɖ as Dictionary<string, object>;
-                var Ŭ = Ɖ as List<object>;
-                if (Ż != null)
-                    Ū[Ť] = Ż.ŝ;
+                var ƒ = ų[ŭ];
+                var Ƅ = ƒ as ũ;
+                var Ɠ = ƒ as Dictionary<string, object>;
+                var ŵ = ƒ as List<object>;
+                if (Ƅ != null)
+                    ų[ŭ] = Ƅ.Ŧ;
                 
-                else if (Ɗ != null)
-                    Ƌ(Ɗ);
-                else if (Ŭ != null)
+                else if (Ɠ != null)
+                    Ɣ(Ɠ);
+                else if (ŵ != null)
                 {
-                    for (int Ɔ = 0; Ɔ < Ŭ.Count; Ɔ++)
+                    for (int Ə = 0; Ə < ŵ.Count; Ə++)
                     {
-                        var ƌ = Ŭ[Ɔ];
-                        var ƍ = ƌ as Š;
-                        Ŭ[Ɔ] = ƍ != null ? ƍ.ŝ : Ŭ[Ɔ];
+                        var ƕ = ŵ[Ə];
+                        var Ɩ = ƕ as ũ;
+                        ŵ[Ə] = Ɩ != null ? Ɩ.Ŧ : ŵ[Ə];
                     }
                         
                 }
             }
         }
 
-        public static İ Ə<İ>(Dictionary<string, object> Ū, string Ť, İ Ǝ = default(İ))
+        public static Ĳ ƙ<Ĳ>(Dictionary<string, object> ų, string ŭ, ref string Ũ, Ĳ Ɨ = default(Ĳ))
         {
-            object ű;
-            if (Ū.TryGetValue(Ť, out ű))
+            Ũ = "";
+            object ź;
+            if (ų.TryGetValue(ŭ, out ź))
             {
-                if (ű is İ) return (İ)ű;
-
+                var Ƙ = ź as ũ;
+                if (Ƙ != null)
+                {
+                    ź = Ƙ.Ŧ;
+                    Ũ = Ƙ.ŧ;
+                }
+                if (ź is Ĳ) return (Ĳ)ź;
+                
                 try
                 {
-                    return (İ)Convert.ChangeType(ű, typeof(İ));
+                    return (Ĳ)Convert.ChangeType(ź, typeof(Ĳ));
                 }
                 catch
                 {
-                    return Ǝ;
+                    return Ɨ;
                 }
             }
-            return Ǝ;
+            return Ɨ;
         }
     }
-public enum Ɠ : byte
+class Ɲ
 {
-Ƒ,
-ƒ,
-ē,
-ĕ,
-Ĕ,
-Ė,
-}
-public static class ƣ
-{
-    private static readonly List<Ɣ> ƕ = new List<Ɣ>();
-    private static readonly List<BoundingBoxD> Ɩ = new List<BoundingBoxD>();
+    private readonly Dictionary<string, object> ƛ;
 
-    private static readonly Dictionary<Ɣ, List<Ɣ>> Ɨ =
-        new Dictionary<Ɣ, List<Ɣ>>();
-
-    private static readonly List<List<Ɣ>> Ƙ = new List<List<Ɣ>>();
-
-    private static int ƙ = 0;
-    private static List<Ɣ> ƚ()
+    Ɲ(Dictionary<string, object> Ɯ)
     {
-        if (ƙ >= Ƙ.Count)
-            Ƙ.Add(new List<Ɣ>(8));
+        ƛ = Ɯ;
+    }
 
-        var Ŭ = Ƙ[ƙ++];
-        Ŭ.Clear();
-        return Ŭ;
+    public static Ɲ Ɵ(Dictionary<string, object> ƞ, string Ü)
+    {
+        ƚ.Ɣ(ƞ);
+
+        Dictionary<string, object> ų;
+        object j;
+
+        if (!ƞ.TryGetValue(Ü, out j) || (ų = j as Dictionary<string, object>) == null)
+        {
+            ų = new Dictionary<string, object>();
+            ƞ[Ü] = ų;
+        }
+
+        return new Ɲ(ų);
+    }
+
+    public void Ơ<Ĳ>(string ŭ, ref Ĳ ŝ, string Ũ = "")
+    {
+        var Ƙ = ƚ.ƙ(ƛ, ŭ, ref Ũ, ŝ);
+
+        if (Ũ != "") ƛ[ŭ] = new ƚ.ũ(Ƙ, Ũ);
+        else ƛ[ŭ] = Ƙ;
+    }
+}
+public enum ƣ : byte
+{
+ơ,
+Ƣ,
+ĕ,
+ė,
+Ė,
+Ę,
+}
+public static class Ƴ
+{
+    private static readonly List<Ƥ> ƥ = new List<Ƥ>();
+    private static readonly List<BoundingBoxD> Ʀ = new List<BoundingBoxD>();
+
+    private static readonly Dictionary<Ƥ, List<Ƥ>> Ƨ =
+        new Dictionary<Ƥ, List<Ƥ>>();
+
+    private static readonly List<List<Ƥ>> ƨ = new List<List<Ƥ>>();
+
+    private static int Ʃ = 0;
+    private static List<Ƥ> ƪ()
+    {
+        if (Ʃ >= ƨ.Count)
+            ƨ.Add(new List<Ƥ>(8));
+
+        var ŵ = ƨ[Ʃ++];
+        ŵ.Clear();
+        return ŵ;
     }
         
-    public static Dictionary<Ɣ, List<Ɣ>> Ơ(MyDynamicAABBTreeD ƛ)
+    public static Dictionary<Ƥ, List<Ƥ>> ư(MyDynamicAABBTreeD ƫ)
     {
-        ƙ = 0;
-        Ɨ.Clear();
-        ƛ.GetAll(ƕ, clear: true, boxsList: Ɩ);
+        Ʃ = 0;
+        Ƨ.Clear();
+        ƫ.GetAll(ƥ, clear: true, boxsList: Ʀ);
 
-        for (int Ɔ = 0; Ɔ < ƕ.Count; Ɔ++)
+        for (int Ə = 0; Ə < ƥ.Count; Ə++)
         {
-            var Ɯ = ƕ[Ɔ];
-            var Ɲ = Ɩ[Ɔ];
+            var Ƭ = ƥ[Ə];
+            var ƭ = Ʀ[Ə];
 
-            var ƞ = ƚ();
-            ƛ.OverlapAllBoundingBox(ref Ɲ, ƞ, 0U, false);
+            var Ʈ = ƪ();
+            ƫ.OverlapAllBoundingBox(ref ƭ, Ʈ, 0U, false);
 
-            foreach (var Ɵ in ƞ)
+            foreach (var Ư in Ʈ)
             {
-                if (Ɯ == Ɵ) continue;
+                if (Ƭ == Ư) continue;
                     
-                if (!Ɨ.ContainsKey(Ɯ)) Ɨ.Add(Ɯ, ƚ());
-                Ɨ[Ɯ].Add(Ɵ);
+                if (!Ƨ.ContainsKey(Ƭ)) Ƨ.Add(Ƭ, ƪ());
+                Ƨ[Ƭ].Add(Ư);
                     
-                if (!Ɨ.ContainsKey(Ɵ)) Ɨ.Add(Ɵ, ƚ());
-                Ɨ[Ɵ].Add(Ɯ);
+                if (!Ƨ.ContainsKey(Ư)) Ƨ.Add(Ư, ƪ());
+                Ƨ[Ư].Add(Ƭ);
                     
             }
         }
 
-        return Ɨ;
+        return Ƨ;
     }
-    public static List<Ɣ> Ƣ(MyDynamicAABBTreeD ƛ, BoundingBoxD ơ)
+    public static List<Ƥ> Ʋ(MyDynamicAABBTreeD ƫ, BoundingBoxD Ʊ)
     {
-        ƙ = 0;
-        var ƞ = ƚ();
+        Ʃ = 0;
+        var Ʈ = ƪ();
 
-        ƛ.OverlapAllBoundingBox(ref ơ, ƞ, 0U, false);
+        ƫ.OverlapAllBoundingBox(ref Ʊ, Ʈ, 0U, false);
 
-        return ƞ;
+        return Ʈ;
     }
 }
-public static class Ʀ
+public static class ƶ
 {
-    public static double ƥ(double ű, double Ƥ)
+    public static double Ƶ(double ź, double ƴ)
     {
-        return (double)(Math.Round(ű / Ƥ) * Ƥ);
+        return (Math.Round(ź / ƴ) * ƴ);
     }
 }
-public static class ǡ
+public static class ǲ
 {
         
-private static bool ƺ(
-        long Ƨ, long ƨ, long Ʃ,
-        double ƪ,
-        MatrixD ƫ,
-        Vector3D Ƭ)
+private static bool ǋ(
+        long Ʒ, long Ƹ, long ƹ,
+        double ƺ,
+        MatrixD ƻ,
+        x Ƽ)
     {
-        double ƭ = Ƨ * ƪ;
-        double Ʈ = ƨ * ƪ;
-        double Ư = Ʃ * ƪ;
+        double ƽ = Ʒ * ƺ;
+        double ƾ = Ƹ * ƺ;
+        double ƿ = ƹ * ƺ;
         
-        Vector3D ư = ƫ.Right;
-        Vector3D Ʊ = ƫ.Up;
-        Vector3D Ʋ = ƫ.Forward;
+        x ǀ = ƻ.Right;
+        x ǁ = ƻ.Up;
+        x ǂ = ƻ.Forward;
         
-        Vector3D Ƴ = Vector3D.Abs(ư);
-        Vector3D ƴ = Vector3D.Abs(Ʊ);
-        Vector3D Ƶ = Vector3D.Abs(Ʋ);
+        x Ǆ = x.ǃ(ǀ);
+        x ǅ = x.ǃ(ǁ);
+        x ǆ = x.ǃ(ǂ);
         
             
-        const double ƶ = 1e-8; 
+        const double Ǉ = 1e-8; 
         
-        double Ʒ = ƭ * Ƴ.X + Ʈ * ƴ.X + Ư * Ƶ.X;
-        if (Ʒ > Ƭ.X + ƶ) return false;
+        double ǈ = ƽ * Ǆ.Ķ + ƾ * ǅ.Ķ + ƿ * ǆ.Ķ;
+        if (ǈ > Ƽ.Ķ + Ǉ) return false;
         
-        double Ƹ = ƭ * Ƴ.Y + Ʈ * ƴ.Y + Ư * Ƶ.Y;
-        if (Ƹ > Ƭ.Y + ƶ) return false;
+        double ǉ = ƽ * Ǆ.ķ + ƾ * ǅ.ķ + ƿ * ǆ.ķ;
+        if (ǉ > Ƽ.ķ + Ǉ) return false;
         
-        double ƹ = ƭ * Ƴ.Z + Ʈ * ƴ.Z + Ư * Ƶ.Z;
-        if (ƹ > Ƭ.Z + ƶ) return false;
+        double Ǌ = ƽ * Ǆ.ĸ + ƾ * ǅ.ĸ + ƿ * ǆ.ĸ;
+        if (Ǌ > Ƽ.ĸ + Ǉ) return false;
         
         return true;
     }
         
-    private static bool Ǔ(
-        Vector3D ư, Vector3D Ʊ, Vector3D Ʋ,
-        Vector3D Ƭ,
-        out double ƭ, out double Ʈ, out double Ư)
+    private static bool Ǥ(
+        x ǀ, x ǁ, x ǂ,
+        x Ƽ,
+        out double ƽ, out double ƾ, out double ƿ)
     {
-        var ƻ = Math.Abs(ư.X); var Ƽ = Math.Abs(Ʊ.X); var ƽ = Math.Abs(Ʋ.X);
-        var ƾ = Math.Abs(ư.Y); var ƿ = Math.Abs(Ʊ.Y); var ǀ = Math.Abs(Ʋ.Y);
-        var ǁ = Math.Abs(ư.Z); var ǂ = Math.Abs(Ʊ.Z); var ǃ = Math.Abs(Ʋ.Z);
+        var ǌ = Math.Abs(ǀ.Ķ); var Ǎ = Math.Abs(ǁ.Ķ); var ǎ = Math.Abs(ǂ.Ķ);
+        var Ǐ = Math.Abs(ǀ.ķ); var ǐ = Math.Abs(ǁ.ķ); var Ǒ = Math.Abs(ǂ.ķ);
+        var ǒ = Math.Abs(ǀ.ĸ); var Ǔ = Math.Abs(ǁ.ĸ); var ǔ = Math.Abs(ǂ.ĸ);
 
-        double Ǆ = Ƭ.X, ǅ = Ƭ.Y, ǆ = Ƭ.Z;
+        double Ǖ = Ƽ.Ķ, ǖ = Ƽ.ķ, Ǘ = Ƽ.ĸ;
 
-        double Ǉ = ƻ * (ƿ * ǃ - ǀ * ǂ)
-                   - Ƽ * (ƾ * ǃ - ǀ * ǁ)
-                   + ƽ * (ƾ * ǂ - ƿ * ǁ);
+        double ǘ = ǌ * (ǐ * ǔ - Ǒ * Ǔ)
+                   - Ǎ * (Ǐ * ǔ - Ǒ * ǒ)
+                   + ǎ * (Ǐ * Ǔ - ǐ * ǒ);
 
-        const double ǈ = 1e-12;
-        if (Math.Abs(Ǉ) < ǈ)
+        const double Ǚ = 1e-12;
+        if (Math.Abs(ǘ) < Ǚ)
         {
-            ƭ = Ʈ = Ư = 0.0;
+            ƽ = ƾ = ƿ = 0.0;
             return false;
         }
 
-        double ǉ =  (ƿ * ǃ - ǀ * ǂ) / Ǉ;
-        double Ǌ = -(Ƽ * ǃ - ƽ * ǂ) / Ǉ;
-        double ǋ =  (Ƽ * ǀ - ƽ * ƿ) / Ǉ;
+        double ǚ =  (ǐ * ǔ - Ǒ * Ǔ) / ǘ;
+        double Ǜ = -(Ǎ * ǔ - ǎ * Ǔ) / ǘ;
+        double ǜ =  (Ǎ * Ǒ - ǎ * ǐ) / ǘ;
 
-        double ǌ = -(ƾ * ǃ - ǀ * ǁ) / Ǉ;
-        double Ǎ =  (ƻ * ǃ - ƽ * ǁ) / Ǉ;
-        double ǎ = -(ƻ * ǀ - ƽ * ƾ) / Ǉ;
+        double ǝ = -(Ǐ * ǔ - Ǒ * ǒ) / ǘ;
+        double Ǟ =  (ǌ * ǔ - ǎ * ǒ) / ǘ;
+        double ǟ = -(ǌ * Ǒ - ǎ * Ǐ) / ǘ;
 
-        double Ǐ =  (ƾ * ǂ - ƿ * ǁ) / Ǉ;
-        double ǐ = -(ƻ * ǂ - Ƽ * ǁ) / Ǉ;
-        double Ǒ =  (ƻ * ƿ - Ƽ * ƾ) / Ǉ;
+        double Ǡ =  (Ǐ * Ǔ - ǐ * ǒ) / ǘ;
+        double ǡ = -(ǌ * Ǔ - Ǎ * ǒ) / ǘ;
+        double Ǣ =  (ǌ * ǐ - Ǎ * Ǐ) / ǘ;
 
-        ƭ = ǉ * Ǆ + Ǌ * ǅ + ǋ * ǆ;
-        Ʈ = ǌ * Ǆ + Ǎ * ǅ + ǎ * ǆ;
-        Ư = Ǐ * Ǆ + ǐ * ǅ + Ǒ * ǆ;
+        ƽ = ǚ * Ǖ + Ǜ * ǖ + ǜ * Ǘ;
+        ƾ = ǝ * Ǖ + Ǟ * ǖ + ǟ * Ǘ;
+        ƿ = Ǡ * Ǖ + ǡ * ǖ + Ǣ * Ǘ;
 
-        const double ǒ = -1e-9;
-        if (ƭ < ǒ || Ʈ < ǒ || Ư < ǒ) return false;
+        const double ǣ = -1e-9;
+        if (ƽ < ǣ || ƾ < ǣ || ƿ < ǣ) return false;
 
-        ƭ = Math.Max(0.0, ƭ);
-        Ʈ = Math.Max(0.0, Ʈ);
-        Ư = Math.Max(0.0, Ư);
+        ƽ = Math.Max(0.0, ƽ);
+        ƾ = Math.Max(0.0, ƾ);
+        ƿ = Math.Max(0.0, ƿ);
 
         return true;
     }
 
-    public static BoundingBoxD Ǡ(
-        BoundingBoxD ǔ,
-        MatrixD ƫ,
-        double ƪ)
+    public static BoundingBoxD Ǳ(
+        BoundingBoxD ǥ,
+        MatrixD ƻ,
+        double ƺ)
     {
-        ƪ /= 2;
+        ƺ /= 2;
             
-        Vector3D Ƭ = ǔ.HalfExtents;
-        Vector3D ư = ƫ.Right;
-        Vector3D Ʊ = ƫ.Up;
-        Vector3D Ʋ = ƫ.Forward;
+        x Ƽ = ǥ.HalfExtents;
+        x ǀ = ƻ.Right;
+        x ǁ = ƻ.Up;
+        x ǂ = ƻ.Forward;
 
-        double Ǖ, ǖ, Ǘ;
-        if (Ǔ(ư, Ʊ, Ʋ, Ƭ, out Ǖ, out ǖ, out Ǘ))
+        double Ǧ, ǧ, Ǩ;
+        if (Ǥ(ǀ, ǁ, ǂ, Ƽ, out Ǧ, out ǧ, out Ǩ))
         {
-            long Ƨ = Math.Max(0, (long)(Ǖ / ƪ + 1e-12));
-            long ƨ = Math.Max(0, (long)(ǖ / ƪ + 1e-12));
-            long Ʃ = Math.Max(0, (long)(Ǘ / ƪ + 1e-12));
+            long Ʒ = Math.Max(0, (long)(Ǧ / ƺ + 1e-12));
+            long Ƹ = Math.Max(0, (long)(ǧ / ƺ + 1e-12));
+            long ƹ = Math.Max(0, (long)(Ǩ / ƺ + 1e-12));
 
                 
-            bool ǘ;
+            bool ǩ;
             do
             {
-                ǘ = false;
-                if (ƺ(Ƨ + 1, ƨ, Ʃ, ƪ, ƫ, Ƭ)) { Ƨ++; ǘ = true; }
-                if (ƺ(Ƨ, ƨ + 1, Ʃ, ƪ, ƫ, Ƭ)) { ƨ++; ǘ = true; }
-                if (ƺ(Ƨ, ƨ, Ʃ + 1, ƪ, ƫ, Ƭ)) { Ʃ++; ǘ = true; }
-            } while (ǘ);
+                ǩ = false;
+                if (ǋ(Ʒ + 1, Ƹ, ƹ, ƺ, ƻ, Ƽ)) { Ʒ++; ǩ = true; }
+                if (ǋ(Ʒ, Ƹ + 1, ƹ, ƺ, ƻ, Ƽ)) { Ƹ++; ǩ = true; }
+                if (ǋ(Ʒ, Ƹ, ƹ + 1, ƺ, ƻ, Ƽ)) { ƹ++; ǩ = true; }
+            } while (ǩ);
                 
                 
-            var Ǚ = new Vector3D(Ƨ * ƪ, ƨ * ƪ, Ʃ * ƪ);
-            return new BoundingBoxD(-Ǚ, Ǚ);
+            var Ǫ = new x(Ʒ * ƺ, Ƹ * ƺ, ƹ * ƺ);
+            return new BoundingBoxD(-Ǫ, Ǫ);
         }
             
-        double ǚ = Ƭ.X / (Math.Abs(ư.X) + Math.Abs(Ʊ.X) + Math.Abs(Ʋ.X));
-        double Ǜ = Ƭ.Y / (Math.Abs(ư.Y) + Math.Abs(Ʊ.Y) + Math.Abs(Ʋ.Y));
-        double ǜ = Ƭ.Z / (Math.Abs(ư.Z) + Math.Abs(Ʊ.Z) + Math.Abs(Ʋ.Z));
+        double ǫ = Ƽ.Ķ / (Math.Abs(ǀ.Ķ) + Math.Abs(ǁ.Ķ) + Math.Abs(ǂ.Ķ));
+        double Ǭ = Ƽ.ķ / (Math.Abs(ǀ.ķ) + Math.Abs(ǁ.ķ) + Math.Abs(ǂ.ķ));
+        double ǭ = Ƽ.ĸ / (Math.Abs(ǀ.ĸ) + Math.Abs(ǁ.ĸ) + Math.Abs(ǂ.ĸ));
 
-        double ǝ = Math.Min(Math.Min(ǚ, Ǜ), ǜ);
-        long Ǟ = Math.Max(0, (long)Math.Floor(ǝ / ƪ));
+        double Ǯ = Math.Min(Math.Min(ǫ, Ǭ), ǭ);
+        long ǯ = Math.Max(0, (long)Math.Floor(Ǯ / ƺ));
             
-        var ǟ = new Vector3D(Ǟ * ƪ, Ǟ * ƪ, Ǟ * ƪ);
-        return new BoundingBoxD(-ǟ, ǟ);
+        var ǰ = new x(ǯ * ƺ, ǯ * ƺ, ǯ * ƺ);
+        return new BoundingBoxD(-ǰ, ǰ);
     }
 }
-public class ǰ
+public class ȁ
 {
-    double Ǣ;
-    double ǣ;
+    double ǳ;
+    double Ǵ;
 
-    public double Ǥ;
-    double ǥ;
-    public double Ǧ;
-    double ǧ;
-    double Ǩ;
-    double ǩ;
+    public double ǵ;
+    double Ƕ;
+    public double Ƿ;
+    double Ǹ;
+    double ǹ;
+    double Ǻ;
 
-    public ǰ(double Ǫ, double ǫ, double Ǭ, double ǭ = 0, double Ǯ = 0, double ǯ = 60)
+    public ȁ(double ǻ, double Ǽ, double ǽ, double Ǿ = 0, double ǿ = 0, double Ȁ = 60)
     {
-        Ǥ = Ǫ;
-        ǥ = ǫ;
-        Ǧ = Ǭ;
-        ǧ = ǭ;
-        Ǩ = Ǯ;
-        ǩ = ǯ;
+        ǵ = ǻ;
+        Ƕ = Ǽ;
+        Ƿ = ǽ;
+        Ǹ = Ǿ;
+        ǹ = ǿ;
+        Ǻ = Ȁ;
     }
 
-    public double ǵ(double Ǳ, int ǲ)
+    public double Ȇ(double Ȃ, int ȃ)
     {
-        double ǳ = Math.Round(Ǳ, ǲ);
+        double Ȅ = Math.Round(Ȃ, ȃ);
 
-        Ǣ = Ǣ + (Ǳ / ǩ);
-        Ǣ = (ǧ > 0 && Ǣ > ǧ ? ǧ : Ǣ);
-        Ǣ = (Ǩ < 0 && Ǣ < Ǩ ? Ǩ : Ǣ);
+        ǳ = ǳ + (Ȃ / Ǻ);
+        ǳ = (Ǹ > 0 && ǳ > Ǹ ? Ǹ : ǳ);
+        ǳ = (ǹ < 0 && ǳ < ǹ ? ǹ : ǳ);
 
-        double Ǵ = (ǳ - ǣ) * ǩ;
-        ǣ = ǳ;
+        double ȅ = (Ȅ - Ǵ) * Ǻ;
+        Ǵ = Ȅ;
 
-        return (Ǥ * Ǳ) + (ǥ * Ǣ) + (Ǧ * Ǵ);
+        return (ǵ * Ȃ) + (Ƕ * ǳ) + (Ƿ * ȅ);
     }
-    public void Ƕ()
+    public void ȇ()
     {
-        Ǣ = ǣ = 0;
+        ǳ = Ǵ = 0;
     }
 }
-    public static class ȸ
+    public static class ɐ
     {
-        private static double Ƿ = 104;
-        public static double Ǹ => Double.MaxValue;
+        public static double Ȉ => Double.MaxValue;
             
         public const double
-            ǹ = 1e-6,
+            ȉ = 1e-6,
 
-            Ǻ = -0.5,
-            ǻ = 1.73205,
-            Ǽ = ǻ / 2,
+            Ȋ = -0.5,
+            ȋ = 1.73205,
+            Ȍ = ȋ / 2,
 
-            ǽ = 1.0 / 3.0,
-            Ǿ = 1.0 / 9.0,
-            ǿ = 1.0 / 6.0,
-            Ȁ = 1.0 / 54.0;
+            ȍ = 1.0 / 3.0,
+            Ȏ = 1.0 / 9.0,
+            ȏ = 1.0 / 6.0,
+            Ȑ = 1.0 / 54.0;
 
-        public static Vector3D ȗ(double ȁ, Vector3D Ȃ, Vector3D ȃ, Vector3D Ȅ, Vector3D ȅ, Vector3D Ȇ, Vector3D ȇ, Vector3D Ȉ, bool ȉ, Vector3D Ȋ = default(Vector3D), bool ȋ = false)
+        public static x ȯ(double ȑ, x Ȓ, x ȓ, x Ȕ, x ȕ, x Ȗ, x ȗ, x Ș, bool ș, x Ț = default(x), bool ț = false)
         {
-            double Ȍ = 0;
-            Vector3D
-                ȍ = Vector3D.Zero,    
-                Ȏ = ȇ,
-                ȏ = Ȇ,
-                Ȑ, ȑ;
+            double Ȝ = 0;
+            x
+                Ȟ = x.ȝ,    
+                ȟ = ȗ,
+                Ƞ = Ȗ,
+                ȡ, Ȣ;
 
-            if (ȇ.LengthSquared() > 1)
+            if (ȗ.ȣ() > 1)
             {
-                Ȍ = Math.Min((Vector3D.Normalize(ȇ) * Ƿ - Vector3D.ProjectOnVector(ref Ȇ, ref ȇ)).Length(), 2 * Ƿ) / ȇ.Length();
-                Ȇ = Vector3D.ClampToSphere(Ȇ + ȇ * Ȍ, Ƿ);
-                ȏ += ȇ * Ȍ * 0.5;
-                ȇ = Vector3D.Zero;
+                Ȝ = Math.Min((x.Ȥ(ȗ) * N.ȥ.Ȧ - x.ȧ(ref Ȗ, ref ȗ)).Ȩ(), 2 * N.ȥ.Ȧ) / ȗ.Ȩ();
+                Ȗ = x.ȩ(Ȗ + ȗ * Ȝ, N.ȥ.Ȧ);
+                Ƞ += ȗ * Ȝ * 0.5;
+                ȗ = x.ȝ;
             }
 
-            if (ȃ.LengthSquared() > 1)
+            if (ȓ.ȣ() > 1)
             {
                 double
-                    Ȓ = Math.Max((Vector3D.Normalize(ȃ) * ȁ - Vector3D.ProjectOnVector(ref Ȃ, ref ȃ)).Length(), 0) / ȃ.Length(),
-                    ȓ = (Ȃ * Ȓ + ȃ * Ȓ * Ȓ).Length();
-                Vector3D Ȕ = Ȅ + Ȇ * Ȓ + 0.5 * ȇ * Ȓ * Ȓ;
-                if (Ȕ.Length() > ȓ)
+                    Ȫ = Math.Max((x.Ȥ(ȓ) * ȑ - x.ȧ(ref Ȓ, ref ȓ)).Ȩ(), 0) / ȓ.Ȩ(),
+                    ȫ = (Ȓ * Ȫ + ȓ * Ȫ * Ȫ).Ȩ();
+                x Ȭ = Ȕ + Ȗ * Ȫ + 0.5 * ȗ * Ȫ * Ȫ;
+                if (Ȭ.Ȩ() > ȫ)
                 {
-                    ȃ = Vector3D.Zero;
-                    Ȃ = Vector3D.ClampToSphere(Ȃ + ȃ * Ȓ, ȁ);
-                    Ȅ -= Vector3D.Normalize(Ȅ) * ȓ;
+                    ȓ = x.ȝ;
+                    Ȓ = x.ȩ(Ȓ + ȓ * Ȫ, ȑ);
+                    Ȕ -= (x)x.Ȥ(Ȕ) * ȫ;
                 }
             }
 
-            Ȑ = Ȇ - Ȃ;
-            ȑ = ȇ - ȃ;
-            double Ȗ = ȕ(
-                    ȑ.LengthSquared() * 0.25,
-                    ȑ.X * Ȑ.X + ȑ.Y * Ȑ.Y + ȑ.Z * Ȑ.Z,
-                    Ȑ.LengthSquared() - Ȃ.LengthSquared() + Ȅ.X * ȑ.X + Ȅ.Y * ȑ.Y + Ȅ.Z * ȑ.Z,
-                    2 * (Ȅ.X * Ȑ.X + Ȅ.Y * Ȑ.Y + Ȅ.Z * Ȑ.Z),
-                    Ȅ.LengthSquared());
-            if (Ȗ == Ǹ || double.IsNaN(Ȗ) || Ȗ > 100)
-                Ȗ = 100;
+            ȡ = Ȗ - Ȓ;
+            Ȣ = ȗ - ȓ;
+            double Ȯ = ȭ(
+                    Ȣ.ȣ() * 0.25,
+                    Ȣ.Ķ * ȡ.Ķ + Ȣ.ķ * ȡ.ķ + Ȣ.ĸ * ȡ.ĸ,
+                    ȡ.ȣ() - Ȓ.ȣ() + Ȕ.Ķ * Ȣ.Ķ + Ȕ.ķ * Ȣ.ķ + Ȕ.ĸ * Ȣ.ĸ,
+                    2 * (Ȕ.Ķ * ȡ.Ķ + Ȕ.ķ * ȡ.ķ + Ȕ.ĸ * ȡ.ĸ),
+                    Ȕ.ȣ());
+            if (Ȯ == Ȉ || double.IsNaN(Ȯ) || Ȯ > 100)
+                Ȯ = 100;
 
-            if (Ȍ > Ȗ)
+            if (Ȝ > Ȯ)
             {
-                Ȍ = Ȗ;
-                Ȗ = 0;
+                Ȝ = Ȯ;
+                Ȯ = 0;
             }   
             else
-                Ȗ -= Ȍ;
-            return ȉ ?
-                Ȅ + Ȇ * Ȗ + ȏ * Ȍ + 0.5 * Ȏ * Ȍ * Ȍ + 0.5 * ȇ * Ȗ * Ȗ + ȍ :
-                ȅ + (Ȇ - Ȃ) * Ȗ + (ȏ - Ȃ) * Ȍ + 0.5 * Ȏ * Ȍ * Ȍ + 0.5 * ȇ * Ȗ * Ȗ + - 0.5 * Ȋ * (Ȗ + Ȍ) * (Ȗ + Ȍ) * Convert.ToDouble(ȋ) + ȍ;
+                Ȯ -= Ȝ;
+            return ș ?
+                Ȕ + Ȗ * Ȯ + Ƞ * Ȝ + 0.5 * ȟ * Ȝ * Ȝ + 0.5 * ȗ * Ȯ * Ȯ + Ȟ :
+                ȕ + (Ȗ - Ȓ) * Ȯ + (Ƞ - Ȓ) * Ȝ + 0.5 * ȟ * Ȝ * Ȝ + 0.5 * ȗ * Ȯ * Ȯ + - 0.5 * Ț * (Ȯ + Ȝ) * (Ȯ + Ȝ) * Convert.ToDouble(ț) + Ȟ;
         }
 
-        public static double ȕ(double Ș, double ș, double Ż, double Ț, double ț)
+        public static double ȭ(double Ȱ, double ȱ, double Ƅ, double Ȳ, double ȳ)
         {
-            if (Math.Abs(Ș) < ǹ) Ș = Ș >= 0 ? ǹ : -ǹ;
-            double Ȝ = 1 / Ș;
+            if (Math.Abs(Ȱ) < ȉ) Ȱ = Ȱ >= 0 ? ȉ : -ȉ;
+            double ȴ = 1 / Ȱ;
 
-            ș *= Ȝ;
-            Ż *= Ȝ;
-            Ț *= Ȝ;
-            ț *= Ȝ;
+            ȱ *= ȴ;
+            Ƅ *= ȴ;
+            Ȳ *= ȴ;
+            ȳ *= ȴ;
 
             double
-                ȝ = -Ż,
-                Ȟ = ș * Ț - 4 * ț,
-                ȟ = -ș * ș * ț - Ț * Ț + 4 * Ż * ț,
-                Ƞ;
+                ȵ = -Ƅ,
+                ȶ = ȱ * Ȳ - 4 * ȳ,
+                ȷ = -ȱ * ȱ * ȳ - Ȳ * Ȳ + 4 * Ƅ * ȳ,
+                ȸ;
 
-            double[] ȡ;
-            bool ȣ = Ȣ(ȝ, Ȟ, ȟ, out ȡ);
-            Ƞ = ȡ[0];
-            if (ȣ)
+            double[] ȹ;
+            bool Ȼ = Ⱥ(ȵ, ȶ, ȷ, out ȹ);
+            ȸ = ȹ[0];
+            if (Ȼ)
             {
-                if (Math.Abs(ȡ[1]) > Math.Abs(Ƞ))
-                    Ƞ = ȡ[1];
-                if (Math.Abs(ȡ[2]) > Math.Abs(Ƞ))
-                    Ƞ = ȡ[2];
+                if (Math.Abs(ȹ[1]) > Math.Abs(ȸ))
+                    ȸ = ȹ[1];
+                if (Math.Abs(ȹ[2]) > Math.Abs(ȸ))
+                    ȸ = ȹ[2];
             }
 
-            double Ȥ, ȥ, Ȧ, ȧ, Ȩ;
+            double ȼ, Ƚ, Ⱦ, ȿ, ɀ;
 
-            double ȩ = Ƞ * Ƞ - 4 * ț;
-            if (Math.Abs(ȩ) < ǹ)
+            double Ɂ = ȸ * ȸ - 4 * ȳ;
+            if (Math.Abs(Ɂ) < ȉ)
             {
-                Ȥ = ȥ = Ƞ * 0.5;
-                ȩ = ș * ș - 4 * (Ż - Ƞ);
+                ȼ = Ƚ = ȸ * 0.5;
+                Ɂ = ȱ * ȱ - 4 * (Ƅ - ȸ);
 
-                if (Math.Abs(ȩ) < ǹ)
-                    Ȧ = ȧ = ș * 0.5;
+                if (Math.Abs(Ɂ) < ȉ)
+                    Ⱦ = ȿ = ȱ * 0.5;
                 else
                 {
-                    Ȩ = Math.Sqrt(ȩ);
-                    Ȧ = (ș + Ȩ) * 0.5;
-                    ȧ = (ș - Ȩ) * 0.5;
+                    ɀ = Math.Sqrt(Ɂ);
+                    Ⱦ = (ȱ + ɀ) * 0.5;
+                    ȿ = (ȱ - ɀ) * 0.5;
                 }
             }
             else
             {
-                Ȩ = Math.Sqrt(ȩ);
-                Ȥ = (Ƞ + Ȩ) * 0.5;
-                ȥ = (Ƞ - Ȩ) * 0.5;
+                ɀ = Math.Sqrt(Ɂ);
+                ȼ = (ȸ + ɀ) * 0.5;
+                Ƚ = (ȸ - ɀ) * 0.5;
 
-                double Ȫ = 1 / (Ȥ - ȥ);
-                Ȧ = (ș * Ȥ - Ț) * Ȫ;
-                ȧ = (Ț - ș * ȥ) * Ȫ;
+                double ɂ = 1 / (ȼ - Ƚ);
+                Ⱦ = (ȱ * ȼ - Ȳ) * ɂ;
+                ȿ = (Ȳ - ȱ * Ƚ) * ɂ;
             }
 
-            double ȫ, Ȭ;
+            double Ƀ, Ʉ;
 
-            ȩ = Ȧ * Ȧ - 4 * Ȥ;
-            if (ȩ < 0)
-                ȫ = Ǹ;
+            Ɂ = Ⱦ * Ⱦ - 4 * ȼ;
+            if (Ɂ < 0)
+                Ƀ = Ȉ;
             else
             {
-                Ȩ = Math.Sqrt(ȩ);
-                ȫ = ȭ(-Ȧ + Ȩ, -Ȧ - Ȩ) * 0.5;
+                ɀ = Math.Sqrt(Ɂ);
+                Ƀ = Ʌ(-Ⱦ + ɀ, -Ⱦ - ɀ) * 0.5;
             }
 
-            ȩ = ȧ * ȧ - 4 * ȥ;
-            if (ȩ < 0)
-                Ȭ = Ǹ;
+            Ɂ = ȿ * ȿ - 4 * Ƚ;
+            if (Ɂ < 0)
+                Ʉ = Ȉ;
             else
             {
-                Ȩ = Math.Sqrt(ȩ);
-                Ȭ = ȭ(-ȧ + Ȩ, -ȧ - Ȩ) * 0.5;
+                ɀ = Math.Sqrt(Ɂ);
+                Ʉ = Ʌ(-ȿ + ɀ, -ȿ - ɀ) * 0.5;
             }
 
-            return ȭ(ȫ, Ȭ);
+            return Ʌ(Ƀ, Ʉ);
         }
 
-        private static bool Ȣ(double Ș, double ș, double Ż, out double[] ȡ)
+        private static bool Ⱥ(double Ȱ, double ȱ, double Ƅ, out double[] ȹ)
         {
-            ȡ = new double[4];
+            ȹ = new double[4];
 
             double
-                Ȯ = Ș * Ș,
-                ȯ = (Ȯ - 3 * ș) * Ǿ,
-                Ȱ = (Ș * (2 * Ȯ - 9 * ș) + 27 * Ż) * Ȁ,
-                Ʈ = Ȱ * Ȱ,
-                ȱ = ȯ * ȯ * ȯ;
+                Ɇ = Ȱ * Ȱ,
+                ɇ = (Ɇ - 3 * ȱ) * Ȏ,
+                Ɉ = (Ȱ * (2 * Ɇ - 9 * ȱ) + 27 * Ƅ) * Ȑ,
+                ƾ = Ɉ * Ɉ,
+                ɉ = ɇ * ɇ * ɇ;
 
-            if (Ʈ < ȱ)
+            if (ƾ < ɉ)
             {
                 double
-                    Ȳ = Math.Sqrt(ȯ),
-                    ȳ = Ȱ / (Ȳ * Ȳ * Ȳ);
+                    Ɋ = Math.Sqrt(ɇ),
+                    ɋ = Ɉ / (Ɋ * Ɋ * Ɋ);
 
-                if (ȳ < -1)
-                    ȳ = -1;
-                else if (ȳ > 1)
-                    ȳ = 1;
+                if (ɋ < -1)
+                    ɋ = -1;
+                else if (ɋ > 1)
+                    ɋ = 1;
 
-                ȳ = Math.Acos(ȳ);
+                ɋ = Math.Acos(ɋ);
 
-                Ș *= ǽ;
-                ȯ = -2 * Ȳ;
+                Ȱ *= ȍ;
+                ɇ = -2 * Ɋ;
 
                 double
-                    ȴ = Math.Cos(ȳ * ǽ),
-                    ȵ = Math.Sin(ȳ * ǽ);
+                    Ɍ = Math.Cos(ɋ * ȍ),
+                    ɍ = Math.Sin(ɋ * ȍ);
 
-                ȡ[0] = ȯ * ȴ - Ș;
-                ȡ[1] = ȯ * ((ȴ * Ǻ) - (ȵ * Ǽ)) - Ș;
-                ȡ[2] = ȯ * ((ȴ * Ǻ) + (ȵ * Ǽ)) - Ș;
+                ȹ[0] = ɇ * Ɍ - Ȱ;
+                ȹ[1] = ɇ * ((Ɍ * Ȋ) - (ɍ * Ȍ)) - Ȱ;
+                ȹ[2] = ɇ * ((Ɍ * Ȋ) + (ɍ * Ȍ)) - Ȱ;
 
                 return true;
             }
             else
             {
                 double
-                    ȶ = -Math.Pow(Math.Abs(Ȱ) + Math.Sqrt(Ʈ - ȱ), ǽ),
-                    ȷ;
+                    Ɏ = -Math.Pow(Math.Abs(Ɉ) + Math.Sqrt(ƾ - ɉ), ȍ),
+                    ɏ;
 
-                if (Ȱ < 0)
-                    ȶ = -ȶ;
+                if (Ɉ < 0)
+                    Ɏ = -Ɏ;
 
-                ȷ = ȶ == 0 ? 0 : ȯ / ȶ;
+                ɏ = Ɏ == 0 ? 0 : ɇ / Ɏ;
 
-                Ș *= ǽ;
+                Ȱ *= ȍ;
 
-                ȡ[0] = ȶ + ȷ - Ș;
-                ȡ[1] = -0.5 * (ȶ + ȷ) - Ș;
-                ȡ[2] = 0.5 * ǻ * (ȶ - ȷ);
+                ȹ[0] = Ɏ + ɏ - Ȱ;
+                ȹ[1] = -0.5 * (Ɏ + ɏ) - Ȱ;
+                ȹ[2] = 0.5 * ȋ * (Ɏ - ɏ);
 
-                if (Math.Abs(ȡ[2]) < ǹ)
+                if (Math.Abs(ȹ[2]) < ȉ)
                 {
-                    ȡ[2] = ȡ[1];
+                    ȹ[2] = ȹ[1];
                     return true;
                 }
                 return false;
             }
         }
 
-        private static double ȭ(double Ș, double ș)
+        private static double Ʌ(double Ȱ, double ȱ)
         {
-            if (Ș <= 0)
-                return ș > 0 ? ș : Ǹ;
-            else if (ș <= 0)
-                return Ș;
+            if (Ȱ <= 0)
+                return ȱ > 0 ? ȱ : Ȉ;
+            else if (ȱ <= 0)
+                return Ȱ;
             else
-                return Math.Min(Ș, ș);
+                return Math.Min(Ȱ, ȱ);
         }
     }
 public enum K
 {
-    ȹ,
+    ɑ,
     C,
     L,
-    Ⱥ,
-    Ȼ,
-    ȼ,
-    S
+    ɒ,
+    ɓ,
+    ɔ,
+    T
 }
 public class E
 {
-    Dictionary<K, string> Ⱦ = new Dictionary<K, string>()
+    Dictionary<K, string> ɖ = new Dictionary<K, string>()
     {
-        { K.ȹ, $"{Ƚ(Color.Gray)}" },
-        { K.C, $"{Ƚ(Color.DarkSeaGreen)}"},
-        { K.L, $"{Ƚ(Color.White)}" },
-        { K.Ⱥ, $"{Ƚ(Color.Gold)}" },
-        { K.Ȼ, $"{Ƚ(Color.Red)}" },
-        { K.ȼ, $"{Ƚ(Color.DarkRed)}" },
-        { K.S, $"{Ƚ(Color.Aquamarine)}"}
+        { K.ɑ, $"{ɕ(Color.Gray)}" },
+        { K.C, $"{ɕ(Color.DarkSeaGreen)}"},
+        { K.L, $"{ɕ(Color.White)}" },
+        { K.ɒ, $"{ɕ(Color.Gold)}" },
+        { K.ɓ, $"{ɕ(Color.Red)}" },
+        { K.ɔ, $"{ɕ(Color.DarkRed)}" },
+        { K.T, $"{ɕ(Color.Aquamarine)}"}
     };
-    private static string Ƚ(Color x)
+    private static string ɕ(Color z)
     {
-        return $"[color=#{x.A:X2}{x.R:X2}{x.G:X2}{x.B:X2}]";
+        return $"[color=#{z.A:X2}{z.R:X2}{z.G:X2}{z.B:X2}]";
     }
 
-    private static string ȿ = "[/color]\n";
+    private static string ɗ = "[/color]\n";
     
         
-    class Ʌ
+    class ɝ
     {
-        internal readonly string ɀ;
-        internal readonly double Ɂ;
-        internal readonly K ɂ;
-        public Ʌ(string Ƀ, double Ʉ, K m)
+        internal readonly string ɘ;
+        internal readonly double ə;
+        internal readonly K ɚ;
+        public ɝ(string ɛ, double ɜ, K n)
         {
-            ɀ = Ƀ;
-            Ɂ = Ʉ;
-            ɂ = m;
+            ɘ = ɛ;
+            ə = ɜ;
+            ɚ = n;
         }
             
     }
 
-    private readonly List<Ʌ> Ɇ = new List<Ʌ>();
-    private readonly double ɇ;
+    private readonly List<ɝ> ɞ = new List<ɝ>();
+    private readonly double ɟ;
 
-    public E(double Ɉ)
+    public E(double ɠ)
     {
-        ɇ = Ɉ;
+        ɟ = ɠ;
     }
 
-    public void J(string Ý, K m)
+    public void J(string ß, K n)
     {
-        if (m < N.K) return;
-        double ɉ = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
-        Ɇ.Add(new Ʌ(Ý, ɉ, m));
+        if (n < N.ȥ.K) return;
+        double ɡ = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
+        ɞ.Add(new ɝ(ß, ɡ, n));
     }
 
-    public void f()
+    public void g()
     {
-        double ɉ = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
-        Ɇ.RemoveAll(ț => ɉ - ț.Ɂ > ɇ);
+        double ɡ = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
+        ɞ.RemoveAll(ȳ => ɡ - ȳ.ə > ɟ);
     }
 
-    public List<string> Ɋ()
+    public List<string> ɢ()
     {
-        return Ɇ.Select(ț => ț.ɀ).ToList();
+        return ɞ.Select(ȳ => ȳ.ɘ).ToList();
     }
 
     public override string ToString()
     {
-        string ű = "";
-        foreach (var ɋ in Ɇ)
+        string ź = "";
+        foreach (var ɣ in ɞ)
         {
-            ű += Ⱦ[ɋ.ɂ] + ɋ.ɀ + ȿ;
+            ź += ɖ[ɣ.ɚ] + ɣ.ɘ + ɗ;
         }
 
-        return ű;
+        return ź;
     }
 }
-public class Ɏ
+public class ɦ
 {
-    public int Ɍ;
-    public Action ɍ;
+    public int ɤ;
+    public Action ɥ;
 }
-public static class a
+public static class b
 {
-    private static readonly Dictionary<int, Ɏ> ɏ = new Dictionary<int, Ɏ>();
-    private static readonly Dictionary<int, Ɏ> ɐ = new Dictionary<int, Ɏ>();
-    private static int ɑ = 1;
+    private static readonly Dictionary<int, ɦ> ɧ = new Dictionary<int, ɦ>();
+    private static readonly Dictionary<int, ɦ> ɨ = new Dictionary<int, ɦ>();
+    private static int ɩ = 1;
 
-public static int ɔ(int Z, Action ɒ = null)
+public static int ɬ(int a, Action ɪ = null)
     {
-        if (Z <= 0)
+        if (a <= 0)
         {
-            if (ɒ != null) ɒ();
+            if (ɪ != null) ɪ();
             return -1;
         }
 
-        int t = ɑ++;
-        var ɓ = new Ɏ
+        int u = ɩ++;
+        var ɫ = new ɦ
         {
-            Ɍ = Z,
-            ɍ = ɒ
+            ɤ = a,
+            ɥ = ɪ
         };
 
-        ɐ[t] = ɓ;
-        return t;
+        ɨ[u] = ɫ;
+        return u;
     }
 
-    public static int ɕ(float Z, Action ɒ = null)
+    public static int ɭ(float a, Action ɪ = null)
     {
-        return ɔ((int)(Z * 60), ɒ);
+        return ɬ((int)(a * 60), ɪ);
     }
 
-public static void ɖ(int t)
+public static void ɮ(int u)
     {
-        ɏ.Remove(t);
-        ɐ.Remove(t);
+        ɧ.Remove(u);
+        ɨ.Remove(u);
     }
 
-public static void b()
+public static void c()
     {
-        if (ɐ.Count > 0)
+        if (ɨ.Count > 0)
         {
-            foreach (var ɗ in ɐ)
+            foreach (var ɯ in ɨ)
             {
-                ɏ[ɗ.Key] = ɗ.Value;
+                ɧ[ɯ.Key] = ɯ.Value;
             }
-            ɐ.Clear();
+            ɨ.Clear();
         }
 
-        var ɘ = new List<int>();
+        var ɰ = new List<int>();
             
-        foreach (var ɗ in ɏ)
+        foreach (var ɯ in ɧ)
         {
-            var ɓ = ɗ.Value;
-            ɓ.Ɍ--;
-            if (ɓ.Ɍ <= 0)
+            var ɫ = ɯ.Value;
+            ɫ.ɤ--;
+            if (ɫ.ɤ <= 0)
             {
-                ɓ.ɍ?.Invoke();
-                ɘ.Add(ɗ.Key);
+                ɫ.ɥ?.Invoke();
+                ɰ.Add(ɯ.Key);
             }
         }
             
-        foreach (var t in ɘ)
+        foreach (var u in ɰ)
         {
-            ɏ.Remove(t);
+            ɧ.Remove(u);
         }
     }
 
-    public static bool ə(int t)
+    public static bool ɱ(int u)
     {
-        return ɏ.ContainsKey(t) || ɐ.ContainsKey(t);
+        return ɧ.ContainsKey(u) || ɨ.ContainsKey(u);
     }
 
-    public static int ɚ(int t)
+    public static int ɲ(int u)
     {
-        Ɏ ɓ;
-        if (ɏ.TryGetValue(t, out ɓ)) return ɓ.Ɍ;
-        if (ɐ.TryGetValue(t, out ɓ)) return ɓ.Ɍ;
+        ɦ ɫ;
+        if (ɧ.TryGetValue(u, out ɫ)) return ɫ.ɤ;
+        if (ɨ.TryGetValue(u, out ɫ)) return ɫ.ɤ;
         return -1;
+    }
+}
+public static class R
+{
+    private static Dictionary<string, Action> ɳ;
+        
+        
+    public static void O()
+    {
+        ɳ = new Dictionary<string, Action>
+        {
+            { N.ɴ.ɵ, P.ɶ.ɷ },
+            { N.ɴ.ɸ, P.ɶ.ɹ },
+            { "FireAllTest", P.ɶ.ɺ.ɻ },
+            { "CancelAllTest", P.ɶ.ɺ.ɼ }
+        };
+
+        if (K.ɑ <= N.ȥ.K)
+        {
+            foreach (var ɽ in ɳ)
+            {
+                Program.M($"Command: {ɽ.Key}", K.ɑ);
+            }
+        }
+            
+    }
+
+
+    public static bool i(string V, out Action h)
+    {
+        return ɳ.TryGetValue(V, out h);
     }
 }
 public static class N
 {
-        
-
-
-    private static ɛ ɠ = new ɛ("General Config", "")
+    private static ɾ ʀ = new ɾ("General Config", "")
     {
-        ɜ = ɝ,
-        ɞ = ɟ
+        Ơ = ɿ
     };
 
-        
-    public static Dictionary<string, Action> h;
-        
-    public static K K = K.ȹ;
-        
-    public static string ɡ = "Target";
-    public static string ɢ = "Untarget";
-    public static string ɣ = "ArgusV2";
-    public static string ɤ = "TrackerGroup";
+    public static readonly ʁ ȥ = new ʁ();
+    public static readonly ʂ ɴ = new ʂ();
+    public static readonly ʃ ʄ = new ʃ();
+    public static readonly ʅ ʆ = new ʅ();
+    public static readonly ʇ ʈ = new ʇ();
+    public static readonly ʉ ʊ = new ʉ();
 
-        
-    public static double ɥ = 2000;
-    public static double ɦ = 3000;
-    public static float ɧ = 40;
-    public static double ɨ = 0.999999;
-        
-        
-    public static string ɩ = "CTC: Tracking";
-    public static string ɪ = "CTC: Searching";
-    public static string ɫ = "CTC: Standby";
-    public static int ɬ = 3600;
-
-    public static double ɭ = 500;
-    public static double ɮ = 0;
-    public static double ɯ = 30;
-    public static double ɰ = -0.05;
-    public static double ɱ = 0.05;
-    public static double ɲ = 30;
-
-
-    public static int ɳ = 300;
-    public static double ɴ = 9.81;
-    public static bool ɵ = false;
-    public static bool ɶ = false;
-    public static double ɷ = 0.005;
-    public static int ɸ = 300;
-    public static int ɹ = 600;
-        
-        
-    public static void O(IMyProgrammableBlock ɺ)
+    public static void O(IMyProgrammableBlock ʋ)
     {
         Program.M("Setting up config");
-        ɻ.ɼ();
-        ɽ.ɼ();
+        ʌ.ʍ();
+        ʎ.ʍ();
             
-        if (ɺ.CustomData.Length > 0)
-            ɛ.ɾ(ɺ.CustomData);
-        ɺ.CustomData = ɛ.ɿ();
+        ʋ.CustomData = ɾ.ɿ(ʋ.CustomData);
+            
         Program.M("Written config to custom data", K.C);
-        h = new Dictionary<string, Action>
-        {
-            { ɡ,     () => P.ʀ.ʁ() },
-            { ɢ,   () => P.ʀ.ʂ() },
-            { "FireAllTest",             () => P.ʀ.ʃ.ʄ() },
-            { "CancelAllTest",           () => P.ʀ.ʃ.ʅ() }
-        };
-        if (K.ȹ <= K)
-        {
-            foreach (var ʆ in h)
-            {
-                Program.M($"Command: {ʆ.Key}", K.ȹ);
-            }
-        }
         Program.M("Commands set up", K.C);
-        ʇ(ɺ);
+        ʏ(ʋ);
         Program.M("Config setup done", K.L);
             
     }
 
-    public static void ʇ(IMyProgrammableBlock ɺ)
+    private static void ʏ(IMyProgrammableBlock ʋ)
     {
         Program.M("Setting up global state", K.C);
-        ʈ.ʉ = ɵ;
-        Program.M($"Precision mode state is {ʈ.ʉ}", K.ȹ);
+        ʐ.ʑ = ʈ.ʒ;
+        Program.M($"Precision mode state is {ʐ.ʑ}", K.ɑ);
     }
 
-    static N()
+    private static void ɿ(Dictionary<string, object> j)
     {
-            
+        ȥ.Ơ(j);
+        ɴ.Ơ(j);
+        ʄ.Ơ(j);
+        ʆ.Ơ(j);
+        ʈ.Ơ(j);
+        ʊ.Ơ(j);
     }
 
-
-    private static Dictionary<string, object> ɝ()
+    public class ʁ
     {
-        return new Dictionary<string, object>
+        public K K = K.ɑ;
+        public double ʓ = 2000;
+        public double Ȧ = 104;
+        public double ʔ = 30;
+            
+        internal void Ơ(Dictionary<string, object> j)
         {
-            ["String Config"] = new Dictionary<string, object>
-            {
-                ["ArgumentTarget"] = ɡ,
-                ["ArgumentUnTarget"] = ɢ,
-                ["GroupName"] = ɣ,
-                ["TrackerGroupName"] = ɤ
-            },
-            ["Behavior Config"] = new Dictionary<string, object>
-            {
-                ["MaxWeaponRange"] = ɥ,
-                ["LockRange"] = ɦ,
-                ["LockAngle"] = ɧ,
-                ["MinFireDot"] = ɨ,
-            },
-            ["Tracker Config"] = new Dictionary<string, object>
-            {
-                ["TrackingName"] = ɩ,
-                ["SearchingName"] = ɪ,
-                ["StandbyName"] = ɫ,
-                ["ScannedBlockMaxValidFrames"] = ɬ
-            },
-            ["PID Config"] = new Dictionary<string, object>
-            {
-                ["ProportionalGain"] = ɭ,
-                ["IntegralGain"] = ɮ,
-                ["DerivativeGain"] = ɯ,
-                ["IntegralLowerLimit"] = ɰ,
-                ["IntegralUpperLimit"] = ɱ,
-                ["MaxAngularVelocityRPM"] = ɲ
-            }
-        };
+            var ʕ = Ɲ.Ɵ(j, "General Config");
+                
+            ʕ.Ơ("LogLevel", ref K);
+            ʕ.Ơ("MaxWeaponRange", ref ʓ);
+            ʕ.Ơ("GridSpeedLimit", ref Ȧ);
+            ʕ.Ơ("MaxAngularVelocityRPM", ref ʔ);
+        }
     }
-    private static void ɟ(Dictionary<string, object> i)
+    public class ʂ
     {
+        public string ɸ = "Target";
+        public string ɵ = "Untarget";
+        public string ʖ = "ArgusV2";
+        public string ʗ = "TrackerGroup";
             
-        Ɛ.Ƌ(i);
+        internal void Ơ(Dictionary<string, object> j)
+        {
+            var ʕ = Ɲ.Ɵ(j, "String Config");
+                
+            ʕ.Ơ("ArgumentTarget", ref ɸ);
+            ʕ.Ơ("ArgumentUnTarget", ref ɵ);
+            ʕ.Ơ("GroupName", ref ʖ);
+            ʕ.Ơ("TrackerGroupName", ref ʗ);
+        }
+    }
 
+    public class ʃ
+    {
+        public double ʘ = 3000;
+        public float ʙ = 40;
+        public double ʚ = 0.999999;
             
-        var ʊ = i.ContainsKey("String Config") ? i["String Config"] as Dictionary<string, object> : null;
-        if (ʊ != null)
+        internal void Ơ(Dictionary<string, object> j)
         {
-            ɡ       = Ɛ.Ə(ʊ, "ArgumentTarget", ɡ);
-            ɢ     = Ɛ.Ə(ʊ, "ArgumentUnTarget", ɢ);
-            ɣ            = Ɛ.Ə(ʊ, "GroupName", ɣ);
-            ɤ     = Ɛ.Ə(ʊ, "TrackerGroupName", ɤ);
+            var ʕ = Ɲ.Ɵ(j, "Behavior Config");
+                
+            ʕ.Ơ("LockRange", ref ʘ);
+            ʕ.Ơ("LockAngle", ref ʙ);
+            ʕ.Ơ("MinFireDot", ref ʚ);
         }
+    }
 
-        var ʋ = i.ContainsKey("Behavior Config") ? i["Behavior Config"] as Dictionary<string, object> : null;
-        if (ʋ != null)
+    public class ʅ
+    {
+        public string ʛ = "CTC: Tracking";
+        public string ʜ = "CTC: Searching";
+        public string ʝ = "CTC: Standby";
+        public int ʞ = 3600;
+            
+        internal void Ơ(Dictionary<string, object> j)
         {
-            ɥ = Ɛ.Ə(ʋ, "MaxWeaponRange", ɥ);
-            ɦ      = Ɛ.Ə(ʋ, "LockRange", ɦ);
-            ɧ      = Ɛ.Ə(ʋ, "LockAngle", ɧ);
-            ɨ     = Ɛ.Ə(ʋ, "MinFireDot", ɨ);
+            var ʕ = Ɲ.Ɵ(j, "Tracker Config");
+                
+            ʕ.Ơ("TrackingName", ref ʛ);
+            ʕ.Ơ("SearchingName", ref ʜ);
+            ʕ.Ơ("StandbyName", ref ʝ);
+            ʕ.Ơ("ScannedBlockMaxValidFrames", ref ʞ);
         }
+    }
 
-        var ʌ = i.ContainsKey("Tracker Config") ? i["Tracker Config"] as Dictionary<string, object> : null;
-        if (ʌ != null)
+    public class ʇ
+    {
+        public int ʟ = 300;
+        public double ʠ = 9.81;
+        public bool ʒ = false;
+        public bool ʡ = false;
+        public double ʢ = 0.005;
+        public int ʣ = 300;
+        public int ʤ = 600;
+        public int ʥ = 600;
+
+        internal void Ơ(Dictionary<string, object> j)
         {
-            ɩ                 = Ɛ.Ə(ʌ, "TrackingName", ɩ);
-            ɪ                = Ɛ.Ə(ʌ, "SearchingName", ɪ);
-            ɫ                  = Ɛ.Ə(ʌ, "StandbyName", ɫ);
-            ɬ = Ɛ.Ə(ʌ, "ScannedBlockMaxValidFrames", ɬ);
+            var ʕ = Ɲ.Ɵ(j, "Gravity Config");
+                
+            ʕ.Ơ("TimeoutFrames", ref ʟ);
+            ʕ.Ơ("Acceleration", ref ʠ);
+            ʕ.Ơ("DefaultPrecisionMode", ref ʒ);
+            ʕ.Ơ("DisablePrecisionModeOnEnemyDetected", ref ʡ);
+            ʕ.Ơ("Step", ref ʢ);
+            ʕ.Ơ("MassBalanceFrequencyFrames", ref ʣ);
+            ʕ.Ơ("BallBalanceFrequencyFrames", ref ʤ);
+            ʕ.Ơ("AccelerationRecalcDelay", ref ʥ);
         }
+    }
 
-        var ʍ = i.ContainsKey("PID Config") ? i["PID Config"] as Dictionary<string, object> : null;
-        if (ʍ != null)
+    public class ʉ
+    {
+        public double ʦ = 500;
+        public double ʧ = 0;
+        public double ʨ = 30;
+        public double ʩ = -0.05;
+        public double ʪ = 0.05;
+            
+        internal void Ơ(Dictionary<string, object> j)
         {
-            ɭ        = Ɛ.Ə(ʍ, "ProportionalGain", ɭ);
-            ɮ          = Ɛ.Ə(ʍ, "IntegralGain", ɮ);
-            ɯ        = Ɛ.Ə(ʍ, "DerivativeGain", ɯ);
-            ɰ    = Ɛ.Ə(ʍ, "IntegralLowerLimit", ɰ);
-            ɱ    = Ɛ.Ə(ʍ, "IntegralUpperLimit", ɱ);
-            ɲ = Ɛ.Ə(ʍ, "MaxAngularVelocityRPM", ɲ);
+            var ʕ = Ɲ.Ɵ(j, "PID Config");
+                
+            ʕ.Ơ("ProportionalGain", ref ʦ);
+            ʕ.Ơ("IntegralGain", ref ʧ);
+            ʕ.Ơ("DerivativeGain", ref ʨ);
+            ʕ.Ơ("IntegralLowerLimit", ref ʩ);
+            ʕ.Ơ("IntegralUpperLimit", ref ʪ);
         }
     }
 }
-public class ɛ
+public class ɾ
 {
-    private static readonly Dictionary<string, ɛ> ʎ = new Dictionary<string, ɛ>();
+    private static readonly Dictionary<string, ɾ> ʫ = new Dictionary<string, ɾ>();
 
-    public static string ɿ()
+    public delegate void ʬ(Dictionary<string, object> ų);
+    public ʬ Ơ { get; set; }
+
+    public ɾ(string Ü, string Ũ)
     {
-        Program.M("Writing config", K.L);
-        var ʏ = new Dictionary<string, object>();
-        foreach (var ū in ʎ)
-        {
-            Program.M($"Collecting config: {ū.Key}", K.C);
-            ʏ.Add(ū.Key, ū.Value.ɜ());
-        }
-
-        return Ɛ.ţ(ʏ);
+        ʭ = Ü;
+        ũ = Ũ;
+        ʫ.Add(Ü, this);
     }
 
-    public static void ɾ(string ʏ)
+    public string ʭ { get; }
+    public string ũ { get; }
+
+    public static string ɿ(string Ȃ)
     {
-        Program.M("Reading config from custom data", K.L);
-        var ʐ = Ɛ.ź(ʏ);
-        Program.M("DeltaWing Object Notation: Parsed successfully", K.C);
-        var Ū = ʐ as Dictionary<string, object>;
-        if (Ū == null)
+        var ʮ = ƚ.ƃ(Ȃ);
+            
+        var ų = ʮ as Dictionary<string, object>;
+        if (ų == null)
         {
-            Program.M("Config malformed", K.ȼ);
+            Program.M("Config malformed", K.ɔ);
             throw new Exception();
         }
-        foreach (var ū in Ū)
-        {
-            ɛ ʑ;
-            if (!ʎ.TryGetValue(ū.Key, out ʑ)) continue;
-            var ʒ = ū.Value as Dictionary<string, object>;
-            if (ʒ != null)
-            {
-                Program.M("Config set: " + ū.Key, K.C);
-                ʑ.ɞ(ʒ);
-            }
-        }
-    }
-        
-        
-        
-    public Func<Dictionary<string, object>> ɜ { get; set; }
-    public Action<Dictionary<string, object>> ɞ { get; set; }
 
-    public ɛ(string Ú, string ş)
-    {
-        ʓ = Ú;
-        Š = ş;
-        ʎ.Add(Ú, this);
+        foreach (var Ŵ in ʫ)
+        {
+            if (!ų.ContainsKey(Ŵ.Key))
+                ų[Ŵ.Key] = new Dictionary<string, object>();
+            Ŵ.Value.Ơ?.Invoke((Dictionary<string, object>)ų[Ŵ.Key]);
+        }
+
+        return ƚ.Ŭ(ʮ);
     }
-        
-    public string ʓ { get; }
-    public string Š { get; }
-        
-        
-    public Dictionary<string, object> ɝ() => ɜ?.Invoke();
-    public void ɟ( Dictionary<string, object> ű) => ɞ?.Invoke(ű);
 }
-public class ɽ
+public class ʎ
 {
-    private static readonly ɛ N = new ɛ("Projectile Data",
+    private static readonly ɾ N = new ɾ("Projectile Data",
         "The main list of known projectiles. Gun Data should reference these by name.")
     {
-        ɜ = ɝ,
-        ɞ = ɟ
+        Ơ = ɿ,
     };
-        
-        
-    public static Dictionary<string, ɽ> ʔ = new Dictionary<string, ɽ>();
-    public static readonly ɽ ʕ = new ɽ(0, 0, 0, 0);
-        
-    static ɽ()
+
+
+    public static Dictionary<string, ʎ> ʯ = new Dictionary<string, ʎ>();
+    public static readonly ʎ ʰ = new ʎ(0, 0, 0, 0);
+
+    static ʎ()
     {
-        ʔ.Add("Default", ʕ);
-            
-        ʔ.Add("LargeRailgun", new ɽ(2000, 2000, 2000, 0));
-        ʔ.Add("Artillery", new ɽ(500, 500, 2000, 0));
-        ʔ.Add("SmallRailgun", new ɽ(1000, 1000, 1400, 0));
-        ʔ.Add("Gatling", new ɽ(400, 400, 800, 0));
-        ʔ.Add("AssaultCannon", new ɽ(500, 500, 1400, 0));
-        ʔ.Add("Rocket", new ɽ(100, 200, 800, 1000));
+        ʯ.Add("Default", ʰ);
+
+        ʯ.Add("LargeRailgun", new ʎ(2000, 2000, 2000, 0));
+        ʯ.Add("Artillery", new ʎ(500, 500, 2000, 0));
+        ʯ.Add("SmallRailgun", new ʎ(1000, 1000, 1400, 0));
+        ʯ.Add("Gatling", new ʎ(400, 400, 800, 0));
+        ʯ.Add("AssaultCannon", new ʎ(500, 500, 1400, 0));
+        ʯ.Add("Rocket", new ʎ(100, 200, 800, 1000));
     }
 
-    public static void ɼ()
+    public static void ʍ()
     {
         Program.M("Projectile data loaded", K.C);
     }
-        
-        
-    public static ɽ ɜ(string ʖ)
-    {
-        ɽ ʗ;
-        return ʔ.TryGetValue(ʖ, out ʗ) ? ʗ : ʕ;
-    }
-    public float ʘ { get; private set; }
-    public float ʙ { get; private set;}
-    public float ʚ { get; private set; }
-    public float ʛ { get; private set; }
 
-    public ɽ(float ʜ, float ʝ, float ʞ, float ʟ)
-    {
-        ʘ = ʜ;
-        ʙ = ʝ;
-        ʚ = ʞ;
-        ʛ = ʟ;
-    }
-        
-    private static Dictionary<string, object> ɝ()
-    {
-        var ʠ = new Dictionary<string, object>();
 
-        foreach (var ū in ʔ)
+    public static ʎ ʳ(string ʱ)
+    {
+        ʎ ʲ;
+        return ʯ.TryGetValue(ʱ, out ʲ) ? ʲ : ʰ;
+    }
+
+    public float ʴ { get; private set; }
+    public float ʵ { get; private set; }
+    public float ʶ { get; private set; }
+    public float ʠ { get; private set; }
+
+    public ʎ(float ʷ, float ʸ, float ʹ, float ʺ)
+    {
+        ʴ = ʷ;
+        ʵ = ʸ;
+        ʶ = ʹ;
+        ʠ = ʺ;
+    }
+
+    private static void ɿ(Dictionary<string, object> ƞ)
+    {
+        var ʻ = new Dictionary<string, ʎ>(ʯ);
+
+        foreach (var Ŵ in ʻ)
         {
-            var Ú = ū.Key;
-            var ʡ = ū.Value;
+            var Ü = Ŵ.Key;
+            var ʼ = Ŵ.Value;
 
-            ʠ[Ú] = new Dictionary<string, object>
-            {
-                ["ProjectileVelocity"] = ʡ.ʘ,
-                ["MaxVelocity"] = ʡ.ʙ,
-                ["MaxRange"] = ʡ.ʚ,
-                ["Acceleration"] = ʡ.ʛ
-            };
+            var ʽ = Ɲ.Ɵ(ƞ, Ü);
+
+            var ʷ = ʼ.ʴ;
+            var ʸ = ʼ.ʵ;
+            var ʹ = ʼ.ʶ;
+            var ʺ = ʼ.ʠ;
+
+            ʽ.Ơ("ProjectileVelocity", ref ʷ);
+            ʽ.Ơ("MaxVelocity", ref ʸ);
+            ʽ.Ơ("MaxRange", ref ʹ);
+            ʽ.Ơ("Acceleration", ref ʺ);
+
+            ʯ[Ü] = new ʎ(ʷ, ʸ, ʹ, ʺ);
         }
 
-        return ʠ;
-    }
-    private static void ɟ(Dictionary<string, object> ʏ)
-    {
-        Ɛ.Ƌ(ʏ);
-
-        foreach (var ū in ʏ)
+        foreach (var Ŵ in ƞ)
         {
-            var ʢ = (Dictionary<string, object>)ū.Value;
-                
-            var ʣ  = ʔ[ū.Key] ?? ʕ;
-                
-            var ʜ = Ɛ.Ə(ʢ,  "ProjectileVelocity", ʣ.ʘ);
-            var ʝ = Ɛ.Ə(ʢ,  "MaxVelocity", ʣ.ʙ);
-            var ʞ = Ɛ.Ə(ʢ,  "MaxRange", ʣ.ʚ);
-            var ʟ = Ɛ.Ə(ʢ, "Acceleration", ʣ.ʛ);
-                
-                
-                
-            var ʤ = new ɽ(ʜ, ʝ, ʞ, ʟ);
-            ʔ[ū.Key] = ʤ;
+            string ʾ = "";
+            if (!ʯ.ContainsKey(Ŵ.Key))
+            {
+                var ʿ = Ŵ.Value as Dictionary<string, object>;
+                if (ʿ == null) continue;
+
+                var ʷ = ƚ.ƙ(ʿ, "ProjectileVelocity", ref ʾ, 0.0f);
+                var ʸ = ƚ.ƙ(ʿ, "MaxVelocity", ref ʾ, 0.0f);
+                var ʹ = ƚ.ƙ(ʿ, "MaxRange", ref ʾ, 0.0f);
+                var ʺ = ƚ.ƙ(ʿ, "Acceleration", ref ʾ, 0.0f);
+
+                ʯ[Ŵ.Key] = new ʎ(ʷ, ʸ, ʹ, ʺ);
+            }
         }
     }
 }
-public class ɻ
+public class ʌ
 {
-    private static readonly ɛ N = new ɛ("Gun Data",
+    private static readonly ɾ N = new ɾ("Gun Data",
         "The main list of known gun types and their definition names. Should reference a known projectile type.")
     {
-        ɜ = ɝ,
-        ɞ = ɟ
+        Ơ = ɿ
     };
-    public static Dictionary<string, ɻ> ʔ = new Dictionary<string, ɻ>();
-    public static readonly ɻ ʥ = new ɻ("Default", 0, 0, 0f, 0f);
+    public static Dictionary<string, ʌ> ʯ = new Dictionary<string, ʌ>();
+    public static readonly ʌ ˀ = new ʌ("Default", 0, 0, 0f, 0f);
         
-    static ɻ()
+    static ʌ()
     {
-        ʔ.Add("Default", ʥ);
+        ʯ.Add("Default", ˀ);
             
-        ʔ.Add("LargeRailgun", new ɻ("LargeRailgun", ʦ.ʧ, ʨ.ʩ, 2.0f, 4.0f));
-        ʔ.Add("LargeBlockLargeCalibreGun", new ɻ("Artillery", 0, 0, 0, 12));
-        ʔ.Add("LargeMissileLauncher", new ɻ("Rocket", 0, 0, 0, 0.5f));
-        ʔ.Add("SmallRailgun", new ɻ("SmallRailgun", ʦ.ʧ, ʨ.ʩ, 0.5f, 4.0f));
-        ʔ.Add("SmallBlockAutocannon", new ɻ("Gatling", 0, 0, 0.0f, 0.4f));
-        ʔ.Add("SmallBlockMediumCalibreGun", new ɻ("AssaultCannon", 0, 0, 0.0f, 6f));
-        ʔ.Add("MyObjectBuilder_SmallGatlingGun", new ɻ("Gatling", 0, 0, 0.0f, 0.1f));
-        ʔ.Add("MyObjectBuilder_SmallMissileLauncher", new ɻ("Rocket", 0, 0, 0.0f, 1f));
+        ʯ.Add("LargeRailgun", new ʌ("LargeRailgun", ˁ.ˆ, ˇ.ˈ, 2.0f, 4.0f));
+        ʯ.Add("LargeBlockLargeCalibreGun", new ʌ("Artillery", 0, 0, 0, 12));
+        ʯ.Add("LargeMissileLauncher", new ʌ("Rocket", 0, 0, 0, 0.5f));
+        ʯ.Add("SmallRailgun", new ʌ("SmallRailgun", ˁ.ˆ, ˇ.ˈ, 0.5f, 4.0f));
+        ʯ.Add("SmallBlockAutocannon", new ʌ("Gatling", 0, 0, 0.0f, 0.4f));
+        ʯ.Add("SmallBlockMediumCalibreGun", new ʌ("AssaultCannon", 0, 0, 0.0f, 6f));
+        ʯ.Add("MyObjectBuilder_SmallGatlingGun", new ʌ("Gatling", 0, 0, 0.0f, 0.1f));
+        ʯ.Add("MyObjectBuilder_SmallMissileLauncher", new ʌ("Rocket", 0, 0, 0.0f, 1f));
             
-        ʔ.Add("SmallRocketLauncherReload", ɜ("MyObjectBuilder_SmallMissileLauncher"));
-        ʔ.Add("SmallGatlingGunWarfare2", ɜ("MyObjectBuilder_SmallGatlingGun"));
-        ʔ.Add("SmallMissileLauncherWarfare2", ɜ("MyObjectBuilder_SmallMissileLauncher"));
+        ʯ.Add("SmallRocketLauncherReload", ʳ("MyObjectBuilder_SmallMissileLauncher"));
+        ʯ.Add("SmallGatlingGunWarfare2", ʳ("MyObjectBuilder_SmallGatlingGun"));
+        ʯ.Add("SmallMissileLauncherWarfare2", ʳ("MyObjectBuilder_SmallMissileLauncher"));
             
     }
         
-    public static void ɼ()
+    public static void ʍ()
     {
         Program.M("Gun data loaded", K.C);
     }
         
-    public static ɻ ɜ(string ʖ)
+    public static ʌ ʳ(string ʱ)
     {
-        ɻ ʗ;
-        return ʔ.TryGetValue(ʖ, out ʗ) ? ʗ : ʥ;
+        ʌ ʲ;
+        return ʯ.TryGetValue(ʱ, out ʲ) ? ʲ : ˀ;
     }
 
 
-    string ʪ;
-    public ɽ ɽ { get; }
-    public ʦ ʫ { get; }
-    public ʨ ʬ { get; }
-    public int ʭ { get; }
-    public float ʮ => ʭ / 60.0f;
-    public int ʯ { get; }
-    public float ʰ => ʯ / 60.0f;
+    string ˉ;
+    public ʎ ʎ { get; }
+    public ˁ ˊ { get; }
+    public ˇ ˋ { get; }
+    public int ˌ { get; }
+    public float ˍ => ˌ / 60.0f;
+    public int ˎ { get; }
+    public float ˏ => ˎ / 60.0f;
 
-    public ɻ(string ʱ, ʦ ʲ, ʨ ʳ, float ʴ, float ʵ)
+    public ʌ(string ː, ˁ ˑ, ˇ ˠ, float ˡ, float ˢ)
     {
-        ʪ = ʱ;
-        ɽ = ɽ.ɜ(ʱ);
-        ʫ = ʲ;
-        ʬ = ʳ;
-        ʭ = (int)(ʴ * 60);
-        ʯ = (int)(ʵ * 60);
+        ˉ = ː;
+        ʎ = ʎ.ʳ(ː);
+        ˊ = ˑ;
+        ˋ = ˠ;
+        ˌ = (int)(ˡ * 60);
+        ˎ = (int)(ˢ * 60);
     }
         
         
-    private static Dictionary<string, object> ɝ()
+    private static void ɿ(Dictionary<string, object> ƞ)
     {
-        var ʠ = new Dictionary<string, object>();
 
-        foreach (var ū in ʔ)
+
+        var ʻ = new Dictionary<string, ʌ>(ʯ);
+        foreach (var Ŵ in ʻ)
         {
-            var Ú = ū.Key;
-            var ʡ = ū.Value;
+            var Ü = Ŵ.Key;
+            var ʼ = Ŵ.Value;
 
-            var ʤ = new Dictionary<string, object>();
-            ʤ["Projectile"] = ʡ.ʪ;
-            ʤ["ReloadType"] = new Ɛ.Š((int)ʡ.ʫ, "0 = normal, 1 = charged");
-            ʤ["FireType"] = new Ɛ.Š((int)ʡ.ʬ,"0 = normal, 1 = delay before firing") ;
-            ʤ["FireTime"] = ʡ.ʮ;
-            ʤ["ReloadTime"] = ʡ.ʰ;
+            var ʽ = Ɲ.Ɵ(ƞ, Ü);
 
-            ʠ[Ú] = ʤ;
+            var ˣ = ʼ.ˉ;
+            var ˑ = ʼ.ˊ;
+            var ˠ = ʼ.ˋ;
+            var ˡ = ʼ.ˍ;
+            var ˢ = ʼ.ˏ;
+
+            ʽ.Ơ("Projectile", ref ˣ);
+            ʽ.Ơ("ReloadType", ref ˑ, "0 = normal, 1 = charged");
+            ʽ.Ơ("FireType", ref ˠ, "0 = normal, 1 = delay before firing");
+            ʽ.Ơ("FireTime", ref ˡ);
+            ʽ.Ơ("ReloadTime", ref ˢ);
+
+            ʯ[Ü] = new ʌ(ˣ, ˑ, ˠ, ˡ, ˢ);
         }
 
-        return ʠ;
-    }
-        
-    private static void ɟ(Dictionary<string, object> ʏ)
-    {
-        Ɛ.Ƌ(ʏ);
-
-        foreach (var ū in ʏ)
+        foreach (var Ŵ in ƞ)
         {
-            var ʢ = (Dictionary<string, object>)ū.Value;
-                
-            var ʣ  = ʔ[ū.Key] ?? ʥ;
+            if (!ʯ.ContainsKey(Ŵ.Key))
+            {
+                var ʿ = Ŵ.Value as Dictionary<string, object>;
+                if (ʿ == null) continue;
 
+                var ˤ = "";
+                var ˣ = ƚ.ƙ(ʿ, "Projectile", ref ˤ, "");
+                var ˑ = ƚ.ƙ(ʿ, "ReloadType", ref ˤ, 0);
+                var ˠ = ƚ.ƙ(ʿ, "FireType", ref ˤ, 0);
+                var ˡ = ƚ.ƙ(ʿ, "FireTime", ref ˤ, 0.0f);
+                var ˢ = ƚ.ƙ(ʿ, "ReloadTime", ref ˤ, 0.0f);
 
-            var ʶ = Ɛ.Ə(ʢ, "Projectile", ʣ.ʪ);
-            var ʷ = Ɛ.Ə(ʢ,  "ReloadType", ʣ.ʫ);
-            var ʳ = Ɛ.Ə(ʢ,  "FireType", ʣ.ʬ);
-            var ʴ = Ɛ.Ə(ʢ,  "FireTime", ʣ.ʮ);
-            var ʵ = Ɛ.Ə(ʢ,  "ReloadTime", ʣ.ʰ);
-                
-                
-            var ʤ = new ɻ(ʶ, ʷ, ʳ, ʴ, ʵ);
-            ʔ[ū.Key] = ʤ;
+                ʯ[Ŵ.Key] = new ʌ(ˣ, (ˁ)ˑ, (ˇ)ˠ, ˡ, ˢ);
+            }
         }
     }
+
         
 }
-public static class ʈ
+public static class ʐ
 {
-    public static bool ʉ;
+    public static bool ʑ;
 }
-public abstract class ʽ
+public abstract class ͳ
 {
-    protected Vector3D ʸ;
-    protected Vector3D ʹ;
-    protected int ʺ;
-    public ʻ ʻ = ʻ.ʼ;
+    protected x ˬ;
+    protected x ˮ;
+    protected int Ͱ;
+    public ͱ ͱ = ͱ.Ͳ;
 
-    public ʽ()
+    public ͳ()
     {
         Program.M("New ArgusShip", K.C);
-        ʺ = Program.D.Next() % 6000;
+        Ͱ = Program.D.Next() % 6000;
     }
         
-    public abstract Vector3D ʾ { get; }
-    public abstract Vector3D ʿ { get; }
-    public abstract Vector3D ʛ { get; }
-    public abstract float ˀ { get; }
-    public abstract string ʓ { get; }
+    public abstract x ʹ { get; }
+    public abstract x Ͷ { get; }
+    public abstract x ʠ { get; }
+    public abstract float ͷ { get; }
+    public abstract string ʭ { get; }
 
 
-public abstract void c(int ˁ);
+public abstract void d(int ͺ);
         
-public abstract void d(int ˁ);
+public abstract void e(int ͺ);
         
         
-public Vector3D ˠ(ʽ ˆ, float ʜ)
+public x Γ(ͳ ͻ, float ʷ)
     {
-        Vector3D ˇ = this.ʾ;
-        Vector3D ˈ = this.ʿ;
+        x ͼ = this.ʹ;
+        x ͽ = this.Ͷ;
             
-        Vector3D ˉ = ˆ.ʾ;
-        Vector3D ˊ = ˆ.ʛ;
+        x Ά = ͻ.ʹ;
+        x Έ = ͻ.ʠ;
 
-        Vector3D ˋ = ˆ.ʿ - ˈ;
+        x Ή = ͻ.Ͷ - ͽ;
             
-        Vector3D ˌ = ˉ - ˇ;
-        double Ű = ʜ;
+        x Ί = Ά - ͼ;
+        double Ź = ʷ;
 
-        double Ș = ˋ.LengthSquared() - Ű * Ű;
-        double ș = 2.0 * ˌ.Dot(ˋ);
-        double Ż = ˌ.LengthSquared();
+        double Ȱ = Ή.ȣ() - Ź * Ź;
+        double ȱ = 2.0 * Ί.Ό(Ή);
+        double Ƅ = Ί.ȣ();
 
-        double ȳ;
+        double ɋ;
 
-        if (Math.Abs(Ș) < 1e-6)
+        if (Math.Abs(Ȱ) < 1e-6)
         {
-            if (Math.Abs(ș) < 1e-6)
-                ȳ = 0;
+            if (Math.Abs(ȱ) < 1e-6)
+                ɋ = 0;
             else
-                ȳ = -Ż / ș;
+                ɋ = -Ƅ / ȱ;
         }
         else
         {
-            double ˍ = ș * ș - 4 * Ș * Ż;
-            if (ˍ < 0) return ˉ;
+            double Ύ = ȱ * ȱ - 4 * Ȱ * Ƅ;
+            if (Ύ < 0) return Ά;
 
-            double ˎ = Math.Sqrt(ˍ);
-            double ˏ = (-ș + ˎ) / (2 * Ș);
-            double ː = (-ș - ˎ) / (2 * Ș);
+            double Ώ = Math.Sqrt(Ύ);
+            double ΐ = (-ȱ + Ώ) / (2 * Ȱ);
+            double Α = (-ȱ - Ώ) / (2 * Ȱ);
 
-            ȳ = Math.Min(ˏ, ː) > 0 ? Math.Min(ˏ, ː) : Math.Max(ˏ, ː);
-            if (ȳ < 0) ȳ = Math.Max(ˏ, ː);
+            ɋ = Math.Min(ΐ, Α) > 0 ? Math.Min(ΐ, Α) : Math.Max(ΐ, Α);
+            if (ɋ < 0) ɋ = Math.Max(ΐ, Α);
         }
 
-        Vector3D ˑ = ˉ + ˋ * ȳ + 0.5 * ˊ * ȳ * ȳ;
-        return ˑ;
+        x Β = Ά + Ή * ɋ + 0.5 * Έ * ɋ * ɋ;
+        return Β;
     }
 
         
@@ -1709,192 +1778,187 @@ public Vector3D ˠ(ʽ ˆ, float ʜ)
 
         
 }
-public struct ͺ
+public struct Π
 {
-    public readonly Vector3D ˡ;
-    public readonly Vector3D ˢ;
-    public readonly Vector3D ˣ;
-    public readonly Vector3D ˤ;
-    public readonly double ˬ;
-    public readonly double ˮ;
-    public MatrixD Ͱ;
+    public readonly x Δ;
+    public readonly x Ε;
+    public readonly x Ζ;
+    public readonly x Η;
+    public readonly double Ό;
+    public readonly double Θ;
+    public MatrixD Ι;
 
-    public ͺ(Vector3D ͱ, Vector3D ȅ, Vector3D Ͳ, Vector3D ͳ, double ʹ, double Ͷ, MatrixD ͷ)
+    public Π(x Κ, x ȕ, x Λ, x Μ, double Ν, double Ξ, MatrixD Ο)
     {
-        ˡ = ͱ;
-        ˢ = ȅ;
-        ˣ = Ͳ;
-        ˤ = ͳ;
-        ˬ = ʹ;
-        ˮ = Ͷ;
-        Ͱ = ͷ;
+        Δ = Κ;
+        Ε = ȕ;
+        Ζ = Λ;
+        Η = Μ;
+        Ό = Ν;
+        Θ = Ξ;
+        Ι = Ο;
     }
 }
-public class Ί
+public class Ψ
 {
-    ͻ ͼ;
-    ͽ Ά;
+    Ρ Σ;
+    Τ Υ;
 
-    public Ί(ͻ Έ, ͽ Ή)
+    public Ψ(Ρ Φ, Τ Χ)
     {
         Program.M($"Setting up FCS", K.L);
-        ͼ = Έ;
-        Ά = Ή;
+        Σ = Φ;
+        Υ = Χ;
     }
-public ͺ Ξ()
+public Π μ()
     {
 
-        Ά.Ό();
+        Υ.Ω();
             
-        int Ώ = Ά.Ύ;
-        ΐ Β = Ά.Α;
-        var Δ = Ά.Γ;
+        int Ϋ = Υ.Ϊ;
+        ά ή = Υ.έ;
+        var ΰ = Υ.ί;
 
-        var Ζ = ͼ.Ε();
+        var β = Σ.α();
             
             
-        var ˌ = Ζ - Δ;
+        var Ί = β - ΰ;
 
-        var Η = ˌ.Length();
+        var γ = Ί.Ȩ();
 
-        var Θ = ˌ / Η;
+        var δ = Ί / γ;
 
-        var ʹ = Θ.Dot(ͼ.Ƒ);
+        var Ν = δ.Ό(Σ.ε);
 
-        var Κ = Ά.Ι();
-        var Λ = (Κ - Δ).Normalized();
-        Program.e(Λ);
+        var η = Υ.ζ();
+        var ι = (η - ΰ).θ();
+        Program.f(ι);
 
-        if (ʹ > N.ɨ && Ζ != Vector3D.Zero) Ά.Μ();
-        else Ά.Ν();
+        if (Ν > N.ʄ.ʚ && β != x.ȝ) Υ.κ();
+        else Υ.λ();
 
-        return new ͺ(Λ, Ζ, Δ, ͼ.Ƒ, ʹ, Η, ͼ.Ͱ);
+        return new Π(ι, β, ΰ, Σ.ε, Ν, γ, Σ.Ι);
     }
 }
-public enum ʦ
+public enum ˁ
 {
-    Ο,
-    ʧ
+    ν,
+    ˆ
 }
-public enum ʨ
+public enum ˇ
 {
-    Ο,
-    ʩ
+    ν,
+    ˈ
 }
-public enum Χ
+public enum τ
 {
-    Π,
-    Ρ,
-    Σ,
-    Τ,
-    Υ,
-    Φ
+    ξ,
+    ο,
+    π,
+    ρ,
+    ς,
+    σ
 }
-public class ζ
+public class ϔ
 {
-    private static readonly MyDefinitionId Ψ =
+    private static readonly MyDefinitionId υ =
         new MyDefinitionId(typeof(MyObjectBuilder_GasProperties), "Electricity");
-    IMyUserControllableGun Ω;
-    ʦ Ϊ;
-    ʨ Ϋ;
-    MyResourceSinkComponent ά;
-    int έ;
-    int ή;
-    Χ ί;
-    bool ΰ;
-    bool α;
-    ɻ β;
-    ͽ γ;
+        
+        
+    IMyUserControllableGun φ;
+    ˁ χ;
+    ˇ ψ;
+    MyResourceSinkComponent ω;
+    int ϊ;
+    int ϋ;
+    ţ<τ> ό;
+        
+        
+        
+        
+    bool ύ;
+    ʌ ώ;
+    Τ Ϗ;
 
-    public ζ(IMyUserControllableGun ʗ, ͽ δ)
+    public ϔ(IMyUserControllableGun ʲ, Τ ϐ)
     {
             
-        var ε = ʗ.BlockDefinition;
-        Program.M($"Set up new gun {ε}", K.ȹ);
-        var ʤ = ɻ.ɜ(ε.SubtypeIdAttribute);
-        if (ʤ == ɻ.ʥ) ʤ = ɻ.ɜ(ε.TypeIdString);
-        β = ʤ;
-        γ = δ;
+        var ϑ = ʲ.BlockDefinition;
+        Program.M($"Set up new gun {ϑ}", K.ɑ);
+        var ϒ = ʌ.ʳ(ϑ.SubtypeIdAttribute);
+        if (ϒ == ʌ.ˀ) ϒ = ʌ.ʳ(ϑ.TypeIdString);
+        ώ = ϒ;
+        Ϗ = ϐ;
             
-        Ω = ʗ;
-        ά = ʗ.Components.Get<MyResourceSinkComponent>();
-        Ϊ = β.ʫ;
-        Ϋ = β.ʬ;
+        φ = ʲ;
+        ω = ʲ.Components.Get<MyResourceSinkComponent>();
+        χ = ώ.ˊ;
+        ψ = ώ.ˋ;
+
+        ό = new ţ<τ>(ϓ);
     }
         
-    public Vector3D θ => (Vector3)(Ω.Min + Ω.Max) / 2 * γ.η.ˀ;
-    public Vector3D ι => Ω.GetPosition();
-    public Vector3D Ɠ { get; set; }
-    public float ʿ => β.ɽ.ʘ;
-    public float ʛ => β.ɽ.ʛ;
-    public float ʙ => β.ɽ.ʙ;
-    public float ʚ => β.ɽ.ʚ;
+    public x ϖ => (Vector3)(φ.Min + φ.Max) / 2 * Ϗ.ϕ.ͷ;
+    public x ϗ => φ.GetPosition();
+    public x ƣ { get; set; }
+    public float Ͷ => ώ.ʎ.ʴ;
+    public float ʠ => ώ.ʎ.ʠ;
+    public float ʵ => ώ.ʎ.ʵ;
+    public float ʶ => ώ.ʎ.ʶ;
 
-    public ɻ ɻ => β;
-        
-    public Χ λ
+    public ʌ ʌ => ώ;
+
+    public τ Ϙ => ό.Ť;
+
+    public x ơ => φ.WorldMatrix.Forward;
+
+    public void d(int ͺ)
     {
-        get
-        {
-            if (!ΰ)
-            {
-                ί = κ();
-                ΰ = true;
-            }
-            return ί;
-
-        }
+        ό.ť();
     }
 
-    public Vector3D Ƒ => Ω.WorldMatrix.Forward;
-
-    public void c(int ˁ)
-    {
-        ΰ = false;
-    }
-
-    public void d(int ˁ)
+    public void e(int ͺ)
     {
             
     }
 
-    public bool ξ()
+    public bool ϛ()
     {
-        if (λ != Χ.Σ) return false;
+        if (Ϙ != τ.π) return false;
             
-        Ω.ShootOnce();
-        έ = a.ɔ(β.ʯ, μ);
-        if (Ϋ == ʨ.ʩ)
+        φ.ShootOnce();
+        ϊ = b.ɬ(ώ.ˎ, ϙ);
+        if (ψ == ˇ.ˈ)
         {
-            ή = a.ɔ(β.ʭ, ν);
+            ϋ = b.ɬ(ώ.ˌ, Ϛ);
         }
         else
         {
-            ή = a.ɔ(0, ν);
+            ϋ = b.ɬ(0, Ϛ);
         }
         return true;
     }
 
 
-    public bool π()
+    public bool ϝ()
     {
-        if (λ != Χ.Π) return false;
-        Ω.Enabled = false;
-        a.ɔ(0, ο);
-        α = true;
+        if (Ϙ != τ.ξ) return false;
+        φ.Enabled = false;
+        b.ɬ(0, Ϝ);
+        ύ = true;
         return true;
     }
         
-    public bool ρ()
+    public bool Ϟ()
     {
 
-        if (λ != Χ.Π) return false;
+        if (Ϙ != τ.ξ) return false;
 
 
-        if (a.ɚ(ή) > 1) return false;
-        Ω.Enabled = false;
-        a.ɔ(0, ο);
-        α = true;
+        if (b.ɲ(ϋ) > 1) return false;
+        φ.Enabled = false;
+        b.ɬ(0, Ϝ);
+        ύ = true;
         return true;
 
     }
@@ -1902,1617 +1966,1775 @@ public class ζ
         
         
         
-    public Vector3D τ(Vector3D ς)
+    public x ϡ(x ϟ)
     {
-        Vector3D σ = ς + Ɠ * ʿ;
-        if (σ.LengthSquared() > ʿ * ʿ)
-            σ = σ.Normalized() * ʿ;
-        return σ;
+        x Ϡ = ϟ + ƣ * Ͷ;
+        if (Ϡ.ȣ() > Ͷ * Ͷ)
+            Ϡ = Ϡ.θ() * Ͷ;
+        return Ϡ;
     }
         
         
         
-    Χ κ()
+    τ ϓ()
     {
-        bool υ = Ω.IsFunctional;
-        if (!υ) return Χ.Φ;
+        bool Ϣ = φ.IsFunctional;
+        if (!Ϣ) return τ.σ;
                 
-        if (Ϋ == ʨ.ʩ && a.ə(ή)) return α ? Χ.Ρ : Χ.Π;
+        if (ψ == ˇ.ˈ && b.ɱ(ϋ)) return ύ ? τ.ο : τ.ξ;
                 
-        switch (Ϊ)
+        switch (χ)
         {
-            case ʦ.Ο:
-                if (a.ə(έ)) return Χ.Τ;
+            case ˁ.ν:
+                if (b.ɱ(ϊ)) return τ.ρ;
                 break;
-            case ʦ.ʧ:
-                if (a.ə(έ)) return Χ.Τ;
-                if (ά.CurrentInputByType(Ψ) > 0.02f) return Χ.Υ;
+            case ˁ.ˆ:
+                if (b.ɱ(ϊ)) return τ.ρ;
+                if (ω.CurrentInputByType(υ) > 0.02f) return τ.ς;
                 break;
         }
-        return Χ.Σ;
+        return τ.π;
     }
 
-    void ν()
+    void Ϛ()
     {
-        if (α)
+        if (ύ)
         {
-            α = false;
+            ύ = false;
             return;
         }
     }
 
-    void μ()
+    void ϙ()
     {
             
     }
 
-    void ο()
+    void Ϝ()
     {
-        Ω.Enabled = true;
+        φ.Enabled = true;
     }
 }
-public enum ΐ
+public enum ά
 {
-    φ,
-    χ,
-    Π
+    ϣ,
+    Ϥ,
+    ξ
 }
-public enum ʬ
+public enum ˋ
 {
-    ψ,
-    ω,
-    ϊ
+    ϥ,
+    Ϧ,
+    ϧ
 }
-public class ͽ
+public class Τ
 {
-    List<ζ> Ά = new List<ζ>();
+    List<ϔ> Υ = new List<ϔ>();
         
-    List<ζ> ϋ = new List<ζ>();
+    List<ϔ> Ϩ = new List<ϔ>();
 
-    Vector3D ό;
-    ΐ ύ;
-    int ώ;
-    ɻ β;
+    x ϩ;
+    ά Ϫ;
+    int ϫ;
+    ʌ ώ;
         
-    public ͽ(List<IMyTerminalBlock> Ϗ, ͻ ϐ)
+    public Τ(List<IMyTerminalBlock> Ϭ, Ρ ϭ)
     {
         Program.M("Setting up gun manager", K.L);
-        foreach (var ϑ in Ϗ)
+        foreach (var Ϯ in Ϭ)
         {
-            var ʗ = ϑ as IMyUserControllableGun;
-            if (ʗ != null) Ά.Add(new ζ(ʗ, this));
+            var ʲ = Ϯ as IMyUserControllableGun;
+            if (ʲ != null) Υ.Add(new ϔ(ʲ, this));
         }
-        if (Ά.Count <= 0) Program.M($"No guns in group {N.ɣ}", K.Ⱥ);
-        η = ϐ;
+        if (Υ.Count <= 0) Program.M($"No guns in group {N.ɴ.ʖ}", K.ɒ);
+        ϕ = ϭ;
     }
 
-    public ͻ η { get; }
-    public IMyCubeGrid ϓ => η.ϒ.CubeGrid;
-    public int ϔ => Ά.Count;
+    public Ρ ϕ { get; }
+    public IMyCubeGrid ϰ => ϕ.ϯ.CubeGrid;
+    public int ϱ => Υ.Count;
         
-    public Vector3D Γ => ό;
-    public ΐ Α => ύ;
-    public int Ύ => ώ;
+    public x ί => ϩ;
+    public ά έ => Ϫ;
+    public int Ϊ => ϫ;
 
-    public void c(int ˁ)
+    public void d(int ͺ)
     {
-        foreach (var ʗ in Ά) ʗ.c(ˁ);
+        foreach (var ʲ in Υ) ʲ.d(ͺ);
     }
 
-    public void Ό()
+    public void Ω()
     {
-        var Β = ΐ.φ;
+        var ή = ά.ϣ;
             
-        var ϕ = new Dictionary<ɻ, List<ζ>>();
-        var ϖ = new Dictionary<ɻ, List<ζ>>();
-        var ϗ = 0;
-        var Ϙ = 0;
+        var ϲ = new Dictionary<ʌ, List<ϔ>>();
+        var ϳ = new Dictionary<ʌ, List<ϔ>>();
+        var ϴ = 0;
+        var ϵ = 0;
             
-        foreach (var ʗ in Ά)
+        foreach (var ʲ in Υ)
         {
-            switch (ʗ.λ)
+            switch (ʲ.Ϙ)
             {
-                case Χ.Σ:
-                    if (!ϕ.ContainsKey(ʗ.ɻ)) ϕ.Add(ʗ.ɻ, new List<ζ>());
-                    ϕ[ʗ.ɻ].Add(ʗ);
-                    ϗ++;
+                case τ.π:
+                    if (!ϲ.ContainsKey(ʲ.ʌ)) ϲ.Add(ʲ.ʌ, new List<ϔ>());
+                    ϲ[ʲ.ʌ].Add(ʲ);
+                    ϴ++;
                     break;
-                case Χ.Π:
-                    if (!ϖ.ContainsKey(ʗ.ɻ)) ϖ.Add(ʗ.ɻ, new List<ζ>());
-                    ϖ[ʗ.ɻ].Add(ʗ);
-                    Ϙ++;
+                case τ.ξ:
+                    if (!ϳ.ContainsKey(ʲ.ʌ)) ϳ.Add(ʲ.ʌ, new List<ϔ>());
+                    ϳ[ʲ.ʌ].Add(ʲ);
+                    ϵ++;
                     break;
             }
         }
-        Program.e(ϗ);
+        Program.f(ϴ);
             
-        var ϙ = ϖ;
-        if (ϗ > 0)
+        var Ϸ = ϳ;
+        if (ϴ > 0)
         {
-            ύ = ΐ.χ;
-            ϙ = ϕ;
+            Ϫ = ά.Ϥ;
+            Ϸ = ϲ;
         }
             
             
             
             
             
-        if (Ϙ > 0)
+        if (ϵ > 0)
         {
-            ύ = ΐ.Π;
-            ϙ = ϖ;
+            Ϫ = ά.ξ;
+            Ϸ = ϳ;
         }
             
             
             
 
-        var ˆ = η.Ε();
-        var Ϛ = η.ʾ;
-        var ϛ = (ˆ - Ϛ).LengthSquared();
+        var ͻ = ϕ.α();
+        var ϸ = ϕ.ʹ;
+        var Ϲ = (ͻ - ϸ).ȣ();
             
-        foreach (var Ϝ in ϙ)
+        foreach (var Ϻ in Ϸ)
         {
-            var ʢ = Ϝ.Key;
-            var Ή = Ϝ.Value;
-            var ʞ = ʢ.ɽ.ʚ;
-            if (ʞ * ʞ < ϛ) continue;
-            ϋ = Ή;
-            β = ʢ;
+            var ʿ = Ϻ.Key;
+            var Χ = Ϻ.Value;
+            var ʹ = ʿ.ʎ.ʶ;
+            if (ʹ * ʹ < Ϲ) continue;
+            Ϩ = Χ;
+            ώ = ʿ;
             break;
         }
 
-        ώ = ϋ.Count;
+        ϫ = Ϩ.Count;
 
-        if (ώ == 0)
+        if (ϫ == 0)
         {
-            ό = η.ʾ;
+            ϩ = ϕ.ʹ;
             return;
         }
             
-        Vector3D ϝ = Vector3D.Zero;
+        x ϻ = x.ȝ;
 
-        foreach (var ʗ in ϋ)
+        foreach (var ʲ in Ϩ)
         {
-            ϝ += ʗ.θ;
+            ϻ += ʲ.ϖ;
         }
 
-        ϝ /= ώ;
+        ϻ /= ϫ;
 
-        ό = Vector3D.Transform(ϝ, η.Ͱ);
+        ϩ = x.ϼ(ϻ, ϕ.Ι);
 
     }
         
 
-    public void d(int ˁ)
+    public void e(int ͺ)
     {
-        foreach (var ʗ in Ά) ʗ.d(ˁ);
+        foreach (var ʲ in Υ) ʲ.e(ͺ);
     }
 
         
         
-    public void ʄ()
+    public void ɻ()
     {
-        foreach (var ʗ in Ά) ʗ.ξ();
+        foreach (var ʲ in Υ) ʲ.ϛ();
     }
 
-    public void ʅ()
+    public void ɼ()
     {
-        foreach (var ʗ in Ά) ʗ.π();
+        foreach (var ʲ in Υ) ʲ.ϝ();
     }
         
-    public void Μ()
+    public void κ()
     {
-        foreach (var ʗ in Ά) ʗ.ξ();
+        foreach (var ʲ in Υ) ʲ.ϛ();
     }
 
-    public void Ν()
+    public void λ()
     {
-        foreach (var ʗ in Ά) ʗ.ρ();
+        foreach (var ʲ in Υ) ʲ.Ϟ();
     }
 
 
-    public Vector3D Ι()
+    public x ζ()
     {
 
-        if (β == null) return Vector3D.Zero;
-        var ȁ = β.ɽ.ʙ;
-        var ˆ = η.Ε();
-        var ˌ = ˆ - ό;
+        if (ώ == null) return x.ȝ;
+        var ȑ = ώ.ʎ.ʵ;
+        var ͻ = ϕ.α();
+        var Ί = ͻ - ϩ;
 
-        var Ϟ = ϋ[0];
+        var Ͻ = Ϩ[0];
 
-        if (Ϟ == null) return Vector3D.Zero;
+        if (Ͻ == null) return x.ȝ;
 
-        var Ȋ = η.ϟ;
-        var ȋ = Ȋ.LengthSquared() != 0;
+        var Ț = ϕ.Ͼ;
+        var ț = Ț.ȣ() != 0;
 
-        return ȸ.ȗ(ȁ, Ϟ.τ(η.ʿ) / 60,
-            β.ɽ.ʛ * Ϟ.Ƒ,
-            ˌ,
-            η.Ϡ.ʾ, η.Ϡ.ʿ / 60, η.Ϡ.ʛ / 60,
-            Vector3D.Zero, false, Ȋ, ȋ);
+        return ɐ.ȯ(ȑ, Ͻ.ϡ(ϕ.Ͷ) / 60,
+            ώ.ʎ.ʠ * Ͻ.ơ,
+            Ί,
+            ϕ.Ͽ.ʹ, ϕ.Ͽ.Ͷ / 60, ϕ.Ͽ.ʠ / 60,
+            x.ȝ, false, Ț, ț);
     }
 }
-public class ϥ
+public class Є
 {
-    private readonly List<IMyGyro> ϡ;
-    private readonly ǰ Ϣ;
-    private readonly ǰ ϣ;
+    private readonly List<IMyGyro> Ѐ;
+    private readonly ȁ Ё;
+    private readonly ȁ Ђ;
         
         
-    public ϥ(List<IMyTerminalBlock> Ϗ)
+    public Є(List<IMyTerminalBlock> Ϭ)
     {
         Program.M("Setting up gyro manager", K.L);
-        ϡ = new List<IMyGyro>();
-        foreach (var ș in Ϗ)
+        Ѐ = new List<IMyGyro>();
+        foreach (var ȱ in Ϭ)
         {
-            var Ϥ = ș as IMyGyro;
-            if (Ϥ != null)
+            var Ѓ = ȱ as IMyGyro;
+            if (Ѓ != null)
             {
-                ϡ.Add(Ϥ);
+                Ѐ.Add(Ѓ);
             }
         }
             
-        if (ϡ.Count <= 0) Program.M($"No gyroscopes found in group: {N.ɣ}", K.Ⱥ);
+        if (Ѐ.Count <= 0) Program.M($"No gyroscopes found in group: {N.ɴ.ʖ}", K.ɒ);
             
             
-        Ϣ = new ǰ(N.ɭ, N.ɮ, N.ɯ, 
-            N.ɱ, N.ɰ);
-        ϣ = new ǰ(N.ɭ, N.ɮ, N.ɯ,
-            N.ɱ, N.ɰ);
+        Ё = new ȁ(N.ʊ.ʦ, N.ʊ.ʧ, N.ʊ.ʨ, 
+            N.ʊ.ʪ, N.ʊ.ʩ);
+        Ђ = new ȁ(N.ʊ.ʦ, N.ʊ.ʧ, N.ʊ.ʨ,
+            N.ʊ.ʪ, N.ʊ.ʩ);
     }
         
-    public void ϲ(ref ͺ Ϧ, double ϧ = 0)
+    public void Г(ref Π Ѕ, double І = 0)
     {
-        int Ϩ = 7;
-        double ϩ = 1.0;
-        if (Ϧ.ˬ > 0.9999)
+        int Ї = 7;
+        double Ј = 1.0;
+        if (Ѕ.Ό > 0.9999)
         {
-            ϩ *= 0.8;
-            Ϩ = 4;
+            Ј *= 0.8;
+            Ї = 4;
         }
 
-        if (Ϧ.ˬ > 0.99999)
+        if (Ѕ.Ό > 0.99999)
         {
-            ϩ *= 0.8;
-            Ϩ = 3;
+            Ј *= 0.8;
+            Ї = 3;
         }
-        if (Ϧ.ˬ > 0.999999)
+        if (Ѕ.Ό > 0.999999)
         {
-            ϩ *= 0.8;
-            Ϩ = 2;
+            Ј *= 0.8;
+            Ї = 2;
         }
-        if (Ϧ.ˬ > 0.9999999)
+        if (Ѕ.Ό > 0.9999999)
         {
-            ϩ *= 0.8;
-            Ϩ = 1;
+            Ј *= 0.8;
+            Ї = 1;
         }
             
-        double Ϫ;
-        double ϫ;
-        var Ϭ = ϧ;
+        double Љ;
+        double Њ;
+        var Ћ = І;
 
 
-        var ϭ = Vector3D.Cross(Ϧ.ˤ, Ϧ.ˡ);
-        var Ϯ = Vector3D.TransformNormal(ϭ, MatrixD.Transpose(Ϧ.Ͱ));
-        var ϯ = Ϣ.ǵ(-Ϯ.X, Ϩ);
-        var Ƞ = ϣ.ǵ(-Ϯ.Y, Ϩ);
+        var Ѝ = x.Ќ(Ѕ.Η, Ѕ.Δ);
+        var Џ = x.Ў(Ѝ, MatrixD.Transpose(Ѕ.Ι));
+        var А = Ё.Ȇ(-Џ.Ķ, Ї);
+        var ȸ = Ђ.Ȇ(-Џ.ķ, Ї);
 
-        Ϫ = MathHelper.Clamp(ϯ, -N.ɲ, N.ɲ);
-        ϫ = MathHelper.Clamp(Ƞ, -N.ɲ, N.ɲ);
+        Љ = MathHelper.Clamp(А, -N.ȥ.ʔ, N.ȥ.ʔ);
+        Њ = MathHelper.Clamp(ȸ, -N.ȥ.ʔ, N.ȥ.ʔ);
 
-        if (Math.Abs(ϫ) + Math.Abs(Ϫ) > N.ɲ)
+        if (Math.Abs(Њ) + Math.Abs(Љ) > N.ȥ.ʔ)
         {
-            var ϰ = N.ɲ / (Math.Abs(ϫ) + Math.Abs(Ϫ));
-            ϫ *= ϰ;
-            Ϫ *= ϰ;
+            var Б = N.ȥ.ʔ / (Math.Abs(Њ) + Math.Abs(Љ));
+            Њ *= Б;
+            Љ *= Б;
         }
-        Ϫ *= ϩ;
-        ϫ *= ϩ;
-        ϱ(Ϫ, ϫ, Ϭ, Ϧ.Ͱ);
+        Љ *= Ј;
+        Њ *= Ј;
+        В(Љ, Њ, Ћ, Ѕ.Ι);
     }
 
 
-    void ϱ(double ϳ, double ϴ, double ϵ, MatrixD ͷ)
+    void В(double Д, double Е, double Ж, MatrixD Ο)
     {
-        var Ϸ = new Vector3D(ϳ, ϴ, ϵ);
-        var ϸ = Vector3D.TransformNormal(Ϸ, ͷ);
-        foreach (var Ϥ in ϡ)
-            if (Ϥ.IsFunctional && Ϥ.IsWorking && Ϥ.Enabled && !Ϥ.Closed)
+        var З = new x(Д, Е, Ж);
+        var И = x.Ў(З, Ο);
+        foreach (var Ѓ in Ѐ)
+            if (Ѓ.IsFunctional && Ѓ.IsWorking && Ѓ.Enabled && !Ѓ.Closed)
             {
-                var Ϲ =
-                    Vector3D.TransformNormal(ϸ, MatrixD.Transpose(Ϥ.WorldMatrix));
-                Ϥ.Pitch = (float)Ϲ.X;
-                Ϥ.Yaw = (float)Ϲ.Y;
-                Ϥ.Roll = (float)Ϲ.Z;
-                Ϥ.GyroOverride = true;
+                var Й =
+                    x.Ў(И, MatrixD.Transpose(Ѓ.WorldMatrix));
+                Ѓ.Pitch = (float)Й.Ķ;
+                Ѓ.Yaw = (float)Й.ķ;
+                Ѓ.Roll = (float)Й.ĸ;
+                Ѓ.GyroOverride = true;
                 return;
             }
     }
 
-    public void Ϻ()
+    public void К()
     {
-        foreach (var Ϥ in ϡ)
-            if (Ϥ.IsFunctional && Ϥ.IsWorking && Ϥ.Enabled && !Ϥ.Closed)
+        foreach (var Ѓ in Ѐ)
+            if (Ѓ.IsFunctional && Ѓ.IsWorking && Ѓ.Enabled && !Ѓ.Closed)
             {
-                Ϥ.GyroOverride = false;
+                Ѓ.GyroOverride = false;
                 return;
             }
     }
         
         
 }
-public enum ʻ
+public enum ͱ
 {
-    ϻ,
-    ϼ,
-    Ͻ,
-    ʼ
+    Л,
+    М,
+    Н,
+    Ͳ
 }
-public class Ѐ
+public class Р
 {
-    public static int Ͽ(ʻ Ͼ)
+    public static int П(ͱ О)
     {
-        switch (Ͼ)
+        switch (О)
         {
-            case ʻ.ϻ:      return 600;
-            case ʻ.ϼ:   return 60;
-            case ʻ.Ͻ:     return 10;
-            case ʻ.ʼ: return 1;
+            case ͱ.Л:      return 600;
+            case ͱ.М:   return 60;
+            case ͱ.Н:     return 10;
+            case ͱ.Ͳ: return 1;
             default: return Int32.MaxValue;
         }
     }
 
 }
-public class Ќ
+public class Я
 {
-    private readonly List<Ё> Ђ;
-    private readonly List<Ѓ> Є;
-    int Ѕ = 0;
+    private readonly List<С> Т;
+    private readonly List<У> Ф;
+    private readonly List<Х> Ц;
+    bool Ч;
+    int Ш = 0;
         
-    Vector3D І = Vector3D.Zero;
+    x Щ = x.ȝ;
 
-    ͻ ͼ;
+    Ρ Σ;
 
-    public Ќ(List<IMyTerminalBlock> Ϗ, ͻ Έ)
+    public Я(List<IMyTerminalBlock> Ϭ, Ρ Φ)
     {
-            
-        Ђ = new List<Ё>();
-        Є = new List<Ѓ>();
-        ͼ = Έ;
+        Ц = new List<Х>();
+        Т = new List<С>();
+        Ф = new List<У>();
+        Σ = Φ;
 
-        foreach (var ϑ in Ϗ)
+        foreach (var Ϯ in Ϭ)
         {
-            var Ї = ϑ as IMySpaceBall;
-            if (Ї != null)
+            var Ъ = Ϯ as IMySpaceBall;
+            if (Ъ != null)
             {
-                var Ј = new Ѓ(Ї, this, ͼ);
-                Є.Add(Ј);
-                І += Ј.Љ;
+                var Ы = new У(Ъ, this, Σ);
+                Ф.Add(Ы);
+                Ц.Add(Ы);
+                Щ += Ы.Ь;
                 continue;
             }
 
-            var Њ = ϑ as IMyArtificialMassBlock;
-            if (Њ != null)
+            var Э = Ϯ as IMyArtificialMassBlock;
+            if (Э != null)
             {
-                var Ј = new Ё(Њ, this, ͼ);
-                Ђ.Add(Ј);
-                І += Ј.Љ;
+                var Ы = new С(Э, this, Σ);
+                Т.Add(Ы);
+                Ц.Add(Ы);
+                Щ += Ы.Ь;
             }
 
         }
 
-        Ѕ = Program.D.Next() % (Math.Max(N.ɸ, N.ɹ) - 1);
-        Ћ();
+        Ш = Program.D.Next() % (Math.Max(N.ʈ.ʣ, N.ʈ.ʤ) - 1);
+        Ю();
 
     }
         
-    public bool Ѝ { get; set; }
-    public double Ў { get; private set; }
+    public bool а { get; set; }
+    public double б { get; private set; }
 
-    public void c(int ˁ)
+    public List<Х> в => Ц;
+
+    public void d(int ͺ)
     {
-        if ((ˁ + Ѕ) % N.ɸ == 0)
-            Џ();
-        if ((ˁ + Ѕ) % N.ɹ == 0)
-            А();
+        if ((ͺ + Ш) % N.ʈ.ʣ == 0)
+            г();
+        if ((ͺ + Ш) % N.ʈ.ʤ == 0)
+            д();
     }
 
 
 
-    public void d(int ˁ)
+    public void e(int ͺ)
     {
 
-        bool Б = false;
-        foreach (var ϑ in Ђ)
+        bool е = false;
+        foreach (var Ϯ in Т)
         {
-            Б |= ϑ.В();
+            е |= Ϯ.ж();
         }
-        foreach (var Ї in Є)
+        foreach (var Ъ in Ф)
         {
-            Б |= Ї.В();
+            е |= Ъ.ж();
         }
 
-        if (Б)
+        if (е)
         {
-            Ћ();
+            Ю();
         }
     }
-
-    void Ћ()
+public bool и()
     {
-        Ў = 0;
+        var з = Ч;
+        Ч = false;
+        return з;
+    }
 
-        foreach (var ϑ in Ђ)
+    void Ю()
+    {
+        б = 0;
+
+        foreach (var Ϯ in Т)
         {
-            Ў += ϑ.Г;
+            б += Ϯ.й;
         }
 
-        foreach (var Ї in Є)
+        foreach (var Ъ in Ф)
         {
-            Ў += Ї.Г;
+            б += Ъ.й;
         }
     }
         
-    void Џ()
+    void г()
     {
-        foreach (var ϑ in Ђ)
+        x к = Щ;
+        foreach (var Ϯ in Т)
         {
-            Vector3D Д = І;
-            Vector3D Ж = ϑ.Е ? Vector3D.Zero : ϑ.Љ;
+            x м = Ϯ.л ? x.ȝ : Ϯ.Ь;
 
-            if ((І - (ϑ.Е ? ϑ.Љ : Vector3D.Zero) + Ж).LengthSquared() <
-                І.LengthSquared())
+            if ((Щ - (Ϯ.л ? Ϯ.Ь : x.ȝ) + м).ȣ() <
+                Щ.ȣ())
             {
-                ϑ.Е = !ϑ.Е;
-                І = І - (ϑ.Е ? Vector3D.Zero : ϑ.Љ) + Ж;
+                Ϯ.л = !Ϯ.л;
+                Щ = Щ - (Ϯ.л ? x.ȝ : Ϯ.Ь) + м;
             }
         }
+        Ч |= к != Щ;
     }
-    void А()
+    void д()
     {
+        x к = Щ;
             
+            
+        Ч |= к != Щ;
     }
 
 
 }
-internal class У
+internal class ы
 {
-    List<З> И;
-    bool Й;
-    float К;
-    float Л;
-    int М;
+    Я н;
+        
+    private readonly List<о> п;
+    bool р;
+    float с;
+    float т;
+    int у;
+        
+    ţ<double> ф;
+    ţ<double> х;
+        
 
-    public У(List<З> Н, Ɠ О)
+    public ы(List<о> ц, ƣ ч, Я ш)
     {
-        И = Н;
-        П = 0;
-        Ɠ = О;
-        foreach (var Р in Н)
-        {
-            var Т = Р as С;
+        п = ц;
+        ƣ = ч;
+            
+        ф = new ţ<double>(() => щ(ш.б));
+        х = new ţ<double>(() => ъ(ш.в));
 
-            if (Т != null) П += N.ɴ;
+        н = ш;
+    }
+        
+    public ƣ ƣ { get; private set; }
+    public bool а { get; private set; }
+    public double ь => ф.Ť;
+    public double э => х.Ť;
+    public double ю => ь + э;
+        
+    public void d(int ͺ)
+    {
+        if (с == 0) у++;
+        else у = 0;
+        if (у > N.ʈ.ʟ) а = false;
+        п.RemoveAll(Ɏ => Ɏ.я);
+
+        if (ͺ % N.ʈ.ʥ == 0 && н.и())
+        {
+            ф.ť();
+            х.ť();
         }
     }
-
-    public void c(int ˁ)
-    {
-        if (К == 0) М++;
-        else М = 0;
-        if (М > N.ɳ) Ѝ = false;
-    }
-
-    public void d(int ˁ)
-    {
-        if (Й != Ѝ) 
-            foreach (var Р in И) Р.Ѝ = Ѝ;
-        Й = Ѝ;
-        if (Л != К)
-            foreach (var Р in И)
-                Р.ʛ = (float)(К * N.ɴ);
-        Л = К;
-    }
         
-    public Ɠ Ɠ { get; private set; }
-    public bool Ѝ { get; private set; }
-    public double П { get; private set; }
-
-    public void Ф(float ʟ)
+    public void e(int ͺ)
     {
-        ʟ = (float)MathHelperD.Clamp(Ʀ.ƥ(ʟ, N.ɷ), -1, 1);
-        if (ʟ == К && ʟ == 0) return;
-        Ѝ = true;
-        if (ʟ == К) return;
-        К = ʟ;
+        if (р != а) 
+            foreach (var ѐ in п) ѐ.а = а;
+        р = а;
+        if (т != с)
+            foreach (var ѐ in п)
+                ѐ.ʠ = (float)(с * N.ʈ.ʠ);
+        т = с;
+    }
+
+    public void ё(float ʺ)
+    {
+        ʺ = (float)MathHelperD.Clamp(ƶ.Ƶ(ʺ, N.ʈ.ʢ), -1, 1);
+        if (ʺ == с && ʺ == 0) return;
+        а = true;
+        if (ʺ == с) return;
+        с = ʺ;
+    }
+
+
+    double ъ(List<Х> ђ)
+    {
+        var ѓ = x.ȝ;
+        foreach (var ѐ in п)
+        {
+            if (ѐ is є)
+            {
+                foreach (var Э in ђ)
+                {
+                    var δ = ((x)(Э.ϖ - ѐ.ϖ)).θ();
+                    var і = δ * Э.й * N.ʈ.ʠ *
+                                ѐ.ѕ;
+                    ѓ += і;
+                }
+            }
+        }
+            
+        return ѓ.Ό(Base6Directions.Directions[(int)ƣ]);
+    }
+    double щ(double Э)
+    {
+        double ʺ = 0;
+        foreach (var ѐ in п)
+        {
+            var ј = ѐ as ї;
+            if (ј != null) ʺ += N.ʈ.ʠ;
+        }
+
+        return ʺ * Э;
     }
 }
-public class е
+public class ѧ
 {
-    private readonly У Х;
-    private readonly У Ц;
-    private readonly У Ч;
+    private readonly ы љ;
+    private readonly ы њ;
+    private readonly ы ћ;
 
-    Ќ Ш;
-    ͻ ͼ;
+    Я н;
+    Ρ Σ;
 
 
-    bool Щ;
+    bool ќ;
         
 
-    public е(List<IMyTerminalBlock> Ϗ, ͻ Έ)
+    public ѧ(List<IMyTerminalBlock> Ϭ, Ρ Φ)
     {
         Program.M($"Setting up gravity drive", K.L);
-        ͼ = Έ;
+        Σ = Φ;
             
-        var Ъ = new List<З>();
-        var Ы = new List<З>();
-        var Ь = new List<З>();
+        var ѝ = new List<о>();
+        var ў = new List<о>();
+        var џ = new List<о>();
 
-        var Э = new Dictionary<Ɠ, List<З>>
+        var Ѡ = new Dictionary<ƣ, List<о>>
         {
-            { Ɠ.Ĕ, Ь },
-            { Ɠ.Ė, Ь },
-            { Ɠ.ē, Ы },
-            { Ɠ.ĕ, Ы },
-            { Ɠ.Ƒ, Ъ },
-            { Ɠ.ƒ, Ъ }
+            { ƣ.Ė, џ },
+            { ƣ.Ę, џ },
+            { ƣ.ĕ, ў },
+            { ƣ.ė, ў },
+            { ƣ.ơ, ѝ },
+            { ƣ.Ƣ, ѝ }
         };
             
-        foreach (var ϑ in Ϗ)
+        foreach (var Ϯ in Ϭ)
         {
-            var Ю = ϑ as IMyGravityGenerator;
-            if (Ю != null)
+            var ѡ = Ϯ as IMyGravityGenerator;
+            if (ѡ != null)
             {
-                var Θ = (Ɠ)Ю.Orientation.Up;
-                var Ŭ = Э[Θ];
-                bool Я = (int)Θ % 2 == 0;
-                Ŭ.Add(new С(Ю, Θ, Я));
+                var δ = (ƣ)ѡ.Orientation.Up;
+                var ŵ = Ѡ[δ];
+                bool Ѣ = (int)δ % 2 == 0;
+                ŵ.Add(new ї(ѡ, δ, Ѣ));
             }
 
-            var а = ϑ as IMyGravityGeneratorSphere;
-            if (а != null)
+            var ѣ = Ϯ as IMyGravityGeneratorSphere;
+            if (ѣ != null)
             {
-                var в = ͼ.б;
-                var г = Base6Directions.Directions[(int)в];
-                var Я = г.Dot(ͼ.ʾ - а.GetPosition()) > 0;
-                var Ŭ = Э[в];
-                Ŭ.Add(new д(а, в, Я));
+                var ѥ = Σ.Ѥ;
+                var Ѧ = Base6Directions.Directions[(int)ѥ];
+                var Ѣ = Ѧ.Dot((Vector3D)Σ.ʹ - ѣ.GetPosition()) > 0;
+                var ŵ = Ѡ[ѥ];
+                ŵ.Add(new є(ѣ, ѥ, Ѣ));
                     
             }
         }
 
-        if (Ъ.Count == 0) Program.M($"No Forward/backward gravity generators", K.Ⱥ);
-        if (Ы.Count == 0) Program.M($"No Left/Right gravity generators", K.Ⱥ);
-        if (Ь.Count == 0) Program.M($"No Up/Down gravity generators", K.Ⱥ);
+        if (ѝ.Count == 0) Program.M($"No Forward/backward gravity generators", K.ɒ);
+        if (ў.Count == 0) Program.M($"No Left/Right gravity generators", K.ɒ);
+        if (џ.Count == 0) Program.M($"No Up/Down gravity generators", K.ɒ);
             
-        Х = new У(Ъ, Ɠ.Ƒ);
-        Ц = new У(Ы, Ɠ.ē);
-        Ч = new У(Ь, Ɠ.Ĕ);
-
-
-        Ш = new Ќ(Ϗ, Έ);
+            
+            
+        н = new Я(Ϭ, Φ);
+            
+        љ = new ы(ѝ, ƣ.ơ, н);
+        њ = new ы(ў, ƣ.ĕ, н);
+        ћ = new ы(џ, ƣ.Ė, н);
     }
 
-    bool ж => Х.Ѝ || Ц.Ѝ || Ч.Ѝ;
+    bool Ѩ => љ.а || њ.а || ћ.а;
 
-    public double Ў => Ш.Ў;
+    public double б => н.б;
 
-    public void c(int ˁ)
+    public void d(int ͺ)
     {
-        Х.c(ˁ);
-        Ц.c(ˁ);
-        Ч.c(ˁ);
+        љ.d(ͺ);
+        њ.d(ͺ);
+        ћ.d(ͺ);
 
-        Ш.c(ˁ);
+        н.d(ͺ);
     }
 
-    public void d(int ˁ)
+    public void e(int ͺ)
     {
-        Х.d(ˁ);
-        Ц.d(ˁ);
-        Ч.d(ˁ);
+        љ.e(ͺ);
+        њ.e(ͺ);
+        ћ.e(ͺ);
 
 
-        if (ж != Щ) Ш.Ѝ = ж;
-        Program.e(Ш.Ѝ);
-        Щ = ж;
-        Ш.d(ˁ);
+        if (Ѩ != ќ) н.а = Ѩ;
+        Program.f(н.а);
+        ќ = Ѩ;
+        н.e(ͺ);
     }
 
 
-    public void и(Vector3 з)
+    public void Ѫ(x ѩ)
     {
-        Х.Ф(з.Dot(Vector3D.Forward));
-        Ц.Ф(з.Dot(Vector3D.Left));
-        Ч.Ф(з.Dot(Vector3D.Up));
+        љ.ё((float)ѩ.Ό(x.ơ));
+        њ.ё((float)ѩ.Ό(x.ĕ));
+        ћ.ё((float)ѩ.Ό(-x.Ė));
     }
 
-    public double к()
+    public double ѫ()
     {
-        var й = Ў * Х.П;
-        if (й == 0) й = 1;
-        return й;
+        var і = љ.ю;
+        if (і == 0) і = 1;
+        return і;
     }
 
-    public double л()
+    public double Ѭ()
     {
-        var й = Ў * Ц.П;
-        if (й == 0) й = 1;
-        return й;
+        var і = њ.ю;
+        if (і == 0) і = 1;
+        return і;
     }
 
-    public double м()
+    public double ѭ()
     {
-        var й = Ў * Ч.П;
-        if (й == 0) й = 1;
-        return й;
-    }
-}
-public class Ѓ : н
-{
-    IMySpaceBall о;
-    Ќ Ш;
-    ͻ ͼ;
-    public Ѓ(IMySpaceBall Ї, Ќ п, ͻ Έ)
-    {
-        о = Ї;
-        Ш = п;
-        ͼ = ͼ;
-    }
-
-    public bool Е { get; set; } = true;
-
-    public bool р => Ш.Ѝ;
-
-    public bool ə => Е && р;
-    public override double с => о.VirtualMass;
-    public override double Г => Е ? о.VirtualMass : 0;
-    public Vector3D Љ => с * (о.GetPosition() - ͼ.ϒ.CenterOfMass);
-
-    public bool В()
-    {
-        var Ȱ = false;
-        о.Enabled = ə;
-        return Ȱ;
+        var і = ћ.ю;
+        if (і == 0) і = 1;
+        return і;
     }
 }
-public class Ё : н
+public class У : Х
 {
-    IMyArtificialMassBlock т;
-    Ќ Ш;
-    ͻ ͼ;
-
-    bool у;
-    public Ё(IMyArtificialMassBlock Њ, Ќ п, ͻ Έ)
+    IMySpaceBall Ѯ;
+    Я н;
+    Ρ Σ;
+    public У(IMySpaceBall Ъ, Я ш, Ρ Φ)
     {
-        т = Њ;
-        Ш = п;
-        ͼ = Έ;
-        т.Enabled = false;
+        Ѯ = Ъ;
+        н = ш;
+        Σ = Σ;
+    }
+
+    public bool л { get; set; } = true;
+
+    public bool ѯ => н.а;
+
+    public bool ɱ => л && ѯ;
+    public override x ʹ => Ѯ.GetPosition();
+    public override double Ѱ => Ѯ.VirtualMass;
+    public override double й => л ? Ѯ.VirtualMass : 0;
+    public override Vector3I ϖ => Ѯ.Position;
+    public x Ь => Ѱ * (Ѯ.GetPosition() - Σ.ϯ.CenterOfMass);
+
+    public bool ж()
+    {
+        var Ɉ = false;
+        Ѯ.Enabled = ɱ;
+        return Ɉ;
+    }
+}
+public class С : Х
+{
+    IMyArtificialMassBlock ѱ;
+    Я н;
+    Ρ Σ;
+
+    bool Ѳ;
+    public С(IMyArtificialMassBlock Э, Я ш, Ρ Φ)
+    {
+        ѱ = Э;
+        н = ш;
+        Σ = Φ;
+        ѱ.Enabled = false;
     }
         
-    public bool Е { get; set; } = true;
+    public bool л { get; set; } = true;
 
-    public bool р => Ш.Ѝ;
+    public bool ѯ => н.а;
 
-    public bool ə => Е && р;
-    public override double с => т.VirtualMass;
-    public override double Г => Е ? т.VirtualMass : 0;
-        
-    public Vector3D Љ => с * (т.GetPosition() - ͼ.ϒ.CenterOfMass);
+    public bool ɱ => л && ѯ;
+    public override x ʹ => ѱ.GetPosition();
+    public override double Ѱ => ѱ.VirtualMass;
+    public override double й => л ? ѱ.VirtualMass : 0;
+    public override Vector3I ϖ => ѱ.Position;
+    public x Ь => Ѱ * (ѱ.GetPosition() - Σ.ϯ.CenterOfMass);
 
-    public bool В()
+    public bool ж()
     {
-        var Б = false;
+        var е = false;
 
-        if (у != ə)
+        if (Ѳ != ɱ)
         {
-            т.Enabled = ə;
-            Б = true;
+            ѱ.Enabled = ɱ;
+            е = true;
         }
-        у = ə;
-        return Б;
+        Ѳ = ɱ;
+        return е;
     }
 }
-public abstract class З
+public abstract class о
 {
-    protected bool ф;
+    protected bool ѳ;
         
-    public IMyGravityGeneratorBase х { get; protected set; }
-    public Ɠ Ɠ { get; protected set; }
+    public IMyGravityGeneratorBase Ѵ { get; protected set; }
+    public ƣ ƣ { get; protected set; }
 
         
-    public bool Ѝ
+    public bool а
     {
-        get { return х.Enabled; }
-        set  { х.Enabled = value; }
+        get { return Ѵ.Enabled; }
+        set  { Ѵ.Enabled = value; }
     }
 
-    public float ʛ
+    public float ʠ
     {
         get
         {
-            return х.GravityAcceleration * (ф ? -1 : 1);
+            return Ѵ.GravityAcceleration * ѕ;
         }
         set
         {
-            х.GravityAcceleration = value * (ф ? -1 : 1);
+            Ѵ.GravityAcceleration = value * ѕ;
         }
     }
 
+    public x ʹ => Ѵ.GetPosition();
+    public bool я => Ѵ.Closed;
+
+    public int ѕ => ѳ ? -1 : 1;
+    public Vector3I ϖ => Ѵ.Position;
 }
-public class С : З
+public class ї : о
 {
 
-    public С(IMyGravityGenerator ц, Ɠ Θ, bool Я) 
+    public ї(IMyGravityGenerator ѵ, ƣ δ, bool Ѣ) 
     {
             
-        х = ц; 
-        Ɠ = Θ;
-        ф = Я;
+        Ѵ = ѵ; 
+        ƣ = δ;
+        ѳ = Ѣ;
     }
 }
-public class д : З
+public class є : о
 {
 
-    public д(IMyGravityGeneratorSphere а, Ɠ Θ, bool Я)
+    public є(IMyGravityGeneratorSphere ѣ, ƣ δ, bool Ѣ)
     {
-        х = а;
-        Ɠ = Θ;
-        ф = Я;
+        Ѵ = ѣ;
+        ƣ = δ;
+        ѳ = Ѣ;
     }
 }
-public abstract class н
+public abstract class Х
 {
-        
-    public abstract double с { get; }
-    public abstract double Г { get; }
+    public abstract x ʹ { get; }
+    public abstract double Ѱ { get; }
+    public abstract double й { get; }
+    public abstract Vector3I ϖ { get; }
 }
-public class ъ
+public class ѹ
 {
-    е ч;
-    ш щ;
-    ͻ ͼ;
+    ѧ Ѷ;
+    ѷ Ѹ;
+    Ρ Σ;
 
-    public ъ(List<IMyTerminalBlock> Ϗ, ͻ Έ)
+    public ѹ(List<IMyTerminalBlock> Ϭ, Ρ Φ)
     {
         Program.M($"Setting up propulsion controller", K.L);
-        ͼ = Έ;
-        ч = new е(Ϗ, Έ);
-        щ = new ш();
+        Σ = Φ;
+        Ѷ = new ѧ(Ϭ, Φ);
+        Ѹ = new ѷ();
     }
 
-    public void c(int ˁ)
+    public void d(int ͺ)
     {
             
-        ч.c(ˁ);
-        щ.c(ˁ);
+        Ѷ.d(ͺ);
+        Ѹ.d(ͺ);
     }
 
-    public void d(int ˁ)
+    public void e(int ͺ)
     {
-        var ы = ͼ.ϒ.MoveIndicator;
+        var Ѻ = Σ.ϯ.MoveIndicator;
 
-        Matrix Õ;
-        ͼ.ϒ.Orientation.GetMatrix(out Õ);
+        Matrix Ø;
+        Σ.ϯ.Orientation.GetMatrix(out Ø);
 
-        var ь = Vector3.Transform(ы, Õ);
+        x ѻ = x.ϼ(Ѻ, Ø);
 
-        if (ͼ.ϒ.DampenersOverride)
+        if (Σ.ϯ.DampenersOverride)
         {
-            var э = ͼ.ʿ;
-            var ю = Vector3D.TransformNormal(э, MatrixD.Invert(ͼ.Ͱ));
+            var Ѽ = Σ.Ͷ;
+            var ѽ = x.Ў(Ѽ, MatrixD.Invert(Σ.Ι));
+                
+            var ѿ = ѽ * x.ơ * 10 * Ѿ();
+            var ҁ = ѽ * x.ĕ * 10 * Ҁ();
+            var ҋ = ѽ * x.Ė * 10 * Ҋ();
 
-            var ѐ =
-                ю * Vector3D.Forward * 10 * я();
-            var ђ = ю * Vector3D.Left * 20 * ё();
-            var є = ю * Vector3D.Down * 20 * ѓ();
-
-            if (ь.Dot(Vector3D.Forward) == 0) ь += ѐ;
-            if (ь.Dot(Vector3D.Left) == 0) ь += ђ;
-            if (ь.Dot(Vector3D.Down) == 0) ь += є;
+            if (ѻ.Ό(x.ơ) == 0) ѻ += ѿ;
+            if (ѻ.Ό(x.ĕ) == 0) ѻ += ҁ;
+            if (ѻ.Ό(x.Ė) == 0) ѻ += ҋ;
         }
             
             
-        ч.и(ь);
-        ч.d(ˁ);
-        щ.d(ˁ);
+        Ѷ.Ѫ(ѻ);
+        Ѷ.e(ͺ);
+        Ѹ.e(ͺ);
     }
 
-    double я()
+    double Ѿ()
     {
-        return ͼ.н.TotalMass / ч.к();
+        return Σ.Х.TotalMass / Ѷ.ѫ();
     }
 
-    double ё()
+    double Ҁ()
     {
-        return ͼ.н.TotalMass / ч.л();
+        return Σ.Х.TotalMass / Ѷ.Ѭ();
     }
 
-    double ѓ()
+    double Ҋ()
     {
-        return ͼ.н.TotalMass / ч.м();
-    }
-}
-public class ш
-{
-    public void c(int ˁ)
-    {
-    }
-
-    public void d(int ˁ)
-    {
+        return Σ.Х.TotalMass / Ѷ.ѭ();
     }
 }
-public class і
+public class ѷ
 {
-    public і(IMyTurretControlBlock ϑ)
+    public void d(int ͺ)
     {
-        ѕ = ϑ;
     }
 
-    public IMyTurretControlBlock ѕ { get; }
-    public bool ї => ѕ.Closed;
-
-    bool ј;
-
-    bool љ = true;
-
-    public bool њ { get; private set; }
-    public bool ћ { get; private set; }
-    public bool ќ { get; private set; }
-    public bool ѝ { get; private set; }
-
-    public bool Ѝ
+    public void e(int ͺ)
     {
-        get { return ѕ.Enabled; }
-        set { ѕ.Enabled = value; }
+    }
+}
+public class ҍ
+{
+    public ҍ(IMyTurretControlBlock Ϯ)
+    {
+        Ҍ = Ϯ;
     }
 
-    public string ў
+    public IMyTurretControlBlock Ҍ { get; }
+    public bool я => Ҍ.Closed;
+
+    bool Ҏ;
+
+    bool ҏ = true;
+
+    public bool Ґ { get; private set; }
+    public bool ґ { get; private set; }
+    public bool Ғ { get; private set; }
+    public bool ғ { get; private set; }
+
+    public bool а
     {
-        get { return ѕ.CustomName; }
-        set { ѕ.CustomName = value; }
+        get { return Ҍ.Enabled; }
+        set { Ҍ.Enabled = value; }
     }
 
-    public long џ { get; set; }
-    public Ɣ Ѡ { get; set; }
+    public string Ҕ
+    {
+        get { return Ҍ.CustomName; }
+        set { Ҍ.CustomName = value; }
+    }
+
+    public long ҕ { get; set; }
+    public Ƥ Җ { get; set; }
         
         
-    public Vector3D ʾ => ѕ.GetPosition();
+    public x ʹ => Ҍ.GetPosition();
 
-public void В()
+public void ж()
     {
-        var ѡ = ѕ.HasTarget;
-        ћ = !ѡ && ј;
-        ј = ѡ;
+        var җ = Ҍ.HasTarget;
+        ґ = !җ && Ҏ;
+        Ҏ = җ;
 
-        њ = ѡ;
+        Ґ = җ;
 
-        var ѣ = Ѡ != null && Ѡ.Ѣ;
-        ѝ = ѣ && љ;
-        љ = !ѣ;
+        var ҙ = Җ != null && Җ.Ҙ;
+        ғ = ҙ && ҏ;
+        ҏ = !ҙ;
 
-        ќ = ѣ; 
+        Ғ = ҙ; 
             
 
-        if (!ѡ)
-            џ = 0;
+        if (!җ)
+            ҕ = 0;
     }
 
-public MyDetectedEntityInfo ѥ()
+public Қ Ҝ()
     {
-        var Ѥ = ѕ.GetTargetedEntity();
-        џ = Ѥ.EntityId;
-        return Ѥ;
+        var қ = Ҍ.GetTargetedEntity();
+        ҕ = қ.EntityId;
+        return қ;
     }
 }
-public class ͻ : Ѧ
+public class Ρ : ҝ
 {
-    ϥ ѧ;
-    public ͽ ʃ;
-    Ί Ѩ;
-    List<IMyLargeTurretBase> ѩ;
-    ъ Ѫ;
-
-    Ɣ ѫ;
-    bool Ѭ;
-
-    Vector3D ѭ;
-    bool Ѯ = false;
         
-
-    public ͻ(IMyCubeGrid ѯ, List<IMyTerminalBlock> Ϗ, List<IMyTerminalBlock> Ѱ) : base(ѯ, Ѱ)
+        
+    public readonly Τ ɺ;
+    private readonly Є Ҟ;
+    private readonly Ψ ҟ;
+    private readonly ѹ Ҡ;
+    List<IMyLargeTurretBase> ҡ;
+        
+    ţ<x> Ң;
+    ţ<MyShipMass> ѱ;
+        
+    public Ρ(IMyCubeGrid ң, List<IMyTerminalBlock> Ϭ, List<IMyTerminalBlock> Ҥ) : base(ң, Ҥ)
     {
         Program.M("New ControllableShip : SupportingShip : ArgusShip", K.C);
-        ѧ = new ϥ(Ϗ);
-        ʃ = new ͽ(Ϗ, this);
-        Ѩ = new Ί(this, ʃ);
-        foreach (var ϑ in Ϗ)
+        foreach (var Ϯ in Ϭ)
         {
-            var ѱ = ϑ as IMyShipController;
-            if (ѱ != null) ϒ = ѱ;
+            var ҥ = Ϯ as IMyShipController;
+            if (ҥ != null) ϯ = ҥ;
         }
 
-        if (ϒ == null)
+        if (ϯ == null)
         {
-            Program.M($"WARNING: Controller not present in group: {N.ɣ}");
+            Program.M($"WARNING: Controller not present in group: {N.ɴ.ʖ}");
             return;
         }
-        н = ϒ.CalculateShipMass();
-        Ѫ = new ъ(Ϗ, this);
+        Ҟ = new Є(Ϭ);
+        ɺ = new Τ(Ϭ, this);
+        ҟ = new Ψ(this, ɺ);
+            
+        Ң = new ţ<x>(() => ϯ.GetNaturalGravity());
+        ѱ = new ţ<MyShipMass>(() => ϯ.CalculateShipMass());
+            
+        Ҡ = new ѹ(Ϭ, this);
             
     }
-
-    public IMyShipController ϒ { get; set; }
-    public Vector3D Ƒ => ϒ.WorldMatrix.Forward;
-
-    public Vector3 Ѳ => Base6Directions.Directions[(int)ϒ.Orientation.Forward];
-    public Ɠ б => (Ɠ)ϒ.Orientation.Forward;
-    public Vector3D Ĕ => ϒ.WorldMatrix.Up;
-    public MatrixD Ͱ => ѳ.WorldMatrix;
-    public Ɣ Ϡ => ѫ;
         
-    public Vector3D ϟ 
-    {
-        get
-        {
-            if (!Ѯ)
-            {
-                ѭ = ϒ.GetNaturalGravity();
-                Ѯ = true; 
-            }
+public IMyShipController ϯ { get; private set; }
+        
+public MatrixD Ι => Ҧ.WorldMatrix;
+public x ε => ϯ.WorldMatrix.Forward; 
+public x ҧ => ϯ.WorldMatrix.Up;
+public Vector3 Ҩ => Base6Directions.Directions[(int)ϯ.Orientation.Forward];
+public ƣ Ѥ => (ƣ)ϯ.Orientation.Forward;
+public Ƥ Ͽ { get; private set; }
 
-            return ѭ;
+public bool Ґ => Ͽ != null;
+
+public x Ͼ => Ң.Ť;
+
+public MyShipMass Х => ѱ.Ť;
+        
+    public override void d(int ͺ)
+    {
+        base.d(ͺ);
+        ɺ.d(ͺ);
+        Ҡ.d(ͺ);
+            
+        if ((ͺ + Ͱ) % Р.П(ͱ) == 0)
+        {
+            Ң.ť();
+            ѱ.ť();
         }
     }
-
-    public MyShipMass н { get; private set; }
-
-    public override void c(int ˁ)
+    public override void e(int ͺ)
     {
-        base.c(ˁ);
-        ʃ.c(ˁ);
-        Ѫ.c(ˁ);
-            
-        if ((ˁ + ʺ) % Ѐ.Ͽ(ʻ) == 0)
+        base.e(ͺ);
+        if (Ґ)
         {
-            н = ϒ.CalculateShipMass();
+                
+            var Ѕ = ҟ.μ();
+            if (Ѕ.Ε == x.ȝ) Ҟ.К();
+            else Ҟ.Г(ref Ѕ);
+                
+            ɺ.e(ͺ); 
+                
         }
+        Ҡ.e(ͺ);
     }
-
-    public override void d(int ˁ)
+        
+        
+public void ɷ()
     {
-        base.d(ˁ);
-        if (Ѭ)
+            
+        Ͽ = P.ҩ(this, N.ʄ.ʘ, N.ʄ.ʙ);
+        if (Ͽ == null)
         {
-            Ѯ = false;
-            
-            
-            var Ϧ = Ѩ.Ξ();
-            if (Ϧ.ˢ == Vector3D.Zero) ѧ.Ϻ();
-            else ѧ.ϲ(ref Ϧ);
-            ʃ.d(ˁ);
-        }
-
-
-        Ѫ.d(ˁ);
-    }
-
-    public void ʂ()
-    {
-        ѫ = null;
-        Ѭ = false;
-        ѧ.Ϻ();
-    }
-
-    public void ʁ()
-    {
-            
-        ѫ = P.Ѵ(this, N.ɦ, N.ɧ);
-        Ѭ = true;
-        if (ѫ == null)
-        {
-            Ѭ = false;
-            ѧ.Ϻ();
-            Program.M("Couldn't find new target", K.Ⱥ);
+            Ҟ.К();
+            Program.M("Couldn't find new target", K.ɒ);
         }
         else
         {
             Program.M("Got new target", K.L);
         }
     }
-
-    public Vector3D Ε()
+        
+public void ɹ()
     {
-        return ѫ?.ʾ ?? Vector3D.Zero;
+        Ͽ = null;
+        Ҟ.К();
+    }
+
+public x α()
+    {
+        return Ͽ?.ʹ ?? x.ȝ;
     }
 }
-public class Ѧ : ʽ 
+public class ҝ : ͳ 
 {
-    private readonly List<і> ѵ;
-    protected readonly IMyCubeGrid ѳ;
+    private readonly List<ҍ> Ҫ;
+    protected readonly IMyCubeGrid Ҧ;
 
         
-    public Ѧ(IMyCubeGrid ѯ, List<IMyTerminalBlock> Ѱ)
+    public ҝ(IMyCubeGrid ң, List<IMyTerminalBlock> Ҥ)
     {
         Program.M("New SupportingShip : ArgusShip", K.C);
-        IMyUserControllableGun ʗ = null;
-        IMyMotorStator Ѷ = null;
-        ѵ = new List<і>();
-        foreach (var ϑ in Ѱ)
+        IMyUserControllableGun ʲ = null;
+        IMyMotorStator ҫ = null;
+        Ҫ = new List<ҍ>();
+        foreach (var Ϯ in Ҥ)
         {
-            var ѱ = ϑ as IMyTurretControlBlock;
-            if (ѱ != null)
+            var ҥ = Ϯ as IMyTurretControlBlock;
+            if (ҥ != null)
             {
                     
-                ѵ.Add(new і(ѱ));
+                Ҫ.Add(new ҍ(ҥ));
                 continue;
             }
-            ʗ = ʗ ?? ϑ as IMyUserControllableGun;
-            Ѷ = Ѷ ?? ϑ as IMyMotorStator;
+            ʲ = ʲ ?? Ϯ as IMyUserControllableGun;
+            ҫ = ҫ ?? Ϯ as IMyMotorStator;
         }
 
 
 
-        if (ʗ != null && Ѷ != null)
+        if (ʲ != null && ҫ != null)
         {
             Program.M("Setting up trackers", K.C);
-            foreach (var ѷ in ѵ)
+            foreach (var Ҭ in Ҫ)
             {
-                Program.M($"Set up tracker: {ѷ.ў}");
-                var ϑ = ѷ.ѕ;
-                ϑ.ClearTools();
-                ϑ.AddTool(ʗ);
-                ϑ.AzimuthRotor = null;
-                ϑ.ElevationRotor = Ѷ;
-                ϑ.AIEnabled = true;
-                ϑ.CustomName = N.ɪ;
+                Program.M($"Set up tracker: {Ҭ.Ҕ}");
+                var Ϯ = Ҭ.Ҍ;
+                Ϯ.ClearTools();
+                Ϯ.AddTool(ʲ);
+                Ϯ.AzimuthRotor = null;
+                Ϯ.ElevationRotor = ҫ;
+                Ϯ.AIEnabled = true;
+                Ϯ.CustomName = N.ʆ.ʜ;
             }
 
-            if (ѵ.Count <= 0) Program.M("No target trackers in group", K.Ⱥ);
+            if (Ҫ.Count <= 0) Program.M("No target trackers in group", K.ɒ);
         }
-        else Program.M($"Gun/rotor not present in group: {N.ɤ}, cannot setup trackers", K.Ⱥ);
+        else Program.M($"Gun/rotor not present in group: {N.ɴ.ʗ}, cannot setup trackers", K.ɒ);
             
-        ѳ = ѯ;
+        Ҧ = ң;
     }
         
         
-    public override Vector3D ʾ => ѳ.GetPosition();
-    public override Vector3D ʿ => ʹ;
-    public override Vector3D ʛ => (ʹ - ʸ) * 60;
-    public override float ˀ => ѳ.GridSize;
+    public override x ʹ => Ҧ.GetPosition();
+    public override x Ͷ => ˮ;
+    public override x ʠ => (ˮ - ˬ) * 60;
+    public override float ͷ => Ҧ.GridSize;
 
-    public override string ʓ => ѳ.CustomName;
-    public override string ToString() => ʓ;
+    public override string ʭ => Ҧ.CustomName;
+    public override string ToString() => ʭ;
 
-    public override void c(int ˁ)
+    public override void d(int ͺ)
     {
-        ʸ = ʹ;
-        ʹ = ѳ.LinearVelocity;
+        ˬ = ˮ;
+        ˮ = Ҧ.LinearVelocity;
     }
 
-    public override void d(int ˁ)
+    public override void e(int ͺ)
     {
-        for (int Ɔ = ѵ.Count - 1; Ɔ >= 0; Ɔ--)
+        for (int Ə = Ҫ.Count - 1; Ə >= 0; Ə--)
         {
-            var ѷ = ѵ[Ɔ];
+            var Ҭ = Ҫ[Ə];
 
-            if (ѷ.ї)
+            if (Ҭ.я)
             {
-                ѵ.RemoveAt(Ɔ);
+                Ҫ.RemoveAt(Ə);
                 continue;
             }
 
-            ѷ.В();
-            if (!ѷ.њ || ѷ.ќ)
+            Ҭ.ж();
+            if (!Ҭ.Ґ || Ҭ.Ғ)
             {
-                if (ѷ.ћ && !ѷ.Ѝ)
+                if (Ҭ.ґ && !Ҭ.а)
                 {
-                    ѷ.Ѝ = true;
-                    ѷ.ў = N.ɪ;
+                    Ҭ.а = true;
+                    Ҭ.Ҕ = N.ʆ.ʜ;
 
-                    if (ѷ.Ѡ != null)
+                    if (Ҭ.Җ != null)
                     {
-                        ѷ.Ѡ.Ѹ = true;
-                        ѷ.Ѡ.ѹ = null;
+                        Ҭ.Җ.ҭ = true;
+                        Ҭ.Җ.ʆ = null;
                     }
                         
-                    ѷ.Ѡ = null;
+                    Ҭ.Җ = null;
 
                         
                 }
-                else if (ѷ.ѝ)
+                else if (Ҭ.ғ)
                 {
-                    ѷ.Ѝ = true;
-                    ѷ.ў = N.ɪ;
+                    Ҭ.а = true;
+                    Ҭ.Ҕ = N.ʆ.ʜ;
                 }
 
                 continue;
             }
-            if (ѷ.џ != 0) continue;
+            if (Ҭ.ҕ != 0) continue;
                 
-            var ˆ = ѷ.ѥ();
+            Қ ͻ = Ҭ.Ҝ();
                 
-            і Ѻ;
-            if (P.ѻ(ˆ.EntityId, out Ѻ))
+            ҍ Ү;
+            if (P.ү(ͻ.Ұ, out Ү))
             {
-                if (Ѻ == ѷ && ѷ.Ѝ) ѷ.Ѝ = false;
-                Ѻ.Ѡ.Ѽ(ˆ, null, ѷ);
+                if (Ү == Ҭ && Ҭ.а) Ҭ.а = false;
+                Ү.Җ.ұ(ͻ, null, Ҭ);
                 continue;
             }
-            var Ѿ = P.ѽ(ѷ, ˆ.EntityId, ˆ);
-            ѷ.Ѡ = Ѿ;
-            ѷ.ў = N.ɩ;
-            ѷ.Ѝ = false;
-            ѷ.џ = ˆ.EntityId;   
+            var ҳ = P.Ҳ(Ҭ, ͻ.Ұ, ͻ);
+            Ҭ.Җ = ҳ;
+            Ҭ.Ҕ = N.ʆ.ʛ;
+            Ҭ.а = false;
+            Ҭ.ҕ = ͻ.Ұ;   
                 
         }
     }
 }
-enum Ҍ
+enum ҹ
 {
-    ѿ,
-    Ҁ,
-    ҁ,
-    Ҋ,
-    ҋ
+    Ҵ,
+    ҵ,
+    Ҷ,
+    ҷ,
+    Ҹ
 }
-class ґ
+class Ҿ
 {
-    int ҍ;
-    private readonly int Ҏ;
-    public Ҍ ҏ;
+    int Һ;
+    private readonly int һ;
+    public ҹ Ҽ;
 
-    public ґ(int ɓ, Ҍ Ґ)
+    public Ҿ(int ɫ, ҹ ҽ)
     {
-        ҍ = ɓ;
-        Ҏ = ɓ;
-        ҏ = Ґ;
+        Һ = ɫ;
+        һ = ɫ;
+        Ҽ = ҽ;
     }
-    public void Ғ()
+    public void ҿ()
     {
-        ҍ = Ҏ;
+        Һ = һ;
     }
 
-    public bool ғ()
+    public bool Ӏ()
     {
-        ҍ--;
-        return ҍ <= 0;
+        Һ--;
+        return Һ <= 0;
     }
 }
-public class Ɣ : ʽ
+public class Ƥ : ͳ
 {
         
-    Dictionary<Vector3I, ґ> Ҕ = new Dictionary<Vector3I, ґ>();
-    Dictionary<Vector3I, ґ> ҕ = new Dictionary<Vector3I, ґ>();
+    Dictionary<Vector3I, Ҿ> Ӂ = new Dictionary<Vector3I, Ҿ>();
+    Dictionary<Vector3I, Ҿ> ӂ = new Dictionary<Vector3I, Ҿ>();
 
-    public Ѧ Җ;
+    public ҝ Ӄ;
 
-    public MyDetectedEntityInfo L;
+    public Қ L;
 
-    public long җ;
-    bool Ҙ = true;
-    BoundingBoxD ҙ;
-    Vector3D Қ;
-    Vector3D қ;
+    public long Ұ;
+    bool ӄ = true;
+    BoundingBoxD Ӆ;
+    x ӆ;
+    x Ӈ;
 
-    private readonly float Ҝ = 1f;
+    private readonly float ӈ = 1f;
 
-    public Ɣ(і ѷ, long ҝ, MyDetectedEntityInfo æ)
+    public Ƥ(ҍ Ҭ, long Ӊ, Қ è)
     {
-        ѹ = ѷ;
-        җ = ҝ;
-        ʻ = ʻ.ϼ;
+        ʆ = Ҭ;
+        Ұ = Ӊ;
+        ͱ = ͱ.М;
 
             
-        switch (æ.Type)
+        switch (è.Ҽ)
         {
             case MyDetectedEntityType.SmallGrid:
-                Ҝ = 0.5f;
+                ӈ = 0.5f;
                 break;
             case MyDetectedEntityType.LargeGrid:
-                Ҝ = 2.5f;
+                ӈ = 2.5f;
                 break;
         }
 
-        L = æ;
-        Ҟ = L.Orientation;
-        Ҟ.Translation = L.Position;
+        L = è;
+        ӊ = L.Ӌ;
+        ӊ.Translation = L.ʹ;
     }
 
 
-    public override Vector3D ʾ => L.Position;
-    public override Vector3D ʿ => ʹ;
-    public override Vector3D ʛ => (ʹ - ʸ) * 60;
-    public override float ˀ => Ҝ;
+    public override x ʹ => L.ʹ;
+    public override x Ͷ => ˮ;
+    public override x ʠ => (ˮ - ˬ) * 60;
+    public override float ͷ => ӈ;
 
-    public override string ʓ => $"Trackable ship {җ}";
+    public override string ʭ => $"Trackable ship {Ұ}";
 
-    public bool Ѹ { get; set; } = false;
+    public bool ҭ { get; set; } = false;
 
-    public override string ToString() => ʓ;
+    public override string ToString() => ʭ;
 
-    public і ѹ { get; set; }
-    public bool Ѣ { get; set; }
+    public ҍ ʆ { get; set; }
+    public bool Ҙ { get; set; }
 
-    public BoundingBoxD ҟ => L.BoundingBox;
+    public BoundingBoxD Ӎ => L.ӌ;
         
-    public Vector3D ҡ => Ҡ.Extents;
-    public Vector3D Ң => Ҡ.HalfExtents;
-    public int ң { get; set; } = 0;
+    public x ӏ => ӎ.Extents;
+    public x Ӑ => ӎ.HalfExtents;
+    public int ӑ { get; set; } = 0;
         
 
-    public BoundingBoxD Ҡ
+    public BoundingBoxD ӎ
     {
         get
         {
-            if (Ҙ) Ҥ();
-            return ҙ;
+            if (ӄ) Ӓ();
+            return Ӆ;
         }
     }
 
-    public Vector3D ҥ
+    public x ӓ
     {
         get
         {
-            if (Ҙ) Ҥ();
-            return Қ;
+            if (ӄ) Ӓ();
+            return ӆ;
         }
     }
 
 
 
-    Vector3D Ҧ;
-    MatrixD Ҟ;
+    x Ӕ;
+    MatrixD ӊ;
 
-    public Vector3D Ҩ()
+    public x ӕ()
     {
-        var ҧ = Ҧ;
-        Ҧ = Vector3D.Zero;
-        return ҧ;
+        var Ƙ = Ӕ;
+        Ӕ = x.ȝ;
+        return Ƙ;
     }
 
-    void Ҥ()
+    void Ӓ()
     {
-        ҙ = ǡ.Ǡ(ҟ, L.Orientation, Ҝ);
-        Ҙ = false;
-        var ҩ = Ң;
-        var ȷ = Ҝ / 2;
-        Қ = new Vector3D(ȷ - ҩ.X % Ҝ, ȷ - ҩ.Y % Ҝ, ȷ - ҩ.Z % Ҝ);
+        Ӆ = ǲ.Ǳ(Ӎ, L.Ӌ, ӈ);
+        ӄ = false;
+        var Ӗ = Ӑ;
+        var ɏ = ӈ / 2;
+        ӆ = new x(ɏ - Ӗ.Ķ % ӈ, ɏ - Ӗ.ķ % ӈ, ɏ - Ӗ.ĸ % ӈ);
     }
-    public override void c(int ˁ)
+    public override void d(int ͺ)
     {
-        if (Ѹ) return;
-        if ((ˁ + ʺ) % Ѐ.Ͽ(ʻ) != 0) return;
-        L = ѹ.ѥ();
-        if (ѹ.ї || L.EntityId != җ) Ѹ = true;
-        ʸ = ʹ;
-        ʹ = L.Velocity;
-        Ҧ = ʾ - қ;
+        if (ҭ) return;
+        if ((ͺ + Ͱ) % Р.П(ͱ) != 0) return;
+        L = ʆ.Ҝ();
+        if (ʆ.я || L.Ұ != Ұ) ҭ = true;
+        ˬ = ˮ;
+        ˮ = (Vector3D)L.Ͷ;
+        Ӕ = ʹ - Ӈ;
 
-        if (ʻ == ʻ.ʼ && (Ҧ * 60 - ʹ).LengthSquared() > 10000)
+        if (ͱ == ͱ.Ͳ && (Ӕ * 60 - ˮ).ȣ() > 10000)
         {
-            Ҙ = true;
-            Vector3I ˌ =
-                (Vector3I)(Vector3D.Transform(Ҧ - (ʹ / 60), MatrixD.Invert(Ҟ)) * 2);
-            Ҫ(ˌ);
+            ӄ = true;
+            Vector3I Ί =
+                (Vector3I)(x.ϼ(Ӕ - (ˮ / 60), MatrixD.Invert(ӊ)) * 2);
+            ӗ(Ί);
         }
             
-        Ҟ = L.Orientation;
-        Ҟ.Translation += L.Position;
-        қ = ʾ;
+        ӊ = L.Ӌ;
+        ӊ.Translation += L.ʹ;
+        Ӈ = ʹ;
     }
 
-    public override void d(int ˁ)
+    public override void e(int ͺ)
     {
             
-        ҕ.Clear();
-        foreach (var ū in Ҕ)
+        ӂ.Clear();
+        foreach (var Ŵ in Ӂ)
         {
-            var ҫ = Vector3D.Transform(
-                (Vector3D)(Vector3)ū.Key * (double)Ҝ + ҥ,
-                Ҟ
+            var Ә = x.ϼ(
+                (x)Ŵ.Key * ӈ + ӓ,
+                ӊ
             );
 
-            if (ū.Value.ғ()) continue;
-            ҕ[ū.Key] = ū.Value;
+            if (Ŵ.Value.Ӏ()) continue;
+            ӂ[Ŵ.Key] = Ŵ.Value;
                 
-            Program.C.Á(ҫ, Color.White, 0.2f, 0.016f, true);
+            Program.C.Ã(Ә, Color.White, 0.2f, 0.016f, true);
         }
 
-        var ҧ = Ҕ;
-        Ҕ = ҕ;
-        ҕ = ҧ;
-
-        Program.C.Í(ҟ, Color.Green, B.É.Ê, 0.02f, 0.016f);
-
-        var Ҭ = new MyOrientedBoundingBoxD(Ҡ, L.Orientation);
-        Ҭ.Center = ҟ.Center;
-        Program.C.Ð(Ҭ, Color.Red, B.É.Ê, 0.02f, 0.016f);
+        var Ƙ = Ӂ;
+        Ӂ = ӂ;
+        ӂ = Ƙ;
+            
+        var ә = new MyOrientedBoundingBoxD(ӎ, L.Ӌ);
+        ә.Center = Ӎ.Center;
             
     }
 
-    public void Ѽ(MyDetectedEntityInfo Ѥ, IMyLargeTurretBase ҭ = null,
-        і ѱ = null)
+    public void ұ(Қ қ, IMyLargeTurretBase Ӛ = null,
+        ҍ ҥ = null)
     {
-        if (Ѥ.EntityId != L.EntityId || Ѥ.HitPosition == null) return;
+        if (қ.Ұ != L.Ұ || қ.ӛ == null) return;
 
-        var Ү = (Vector3D)Ѥ.HitPosition;
-        var ү = Ү - ʾ;
-        var Ұ =
-            Vector3D.TransformNormal(ү,
+        var Ӝ = (x)қ.ӛ;
+        var ӝ = Ӝ - ʹ;
+        var Ӟ =
+            x.Ў(ӝ,
                 MatrixD.Transpose(
-                    Ҟ));
-        Ұ-= ҥ;
-        var ұ = new Vector3I(
-            (int)Math.Round(Ұ.X / Ҝ),
-            (int)Math.Round(Ұ.Y / Ҝ),
-            (int)Math.Round(Ұ.Z / Ҝ)
+                    ӊ));
+        Ӟ-= ӓ;
+        var ӟ = new Vector3I(
+            (int)Math.Round(Ӟ.Ķ / ӈ),
+            (int)Math.Round(Ӟ.ķ / ӈ),
+            (int)Math.Round(Ӟ.ĸ / ӈ)
         );
 
-        var Ґ = Ҍ.ѿ;
-        var Ҳ = ҭ != null ? ҭ.GetTargetingGroup() :
-            ѱ != null ? ѱ.ѕ.GetTargetingGroup() : "";
-        switch (Ҳ)
+        var ҽ = ҹ.Ҵ;
+        var Ӡ = Ӛ != null ? Ӛ.GetTargetingGroup() :
+            ҥ != null ? ҥ.Ҍ.GetTargetingGroup() : "";
+        switch (Ӡ)
         {
             case "Weapons":
-                Ґ = Ҍ.Ҁ;
+                ҽ = ҹ.ҵ;
                 break;
             case "Propulsion":
-                Ґ = Ҍ.ҁ;
+                ҽ = ҹ.Ҷ;
                 break;
             case "Power Systems":
-                Ґ = Ҍ.Ҋ;
+                ҽ = ҹ.ҷ;
                 break;
         }
-        if (Ҕ.ContainsKey(ұ))
+        if (Ӂ.ContainsKey(ӟ))
         {
-            var ʣ = Ҕ[ұ];
-            if (Ґ != ʣ.ҏ) ʣ.ҏ = Ҍ.ҋ;
-            ʣ.Ғ();
+            var ʼ = Ӂ[ӟ];
+            if (ҽ != ʼ.Ҽ) ʼ.Ҽ = ҹ.Ҹ;
+            ʼ.ҿ();
             return;
         }
         else
         {
-            Ҕ.Add(ұ, new ґ(N.ɬ, Ґ));
+            Ӂ.Add(ӟ, new Ҿ(N.ʆ.ʞ, ҽ));
         }
             
     }
 
-    void Ҫ(Vector3I ˌ)
+    void ӗ(Vector3I Ί)
     {
-        var ҳ = new Dictionary<Vector3I, ґ>();
+        var ӡ = new Dictionary<Vector3I, Ҿ>();
 
-        foreach (var ϑ in Ҕ)
+        foreach (var Ϯ in Ӂ)
         {
-            ҳ.Add(ϑ.Key + ˌ, ϑ.Value);
+            ӡ.Add(Ϯ.Key + Ί, Ϯ.Value);
         }
 
-        Ҕ = ҳ;
+        Ӂ = ӡ;
     }
 }
 public static class P
 {
         
-    public static readonly List<ʽ> Ҵ = new List<ʽ>();
+    public static readonly List<ͳ> Ӣ = new List<ͳ>();
         
-    private static List<Ɣ> ҵ = new List<Ɣ>();
+    private static List<Ƥ> ӣ = new List<Ƥ>();
         
 
-    public static Dictionary<long, Ɣ> Ҷ = new Dictionary<long, Ɣ>();
+    public static Dictionary<long, Ƥ> Ӥ = new Dictionary<long, Ƥ>();
         
-    private static IEnumerator<Ɣ> ҷ;
+    private static IEnumerator<Ƥ> ӥ;
 
-    private static MyDynamicAABBTreeD Ҹ = new MyDynamicAABBTreeD();
+    private static MyDynamicAABBTreeD Ӧ = new MyDynamicAABBTreeD();
 
     static P()
     {
             
     }
-    public static ͻ ʀ { get; set; }
+    public static Ρ ɶ { get; set; }
 
         
         
-    public static void c(int ˁ)
+    public static void d(int ͺ)
     {
-        ҹ();
-        for (var Һ = Ҵ.Count - 1; Һ >= 0; Һ--)
+        ӧ();
+        for (var Ө = Ӣ.Count - 1; Ө >= 0; Ө--)
         {
-            var Έ = Ҵ[Һ];
+            var Φ = Ӣ[Ө];
 
-            Έ.c(ˁ);
+            Φ.d(ͺ);
         }
 
 
 
-        foreach (var Έ in Ҵ)
+        foreach (var Φ in Ӣ)
         {
-            var һ = Έ as Ɣ;
-            if (һ == null) continue;
-            var ơ = һ.ҟ;
+            var ө = Φ as Ƥ;
+            if (ө == null) continue;
+            var Ʊ = ө.Ӎ;
                     
-            if (һ.ң != 0)
+            if (ө.ӑ != 0)
             {
-                var ˌ = һ.Ҩ();
-                Ҹ.MoveProxy(һ.ң, ref ơ, ˌ);
+                var Ί = ө.ӕ();
+                Ӧ.MoveProxy(ө.ӑ, ref Ʊ, Ί);
             }
             else
             {
-                һ.ң = Ҹ.AddProxy(ref ơ, һ, 0U);
+                ө.ӑ = Ӧ.AddProxy(ref Ʊ, ө, 0U);
             }
 
         }
             
 
-        foreach (var ɗ in ƣ.Ơ(Ҹ))
+        foreach (var ɯ in Ƴ.ư(Ӧ))
         {
-            var Ҽ = ɗ.Key;
-            var ҽ = ɗ.Value;
+            var Ӫ = ɯ.Key;
+            var ӫ = ɯ.Value;
 
-            var Ҿ = Ҽ.ҟ.Size.LengthSquared();
+            var Ӭ = Ӫ.Ӎ.Size.LengthSquared();
 
-            foreach (var ҿ in ҽ)
+            foreach (var ӭ in ӫ)
             {
                     
 
-                var Ӏ = ҿ.ҟ.Size.LengthSquared();
+                var Ӯ = ӭ.Ӎ.Size.LengthSquared();
 
                     
-                if (Ӏ > Ҿ)
+                if (Ӯ > Ӭ)
                 {
-                    Ҽ.Ѣ = true;
+                    Ӫ.Ҙ = true;
                     return;
                 }
             }
 
-            Ҽ.Ѣ = false;
+            Ӫ.Ҙ = false;
         }
     }
 
-    private static void ҹ()
+    private static void ӧ()
     {
-        if (!ҷ.MoveNext())
+        if (!ӥ.MoveNext())
         {
-            ҷ = Ӂ().GetEnumerator();
-            ҷ.MoveNext();
+            ӥ = ӯ().GetEnumerator();
+            ӥ.MoveNext();
         }
     }
 
-    public static void d(int ˁ)
+    public static void e(int ͺ)
     {
-        for (var Һ = Ҵ.Count - 1; Һ >= 0; Һ--)
+        for (var Ө = Ӣ.Count - 1; Ө >= 0; Ө--)
         {
-            var Έ = Ҵ[Һ];
-            Έ.d(ˁ);
+            var Φ = Ӣ[Ө];
+            Φ.e(ͺ);
         }
     }
         
         
-    private static IEnumerable<Ɣ> Ӂ()
+    private static IEnumerable<Ƥ> ӯ()
     {
-        var ӂ = N.ɥ * N.ɥ;
+        var Ӱ = N.ȥ.ʓ * N.ȥ.ʓ;
 
-        for (var Һ = Ҵ.Count - 1; Һ >= 0; Һ--)
+        for (var Ө = Ӣ.Count - 1; Ө >= 0; Ө--)
         {
-            if (Һ >= Ҵ.Count) continue;
-            var Έ = Ҵ[Һ];
-            var Ѿ = Έ as Ɣ;
-            if (Ѿ == null) continue;
+            if (Ө >= Ӣ.Count) continue;
+            var Φ = Ӣ[Ө];
+            var ҳ = Φ as Ƥ;
+            if (ҳ == null) continue;
 
-            var Δ = Ѿ.ʾ;
-            var Ӄ = ʀ.ʾ;
-            var ӄ = (Δ - Ӄ).LengthSquared();
+            var ΰ = ҳ.ʹ;
+            var ӱ = ɶ.ʹ;
+            var Ӳ = (ΰ - ӱ).ȣ();
 
-            if (ӄ > ӂ)
-                Ѿ.ʻ = ʻ.ϼ;
+            if (Ӳ > Ӱ)
+                ҳ.ͱ = ͱ.М;
             else
-                Ѿ.ʻ = ʻ.ʼ;
+                ҳ.ͱ = ͱ.Ͳ;
 
-            yield return Ѿ;
+            yield return ҳ;
         }
     }
         
         
         
-public static List<Ɣ> Ӈ(Ѧ Έ, double Ͷ)
+public static List<Ƥ> ӵ(ҝ Φ, double Ξ)
     {
-        ҵ.Clear();
-        foreach (var Ӆ in Ҵ)
+        ӣ.Clear();
+        foreach (var ӳ in Ӣ)
         {
-            var ӆ = Ӆ as Ɣ;
-            if (ӆ == null) continue;
-            if ((ӆ.ʾ - Έ.ʾ).LengthSquared() < Ͷ * Ͷ) ҵ.Add(ӆ);
+            var Ӵ = ӳ as Ƥ;
+            if (Ӵ == null) continue;
+            if ((Ӵ.ʹ - Φ.ʹ).ȣ() < Ξ * Ξ) ӣ.Add(Ӵ);
         }
             
-        return ҵ;
+        return ӣ;
     }
 
-    public static Ɣ Ѵ(ͻ Έ, double Ͷ, float ӈ)
+    public static Ƥ ҩ(Ρ Φ, double Ξ, float Ӷ)
     {
-        var Ӊ = Ӈ(Έ, Ͷ);
-        if (Ӊ.Count < 1) return null;
+        var ӷ = ӵ(Φ, Ξ);
+        if (ӷ.Count < 1) return null;
             
             
-        var в = Έ.Ƒ;
-        double ӊ = Math.Cos(ӈ * Math.PI / 180.0);
+        var ѥ = Φ.ε;
+        double Ӹ = Math.Cos(Ӷ * Math.PI / 180.0);
             
-        double Ӌ = double.MaxValue;
-        Ɣ ӌ = null;
+        double ӹ = double.MaxValue;
+        Ƥ Ӻ = null;
             
-        foreach (var Ӎ in Ӊ)
+        foreach (var ӻ in ӷ)
         {
-            var ӎ = (Ӎ.ʾ - Έ.ʾ);
-            var Ö = ӎ.Length();
+            var Ӽ = (ӻ.ʹ - Φ.ʹ);
+            var Ù = Ӽ.Ȩ();
 
-            var ʹ = (ӎ / Ö).Dot(в);
-            ʹ = MathHelperD.Clamp(ʹ, -1.0, 1.0);
-            if (ʹ < ӊ) continue;
+            var Ν = (Ӽ / Ù).Ό(ѥ);
+            Ν = MathHelperD.Clamp(Ν, -1.0, 1.0);
+            if (Ν < Ӹ) continue;
                 
-            var ӏ = (1 - ʹ) * Ö;
-            if (ӏ < Ӌ)
+            var ӽ = (1 - Ν) * Ù;
+            if (ӽ < ӹ)
             {
-                ӌ = Ӎ;
-                Ӌ = ӏ;
+                Ӻ = ӻ;
+                ӹ = ӽ;
             }
         }
-        return ӌ;
+        return Ӻ;
     }
 
-    public static void Q(IMyCubeGrid ѯ, IMyGridTerminalSystem Ӑ)
+    public static void Q(IMyCubeGrid ң, IMyGridTerminalSystem Ӿ)
     {
-        var Ϝ = Ӑ.GetBlockGroupWithName(N.ɣ);
-        Program.M($"Getting group : {N.ɣ}", K.ȹ);
-        var ӑ = Ӑ.GetBlockGroupWithName(N.ɤ);
-        Program.M($"Getting group : {N.ɤ}", K.ȹ);
-        var Ϗ = new List<IMyTerminalBlock>();
-        var Ѱ = new List<IMyTerminalBlock>();
-        if (Ϝ != null) {Ϝ.GetBlocks(Ϗ); Program.M($"Got group: {N.ɣ}", K.C);}
-        else Program.M($"Group not present: {N.ɣ}", K.Ⱥ);
-        if (ӑ != null) {ӑ.GetBlocks(Ѱ); Program.M($"Got group: {N.ɤ}", K.C);}
-        else Program.M($"Group not present: {N.ɤ}", K.Ⱥ);
-        var Έ = new ͻ(ѯ, Ϗ, Ѱ);
-        Ҵ.Add(Έ);
-        ʀ = Έ;
+        var Ϻ = Ӿ.GetBlockGroupWithName(N.ɴ.ʖ);
+        Program.M($"Getting group : {N.ɴ.ʖ}", K.ɑ);
+        var ӿ = Ӿ.GetBlockGroupWithName(N.ɴ.ʗ);
+        Program.M($"Getting group : {N.ɴ.ʗ}", K.ɑ);
+        var Ϭ = new List<IMyTerminalBlock>();
+        var Ҥ = new List<IMyTerminalBlock>();
+        if (Ϻ != null) {Ϻ.GetBlocks(Ϭ); Program.M($"Got group: {N.ɴ.ʖ}", K.C);}
+        else Program.M($"Group not present: {N.ɴ.ʖ}", K.ɒ);
+        if (ӿ != null) {ӿ.GetBlocks(Ҥ); Program.M($"Got group: {N.ɴ.ʗ}", K.C);}
+        else Program.M($"Group not present: {N.ɴ.ʗ}", K.ɒ);
+        var Φ = new Ρ(ң, Ϭ, Ҥ);
+        Ӣ.Add(Φ);
+        ɶ = Φ;
 
             
-        ҷ = Ӂ().GetEnumerator();
+        ӥ = ӯ().GetEnumerator();
     }
 
-    public static Ɣ ѽ(і ѷ, long ҝ, MyDetectedEntityInfo æ)
+    public static Ƥ Ҳ(ҍ Ҭ, long Ӊ, Қ è)
     {
-        Ɣ Ѿ;
-        if (Ҷ.TryGetValue(ҝ, out Ѿ))
+        Ƥ ҳ;
+        if (Ӥ.TryGetValue(Ӊ, out ҳ))
         {
-            Program.M("Restoring defunct ship" + ҝ, K.C);
-            if (!Ѿ.Ѹ) return null;
-            Ѿ.ѹ = ѷ;
-            Ѿ.Ѹ = false;
+            Program.M("Restoring defunct ship" + Ӊ, K.C);
+            if (!ҳ.ҭ) return null;
+            ҳ.ʆ = Ҭ;
+            ҳ.ҭ = false;
 
-            return Ѿ;
+            return ҳ;
         }
-        Program.M("Creating new ship " + ҝ, K.C);
-        Ѿ = new Ɣ(ѷ, ҝ, æ);
-        Ҵ.Add(Ѿ);
-        Ҷ.Add(ҝ, Ѿ);
-        return Ѿ;
+        Program.M("Creating new ship " + Ӊ, K.C);
+        ҳ = new Ƥ(Ҭ, Ӊ, è);
+        Ӣ.Add(ҳ);
+        Ӥ.Add(Ӊ, ҳ);
+        return ҳ;
     }
-    public static void Ӓ(Ɣ Ѿ)
+    public static void Ԁ(Ƥ ҳ)
     {
-        Ҵ.Remove(Ѿ);
-        Ҷ.Remove(Ѿ.җ);
-        Ҹ.RemoveProxy(Ѿ.ң);
+        Ӣ.Remove(ҳ);
+        Ӥ.Remove(ҳ.Ұ);
+        Ӧ.RemoveProxy(ҳ.ӑ);
     }
 
 
-    public static bool ѻ(long ӓ, out і Ѻ)
+    public static bool ү(long ԁ, out ҍ Ү)
     {
-        Ɣ Ѿ;
+        Ƥ ҳ;
 
-        var Ӕ = Ҷ.TryGetValue(ӓ, out Ѿ);
-        Ѻ = Ӕ ? Ѿ.ѹ : null;
-        return Ӕ && !Ѿ.Ѹ;
+        var Ԃ = Ӥ.TryGetValue(ԁ, out ҳ);
+        Ү = Ԃ ? ҳ.ʆ : null;
+        return Ԃ && !ҳ.ҭ;
     }
+}
+public struct Қ
+{
+    MyDetectedEntityInfo ԃ;
+        Қ(MyDetectedEntityInfo қ)
+    {
+        ԃ = қ;
+    }
+    public static implicit operator Қ(MyDetectedEntityInfo қ) => new Қ(қ);
+    public long Ұ => ԃ.EntityId;
+    public MyDetectedEntityType Ҽ => ԃ.Type;
+    public Vector3D? ӛ => ԃ.HitPosition;
+    public MatrixD Ӌ => ԃ.Orientation;
+    public Vector3 Ͷ => ԃ.Velocity;
+    public BoundingBoxD ӌ => ԃ.BoundingBox;
+    public Vector3D ʹ => ӌ.Center;
+
+        
+
+}
+public struct x
+{
+    Vector3D ş;  
+        
+
+
+    public x(double А, double ȸ, double Ԅ)
+    {
+      ş = new Vector3D(А, ȸ, Ԅ);
+    }
+        
+    x(Vector3D ź)
+    {
+      ş = ź;
+    }
+        
+    public static implicit operator x(Vector3D ź) => new x(ź);
+    public static implicit operator x(Vector3 ź) => (Vector3D)ź;
+    public static implicit operator Vector3D(x ź) => ź.ş;
+    public static explicit operator Vector3I(x ź) => (Vector3I)ź.ş;
+    public static explicit operator x(Vector3I ź) => (Vector3D)ź;
+
+
+    public static x operator -(x ź) => -ź.ş;
+
+    public static bool operator ==(x ԅ, x Ԇ) => ԅ.ş == Ԇ.ş;
+        
+    public static bool operator !=(x ԅ, x Ԇ) => ԅ.ş != Ԇ.ş;
+        
+
+    public static x operator +(x ԅ, x Ԇ) => ԅ.ş + Ԇ.ş;
+        
+
+        
+    public static x operator -(x ԅ, x Ԇ) => ԅ.ş - Ԇ.ş;
+        
+        
+    public static x operator *(x ԅ, x Ԇ) => ԅ.ş * Ԇ.ş;
+        
+    public static x operator *(x ź, double ԇ) => ź.ş * ԇ;
+        
+    public static x operator *(double ԇ, x ź) => ź.ş * ԇ;
+        
+    public static x operator /(x ԅ, x Ԇ) => ԅ.ş / Ԇ.ş;
+        
+    public static x operator /(x ź, double Ԉ) => ź.ş / Ԉ;
+
+
+    public double Ķ => ş.X;
+    public double ķ => ş.Y;
+    public double ĸ => ş.Z;
+        
+
+
+    public static x ȝ => Vector3D.Zero;
+    public static Vector3 ơ => Vector3D.Forward;
+    public static Vector3 ĕ => Vector3D.Left;
+    public static x Ė => Vector3D.Up;
+    public double Ȩ() => ş.Length();
+
+    public double Ό(x ԉ) => ş.Dot(ԉ.ş);
+
+    public double ȣ() => ş.LengthSquared();
+
+    public static x ϼ(x Ԋ, MatrixD ԋ) => Vector3D.Transform(Ԋ, ԋ);
+
+    public static x Ў(x Ԋ, MatrixD ԋ) => Vector3D.TransformNormal(Ԋ, ԋ);
+
+    public static x ǃ(x ǀ) => Vector3D.Abs(ǀ);
+
+    public static x Ȥ(x ƒ) => Vector3D.Normalize(ƒ.ş);
+
+    public static x ȩ(x Ԋ, double ª) =>
+      Vector3D.ClampToSphere(Ԋ.ş, ª);
+
+    public static x ȧ(ref x Ԍ, ref x ԍ) =>
+      Vector3D.ProjectOnVector(ref Ԍ.ş, ref ԍ.ş);
+
+    public static x Ќ(x Ԏ, x ԏ) => Vector3D.Cross(Ԏ, ԏ);
+
+    public x θ() => ş.Normalized();
+
+    public bool Ԑ(x ԉ) => ş == ԉ.ş;
+        
 }

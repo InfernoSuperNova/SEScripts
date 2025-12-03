@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using IngameScript.Helper;
+using IngameScript.TruncationWrappers;
 using Sandbox.ModAPI.Ingame;
 using VRageMath;
 
@@ -26,13 +27,13 @@ namespace IngameScript.Ship.Components
                 }
             }
             
-            if (_gyros.Count <= 0) Program.LogLine($"No gyroscopes found in group: {Config.GroupName}", LogLevel.Warning);
+            if (_gyros.Count <= 0) Program.LogLine($"No gyroscopes found in group: {Config.String.GroupName}", LogLevel.Warning);
             
             
-            _pitch = new PIDController(Config.ProportialGain, Config.IntegralGain, Config.DerivativeGain, 
-                Config.IntegralUpperLimit, Config.IntegralLowerLimit);
-            _yaw = new PIDController(Config.ProportialGain, Config.IntegralGain, Config.DerivativeGain,
-                Config.IntegralUpperLimit, Config.IntegralLowerLimit);
+            _pitch = new PIDController(Config.Pid.ProportionalGain, Config.Pid.IntegralGain, Config.Pid.DerivativeGain, 
+                Config.Pid.IntegralUpperLimit, Config.Pid.IntegralLowerLimit);
+            _yaw = new PIDController(Config.Pid.ProportionalGain, Config.Pid.IntegralGain, Config.Pid.DerivativeGain,
+                Config.Pid.IntegralUpperLimit, Config.Pid.IntegralLowerLimit);
         }
         
         public void Rotate(ref FiringSolution solution, double roll = 0)
@@ -67,17 +68,17 @@ namespace IngameScript.Ship.Components
 
             //Rotate Toward forward
 
-            var waxis = Vector3D.Cross(solution.CurrentForward, solution.DesiredForward);
-            var axis = Vector3D.TransformNormal(waxis, MatrixD.Transpose(solution.WorldMatrix));
+            var waxis = AT_Vector3D.Cross(solution.CurrentForward, solution.DesiredForward);
+            var axis = AT_Vector3D.TransformNormal(waxis, MatrixD.Transpose(solution.WorldMatrix));
             var x = _pitch.Filter(-axis.X, roundValue);
             var y = _yaw.Filter(-axis.Y, roundValue);
 
-            gp = MathHelper.Clamp(x, -Config.MaxAngularVelocityRpm, Config.MaxAngularVelocityRpm);
-            gy = MathHelper.Clamp(y, -Config.MaxAngularVelocityRpm, Config.MaxAngularVelocityRpm);
+            gp = MathHelper.Clamp(x, -Config.General.MaxAngularVelocityRpm, Config.General.MaxAngularVelocityRpm);
+            gy = MathHelper.Clamp(y, -Config.General.MaxAngularVelocityRpm, Config.General.MaxAngularVelocityRpm);
 
-            if (Math.Abs(gy) + Math.Abs(gp) > Config.MaxAngularVelocityRpm)
+            if (Math.Abs(gy) + Math.Abs(gp) > Config.General.MaxAngularVelocityRpm)
             {
-                var adjust = Config.MaxAngularVelocityRpm / (Math.Abs(gy) + Math.Abs(gp));
+                var adjust = Config.General.MaxAngularVelocityRpm / (Math.Abs(gy) + Math.Abs(gp));
                 gy *= adjust;
                 gp *= adjust;
             }
@@ -89,13 +90,13 @@ namespace IngameScript.Ship.Components
 
         private void ApplyGyroOverride(double pitchSpeed, double yawSpeed, double rollSpeed, MatrixD worldMatrix)
         {
-            var rotationVec = new Vector3D(pitchSpeed, yawSpeed, rollSpeed);
-            var relativeRotationVec = Vector3D.TransformNormal(rotationVec, worldMatrix);
+            var rotationVec = new AT_Vector3D(pitchSpeed, yawSpeed, rollSpeed);
+            var relativeRotationVec = AT_Vector3D.TransformNormal(rotationVec, worldMatrix);
             foreach (var gyro in _gyros)
                 if (gyro.IsFunctional && gyro.IsWorking && gyro.Enabled && !gyro.Closed)
                 {
                     var transformedRotationVec =
-                        Vector3D.TransformNormal(relativeRotationVec, MatrixD.Transpose(gyro.WorldMatrix));
+                        AT_Vector3D.TransformNormal(relativeRotationVec, MatrixD.Transpose(gyro.WorldMatrix));
                     gyro.Pitch = (float)transformedRotationVec.X;
                     gyro.Yaw = (float)transformedRotationVec.Y;
                     gyro.Roll = (float)transformedRotationVec.Z;

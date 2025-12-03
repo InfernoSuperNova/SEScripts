@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using IngameScript.Helper;
 using IngameScript.Ship.Components;
 using IngameScript.Ship.Components.Propulsion;
+using IngameScript.TruncationWrappers;
 using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame;
@@ -21,11 +22,8 @@ namespace IngameScript.Ship
         private readonly PropulsionController _propulsionController;
         private List<IMyLargeTurretBase> _turrets; // TODO: Abstract into a turrets handler, assign
         
-        
-        private Vector3D _cachedGravity;
-        private bool _gravityValid = false;
-        private MyShipMass _cachedMass;
-        private bool _massValid = false;
+        private CachedValue<AT_Vector3D> _gravity;
+        private CachedValue<MyShipMass> _mass;
         #endregion
         
         public ControllableShip(IMyCubeGrid grid, List<IMyTerminalBlock> blocks, List<IMyTerminalBlock> trackerBlocks) : base(grid, trackerBlocks)
@@ -40,13 +38,16 @@ namespace IngameScript.Ship
             // Without a controller, the ship is virtually useless
             if (Controller == null)
             {
-                Program.LogLine($"WARNING: Controller not present in group: {Config.GroupName}");
+                Program.LogLine($"WARNING: Controller not present in group: {Config.String.GroupName}");
                 return;
             }
             _gyroManager = new GyroManager(blocks);
             Guns = new GunManager(blocks, this);
             _fireController = new FireController(this, Guns);
-            var _ = Mass; // Manually triggers a (re)calculation of the mass property
+            
+            _gravity = new CachedValue<AT_Vector3D>(() => Controller.GetNaturalGravity());
+            _mass = new CachedValue<MyShipMass>(() => Controller.CalculateShipMass());
+            
             _propulsionController = new PropulsionController(blocks, this);
             
         }
@@ -67,12 +68,12 @@ namespace IngameScript.Ship
         /// Gets the controller centric forward of the grid.
         /// This is more useful and player centric as the controller can be arbitrarily orientated in any of 24 possible options.
         /// </summary>
-        public Vector3D WorldForward => Controller.WorldMatrix.Forward; 
+        public AT_Vector3D WorldForward => Controller.WorldMatrix.Forward; 
         /// <summary>
         /// Gets the controller centric up of the grid.
         /// This is more useful and player centric as the controller can be arbitrarily orientated in any of 24 possible options.
         /// </summary>
-        public Vector3D WorldUp => Controller.WorldMatrix.Up;
+        public AT_Vector3D WorldUp => Controller.WorldMatrix.Up;
         /// <summary>
         /// Gets the forward of the controller relative to its own internal orientation in the grid.
         /// </summary>
@@ -94,39 +95,12 @@ namespace IngameScript.Ship
         /// <summary>
         /// Gets the current natural gravity at the position of the controller.
         /// </summary>
-        public Vector3D Gravity 
-        {
-            get
-            {
-                // We wrap in a lazy cached system as getting the natural gravity of a given worldpoint can be and is pretty slow.
-                if (!_gravityValid)
-                {
-                    _cachedGravity = Controller.GetNaturalGravity();
-                    _gravityValid = true; 
-                }
-
-                return _cachedGravity;
-            }
-        }
+        public AT_Vector3D Gravity => _gravity.Value;
 
         /// <summary>
         /// Gets the mass details of the grid. Subject to inaccuracy if being changed rapidly.
         /// </summary>
-        public MyShipMass Mass
-        {
-            get
-            {
-                // Perhaps there is an opportunity to abstract and reuse this pattern here. Not sure how feasible that would be.
-                // Maybe if I have a third one of these.
-                if (!_massValid)
-                {
-                    _cachedMass = Controller.CalculateShipMass();
-                    _massValid = true;
-                }
-
-                return _cachedMass;
-            }
-        }
+        public MyShipMass Mass => _mass.Value;
         #endregion
         
         // Could possibly subscribe these and make them private?
@@ -141,8 +115,8 @@ namespace IngameScript.Ship
             
             if ((frame + RandomUpdateJitter) % Polling.GetFramesBetweenPolls(PollFrequency) == 0)
             {
-                _gravityValid = false;
-                _massValid = false;
+                _gravity.Invalidate();
+                _mass.Invalidate();
             }
         }
         // Late Update is called in a deterministic, but undefined order. Designed for acting on data.
@@ -154,7 +128,7 @@ namespace IngameScript.Ship
             {
                 
                 var solution = _fireController.ArbitrateFiringSolution();
-                if (solution.TargetPosition == Vector3D.Zero) _gyroManager.ResetGyroOverrides(); // TODO: Don't spam this
+                if (solution.TargetPosition == AT_Vector3D.Zero) _gyroManager.ResetGyroOverrides(); // TODO: Don't spam this
                 else _gyroManager.Rotate(ref solution);
                 
                 // TODO: A little inconsistent to put this in a check when the EarlyUpdate is not.
@@ -175,7 +149,7 @@ namespace IngameScript.Ship
         public void Target()
         {
             
-            CurrentTarget = ShipManager.GetForwardTarget(this, Config.LockRange, Config.LockAngle);
+            CurrentTarget = ShipManager.GetForwardTarget(this, Config.Behavior.LockRange, Config.Behavior.LockAngle);
             if (CurrentTarget == null)
             {
                 _gyroManager.ResetGyroOverrides();
@@ -200,9 +174,9 @@ namespace IngameScript.Ship
         /// Gets the current position of the target.
         /// </summary>
         /// <returns>The targets position, or 0 if invalid. </returns>
-        public Vector3D GetTargetPosition()
+        public AT_Vector3D GetTargetPosition()
         {
-            return CurrentTarget?.Position ?? Vector3D.Zero;
+            return CurrentTarget?.Position ?? AT_Vector3D.Zero;
         }
         #endregion
     }

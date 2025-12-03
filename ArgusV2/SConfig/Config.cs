@@ -9,54 +9,18 @@ namespace IngameScript
 {
     public static class Config
     {
-        
-
-
         private static ConfigTool _configTool = new ConfigTool("General Config", "")
         {
-            Get = GetConfig,
-            Set = SetConfig
+            Sync = SyncConfig
         };
 
-        
-        public static Dictionary<string, Action> Commands;
-        
-        public static LogLevel LogLevel = LogLevel.Trace; // TODO: Hook me up
-        
-        public static string ArgumentTarget = "Target";
-        public static string ArgumentUnTarget = "Untarget";
-        public static string GroupName = "ArgusV2";
-        public static string TrackerGroupName = "TrackerGroup";
+        public static readonly GeneralConfig General = new GeneralConfig();
+        public static readonly StringConfig String = new StringConfig();
+        public static readonly BehaviorConfig Behavior = new BehaviorConfig();
+        public static readonly TrackerConfig Tracker = new TrackerConfig();
+        public static readonly GdriveConfig Gdrive = new GdriveConfig();
+        public static readonly PidConfig Pid = new PidConfig();
 
-        
-        public static double MaxWeaponRange = 2000;
-        public static double LockRange = 3000; // m
-        public static float LockAngle = 40; // deg
-        public static double MinFireDot = 0.999999; // Should be updated further
-        
-        
-        public static string TrackingName = "CTC: Tracking";
-        public static string SearchingName = "CTC: Searching";
-        public static string StandbyName = "CTC: Standby";
-        public static int ScannedBlockMaximumValidTimeFrames = 3600; // 1 minutes
-
-        public static double ProportialGain = 500;
-        public static double IntegralGain = 0;
-        public static double DerivativeGain = 30;
-        public static double IntegralLowerLimit = -0.05;
-        public static double IntegralUpperLimit = 0.05;
-        public static double MaxAngularVelocityRpm = 30;
-
-
-        public static int GdriveTimeoutFrames = 300; // TODO: Hook me up
-        public static double GravityAcceleration = 9.81; // TODO: Hook me up
-        public static bool DefaultPrecisionMode = false; // TODO: Hook me up
-        public static bool DisablePrecisionModeOnEnemyDetected = false; // TODO: Hook me up TODO: Set me up
-        public static double GdriveStep = 0.005;
-        public static int GdriveArtificialMassBalanceFrequencyFrames = 300;
-        public static int GdriveSpaceBallBalanceFrequencyFrames = 600;
-        
-        
         public static void Setup(IMyProgrammableBlock me)
         {
             Program.LogLine("Setting up config");
@@ -64,126 +28,144 @@ namespace IngameScript
             GunData.Init();
             ProjectileData.Init();
             
-            if (me.CustomData.Length > 0)
-                ConfigTool.DeserializeAll(me.CustomData);
-            me.CustomData = ConfigTool.SerializeAll();
+            me.CustomData = ConfigTool.SyncConfig(me.CustomData);
+            
             Program.LogLine("Written config to custom data", LogLevel.Debug);
-            Commands = new Dictionary<string, Action>
-            {
-                { ArgumentTarget,     () => ShipManager.PrimaryShip.Target() },
-                { ArgumentUnTarget,   () => ShipManager.PrimaryShip.UnTarget() },
-                { "FireAllTest",             () => ShipManager.PrimaryShip.Guns.FireAll() },
-                { "CancelAllTest",           () => ShipManager.PrimaryShip.Guns.CancelAll() }
-            };
-            if (LogLevel.Trace <= LogLevel)
-            {
-                foreach (var command in Commands)
-                {
-                    Program.LogLine($"Command: {command.Key}", LogLevel.Trace);
-                }
-            }
             Program.LogLine("Commands set up", LogLevel.Debug);
             SetupGlobalState(me);
             Program.LogLine("Config setup done", LogLevel.Info);
             
         }
 
-        public static void SetupGlobalState(IMyProgrammableBlock me)
+        private static void SetupGlobalState(IMyProgrammableBlock me)
         {
             Program.LogLine("Setting up global state", LogLevel.Debug);
-            GlobalState.PrecisionMode = DefaultPrecisionMode;
+            GlobalState.PrecisionMode = Gdrive.DefaultPrecisionMode;
             Program.LogLine($"Precision mode state is {GlobalState.PrecisionMode}", LogLevel.Trace);
         }
 
-        static Config()
+        private static void SyncConfig(Dictionary<string, object> obj)
         {
-            
+            General.Sync(obj);
+            String.Sync(obj);
+            Behavior.Sync(obj);
+            Tracker.Sync(obj);
+            Gdrive.Sync(obj);
+            Pid.Sync(obj);
         }
 
-
-        private static Dictionary<string, object> GetConfig()
+        public class GeneralConfig
         {
-            return new Dictionary<string, object>
+            public LogLevel LogLevel = LogLevel.Trace;
+            public double MaxWeaponRange = 2000;
+            public double GridSpeedLimit = 104;
+            public double MaxAngularVelocityRpm = 30;
+            
+            internal void Sync(Dictionary<string, object> obj)
             {
-                ["String Config"] = new Dictionary<string, object>
-                {
-                    ["ArgumentTarget"] = ArgumentTarget,
-                    ["ArgumentUnTarget"] = ArgumentUnTarget,
-                    ["GroupName"] = GroupName,
-                    ["TrackerGroupName"] = TrackerGroupName
-                },
-                ["Behavior Config"] = new Dictionary<string, object>
-                {
-                    ["MaxWeaponRange"] = MaxWeaponRange,
-                    ["LockRange"] = LockRange,
-                    ["LockAngle"] = LockAngle,
-                    ["MinFireDot"] = MinFireDot,
-                },
-                ["Tracker Config"] = new Dictionary<string, object>
-                {
-                    ["TrackingName"] = TrackingName,
-                    ["SearchingName"] = SearchingName,
-                    ["StandbyName"] = StandbyName,
-                    ["ScannedBlockMaxValidFrames"] = ScannedBlockMaximumValidTimeFrames
-                },
-                ["PID Config"] = new Dictionary<string, object>
-                {
-                    ["ProportionalGain"] = ProportialGain,
-                    ["IntegralGain"] = IntegralGain,
-                    ["DerivativeGain"] = DerivativeGain,
-                    ["IntegralLowerLimit"] = IntegralLowerLimit,
-                    ["IntegralUpperLimit"] = IntegralUpperLimit,
-                    ["MaxAngularVelocityRPM"] = MaxAngularVelocityRpm
-                }
-            };
+                var config = ConfigCategory.From(obj, "General Config");
+                
+                config.Sync("LogLevel", ref LogLevel);
+                config.Sync("MaxWeaponRange", ref MaxWeaponRange);
+                config.Sync("GridSpeedLimit", ref GridSpeedLimit);
+                config.Sync("MaxAngularVelocityRPM", ref MaxAngularVelocityRpm);
+            }
         }
-        private static void SetConfig(Dictionary<string, object> obj)
+        public class StringConfig
         {
+            public string ArgumentTarget = "Target";
+            public string ArgumentUnTarget = "Untarget";
+            public string GroupName = "ArgusV2";
+            public string TrackerGroupName = "TrackerGroup";
             
-            // Unwrap any Dwon.Comment objects recursively first
-            Dwon.UnwrapAllComments(obj);
+            internal void Sync(Dictionary<string, object> obj)
+            {
+                var config = ConfigCategory.From(obj, "String Config");
+                
+                config.Sync("ArgumentTarget", ref ArgumentTarget);
+                config.Sync("ArgumentUnTarget", ref ArgumentUnTarget);
+                config.Sync("GroupName", ref GroupName);
+                config.Sync("TrackerGroupName", ref TrackerGroupName);
+            }
+        }
 
+        public class BehaviorConfig
+        {
+            public double LockRange = 3000; // m
+            public float LockAngle = 40; // deg
+            public double MinFireDot = 0.999999; // Should be updated further
             
-            // String Config
-            var stringConfig = obj.ContainsKey("String Config") ? obj["String Config"] as Dictionary<string, object> : null;
-            if (stringConfig != null)
+            internal void Sync(Dictionary<string, object> obj)
             {
-                ArgumentTarget       = Dwon.GetValue(stringConfig, "ArgumentTarget", ArgumentTarget);
-                ArgumentUnTarget     = Dwon.GetValue(stringConfig, "ArgumentUnTarget", ArgumentUnTarget);
-                GroupName            = Dwon.GetValue(stringConfig, "GroupName", GroupName);
-                TrackerGroupName     = Dwon.GetValue(stringConfig, "TrackerGroupName", TrackerGroupName);
+                var config = ConfigCategory.From(obj, "Behavior Config");
+                
+                config.Sync("LockRange", ref LockRange);
+                config.Sync("LockAngle", ref LockAngle);
+                config.Sync("MinFireDot", ref MinFireDot);
             }
+        }
 
-            // Behavior Config
-            var behaviorConfig = obj.ContainsKey("Behavior Config") ? obj["Behavior Config"] as Dictionary<string, object> : null;
-            if (behaviorConfig != null)
+        public class TrackerConfig
+        {
+            public string TrackingName = "CTC: Tracking";
+            public string SearchingName = "CTC: Searching";
+            public string StandbyName = "CTC: Standby";
+            public int ScannedBlockMaxValidFrames = 3600; // 1 minutes
+            
+            internal void Sync(Dictionary<string, object> obj)
             {
-                MaxWeaponRange = Dwon.GetValue(behaviorConfig, "MaxWeaponRange", MaxWeaponRange);
-                LockRange      = Dwon.GetValue(behaviorConfig, "LockRange", LockRange);
-                LockAngle      = Dwon.GetValue(behaviorConfig, "LockAngle", LockAngle);
-                MinFireDot     = Dwon.GetValue(behaviorConfig, "MinFireDot", MinFireDot);
+                var config = ConfigCategory.From(obj, "Tracker Config");
+                
+                config.Sync("TrackingName", ref TrackingName);
+                config.Sync("SearchingName", ref SearchingName);
+                config.Sync("StandbyName", ref StandbyName);
+                config.Sync("ScannedBlockMaxValidFrames", ref ScannedBlockMaxValidFrames);
             }
+        }
 
-            // Tracker Config
-            var trackerConfig = obj.ContainsKey("Tracker Config") ? obj["Tracker Config"] as Dictionary<string, object> : null;
-            if (trackerConfig != null)
+        public class GdriveConfig
+        {
+            public int TimeoutFrames = 300;
+            public double Acceleration = 9.81;
+            public bool DefaultPrecisionMode = false;
+            public bool DisablePrecisionModeOnEnemyDetected = false;
+            public double Step = 0.005;
+            public int MassBalanceFrequencyFrames = 300;
+            public int BallBalanceFrequencyFrames = 600;
+            public int AccelerationRecalcDelay = 600;
+
+            internal void Sync(Dictionary<string, object> obj)
             {
-                TrackingName                 = Dwon.GetValue(trackerConfig, "TrackingName", TrackingName);
-                SearchingName                = Dwon.GetValue(trackerConfig, "SearchingName", SearchingName);
-                StandbyName                  = Dwon.GetValue(trackerConfig, "StandbyName", StandbyName);
-                ScannedBlockMaximumValidTimeFrames = Dwon.GetValue(trackerConfig, "ScannedBlockMaxValidFrames", ScannedBlockMaximumValidTimeFrames);
+                var config = ConfigCategory.From(obj, "Gravity Config");
+                
+                config.Sync("TimeoutFrames", ref TimeoutFrames);
+                config.Sync("Acceleration", ref Acceleration);
+                config.Sync("DefaultPrecisionMode", ref DefaultPrecisionMode);
+                config.Sync("DisablePrecisionModeOnEnemyDetected", ref DisablePrecisionModeOnEnemyDetected);
+                config.Sync("Step", ref Step);
+                config.Sync("MassBalanceFrequencyFrames", ref MassBalanceFrequencyFrames);
+                config.Sync("BallBalanceFrequencyFrames", ref BallBalanceFrequencyFrames);
+                config.Sync("AccelerationRecalcDelay", ref AccelerationRecalcDelay);
             }
+        }
 
-            // PID Config
-            var pidConfig = obj.ContainsKey("PID Config") ? obj["PID Config"] as Dictionary<string, object> : null;
-            if (pidConfig != null)
+        public class PidConfig
+        {
+            public double ProportionalGain = 500;
+            public double IntegralGain = 0;
+            public double DerivativeGain = 30;
+            public double IntegralLowerLimit = -0.05;
+            public double IntegralUpperLimit = 0.05;
+            
+            internal void Sync(Dictionary<string, object> obj)
             {
-                ProportialGain        = Dwon.GetValue(pidConfig, "ProportionalGain", ProportialGain);
-                IntegralGain          = Dwon.GetValue(pidConfig, "IntegralGain", IntegralGain);
-                DerivativeGain        = Dwon.GetValue(pidConfig, "DerivativeGain", DerivativeGain);
-                IntegralLowerLimit    = Dwon.GetValue(pidConfig, "IntegralLowerLimit", IntegralLowerLimit);
-                IntegralUpperLimit    = Dwon.GetValue(pidConfig, "IntegralUpperLimit", IntegralUpperLimit);
-                MaxAngularVelocityRpm = Dwon.GetValue(pidConfig, "MaxAngularVelocityRPM", MaxAngularVelocityRpm);
+                var config = ConfigCategory.From(obj, "PID Config");
+                
+                config.Sync("ProportionalGain", ref ProportionalGain);
+                config.Sync("IntegralGain", ref IntegralGain);
+                config.Sync("DerivativeGain", ref DerivativeGain);
+                config.Sync("IntegralLowerLimit", ref IntegralLowerLimit);
+                config.Sync("IntegralUpperLimit", ref IntegralUpperLimit);
             }
         }
     }

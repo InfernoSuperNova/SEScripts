@@ -58,7 +58,7 @@ namespace IngameScript.Helper
 
         public void Add(string message, LogLevel level)
         {
-            if (level < Config.LogLevel) return;
+            if (level < Config.General.LogLevel) return;
             double now = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
             _entries.Add(new Entry(message, now, level));
         }
