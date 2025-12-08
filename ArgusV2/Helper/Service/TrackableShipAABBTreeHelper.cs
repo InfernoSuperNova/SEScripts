@@ -6,7 +6,7 @@ using VRageMath;
 
 namespace IngameScript.Helper
 {
-    public static class DynamicAABBTreeDHelper
+    public static class TrackableShipAABBTreeHelper
     {
         private static readonly List<TrackableShip> Elements = new List<TrackableShip>();
         private static readonly List<BoundingBoxD> Boxes = new List<BoundingBoxD>();
@@ -28,6 +28,11 @@ namespace IngameScript.Helper
             return list;
         }
         
+        /// <summary>
+        /// Returns a static list with references to game objects. CLEAN UP WHEN YOU ARE DONE OR MEMORY WILL LEAK!
+        /// </summary>
+        /// <param name="tree"></param>
+        /// <returns></returns>
         public static Dictionary<TrackableShip, List<TrackableShip>> GetAllOverlaps(MyDynamicAABBTreeD tree)
         {
             _rI = 0;
@@ -54,8 +59,10 @@ namespace IngameScript.Helper
                     ReusedOverlaps[entityB].Add(entityA);
                     
                 }
+                overlapping.Clear(); // Clear before returning this list to the cache to avoid memory leaks
             }
-
+            Elements.Clear();
+            Boxes.Clear();
             return ReusedOverlaps;
         }
         public static List<TrackableShip> GetOverlapsWithBox(MyDynamicAABBTreeD tree, BoundingBoxD box)

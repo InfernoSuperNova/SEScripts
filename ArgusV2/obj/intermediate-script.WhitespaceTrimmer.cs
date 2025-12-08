@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
 using VRageMath;
-using System.Collections;
-using System.Text;
-using VRage.Game.ModAPI.Ingame;
 using System.Linq;
 using Color = VRageMath.Color;
+using VRage.Game.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame.Utilities;
+using System.Text;
 using Sandbox.Game.EntityComponents;
 using VRage.Game;
 using VRage.Game.ObjectBuilders.Definitions;
@@ -18,377 +17,4059 @@ using VRage.Library.Collections;
 using VRage.Utils;
 class Program : MyGridProgram
 {
-public static Program A;public static B C;public static Random D;public E F=new E(10);private static Queue<double>G=new
-Queue<double>();int H;public
- Program
-(){try{var I=DateTime.UtcNow;F.J("Beginning script setup",K.L);A=this;C=new B(this);D=new Random();M(
-"Setup debug and RNG",K.C);N.O(Me);Program.M("Creating this ship as controllable ship",K.L);P.Q(Me.CubeGrid,GridTerminalSystem);Program.M(
-"Creating commands",K.L);R.O();Runtime.UpdateFrequency=UpdateFrequency.Update1;var S=DateTime.UtcNow-I;M(
-$"Setup completed in {S.TotalMilliseconds:F1} ms",K.T);}catch(Exception U){Echo("Crashed: "+U);}Echo(F.ToString());}public void
- Main
-(string V,UpdateType W){try{if((W&UpdateType.Update1)!=0)X();if((W&(UpdateType.Trigger|UpdateType.Terminal))!=0)Y(V);}
-catch(Exception U){Echo(U.ToString());Runtime.UpdateFrequency=UpdateFrequency.None;}}void X(){using(C.Z(a=>{G.Enqueue(a.
-TotalMilliseconds);})){b.c();P.d(H);P.e(H++);}if(G.Count>600)G.Dequeue();f(G.Average());F.g();f(F);}void Y(string V){Action h;if(R.i(V,
-out h)){h();}else{}}public static void f(object j){A.Echo(j.ToString());}public static void f(TimeSpan S,string k){double l
-=S.Ticks/10.0;A.Echo($"{k}: {l} µs");}public static void M(object m,K n=K.L){A.F.J(m.ToString(),n);}}
-public class B{public readonly bool o;public void r()=>p?.Invoke(q);Action<IMyProgrammableBlock>p;public void t()=>s?.
-Invoke(q);Action<IMyProgrammableBlock>s;public void w(int u)=>v?.Invoke(q,u);Action<IMyProgrammableBlock,int>v;public int Ã(x
-y,Color z,float ª=0.2f,float º=µ,bool?À=null)=>Á?.Invoke(q,y,z,ª,º,À??Â)??-1;Func<IMyProgrammableBlock,Vector3D,Color,
-float,float,bool,int>Á;public int É(x Ä,x Å,Color z,float Ç=Æ,float º=µ,bool?À=null)=>È?.Invoke(q,Ä,Å,z,Ç,º,À??Â)??-1;Func<
-IMyProgrammableBlock,Vector3D,Vector3D,Color,float,float,bool,int>È;public int Ï(BoundingBoxD Ê,Color z,Ë Í=Ë.Ì,float Ç=Æ,float º=µ,bool?À=
-null)=>Î?.Invoke(q,Ê,z,(int)Í,Ç,º,À??Â)??-1;Func<IMyProgrammableBlock,BoundingBoxD,Color,int,float,float,bool,int>Î;public
-int Ò(MyOrientedBoundingBoxD Ð,Color z,Ë Í=Ë.Ì,float Ç=Æ,float º=µ,bool?À=null)=>Ñ?.Invoke(q,Ð,z,(int)Í,Ç,º,À??Â)??-1;Func<
-IMyProgrammableBlock,MyOrientedBoundingBoxD,Color,int,float,float,bool,int>Ñ;public int Ö(BoundingSphereD Ó,Color z,Ë Í=Ë.Ì,float Ç=Æ,int Ô=
-15,float º=µ,bool?À=null)=>Õ?.Invoke(q,Ó,z,(int)Í,Ç,Ô,º,À??Â)??-1;Func<IMyProgrammableBlock,BoundingSphereD,Color,int,
-float,int,float,bool,int>Õ;public int Û(MatrixD Ø,float Ù=1f,float Ç=Æ,float º=µ,bool?À=null)=>Ú?.Invoke(q,Ø,Ù,Ç,º,À??Â)??-1;
-Func<IMyProgrammableBlock,MatrixD,float,float,float,bool,int>Ú;public int Þ(string Ü,x y,Color?z=null,float º=µ)=>Ý?.Invoke(
-q,Ü,y,z,º)??-1;Func<IMyProgrammableBlock,string,Vector3D,Color?,float,int>Ý;public int ã(string ß,à á=à.C,float º=2)=>â?.
-Invoke(q,ß,á.ToString(),º)??-1;Func<IMyProgrammableBlock,string,string,float,int>â;public void ç(string ß,string ä=null,Color?
-å=null,à á=à.C)=>æ?.Invoke(q,ß,ä,å,á.ToString());Action<IMyProgrammableBlock,string,string,Color?,string>æ;public void ï(
-out int u,double è,double é=0.05,ê ì=ê.ë,string í=null)=>u=î?.Invoke(q,è,é,ì.ToString(),í)??-1;Func<IMyProgrammableBlock,
-double,double,string,string,int>î;public double ò(int u,double ð=1)=>ñ?.Invoke(q,u)??ð;Func<IMyProgrammableBlock,int,double>ñ;
-public int ô()=>ó?.Invoke()??-1;Func<int>ó;public TimeSpan ö()=>õ?.Invoke()??TimeSpan.Zero;Func<TimeSpan>õ;public ø Z(Action<
-TimeSpan>ù)=>new ø(this,ù);public struct ø:IDisposable{B ú;TimeSpan û;Action<TimeSpan>ü;public ø(B ý,Action<TimeSpan>ù){ú=ý;ü=ù;
-û=ú.ö();}public void Dispose(){ü?.Invoke(ú.ö()-û);}}public enum Ë{þ,Ì,ÿ}public enum ê{Ā,ā,Ă,ă,Ą,ą,Ć,ć,Ĉ,ĉ,Ċ,ċ,Č,ë,č,Ď,ď,Đ
-,đ,Ē,ē,Ĕ,ĕ,Ė,ė,Ę,ę,Ě,ě,Ĝ,ĝ,Ğ,ğ,Ġ,ġ,Ģ,ú,ģ,ü,Ĥ,ĥ,Ħ,ħ,Ĩ,A,ĩ,Ī,ī,Ĭ,ĭ,Į,į,İ,ı,û,Ĳ,ĳ,Ĵ,ĵ,Ķ,ķ,ĸ,Ĺ,ĺ,Ļ,ļ,Ľ,ľ,Ŀ,ŀ,Ł,ł,Ń,J,ń,Ņ,ņ,Ň,
-ň,ŉ,Ŋ,ŋ,Ō,ō,Ŏ,ŏ,Ő,ő,Œ,œ}public enum à{C,Ŕ,ŕ,Ŗ,ŗ,Ř}const float Æ=0.02f;const float µ=-1;IMyProgrammableBlock q;bool Â;
-public B(MyGridProgram ř,bool Ś=false){if(ř==null)throw new Exception("Pass `this` into the API, not null.");Â=Ś;q=ř.Me;var ś=
-q.GetProperty("DebugAPI")?.As<IReadOnlyDictionary<string,Delegate>>()?.GetValue(q);if(ś!=null){Ŝ(out s,ś["RemoveAll"]);Ŝ(
-out p,ś["RemoveDraw"]);Ŝ(out v,ś["Remove"]);Ŝ(out Á,ś["Point"]);Ŝ(out È,ś["Line"]);Ŝ(out Î,ś["AABB"]);Ŝ(out Ñ,ś["OBB"]);Ŝ(
-out Õ,ś["Sphere"]);Ŝ(out Ú,ś["Matrix"]);Ŝ(out Ý,ś["GPS"]);Ŝ(out â,ś["HUDNotification"]);Ŝ(out æ,ś["Chat"]);Ŝ(out î,ś[
-"DeclareAdjustNumber"]);Ŝ(out ñ,ś["GetAdjustNumber"]);Ŝ(out ó,ś["Tick"]);Ŝ(out õ,ś["Timestamp"]);t();o=true;}}void Ŝ<Ĳ>(out Ĳ ŝ,object Ş)=>ŝ=
-(Ĳ)Ş;}public struct ţ<Ĳ>{Ĳ ş;bool Š;private readonly Func<Ĳ>š;public ţ(Func<Ĳ>Ţ){if(Ţ==null)throw new
-ArgumentNullException("getter");š=Ţ;ş=default(Ĳ);Š=false;}public Ĳ Ť{get{if(!Š){ş=š();Š=true;}return ş;}}public void ť()=>Š=false;}public
-static class ƚ{public class ũ{public object Ŧ;public string ŧ;public ũ(object j,string Ũ){Ŧ=j;ŧ=Ũ;}}public static string Ŭ(
-object j,int Ū=-1){var ū=new StringBuilder();Ŭ(j,ū,Ū,null);Program.M("Serialized successfully",K.C);return ū.ToString();}
-private static void Ŭ(object j,StringBuilder ū,int Ū,string ŭ){string Ů=new string(' ',Math.Max(Ū,0));if(j==null){if(ŭ!=null)ū.
-AppendLine(Ů+ŭ+" = null");return;}ũ ů=j as ũ;if(ů!=null){bool ű=Ű(ů.Ŧ);if(ű&&ŭ!=null){ū.AppendLine(Ů+ŭ+" = "+Ų(ů.Ŧ)+"   # "+ů.ŧ);}
-else{if(!string.IsNullOrEmpty(ů.ŧ))ū.AppendLine(Ů+"# "+ů.ŧ);Ŭ(ů.Ŧ,ū,Ū,ŭ);}return;}IDictionary<string,object>ų=j as
-IDictionary<string,object>;if(ų!=null){if(ŭ!=null)ū.AppendLine(Ů+ŭ+" = [");foreach(var Ŵ in ų){Ŭ(Ŵ.Value,ū,Ū+2,Ŵ.Key);}if(ŭ!=null)ū
-.AppendLine(Ů+"]");return;}IEnumerable<object>ŵ=j as IEnumerable<object>;if(ŵ!=null){if(ŭ!=null){ū.Append(Ů+ŭ+" = { ");
-bool Ŷ=true;foreach(object ŷ in ŵ){if(!Ŷ)ū.Append(", ");ū.Append(Ų(ŷ));Ŷ=false;}ū.AppendLine(" }");}else{foreach(object ŷ in
-ŵ)Ŭ(ŷ,ū,Ū,null);}return;}if(ŭ!=null){ū.AppendLine(Ů+ŭ+" = "+Ų(j));}}private static string Ų(object j){if(j==null)return
-"null";if(j is string)return"\""+Ÿ((string)j)+"\"";if(j is bool)return((bool)j?"true":"false");if(j is float)return((float)j).
-ToString("0.#####",System.Globalization.CultureInfo.InvariantCulture);if(j is double)return((double)j).ToString("0.##########",
-System.Globalization.CultureInfo.InvariantCulture);if(j is int||j is long||j is short||j is byte)return j.ToString();return
-"\""+Ÿ(j.ToString())+"\"";}private static string Ÿ(string Ź){return Ź.Replace("\\","\\\\").Replace("\"","\\\"");}private
-static bool Ű(object ź){return ź is string||ź is bool||ź is int||ź is long||ź is short||ź is byte||ź is float||ź is double;}
-public static object ƃ(string Ż){int ż=0;var Ž=new Dictionary<string,object>();while(ż<Ż.Length){ž(Ż,ref ż);if(ż>=Ż.Length)
-break;string ŭ=ſ(Ż,ref ż);Program.f(ŭ);ƀ(Ż,ref ż,'=');object ź=Ɓ(Ż,ref ż);string Ũ=Ƃ(Ż,ref ż);if(Ũ!=null&&Ű(ź))ź=new ũ(ź,Ũ);Ž
-[ŭ]=ź;}return Ž;}private static object Ɓ(string Ź,ref int ż){ž(Ź,ref ż);if(ż>=Ź.Length)return null;char Ƅ=Ź[ż];switch(Ƅ){
-case'[':{ż++;var ų=new Dictionary<string,object>();while(true){ž(Ź,ref ż);if(ż>=Ź.Length)break;if(Ź[ż]==']'){ż++;break;}
-string ŭ=ſ(Ź,ref ż);ƀ(Ź,ref ż,'=');object ź=Ɓ(Ź,ref ż);string Ũ=Ƃ(Ź,ref ż);if(Ũ!=null&&Ű(ź))ź=new ũ(ź,Ũ);ų[ŭ]=ź;}return ų;}
-case'{':{ż++;var ŵ=new List<object>();while(true){ž(Ź,ref ż);if(ż>=Ź.Length)break;if(Ź[ż]=='}'){ż++;break;}object ź=Ɓ(Ź,ref
-ż);string Ũ=Ƃ(Ź,ref ż);if(Ũ!=null&&Ű(ź))ź=new ũ(ź,Ũ);ŵ.Add(ź);ž(Ź,ref ż);if(ż<Ź.Length&&Ź[ż]==',')ż++;}return ŵ;}}string
-Ɔ=ƅ(Ź,ref ż);string Ƈ=Ƃ(Ź,ref ż);object Ɖ=ƈ(Ɔ);if(Ƈ!=null&&Ű(Ɖ))Ɖ=new ũ(Ɖ,Ƈ);return Ɖ;}private static void ž(string Ź,ref
-int ż){while(ż<Ź.Length){if(Ź[ż]==' '||Ź[ż]=='\t'||Ź[ż]=='\r'||Ź[ż]=='\n'){ż++;continue;}if(Ź[ż]=='#'){while(ż<Ź.Length&&Ź[
-ż]!='\n')ż++;continue;}break;}}private static string ſ(string Ź,ref int ż){Ɗ(Ź,ref ż);int Ä=ż;while(ż<Ź.Length){char Ƅ=Ź[
-ż];if(Ƅ=='=')break;if(Ƅ=='\n'||Ƅ=='\r')throw new Exception("Unexpected newline while reading key");ż++;}if(ż==Ä)throw new
-Exception($"Empty key at index {ż}");string ŭ=Ź.Substring(Ä,ż-Ä).Trim();return ŭ;}private static string ƅ(string Ź,ref int ż){Ɗ(Ź
-,ref ż);if(ż>=Ź.Length)return"";char Ƅ=Ź[ż];if(Ƅ=='"'||Ƅ=='\''){char Ƌ=Ƅ;ż++;int Ä=ż;while(ż<Ź.Length&&Ź[ż]!=Ƌ)ż++;string
-ƌ=Ź.Substring(Ä,ż-Ä);if(ż<Ź.Length)ż++;return ƌ;}int ƍ=ż;while(ż<Ź.Length&&Ź[ż]!='\n'&&Ź[ż]!='\r'&&Ź[ż]!='#'&&Ź[ż]!=','&&
-Ź[ż]!='}'&&Ź[ż]!=']')ż++;string Ɔ=Ź.Substring(ƍ,ż-ƍ).Trim();return Ɔ;}private static string Ƃ(string Ź,ref int ż){Ɗ(Ź,ref
-ż);if(ż<Ź.Length&&Ź[ż]=='#'){ż++;int Ä=ż;while(ż<Ź.Length&&Ź[ż]!='\n'&&Ź[ż]!='\r')ż++;return Ź.Substring(Ä,ż-Ä).Trim();}
-return null;}private static void Ɗ(string Ź,ref int ż){while(ż<Ź.Length&&(Ź[ż]==' '||Ź[ż]=='\t'||Ź[ż]=='\r'||Ź[ż]=='\n'))ż++;}
-private static void ƀ(string Ź,ref int ż,char Ǝ){Ɗ(Ź,ref ż);if(ż>=Ź.Length||Ź[ż]!=Ǝ)throw new Exception("Expected '"+Ǝ+
-"' at index "+ż);ż++;}private static object ƈ(string Ɔ){if(Ɔ.Length==0)return null;if(Ɔ=="true")return true;if(Ɔ=="false")return
-false;int Ə;if(int.TryParse(Ɔ,out Ə))return Ə;double Ɛ;if(double.TryParse(Ɔ,System.Globalization.NumberStyles.Float,System.
-Globalization.CultureInfo.InvariantCulture,out Ɛ))return Ɛ;return Ɔ;}public static void Ɣ(Dictionary<string,object>ų){var Ƒ=new List<
-string>(ų.Keys);foreach(var ŭ in Ƒ){var ƒ=ų[ŭ];var Ƅ=ƒ as ũ;var Ɠ=ƒ as Dictionary<string,object>;var ŵ=ƒ as List<object>;if(Ƅ
-!=null)ų[ŭ]=Ƅ.Ŧ;else if(Ɠ!=null)Ɣ(Ɠ);else if(ŵ!=null){for(int Ə=0;Ə<ŵ.Count;Ə++){var ƕ=ŵ[Ə];var Ɩ=ƕ as ũ;ŵ[Ə]=Ɩ!=null?Ɩ.Ŧ:
-ŵ[Ə];}}}}public static Ĳ ƙ<Ĳ>(Dictionary<string,object>ų,string ŭ,ref string Ũ,Ĳ Ɨ=default(Ĳ)){Ũ="";object ź;if(ų.
-TryGetValue(ŭ,out ź)){var Ƙ=ź as ũ;if(Ƙ!=null){ź=Ƙ.Ŧ;Ũ=Ƙ.ŧ;}if(ź is Ĳ)return(Ĳ)ź;try{return(Ĳ)Convert.ChangeType(ź,typeof(Ĳ));}
-catch{return Ɨ;}}return Ɨ;}}class Ɲ{private readonly Dictionary<string,object>ƛ;Ɲ(Dictionary<string,object>Ɯ){ƛ=Ɯ;}public
-static Ɲ Ɵ(Dictionary<string,object>ƞ,string Ü){ƚ.Ɣ(ƞ);Dictionary<string,object>ų;object j;if(!ƞ.TryGetValue(Ü,out j)||(ų=j as
-Dictionary<string,object>)==null){ų=new Dictionary<string,object>();ƞ[Ü]=ų;}return new Ɲ(ų);}public void Ơ<Ĳ>(string ŭ,ref Ĳ ŝ,
-string Ũ=""){var Ƙ=ƚ.ƙ(ƛ,ŭ,ref Ũ,ŝ);if(Ũ!="")ƛ[ŭ]=new ƚ.ũ(Ƙ,Ũ);else ƛ[ŭ]=Ƙ;}}public enum ƣ:byte{ơ,Ƣ,ĕ,ė,Ė,Ę,}public static
-class Ƴ{private static readonly List<Ƥ>ƥ=new List<Ƥ>();private static readonly List<BoundingBoxD>Ʀ=new List<BoundingBoxD>();
-private static readonly Dictionary<Ƥ,List<Ƥ>>Ƨ=new Dictionary<Ƥ,List<Ƥ>>();private static readonly List<List<Ƥ>>ƨ=new List<List
-<Ƥ>>();private static int Ʃ=0;private static List<Ƥ>ƪ(){if(Ʃ>=ƨ.Count)ƨ.Add(new List<Ƥ>(8));var ŵ=ƨ[Ʃ++];ŵ.Clear();return
-ŵ;}public static Dictionary<Ƥ,List<Ƥ>>ư(MyDynamicAABBTreeD ƫ){Ʃ=0;Ƨ.Clear();ƫ.GetAll(ƥ,clear:true,boxsList:Ʀ);for(int Ə=0
-;Ə<ƥ.Count;Ə++){var Ƭ=ƥ[Ə];var ƭ=Ʀ[Ə];var Ʈ=ƪ();ƫ.OverlapAllBoundingBox(ref ƭ,Ʈ,0U,false);foreach(var Ư in Ʈ){if(Ƭ==Ư)
-continue;if(!Ƨ.ContainsKey(Ƭ))Ƨ.Add(Ƭ,ƪ());Ƨ[Ƭ].Add(Ư);if(!Ƨ.ContainsKey(Ư))Ƨ.Add(Ư,ƪ());Ƨ[Ư].Add(Ƭ);}}return Ƨ;}public static
-List<Ƥ>Ʋ(MyDynamicAABBTreeD ƫ,BoundingBoxD Ʊ){Ʃ=0;var Ʈ=ƪ();ƫ.OverlapAllBoundingBox(ref Ʊ,Ʈ,0U,false);return Ʈ;}}public
-static class ƶ{public static double Ƶ(double ź,double ƴ){return(Math.Round(ź/ƴ)*ƴ);}}public static class ǲ{private static bool
-ǋ(long Ʒ,long Ƹ,long ƹ,double ƺ,MatrixD ƻ,x Ƽ){double ƽ=Ʒ*ƺ;double ƾ=Ƹ*ƺ;double ƿ=ƹ*ƺ;x ǀ=ƻ.Right;x ǁ=ƻ.Up;x ǂ=ƻ.Forward;
-x Ǆ=x.ǃ(ǀ);x ǅ=x.ǃ(ǁ);x ǆ=x.ǃ(ǂ);const double Ǉ=1e-8;double ǈ=ƽ*Ǆ.Ķ+ƾ*ǅ.Ķ+ƿ*ǆ.Ķ;if(ǈ>Ƽ.Ķ+Ǉ)return false;double ǉ=ƽ*Ǆ.ķ+ƾ*
-ǅ.ķ+ƿ*ǆ.ķ;if(ǉ>Ƽ.ķ+Ǉ)return false;double Ǌ=ƽ*Ǆ.ĸ+ƾ*ǅ.ĸ+ƿ*ǆ.ĸ;if(Ǌ>Ƽ.ĸ+Ǉ)return false;return true;}private static bool Ǥ(x
-ǀ,x ǁ,x ǂ,x Ƽ,out double ƽ,out double ƾ,out double ƿ){var ǌ=Math.Abs(ǀ.Ķ);var Ǎ=Math.Abs(ǁ.Ķ);var ǎ=Math.Abs(ǂ.Ķ);var Ǐ=
-Math.Abs(ǀ.ķ);var ǐ=Math.Abs(ǁ.ķ);var Ǒ=Math.Abs(ǂ.ķ);var ǒ=Math.Abs(ǀ.ĸ);var Ǔ=Math.Abs(ǁ.ĸ);var ǔ=Math.Abs(ǂ.ĸ);double Ǖ=Ƽ
-.Ķ,ǖ=Ƽ.ķ,Ǘ=Ƽ.ĸ;double ǘ=ǌ*(ǐ*ǔ-Ǒ*Ǔ)-Ǎ*(Ǐ*ǔ-Ǒ*ǒ)+ǎ*(Ǐ*Ǔ-ǐ*ǒ);const double Ǚ=1e-12;if(Math.Abs(ǘ)<Ǚ){ƽ=ƾ=ƿ=0.0;return false
-;}double ǚ=(ǐ*ǔ-Ǒ*Ǔ)/ǘ;double Ǜ=-(Ǎ*ǔ-ǎ*Ǔ)/ǘ;double ǜ=(Ǎ*Ǒ-ǎ*ǐ)/ǘ;double ǝ=-(Ǐ*ǔ-Ǒ*ǒ)/ǘ;double Ǟ=(ǌ*ǔ-ǎ*ǒ)/ǘ;double ǟ=-(ǌ
-*Ǒ-ǎ*Ǐ)/ǘ;double Ǡ=(Ǐ*Ǔ-ǐ*ǒ)/ǘ;double ǡ=-(ǌ*Ǔ-Ǎ*ǒ)/ǘ;double Ǣ=(ǌ*ǐ-Ǎ*Ǐ)/ǘ;ƽ=ǚ*Ǖ+Ǜ*ǖ+ǜ*Ǘ;ƾ=ǝ*Ǖ+Ǟ*ǖ+ǟ*Ǘ;ƿ=Ǡ*Ǖ+ǡ*ǖ+Ǣ*Ǘ;const
-double ǣ=-1e-9;if(ƽ<ǣ||ƾ<ǣ||ƿ<ǣ)return false;ƽ=Math.Max(0.0,ƽ);ƾ=Math.Max(0.0,ƾ);ƿ=Math.Max(0.0,ƿ);return true;}public static
-BoundingBoxD Ǳ(BoundingBoxD ǥ,MatrixD ƻ,double ƺ){ƺ/=2;x Ƽ=ǥ.HalfExtents;x ǀ=ƻ.Right;x ǁ=ƻ.Up;x ǂ=ƻ.Forward;double Ǧ,ǧ,Ǩ;if(Ǥ(ǀ,ǁ,ǂ,
-Ƽ,out Ǧ,out ǧ,out Ǩ)){long Ʒ=Math.Max(0,(long)(Ǧ/ƺ+1e-12));long Ƹ=Math.Max(0,(long)(ǧ/ƺ+1e-12));long ƹ=Math.Max(0,(long)(
-Ǩ/ƺ+1e-12));bool ǩ;do{ǩ=false;if(ǋ(Ʒ+1,Ƹ,ƹ,ƺ,ƻ,Ƽ)){Ʒ++;ǩ=true;}if(ǋ(Ʒ,Ƹ+1,ƹ,ƺ,ƻ,Ƽ)){Ƹ++;ǩ=true;}if(ǋ(Ʒ,Ƹ,ƹ+1,ƺ,ƻ,Ƽ)){ƹ++;
-ǩ=true;}}while(ǩ);var Ǫ=new x(Ʒ*ƺ,Ƹ*ƺ,ƹ*ƺ);return new BoundingBoxD(-Ǫ,Ǫ);}double ǫ=Ƽ.Ķ/(Math.Abs(ǀ.Ķ)+Math.Abs(ǁ.Ķ)+Math.
-Abs(ǂ.Ķ));double Ǭ=Ƽ.ķ/(Math.Abs(ǀ.ķ)+Math.Abs(ǁ.ķ)+Math.Abs(ǂ.ķ));double ǭ=Ƽ.ĸ/(Math.Abs(ǀ.ĸ)+Math.Abs(ǁ.ĸ)+Math.Abs(ǂ.ĸ))
-;double Ǯ=Math.Min(Math.Min(ǫ,Ǭ),ǭ);long ǯ=Math.Max(0,(long)Math.Floor(Ǯ/ƺ));var ǰ=new x(ǯ*ƺ,ǯ*ƺ,ǯ*ƺ);return new
-BoundingBoxD(-ǰ,ǰ);}}public class ȁ{double ǳ;double Ǵ;public double ǵ;double Ƕ;public double Ƿ;double Ǹ;double ǹ;double Ǻ;public ȁ(
-double ǻ,double Ǽ,double ǽ,double Ǿ=0,double ǿ=0,double Ȁ=60){ǵ=ǻ;Ƕ=Ǽ;Ƿ=ǽ;Ǹ=Ǿ;ǹ=ǿ;Ǻ=Ȁ;}public double Ȇ(double Ȃ,int ȃ){double
-Ȅ=Math.Round(Ȃ,ȃ);ǳ=ǳ+(Ȃ/Ǻ);ǳ=(Ǹ>0&&ǳ>Ǹ?Ǹ:ǳ);ǳ=(ǹ<0&&ǳ<ǹ?ǹ:ǳ);double ȅ=(Ȅ-Ǵ)*Ǻ;Ǵ=Ȅ;return(ǵ*Ȃ)+(Ƕ*ǳ)+(Ƿ*ȅ);}public void ȇ
-(){ǳ=Ǵ=0;}}public static class ɐ{public static double Ȉ=>Double.MaxValue;public const double ȉ=1e-6,Ȋ=-0.5,ȋ=1.73205,Ȍ=ȋ/
-2,ȍ=1.0/3.0,Ȏ=1.0/9.0,ȏ=1.0/6.0,Ȑ=1.0/54.0;public static x ȯ(double ȑ,x Ȓ,x ȓ,x Ȕ,x ȕ,x Ȗ,x ȗ,x Ș,bool ș,x Ț=default(x),
-bool ț=false){double Ȝ=0;x Ȟ=x.ȝ,ȟ=ȗ,Ƞ=Ȗ,ȡ,Ȣ;if(ȗ.ȣ()>1){Ȝ=Math.Min((x.Ȥ(ȗ)*N.ȥ.Ȧ-x.ȧ(ref Ȗ,ref ȗ)).Ȩ(),2*N.ȥ.Ȧ)/ȗ.Ȩ();Ȗ=x.ȩ
-(Ȗ+ȗ*Ȝ,N.ȥ.Ȧ);Ƞ+=ȗ*Ȝ*0.5;ȗ=x.ȝ;}if(ȓ.ȣ()>1){double Ȫ=Math.Max((x.Ȥ(ȓ)*ȑ-x.ȧ(ref Ȓ,ref ȓ)).Ȩ(),0)/ȓ.Ȩ(),ȫ=(Ȓ*Ȫ+ȓ*Ȫ*Ȫ).Ȩ();
-x Ȭ=Ȕ+Ȗ*Ȫ+0.5*ȗ*Ȫ*Ȫ;if(Ȭ.Ȩ()>ȫ){ȓ=x.ȝ;Ȓ=x.ȩ(Ȓ+ȓ*Ȫ,ȑ);Ȕ-=(x)x.Ȥ(Ȕ)*ȫ;}}ȡ=Ȗ-Ȓ;Ȣ=ȗ-ȓ;double Ȯ=ȭ(Ȣ.ȣ()*0.25,Ȣ.Ķ*ȡ.Ķ+Ȣ.ķ*ȡ.ķ+Ȣ
-.ĸ*ȡ.ĸ,ȡ.ȣ()-Ȓ.ȣ()+Ȕ.Ķ*Ȣ.Ķ+Ȕ.ķ*Ȣ.ķ+Ȕ.ĸ*Ȣ.ĸ,2*(Ȕ.Ķ*ȡ.Ķ+Ȕ.ķ*ȡ.ķ+Ȕ.ĸ*ȡ.ĸ),Ȕ.ȣ());if(Ȯ==Ȉ||double.IsNaN(Ȯ)||Ȯ>100)Ȯ=100;if(Ȝ>
-Ȯ){Ȝ=Ȯ;Ȯ=0;}else Ȯ-=Ȝ;return ș?Ȕ+Ȗ*Ȯ+Ƞ*Ȝ+0.5*ȟ*Ȝ*Ȝ+0.5*ȗ*Ȯ*Ȯ+Ȟ:ȕ+(Ȗ-Ȓ)*Ȯ+(Ƞ-Ȓ)*Ȝ+0.5*ȟ*Ȝ*Ȝ+0.5*ȗ*Ȯ*Ȯ+-0.5*Ț*(Ȯ+Ȝ)*(Ȯ+Ȝ)*
-Convert.ToDouble(ț)+Ȟ;}public static double ȭ(double Ȱ,double ȱ,double Ƅ,double Ȳ,double ȳ){if(Math.Abs(Ȱ)<ȉ)Ȱ=Ȱ>=0?ȉ:-ȉ;double
-ȴ=1/Ȱ;ȱ*=ȴ;Ƅ*=ȴ;Ȳ*=ȴ;ȳ*=ȴ;double ȵ=-Ƅ,ȶ=ȱ*Ȳ-4*ȳ,ȷ=-ȱ*ȱ*ȳ-Ȳ*Ȳ+4*Ƅ*ȳ,ȸ;double[]ȹ;bool Ȼ=Ⱥ(ȵ,ȶ,ȷ,out ȹ);ȸ=ȹ[0];if(Ȼ){if(Math
-.Abs(ȹ[1])>Math.Abs(ȸ))ȸ=ȹ[1];if(Math.Abs(ȹ[2])>Math.Abs(ȸ))ȸ=ȹ[2];}double ȼ,Ƚ,Ⱦ,ȿ,ɀ;double Ɂ=ȸ*ȸ-4*ȳ;if(Math.Abs(Ɂ)<ȉ){ȼ
-=Ƚ=ȸ*0.5;Ɂ=ȱ*ȱ-4*(Ƅ-ȸ);if(Math.Abs(Ɂ)<ȉ)Ⱦ=ȿ=ȱ*0.5;else{ɀ=Math.Sqrt(Ɂ);Ⱦ=(ȱ+ɀ)*0.5;ȿ=(ȱ-ɀ)*0.5;}}else{ɀ=Math.Sqrt(Ɂ);ȼ=(ȸ+
-ɀ)*0.5;Ƚ=(ȸ-ɀ)*0.5;double ɂ=1/(ȼ-Ƚ);Ⱦ=(ȱ*ȼ-Ȳ)*ɂ;ȿ=(Ȳ-ȱ*Ƚ)*ɂ;}double Ƀ,Ʉ;Ɂ=Ⱦ*Ⱦ-4*ȼ;if(Ɂ<0)Ƀ=Ȉ;else{ɀ=Math.Sqrt(Ɂ);Ƀ=Ʌ(-Ⱦ+ɀ
-,-Ⱦ-ɀ)*0.5;}Ɂ=ȿ*ȿ-4*Ƚ;if(Ɂ<0)Ʉ=Ȉ;else{ɀ=Math.Sqrt(Ɂ);Ʉ=Ʌ(-ȿ+ɀ,-ȿ-ɀ)*0.5;}return Ʌ(Ƀ,Ʉ);}private static bool Ⱥ(double Ȱ,
-double ȱ,double Ƅ,out double[]ȹ){ȹ=new double[4];double Ɇ=Ȱ*Ȱ,ɇ=(Ɇ-3*ȱ)*Ȏ,Ɉ=(Ȱ*(2*Ɇ-9*ȱ)+27*Ƅ)*Ȑ,ƾ=Ɉ*Ɉ,ɉ=ɇ*ɇ*ɇ;if(ƾ<ɉ){double
-Ɋ=Math.Sqrt(ɇ),ɋ=Ɉ/(Ɋ*Ɋ*Ɋ);if(ɋ<-1)ɋ=-1;else if(ɋ>1)ɋ=1;ɋ=Math.Acos(ɋ);Ȱ*=ȍ;ɇ=-2*Ɋ;double Ɍ=Math.Cos(ɋ*ȍ),ɍ=Math.Sin(ɋ*ȍ)
-;ȹ[0]=ɇ*Ɍ-Ȱ;ȹ[1]=ɇ*((Ɍ*Ȋ)-(ɍ*Ȍ))-Ȱ;ȹ[2]=ɇ*((Ɍ*Ȋ)+(ɍ*Ȍ))-Ȱ;return true;}else{double Ɏ=-Math.Pow(Math.Abs(Ɉ)+Math.Sqrt(ƾ-ɉ)
-,ȍ),ɏ;if(Ɉ<0)Ɏ=-Ɏ;ɏ=Ɏ==0?0:ɇ/Ɏ;Ȱ*=ȍ;ȹ[0]=Ɏ+ɏ-Ȱ;ȹ[1]=-0.5*(Ɏ+ɏ)-Ȱ;ȹ[2]=0.5*ȋ*(Ɏ-ɏ);if(Math.Abs(ȹ[2])<ȉ){ȹ[2]=ȹ[1];return
-true;}return false;}}private static double Ʌ(double Ȱ,double ȱ){if(Ȱ<=0)return ȱ>0?ȱ:Ȉ;else if(ȱ<=0)return Ȱ;else return
-Math.Min(Ȱ,ȱ);}}public enum K{ɑ,C,L,ɒ,ɓ,ɔ,T}public class E{Dictionary<K,string>ɖ=new Dictionary<K,string>(){{K.ɑ,
-$"{ɕ(Color.Gray)}"},{K.C,$"{ɕ(Color.DarkSeaGreen)}"},{K.L,$"{ɕ(Color.White)}"},{K.ɒ,$"{ɕ(Color.Gold)}"},{K.ɓ,$"{ɕ(Color.Red)}"},{K.ɔ,
-$"{ɕ(Color.DarkRed)}"},{K.T,$"{ɕ(Color.Aquamarine)}"}};private static string ɕ(Color z){return$"[color=#{z.A:X2}{z.R:X2}{z.G:X2}{z.B:X2}]";}
-private static string ɗ="[/color]\n";class ɝ{internal readonly string ɘ;internal readonly double ə;internal readonly K ɚ;public
-ɝ(string ɛ,double ɜ,K n){ɘ=ɛ;ə=ɜ;ɚ=n;}}private readonly List<ɝ>ɞ=new List<ɝ>();private readonly double ɟ;public E(double
-ɠ){ɟ=ɠ;}public void J(string ß,K n){if(n<N.ȥ.K)return;double ɡ=(System.DateTime.UtcNow-new System.DateTime(1970,1,1)).
-TotalSeconds;ɞ.Add(new ɝ(ß,ɡ,n));}public void g(){double ɡ=(System.DateTime.UtcNow-new System.DateTime(1970,1,1)).TotalSeconds;ɞ.
-RemoveAll(ȳ=>ɡ-ȳ.ə>ɟ);}public List<string>ɢ(){return ɞ.Select(ȳ=>ȳ.ɘ).ToList();}public override string ToString(){string ź="";
-foreach(var ɣ in ɞ){ź+=ɖ[ɣ.ɚ]+ɣ.ɘ+ɗ;}return ź;}}public class ɦ{public int ɤ;public Action ɥ;}public static class b{private
-static readonly Dictionary<int,ɦ>ɧ=new Dictionary<int,ɦ>();private static readonly Dictionary<int,ɦ>ɨ=new Dictionary<int,ɦ>();
-private static int ɩ=1;public static int ɬ(int a,Action ɪ=null){if(a<=0){if(ɪ!=null)ɪ();return-1;}int u=ɩ++;var ɫ=new ɦ{ɤ=a,ɥ=ɪ
-};ɨ[u]=ɫ;return u;}public static int ɭ(float a,Action ɪ=null){return ɬ((int)(a*60),ɪ);}public static void ɮ(int u){ɧ.
-Remove(u);ɨ.Remove(u);}public static void c(){if(ɨ.Count>0){foreach(var ɯ in ɨ){ɧ[ɯ.Key]=ɯ.Value;}ɨ.Clear();}var ɰ=new List<
-int>();foreach(var ɯ in ɧ){var ɫ=ɯ.Value;ɫ.ɤ--;if(ɫ.ɤ<=0){ɫ.ɥ?.Invoke();ɰ.Add(ɯ.Key);}}foreach(var u in ɰ){ɧ.Remove(u);}}
-public static bool ɱ(int u){return ɧ.ContainsKey(u)||ɨ.ContainsKey(u);}public static int ɲ(int u){ɦ ɫ;if(ɧ.TryGetValue(u,out ɫ
-))return ɫ.ɤ;if(ɨ.TryGetValue(u,out ɫ))return ɫ.ɤ;return-1;}}public static class R{private static Dictionary<string,
-Action>ɳ;public static void O(){ɳ=new Dictionary<string,Action>{{N.ɴ.ɵ,P.ɶ.ɷ},{N.ɴ.ɸ,P.ɶ.ɹ},{"FireAllTest",P.ɶ.ɺ.ɻ},{
-"CancelAllTest",P.ɶ.ɺ.ɼ}};if(K.ɑ<=N.ȥ.K){foreach(var ɽ in ɳ){Program.M($"Command: {ɽ.Key}",K.ɑ);}}}public static bool i(string V,out
-Action h){return ɳ.TryGetValue(V,out h);}}public static class N{private static ɾ ʀ=new ɾ("General Config",""){Ơ=ɿ};public
-static readonly ʁ ȥ=new ʁ();public static readonly ʂ ɴ=new ʂ();public static readonly ʃ ʄ=new ʃ();public static readonly ʅ ʆ=
-new ʅ();public static readonly ʇ ʈ=new ʇ();public static readonly ʉ ʊ=new ʉ();public static void O(IMyProgrammableBlock ʋ){
-Program.M("Setting up config");ʌ.ʍ();ʎ.ʍ();ʋ.CustomData=ɾ.ɿ(ʋ.CustomData);Program.M("Written config to custom data",K.C);
-Program.M("Commands set up",K.C);ʏ(ʋ);Program.M("Config setup done",K.L);}private static void ʏ(IMyProgrammableBlock ʋ){Program
-.M("Setting up global state",K.C);ʐ.ʑ=ʈ.ʒ;Program.M($"Precision mode state is {ʐ.ʑ}",K.ɑ);}private static void ɿ(
-Dictionary<string,object>j){ȥ.Ơ(j);ɴ.Ơ(j);ʄ.Ơ(j);ʆ.Ơ(j);ʈ.Ơ(j);ʊ.Ơ(j);}public class ʁ{public K K=K.ɑ;public double ʓ=2000;public
-double Ȧ=104;public double ʔ=30;internal void Ơ(Dictionary<string,object>j){var ʕ=Ɲ.Ɵ(j,"General Config");ʕ.Ơ("LogLevel",ref K
-);ʕ.Ơ("MaxWeaponRange",ref ʓ);ʕ.Ơ("GridSpeedLimit",ref Ȧ);ʕ.Ơ("MaxAngularVelocityRPM",ref ʔ);}}public class ʂ{public
-string ɸ="Target";public string ɵ="Untarget";public string ʖ="ArgusV2";public string ʗ="TrackerGroup";internal void Ơ(
-Dictionary<string,object>j){var ʕ=Ɲ.Ɵ(j,"String Config");ʕ.Ơ("ArgumentTarget",ref ɸ);ʕ.Ơ("ArgumentUnTarget",ref ɵ);ʕ.Ơ("GroupName"
-,ref ʖ);ʕ.Ơ("TrackerGroupName",ref ʗ);}}public class ʃ{public double ʘ=3000;public float ʙ=40;public double ʚ=0.999999;
-internal void Ơ(Dictionary<string,object>j){var ʕ=Ɲ.Ɵ(j,"Behavior Config");ʕ.Ơ("LockRange",ref ʘ);ʕ.Ơ("LockAngle",ref ʙ);ʕ.Ơ(
-"MinFireDot",ref ʚ);}}public class ʅ{public string ʛ="CTC: Tracking";public string ʜ="CTC: Searching";public string ʝ="CTC: Standby"
-;public int ʞ=3600;internal void Ơ(Dictionary<string,object>j){var ʕ=Ɲ.Ɵ(j,"Tracker Config");ʕ.Ơ("TrackingName",ref ʛ);ʕ.
-Ơ("SearchingName",ref ʜ);ʕ.Ơ("StandbyName",ref ʝ);ʕ.Ơ("ScannedBlockMaxValidFrames",ref ʞ);}}public class ʇ{public int ʟ=
-300;public double ʠ=9.81;public bool ʒ=false;public bool ʡ=false;public double ʢ=0.005;public int ʣ=300;public int ʤ=600;
-public int ʥ=600;internal void Ơ(Dictionary<string,object>j){var ʕ=Ɲ.Ɵ(j,"Gravity Config");ʕ.Ơ("TimeoutFrames",ref ʟ);ʕ.Ơ(
-"Acceleration",ref ʠ);ʕ.Ơ("DefaultPrecisionMode",ref ʒ);ʕ.Ơ("DisablePrecisionModeOnEnemyDetected",ref ʡ);ʕ.Ơ("Step",ref ʢ);ʕ.Ơ(
-"MassBalanceFrequencyFrames",ref ʣ);ʕ.Ơ("BallBalanceFrequencyFrames",ref ʤ);ʕ.Ơ("AccelerationRecalcDelay",ref ʥ);}}public class ʉ{public double ʦ=
-500;public double ʧ=0;public double ʨ=30;public double ʩ=-0.05;public double ʪ=0.05;internal void Ơ(Dictionary<string,
-object>j){var ʕ=Ɲ.Ɵ(j,"PID Config");ʕ.Ơ("ProportionalGain",ref ʦ);ʕ.Ơ("IntegralGain",ref ʧ);ʕ.Ơ("DerivativeGain",ref ʨ);ʕ.Ơ(
-"IntegralLowerLimit",ref ʩ);ʕ.Ơ("IntegralUpperLimit",ref ʪ);}}}public class ɾ{private static readonly Dictionary<string,ɾ>ʫ=new Dictionary<
-string,ɾ>();public delegate void ʬ(Dictionary<string,object>ų);public ʬ Ơ{get;set;}public ɾ(string Ü,string Ũ){ʭ=Ü;ũ=Ũ;ʫ.Add(Ü
-,this);}public string ʭ{get;}public string ũ{get;}public static string ɿ(string Ȃ){var ʮ=ƚ.ƃ(Ȃ);var ų=ʮ as Dictionary<
-string,object>;if(ų==null){Program.M("Config malformed",K.ɔ);throw new Exception();}foreach(var Ŵ in ʫ){if(!ų.ContainsKey(Ŵ.
-Key))ų[Ŵ.Key]=new Dictionary<string,object>();Ŵ.Value.Ơ?.Invoke((Dictionary<string,object>)ų[Ŵ.Key]);}return ƚ.Ŭ(ʮ);}}
-public class ʎ{private static readonly ɾ N=new ɾ("Projectile Data",
-"The main list of known projectiles. Gun Data should reference these by name."){Ơ=ɿ,};public static Dictionary<string,ʎ>ʯ=new Dictionary<string,ʎ>();public static readonly ʎ ʰ=new ʎ(0,0,0,0);static
-ʎ(){ʯ.Add("Default",ʰ);ʯ.Add("LargeRailgun",new ʎ(2000,2000,2000,0));ʯ.Add("Artillery",new ʎ(500,500,2000,0));ʯ.Add(
-"SmallRailgun",new ʎ(1000,1000,1400,0));ʯ.Add("Gatling",new ʎ(400,400,800,0));ʯ.Add("AssaultCannon",new ʎ(500,500,1400,0));ʯ.Add(
-"Rocket",new ʎ(100,200,800,1000));}public static void ʍ(){Program.M("Projectile data loaded",K.C);}public static ʎ ʳ(string ʱ){ʎ
-ʲ;return ʯ.TryGetValue(ʱ,out ʲ)?ʲ:ʰ;}public float ʴ{get;private set;}public float ʵ{get;private set;}public float ʶ{get;
-private set;}public float ʠ{get;private set;}public ʎ(float ʷ,float ʸ,float ʹ,float ʺ){ʴ=ʷ;ʵ=ʸ;ʶ=ʹ;ʠ=ʺ;}private static void ɿ(
-Dictionary<string,object>ƞ){var ʻ=new Dictionary<string,ʎ>(ʯ);foreach(var Ŵ in ʻ){var Ü=Ŵ.Key;var ʼ=Ŵ.Value;var ʽ=Ɲ.Ɵ(ƞ,Ü);var ʷ=ʼ
-.ʴ;var ʸ=ʼ.ʵ;var ʹ=ʼ.ʶ;var ʺ=ʼ.ʠ;ʽ.Ơ("ProjectileVelocity",ref ʷ);ʽ.Ơ("MaxVelocity",ref ʸ);ʽ.Ơ("MaxRange",ref ʹ);ʽ.Ơ(
-"Acceleration",ref ʺ);ʯ[Ü]=new ʎ(ʷ,ʸ,ʹ,ʺ);}foreach(var Ŵ in ƞ){string ʾ="";if(!ʯ.ContainsKey(Ŵ.Key)){var ʿ=Ŵ.Value as Dictionary<
-string,object>;if(ʿ==null)continue;var ʷ=ƚ.ƙ(ʿ,"ProjectileVelocity",ref ʾ,0.0f);var ʸ=ƚ.ƙ(ʿ,"MaxVelocity",ref ʾ,0.0f);var ʹ=ƚ.
-ƙ(ʿ,"MaxRange",ref ʾ,0.0f);var ʺ=ƚ.ƙ(ʿ,"Acceleration",ref ʾ,0.0f);ʯ[Ŵ.Key]=new ʎ(ʷ,ʸ,ʹ,ʺ);}}}}public class ʌ{private
-static readonly ɾ N=new ɾ("Gun Data",
-"The main list of known gun types and their definition names. Should reference a known projectile type."){Ơ=ɿ};public static Dictionary<string,ʌ>ʯ=new Dictionary<string,ʌ>();public static readonly ʌ ˀ=new ʌ("Default",0,0,0f,
-0f);static ʌ(){ʯ.Add("Default",ˀ);ʯ.Add("LargeRailgun",new ʌ("LargeRailgun",ˁ.ˆ,ˇ.ˈ,2.0f,4.0f));ʯ.Add(
-"LargeBlockLargeCalibreGun",new ʌ("Artillery",0,0,0,12));ʯ.Add("LargeMissileLauncher",new ʌ("Rocket",0,0,0,0.5f));ʯ.Add("SmallRailgun",new ʌ(
-"SmallRailgun",ˁ.ˆ,ˇ.ˈ,0.5f,4.0f));ʯ.Add("SmallBlockAutocannon",new ʌ("Gatling",0,0,0.0f,0.4f));ʯ.Add("SmallBlockMediumCalibreGun",new
-ʌ("AssaultCannon",0,0,0.0f,6f));ʯ.Add("MyObjectBuilder_SmallGatlingGun",new ʌ("Gatling",0,0,0.0f,0.1f));ʯ.Add(
-"MyObjectBuilder_SmallMissileLauncher",new ʌ("Rocket",0,0,0.0f,1f));ʯ.Add("SmallRocketLauncherReload",ʳ("MyObjectBuilder_SmallMissileLauncher"));ʯ.Add(
-"SmallGatlingGunWarfare2",ʳ("MyObjectBuilder_SmallGatlingGun"));ʯ.Add("SmallMissileLauncherWarfare2",ʳ("MyObjectBuilder_SmallMissileLauncher"));}
-public static void ʍ(){Program.M("Gun data loaded",K.C);}public static ʌ ʳ(string ʱ){ʌ ʲ;return ʯ.TryGetValue(ʱ,out ʲ)?ʲ:ˀ;}
-string ˉ;public ʎ ʎ{get;}public ˁ ˊ{get;}public ˇ ˋ{get;}public int ˌ{get;}public float ˍ=>ˌ/60.0f;public int ˎ{get;}public
-float ˏ=>ˎ/60.0f;public ʌ(string ː,ˁ ˑ,ˇ ˠ,float ˡ,float ˢ){ˉ=ː;ʎ=ʎ.ʳ(ː);ˊ=ˑ;ˋ=ˠ;ˌ=(int)(ˡ*60);ˎ=(int)(ˢ*60);}private static
-void ɿ(Dictionary<string,object>ƞ){var ʻ=new Dictionary<string,ʌ>(ʯ);foreach(var Ŵ in ʻ){var Ü=Ŵ.Key;var ʼ=Ŵ.Value;var ʽ=Ɲ.Ɵ
-(ƞ,Ü);var ˣ=ʼ.ˉ;var ˑ=ʼ.ˊ;var ˠ=ʼ.ˋ;var ˡ=ʼ.ˍ;var ˢ=ʼ.ˏ;ʽ.Ơ("Projectile",ref ˣ);ʽ.Ơ("ReloadType",ref ˑ,
-"0 = normal, 1 = charged");ʽ.Ơ("FireType",ref ˠ,"0 = normal, 1 = delay before firing");ʽ.Ơ("FireTime",ref ˡ);ʽ.Ơ("ReloadTime",ref ˢ);ʯ[Ü]=new ʌ(ˣ
-,ˑ,ˠ,ˡ,ˢ);}foreach(var Ŵ in ƞ){if(!ʯ.ContainsKey(Ŵ.Key)){var ʿ=Ŵ.Value as Dictionary<string,object>;if(ʿ==null)continue;
-var ˤ="";var ˣ=ƚ.ƙ(ʿ,"Projectile",ref ˤ,"");var ˑ=ƚ.ƙ(ʿ,"ReloadType",ref ˤ,0);var ˠ=ƚ.ƙ(ʿ,"FireType",ref ˤ,0);var ˡ=ƚ.ƙ(ʿ,
-"FireTime",ref ˤ,0.0f);var ˢ=ƚ.ƙ(ʿ,"ReloadTime",ref ˤ,0.0f);ʯ[Ŵ.Key]=new ʌ(ˣ,(ˁ)ˑ,(ˇ)ˠ,ˡ,ˢ);}}}}public static class ʐ{public
-static bool ʑ;}public abstract class ͳ{protected x ˬ;protected x ˮ;protected int Ͱ;public ͱ ͱ=ͱ.Ͳ;public ͳ(){Program.M(
-"New ArgusShip",K.C);Ͱ=Program.D.Next()%6000;}public abstract x ʹ{get;}public abstract x Ͷ{get;}public abstract x ʠ{get;}public
-abstract float ͷ{get;}public abstract string ʭ{get;}public abstract void d(int ͺ);public abstract void e(int ͺ);public x Γ(ͳ ͻ,
-float ʷ){x ͼ=this.ʹ;x ͽ=this.Ͷ;x Ά=ͻ.ʹ;x Έ=ͻ.ʠ;x Ή=ͻ.Ͷ-ͽ;x Ί=Ά-ͼ;double Ź=ʷ;double Ȱ=Ή.ȣ()-Ź*Ź;double ȱ=2.0*Ί.Ό(Ή);double Ƅ=Ί
-.ȣ();double ɋ;if(Math.Abs(Ȱ)<1e-6){if(Math.Abs(ȱ)<1e-6)ɋ=0;else ɋ=-Ƅ/ȱ;}else{double Ύ=ȱ*ȱ-4*Ȱ*Ƅ;if(Ύ<0)return Ά;double Ώ=
-Math.Sqrt(Ύ);double ΐ=(-ȱ+Ώ)/(2*Ȱ);double Α=(-ȱ-Ώ)/(2*Ȱ);ɋ=Math.Min(ΐ,Α)>0?Math.Min(ΐ,Α):Math.Max(ΐ,Α);if(ɋ<0)ɋ=Math.Max(ΐ,Α
-);}x Β=Ά+Ή*ɋ+0.5*Έ*ɋ*ɋ;return Β;}}public struct Π{public readonly x Δ;public readonly x Ε;public readonly x Ζ;public
-readonly x Η;public readonly double Ό;public readonly double Θ;public MatrixD Ι;public Π(x Κ,x ȕ,x Λ,x Μ,double Ν,double Ξ,
-MatrixD Ο){Δ=Κ;Ε=ȕ;Ζ=Λ;Η=Μ;Ό=Ν;Θ=Ξ;Ι=Ο;}}public class Ψ{Ρ Σ;Τ Υ;public Ψ(Ρ Φ,Τ Χ){Program.M($"Setting up FCS",K.L);Σ=Φ;Υ=Χ;}
-public Π μ(){Υ.Ω();int Ϋ=Υ.Ϊ;ά ή=Υ.έ;var ΰ=Υ.ί;var β=Σ.α();var Ί=β-ΰ;var γ=Ί.Ȩ();var δ=Ί/γ;var Ν=δ.Ό(Σ.ε);var η=Υ.ζ();var ι=(η
--ΰ).θ();Program.f(ι);if(Ν>N.ʄ.ʚ&&β!=x.ȝ)Υ.κ();else Υ.λ();return new Π(ι,β,ΰ,Σ.ε,Ν,γ,Σ.Ι);}}public enum ˁ{ν,ˆ}public enum
-ˇ{ν,ˈ}public enum τ{ξ,ο,π,ρ,ς,σ}public class ϔ{private static readonly MyDefinitionId υ=new MyDefinitionId(typeof(
-MyObjectBuilder_GasProperties),"Electricity");IMyUserControllableGun φ;ˁ χ;ˇ ψ;MyResourceSinkComponent ω;int ϊ;int ϋ;ţ<τ>ό;bool ύ;ʌ ώ;Τ Ϗ;public ϔ(
-IMyUserControllableGun ʲ,Τ ϐ){var ϑ=ʲ.BlockDefinition;Program.M($"Set up new gun {ϑ}",K.ɑ);var ϒ=ʌ.ʳ(ϑ.SubtypeIdAttribute);if(ϒ==ʌ.ˀ)ϒ=ʌ.ʳ(ϑ.
-TypeIdString);ώ=ϒ;Ϗ=ϐ;φ=ʲ;ω=ʲ.Components.Get<MyResourceSinkComponent>();χ=ώ.ˊ;ψ=ώ.ˋ;ό=new ţ<τ>(ϓ);}public x ϖ=>(Vector3)(φ.Min+φ.Max
-)/2*Ϗ.ϕ.ͷ;public x ϗ=>φ.GetPosition();public x ƣ{get;set;}public float Ͷ=>ώ.ʎ.ʴ;public float ʠ=>ώ.ʎ.ʠ;public float ʵ=>ώ.ʎ
-.ʵ;public float ʶ=>ώ.ʎ.ʶ;public ʌ ʌ=>ώ;public τ Ϙ=>ό.Ť;public x ơ=>φ.WorldMatrix.Forward;public void d(int ͺ){ό.ť();}
-public void e(int ͺ){}public bool ϛ(){if(Ϙ!=τ.π)return false;φ.ShootOnce();ϊ=b.ɬ(ώ.ˎ,ϙ);if(ψ==ˇ.ˈ){ϋ=b.ɬ(ώ.ˌ,Ϛ);}else{ϋ=b.ɬ(0,
-Ϛ);}return true;}public bool ϝ(){if(Ϙ!=τ.ξ)return false;φ.Enabled=false;b.ɬ(0,Ϝ);ύ=true;return true;}public bool Ϟ(){if(Ϙ
-!=τ.ξ)return false;if(b.ɲ(ϋ)>1)return false;φ.Enabled=false;b.ɬ(0,Ϝ);ύ=true;return true;}public x ϡ(x ϟ){x Ϡ=ϟ+ƣ*Ͷ;if(Ϡ.ȣ(
-)>Ͷ*Ͷ)Ϡ=Ϡ.θ()*Ͷ;return Ϡ;}τ ϓ(){bool Ϣ=φ.IsFunctional;if(!Ϣ)return τ.σ;if(ψ==ˇ.ˈ&&b.ɱ(ϋ))return ύ?τ.ο:τ.ξ;switch(χ){case
-ˁ.ν:if(b.ɱ(ϊ))return τ.ρ;break;case ˁ.ˆ:if(b.ɱ(ϊ))return τ.ρ;if(ω.CurrentInputByType(υ)>0.02f)return τ.ς;break;}return τ.
-π;}void Ϛ(){if(ύ){ύ=false;return;}}void ϙ(){}void Ϝ(){φ.Enabled=true;}}public enum ά{ϣ,Ϥ,ξ}public enum ˋ{ϥ,Ϧ,ϧ}public
-class Τ{List<ϔ>Υ=new List<ϔ>();List<ϔ>Ϩ=new List<ϔ>();x ϩ;ά Ϫ;int ϫ;ʌ ώ;public Τ(List<IMyTerminalBlock>Ϭ,Ρ ϭ){Program.M(
-"Setting up gun manager",K.L);foreach(var Ϯ in Ϭ){var ʲ=Ϯ as IMyUserControllableGun;if(ʲ!=null)Υ.Add(new ϔ(ʲ,this));}if(Υ.Count<=0)Program.M(
-$"No guns in group {N.ɴ.ʖ}",K.ɒ);ϕ=ϭ;}public Ρ ϕ{get;}public IMyCubeGrid ϰ=>ϕ.ϯ.CubeGrid;public int ϱ=>Υ.Count;public x ί=>ϩ;public ά έ=>Ϫ;public
-int Ϊ=>ϫ;public void d(int ͺ){foreach(var ʲ in Υ)ʲ.d(ͺ);}public void Ω(){var ή=ά.ϣ;var ϲ=new Dictionary<ʌ,List<ϔ>>();var ϳ=
-new Dictionary<ʌ,List<ϔ>>();var ϴ=0;var ϵ=0;foreach(var ʲ in Υ){switch(ʲ.Ϙ){case τ.π:if(!ϲ.ContainsKey(ʲ.ʌ))ϲ.Add(ʲ.ʌ,new
-List<ϔ>());ϲ[ʲ.ʌ].Add(ʲ);ϴ++;break;case τ.ξ:if(!ϳ.ContainsKey(ʲ.ʌ))ϳ.Add(ʲ.ʌ,new List<ϔ>());ϳ[ʲ.ʌ].Add(ʲ);ϵ++;break;}}
-Program.f(ϴ);var Ϸ=ϳ;if(ϴ>0){Ϫ=ά.Ϥ;Ϸ=ϲ;}if(ϵ>0){Ϫ=ά.ξ;Ϸ=ϳ;}var ͻ=ϕ.α();var ϸ=ϕ.ʹ;var Ϲ=(ͻ-ϸ).ȣ();foreach(var Ϻ in Ϸ){var ʿ=Ϻ.
-Key;var Χ=Ϻ.Value;var ʹ=ʿ.ʎ.ʶ;if(ʹ*ʹ<Ϲ)continue;Ϩ=Χ;ώ=ʿ;break;}ϫ=Ϩ.Count;if(ϫ==0){ϩ=ϕ.ʹ;return;}x ϻ=x.ȝ;foreach(var ʲ in Ϩ)
-{ϻ+=ʲ.ϖ;}ϻ/=ϫ;ϩ=x.ϼ(ϻ,ϕ.Ι);}public void e(int ͺ){foreach(var ʲ in Υ)ʲ.e(ͺ);}public void ɻ(){foreach(var ʲ in Υ)ʲ.ϛ();}
-public void ɼ(){foreach(var ʲ in Υ)ʲ.ϝ();}public void κ(){foreach(var ʲ in Υ)ʲ.ϛ();}public void λ(){foreach(var ʲ in Υ)ʲ.Ϟ();}
-public x ζ(){if(ώ==null)return x.ȝ;var ȑ=ώ.ʎ.ʵ;var ͻ=ϕ.α();var Ί=ͻ-ϩ;var Ͻ=Ϩ[0];if(Ͻ==null)return x.ȝ;var Ț=ϕ.Ͼ;var ț=Ț.ȣ()!=0
-;return ɐ.ȯ(ȑ,Ͻ.ϡ(ϕ.Ͷ)/60,ώ.ʎ.ʠ*Ͻ.ơ,Ί,ϕ.Ͽ.ʹ,ϕ.Ͽ.Ͷ/60,ϕ.Ͽ.ʠ/60,x.ȝ,false,Ț,ț);}}public class Є{private readonly List<
-IMyGyro>Ѐ;private readonly ȁ Ё;private readonly ȁ Ђ;public Є(List<IMyTerminalBlock>Ϭ){Program.M("Setting up gyro manager",K.L);
-Ѐ=new List<IMyGyro>();foreach(var ȱ in Ϭ){var Ѓ=ȱ as IMyGyro;if(Ѓ!=null){Ѐ.Add(Ѓ);}}if(Ѐ.Count<=0)Program.M(
-$"No gyroscopes found in group: {N.ɴ.ʖ}",K.ɒ);Ё=new ȁ(N.ʊ.ʦ,N.ʊ.ʧ,N.ʊ.ʨ,N.ʊ.ʪ,N.ʊ.ʩ);Ђ=new ȁ(N.ʊ.ʦ,N.ʊ.ʧ,N.ʊ.ʨ,N.ʊ.ʪ,N.ʊ.ʩ);}public void Г(ref Π Ѕ,double І=0){
-int Ї=7;double Ј=1.0;if(Ѕ.Ό>0.9999){Ј*=0.8;Ї=4;}if(Ѕ.Ό>0.99999){Ј*=0.8;Ї=3;}if(Ѕ.Ό>0.999999){Ј*=0.8;Ї=2;}if(Ѕ.Ό>0.9999999){
-Ј*=0.8;Ї=1;}double Љ;double Њ;var Ћ=І;var Ѝ=x.Ќ(Ѕ.Η,Ѕ.Δ);var Џ=x.Ў(Ѝ,MatrixD.Transpose(Ѕ.Ι));var А=Ё.Ȇ(-Џ.Ķ,Ї);var ȸ=Ђ.Ȇ(
--Џ.ķ,Ї);Љ=MathHelper.Clamp(А,-N.ȥ.ʔ,N.ȥ.ʔ);Њ=MathHelper.Clamp(ȸ,-N.ȥ.ʔ,N.ȥ.ʔ);if(Math.Abs(Њ)+Math.Abs(Љ)>N.ȥ.ʔ){var Б=N.ȥ
-.ʔ/(Math.Abs(Њ)+Math.Abs(Љ));Њ*=Б;Љ*=Б;}Љ*=Ј;Њ*=Ј;В(Љ,Њ,Ћ,Ѕ.Ι);}void В(double Д,double Е,double Ж,MatrixD Ο){var З=new x(
-Д,Е,Ж);var И=x.Ў(З,Ο);foreach(var Ѓ in Ѐ)if(Ѓ.IsFunctional&&Ѓ.IsWorking&&Ѓ.Enabled&&!Ѓ.Closed){var Й=x.Ў(И,MatrixD.
-Transpose(Ѓ.WorldMatrix));Ѓ.Pitch=(float)Й.Ķ;Ѓ.Yaw=(float)Й.ķ;Ѓ.Roll=(float)Й.ĸ;Ѓ.GyroOverride=true;return;}}public void К(){
-foreach(var Ѓ in Ѐ)if(Ѓ.IsFunctional&&Ѓ.IsWorking&&Ѓ.Enabled&&!Ѓ.Closed){Ѓ.GyroOverride=false;return;}}}public enum ͱ{Л,М,Н,Ͳ}
-public class Р{public static int П(ͱ О){switch(О){case ͱ.Л:return 600;case ͱ.М:return 60;case ͱ.Н:return 10;case ͱ.Ͳ:return 1;
-default:return Int32.MaxValue;}}}public class Я{private readonly List<С>Т;private readonly List<У>Ф;private readonly List<Х>Ц;
-bool Ч;int Ш=0;x Щ=x.ȝ;Ρ Σ;public Я(List<IMyTerminalBlock>Ϭ,Ρ Φ){Ц=new List<Х>();Т=new List<С>();Ф=new List<У>();Σ=Φ;foreach
-(var Ϯ in Ϭ){var Ъ=Ϯ as IMySpaceBall;if(Ъ!=null){var Ы=new У(Ъ,this,Σ);Ф.Add(Ы);Ц.Add(Ы);Щ+=Ы.Ь;continue;}var Э=Ϯ as
-IMyArtificialMassBlock;if(Э!=null){var Ы=new С(Э,this,Σ);Т.Add(Ы);Ц.Add(Ы);Щ+=Ы.Ь;}}Ш=Program.D.Next()%(Math.Max(N.ʈ.ʣ,N.ʈ.ʤ)-1);Ю();}public
-bool а{get;set;}public double б{get;private set;}public List<Х>в=>Ц;public void d(int ͺ){if((ͺ+Ш)%N.ʈ.ʣ==0)г();if((ͺ+Ш)%N.ʈ.
-ʤ==0)д();}public void e(int ͺ){bool е=false;foreach(var Ϯ in Т){е|=Ϯ.ж();}foreach(var Ъ in Ф){е|=Ъ.ж();}if(е){Ю();}}
-public bool и(){var з=Ч;Ч=false;return з;}void Ю(){б=0;foreach(var Ϯ in Т){б+=Ϯ.й;}foreach(var Ъ in Ф){б+=Ъ.й;}}void г(){x к=Щ
-;foreach(var Ϯ in Т){x м=Ϯ.л?x.ȝ:Ϯ.Ь;if((Щ-(Ϯ.л?Ϯ.Ь:x.ȝ)+м).ȣ()<Щ.ȣ()){Ϯ.л=!Ϯ.л;Щ=Щ-(Ϯ.л?x.ȝ:Ϯ.Ь)+м;}}Ч|=к!=Щ;}void д(){x
-к=Щ;Ч|=к!=Щ;}}internal class ы{Я н;private readonly List<о>п;bool р;float с;float т;int у;ţ<double>ф;ţ<double>х;public ы(
-List<о>ц,ƣ ч,Я ш){п=ц;ƣ=ч;ф=new ţ<double>(()=>щ(ш.б));х=new ţ<double>(()=>ъ(ш.в));н=ш;}public ƣ ƣ{get;private set;}public
-bool а{get;private set;}public double ь=>ф.Ť;public double э=>х.Ť;public double ю=>ь+э;public void d(int ͺ){if(с==0)у++;else
-у=0;if(у>N.ʈ.ʟ)а=false;п.RemoveAll(Ɏ=>Ɏ.я);if(ͺ%N.ʈ.ʥ==0&&н.и()){ф.ť();х.ť();}}public void e(int ͺ){if(р!=а)foreach(var ѐ
-in п)ѐ.а=а;р=а;if(т!=с)foreach(var ѐ in п)ѐ.ʠ=(float)(с*N.ʈ.ʠ);т=с;}public void ё(float ʺ){ʺ=(float)MathHelperD.Clamp(ƶ.Ƶ(
-ʺ,N.ʈ.ʢ),-1,1);if(ʺ==с&&ʺ==0)return;а=true;if(ʺ==с)return;с=ʺ;}double ъ(List<Х>ђ){var ѓ=x.ȝ;foreach(var ѐ in п){if(ѐ is є
-){foreach(var Э in ђ){var δ=((x)(Э.ϖ-ѐ.ϖ)).θ();var і=δ*Э.й*N.ʈ.ʠ*ѐ.ѕ;ѓ+=і;}}}return ѓ.Ό(Base6Directions.Directions[(int)ƣ
-]);}double щ(double Э){double ʺ=0;foreach(var ѐ in п){var ј=ѐ as ї;if(ј!=null)ʺ+=N.ʈ.ʠ;}return ʺ*Э;}}public class ѧ{
-private readonly ы љ;private readonly ы њ;private readonly ы ћ;Я н;Ρ Σ;bool ќ;public ѧ(List<IMyTerminalBlock>Ϭ,Ρ Φ){Program.M(
-$"Setting up gravity drive",K.L);Σ=Φ;var ѝ=new List<о>();var ў=new List<о>();var џ=new List<о>();var Ѡ=new Dictionary<ƣ,List<о>>{{ƣ.Ė,џ},{ƣ.Ę,џ},{ƣ
-.ĕ,ў},{ƣ.ė,ў},{ƣ.ơ,ѝ},{ƣ.Ƣ,ѝ}};foreach(var Ϯ in Ϭ){var ѡ=Ϯ as IMyGravityGenerator;if(ѡ!=null){var δ=(ƣ)ѡ.Orientation.Up;
-var ŵ=Ѡ[δ];bool Ѣ=(int)δ%2==0;ŵ.Add(new ї(ѡ,δ,Ѣ));}var ѣ=Ϯ as IMyGravityGeneratorSphere;if(ѣ!=null){var ѥ=Σ.Ѥ;var Ѧ=
-Base6Directions.Directions[(int)ѥ];var Ѣ=Ѧ.Dot((Vector3D)Σ.ʹ-ѣ.GetPosition())>0;var ŵ=Ѡ[ѥ];ŵ.Add(new є(ѣ,ѥ,Ѣ));}}if(ѝ.Count==0)Program.
-M($"No Forward/backward gravity generators",K.ɒ);if(ў.Count==0)Program.M($"No Left/Right gravity generators",K.ɒ);if(џ.
-Count==0)Program.M($"No Up/Down gravity generators",K.ɒ);н=new Я(Ϭ,Φ);љ=new ы(ѝ,ƣ.ơ,н);њ=new ы(ў,ƣ.ĕ,н);ћ=new ы(џ,ƣ.Ė,н);}
-bool Ѩ=>љ.а||њ.а||ћ.а;public double б=>н.б;public void d(int ͺ){љ.d(ͺ);њ.d(ͺ);ћ.d(ͺ);н.d(ͺ);}public void e(int ͺ){љ.e(ͺ);њ.e
-(ͺ);ћ.e(ͺ);if(Ѩ!=ќ)н.а=Ѩ;Program.f(н.а);ќ=Ѩ;н.e(ͺ);}public void Ѫ(x ѩ){љ.ё((float)ѩ.Ό(x.ơ));њ.ё((float)ѩ.Ό(x.ĕ));ћ.ё((
-float)ѩ.Ό(-x.Ė));}public double ѫ(){var і=љ.ю;if(і==0)і=1;return і;}public double Ѭ(){var і=њ.ю;if(і==0)і=1;return і;}public
-double ѭ(){var і=ћ.ю;if(і==0)і=1;return і;}}public class У:Х{IMySpaceBall Ѯ;Я н;Ρ Σ;public У(IMySpaceBall Ъ,Я ш,Ρ Φ){Ѯ=Ъ;н=ш;Σ
-=Σ;}public bool л{get;set;}=true;public bool ѯ=>н.а;public bool ɱ=>л&&ѯ;public override x ʹ=>Ѯ.GetPosition();public
-override double Ѱ=>Ѯ.VirtualMass;public override double й=>л?Ѯ.VirtualMass:0;public override Vector3I ϖ=>Ѯ.Position;public x Ь=>
-Ѱ*(Ѯ.GetPosition()-Σ.ϯ.CenterOfMass);public bool ж(){var Ɉ=false;Ѯ.Enabled=ɱ;return Ɉ;}}public class С:Х{
-IMyArtificialMassBlock ѱ;Я н;Ρ Σ;bool Ѳ;public С(IMyArtificialMassBlock Э,Я ш,Ρ Φ){ѱ=Э;н=ш;Σ=Φ;ѱ.Enabled=false;}public bool л{get;set;}=true;
-public bool ѯ=>н.а;public bool ɱ=>л&&ѯ;public override x ʹ=>ѱ.GetPosition();public override double Ѱ=>ѱ.VirtualMass;public
-override double й=>л?ѱ.VirtualMass:0;public override Vector3I ϖ=>ѱ.Position;public x Ь=>Ѱ*(ѱ.GetPosition()-Σ.ϯ.CenterOfMass);
-public bool ж(){var е=false;if(Ѳ!=ɱ){ѱ.Enabled=ɱ;е=true;}Ѳ=ɱ;return е;}}public abstract class о{protected bool ѳ;public
-IMyGravityGeneratorBase Ѵ{get;protected set;}public ƣ ƣ{get;protected set;}public bool а{get{return Ѵ.Enabled;}set{Ѵ.Enabled=value;}}public
-float ʠ{get{return Ѵ.GravityAcceleration*ѕ;}set{Ѵ.GravityAcceleration=value*ѕ;}}public x ʹ=>Ѵ.GetPosition();public bool я=>Ѵ.
-Closed;public int ѕ=>ѳ?-1:1;public Vector3I ϖ=>Ѵ.Position;}public class ї:о{public ї(IMyGravityGenerator ѵ,ƣ δ,bool Ѣ){Ѵ=ѵ;ƣ=δ
-;ѳ=Ѣ;}}public class є:о{public є(IMyGravityGeneratorSphere ѣ,ƣ δ,bool Ѣ){Ѵ=ѣ;ƣ=δ;ѳ=Ѣ;}}public abstract class Х{public
-abstract x ʹ{get;}public abstract double Ѱ{get;}public abstract double й{get;}public abstract Vector3I ϖ{get;}}public class ѹ{ѧ
-Ѷ;ѷ Ѹ;Ρ Σ;public ѹ(List<IMyTerminalBlock>Ϭ,Ρ Φ){Program.M($"Setting up propulsion controller",K.L);Σ=Φ;Ѷ=new ѧ(Ϭ,Φ);Ѹ=new
-ѷ();}public void d(int ͺ){Ѷ.d(ͺ);Ѹ.d(ͺ);}public void e(int ͺ){var Ѻ=Σ.ϯ.MoveIndicator;Matrix Ø;Σ.ϯ.Orientation.GetMatrix(
-out Ø);x ѻ=x.ϼ(Ѻ,Ø);if(Σ.ϯ.DampenersOverride){var Ѽ=Σ.Ͷ;var ѽ=x.Ў(Ѽ,MatrixD.Invert(Σ.Ι));var ѿ=ѽ*x.ơ*10*Ѿ();var ҁ=ѽ*x.ĕ*10*
-Ҁ();var ҋ=ѽ*x.Ė*10*Ҋ();if(ѻ.Ό(x.ơ)==0)ѻ+=ѿ;if(ѻ.Ό(x.ĕ)==0)ѻ+=ҁ;if(ѻ.Ό(x.Ė)==0)ѻ+=ҋ;}Ѷ.Ѫ(ѻ);Ѷ.e(ͺ);Ѹ.e(ͺ);}double Ѿ(){
-return Σ.Х.TotalMass/Ѷ.ѫ();}double Ҁ(){return Σ.Х.TotalMass/Ѷ.Ѭ();}double Ҋ(){return Σ.Х.TotalMass/Ѷ.ѭ();}}public class ѷ{
-public void d(int ͺ){}public void e(int ͺ){}}public class ҍ{public ҍ(IMyTurretControlBlock Ϯ){Ҍ=Ϯ;}public
-IMyTurretControlBlock Ҍ{get;}public bool я=>Ҍ.Closed;bool Ҏ;bool ҏ=true;public bool Ґ{get;private set;}public bool ґ{get;private set;}public
-bool Ғ{get;private set;}public bool ғ{get;private set;}public bool а{get{return Ҍ.Enabled;}set{Ҍ.Enabled=value;}}public
-string Ҕ{get{return Ҍ.CustomName;}set{Ҍ.CustomName=value;}}public long ҕ{get;set;}public Ƥ Җ{get;set;}public x ʹ=>Ҍ.
-GetPosition();public void ж(){var җ=Ҍ.HasTarget;ґ=!җ&&Ҏ;Ҏ=җ;Ґ=җ;var ҙ=Җ!=null&&Җ.Ҙ;ғ=ҙ&&ҏ;ҏ=!ҙ;Ғ=ҙ;if(!җ)ҕ=0;}public Қ Ҝ(){var қ=Ҍ.
-GetTargetedEntity();ҕ=қ.EntityId;return қ;}}public class Ρ:ҝ{public readonly Τ ɺ;private readonly Є Ҟ;private readonly Ψ ҟ;private
-readonly ѹ Ҡ;List<IMyLargeTurretBase>ҡ;ţ<x>Ң;ţ<MyShipMass>ѱ;public Ρ(IMyCubeGrid ң,List<IMyTerminalBlock>Ϭ,List<IMyTerminalBlock
->Ҥ):base(ң,Ҥ){Program.M("New ControllableShip : SupportingShip : ArgusShip",K.C);foreach(var Ϯ in Ϭ){var ҥ=Ϯ as
-IMyShipController;if(ҥ!=null)ϯ=ҥ;}if(ϯ==null){Program.M($"WARNING: Controller not present in group: {N.ɴ.ʖ}");return;}Ҟ=new Є(Ϭ);ɺ=new Τ(
-Ϭ,this);ҟ=new Ψ(this,ɺ);Ң=new ţ<x>(()=>ϯ.GetNaturalGravity());ѱ=new ţ<MyShipMass>(()=>ϯ.CalculateShipMass());Ҡ=new ѹ(Ϭ,
-this);}public IMyShipController ϯ{get;private set;}public MatrixD Ι=>Ҧ.WorldMatrix;public x ε=>ϯ.WorldMatrix.Forward;public
-x ҧ=>ϯ.WorldMatrix.Up;public Vector3 Ҩ=>Base6Directions.Directions[(int)ϯ.Orientation.Forward];public ƣ Ѥ=>(ƣ)ϯ.
-Orientation.Forward;public Ƥ Ͽ{get;private set;}public bool Ґ=>Ͽ!=null;public x Ͼ=>Ң.Ť;public MyShipMass Х=>ѱ.Ť;public override
-void d(int ͺ){base.d(ͺ);ɺ.d(ͺ);Ҡ.d(ͺ);if((ͺ+Ͱ)%Р.П(ͱ)==0){Ң.ť();ѱ.ť();}}public override void e(int ͺ){base.e(ͺ);if(Ґ){var Ѕ=
-ҟ.μ();if(Ѕ.Ε==x.ȝ)Ҟ.К();else Ҟ.Г(ref Ѕ);ɺ.e(ͺ);}Ҡ.e(ͺ);}public void ɷ(){Ͽ=P.ҩ(this,N.ʄ.ʘ,N.ʄ.ʙ);if(Ͽ==null){Ҟ.К();Program
-.M("Couldn't find new target",K.ɒ);}else{Program.M("Got new target",K.L);}}public void ɹ(){Ͽ=null;Ҟ.К();}public x α(){
-return Ͽ?.ʹ??x.ȝ;}}public class ҝ:ͳ{private readonly List<ҍ>Ҫ;protected readonly IMyCubeGrid Ҧ;public ҝ(IMyCubeGrid ң,List<
-IMyTerminalBlock>Ҥ){Program.M("New SupportingShip : ArgusShip",K.C);IMyUserControllableGun ʲ=null;IMyMotorStator ҫ=null;Ҫ=new List<ҍ>();
-foreach(var Ϯ in Ҥ){var ҥ=Ϯ as IMyTurretControlBlock;if(ҥ!=null){Ҫ.Add(new ҍ(ҥ));continue;}ʲ=ʲ??Ϯ as IMyUserControllableGun;ҫ=ҫ
-??Ϯ as IMyMotorStator;}if(ʲ!=null&&ҫ!=null){Program.M("Setting up trackers",K.C);foreach(var Ҭ in Ҫ){Program.M(
-$"Set up tracker: {Ҭ.Ҕ}");var Ϯ=Ҭ.Ҍ;Ϯ.ClearTools();Ϯ.AddTool(ʲ);Ϯ.AzimuthRotor=null;Ϯ.ElevationRotor=ҫ;Ϯ.AIEnabled=true;Ϯ.CustomName=N.ʆ.ʜ;}if(Ҫ
-.Count<=0)Program.M("No target trackers in group",K.ɒ);}else Program.M(
-$"Gun/rotor not present in group: {N.ɴ.ʗ}, cannot setup trackers",K.ɒ);Ҧ=ң;}public override x ʹ=>Ҧ.GetPosition();public override x Ͷ=>ˮ;public override x ʠ=>(ˮ-ˬ)*60;public override
-float ͷ=>Ҧ.GridSize;public override string ʭ=>Ҧ.CustomName;public override string ToString()=>ʭ;public override void d(int ͺ)
-{ˬ=ˮ;ˮ=Ҧ.LinearVelocity;}public override void e(int ͺ){for(int Ə=Ҫ.Count-1;Ə>=0;Ə--){var Ҭ=Ҫ[Ə];if(Ҭ.я){Ҫ.RemoveAt(Ə);
-continue;}Ҭ.ж();if(!Ҭ.Ґ||Ҭ.Ғ){if(Ҭ.ґ&&!Ҭ.а){Ҭ.а=true;Ҭ.Ҕ=N.ʆ.ʜ;if(Ҭ.Җ!=null){Ҭ.Җ.ҭ=true;Ҭ.Җ.ʆ=null;}Ҭ.Җ=null;}else if(Ҭ.ғ){Ҭ.а=
-true;Ҭ.Ҕ=N.ʆ.ʜ;}continue;}if(Ҭ.ҕ!=0)continue;Қ ͻ=Ҭ.Ҝ();ҍ Ү;if(P.ү(ͻ.Ұ,out Ү)){if(Ү==Ҭ&&Ҭ.а)Ҭ.а=false;Ү.Җ.ұ(ͻ,null,Ҭ);
-continue;}var ҳ=P.Ҳ(Ҭ,ͻ.Ұ,ͻ);Ҭ.Җ=ҳ;Ҭ.Ҕ=N.ʆ.ʛ;Ҭ.а=false;Ҭ.ҕ=ͻ.Ұ;}}}enum ҹ{Ҵ,ҵ,Ҷ,ҷ,Ҹ}class Ҿ{int Һ;private readonly int һ;public ҹ
-Ҽ;public Ҿ(int ɫ,ҹ ҽ){Һ=ɫ;һ=ɫ;Ҽ=ҽ;}public void ҿ(){Һ=һ;}public bool Ӏ(){Һ--;return Һ<=0;}}public class Ƥ:ͳ{Dictionary<
-Vector3I,Ҿ>Ӂ=new Dictionary<Vector3I,Ҿ>();Dictionary<Vector3I,Ҿ>ӂ=new Dictionary<Vector3I,Ҿ>();public ҝ Ӄ;public Қ L;public long
-Ұ;bool ӄ=true;BoundingBoxD Ӆ;x ӆ;x Ӈ;private readonly float ӈ=1f;public Ƥ(ҍ Ҭ,long Ӊ,Қ è){ʆ=Ҭ;Ұ=Ӊ;ͱ=ͱ.М;switch(è.Ҽ){case
-MyDetectedEntityType.SmallGrid:ӈ=0.5f;break;case MyDetectedEntityType.LargeGrid:ӈ=2.5f;break;}L=è;ӊ=L.Ӌ;ӊ.Translation=L.ʹ;}public override x
-ʹ=>L.ʹ;public override x Ͷ=>ˮ;public override x ʠ=>(ˮ-ˬ)*60;public override float ͷ=>ӈ;public override string ʭ=>
-$"Trackable ship {Ұ}";public bool ҭ{get;set;}=false;public override string ToString()=>ʭ;public ҍ ʆ{get;set;}public bool Ҙ{get;set;}public
-BoundingBoxD Ӎ=>L.ӌ;public x ӏ=>ӎ.Extents;public x Ӑ=>ӎ.HalfExtents;public int ӑ{get;set;}=0;public BoundingBoxD ӎ{get{if(ӄ)Ӓ();
-return Ӆ;}}public x ӓ{get{if(ӄ)Ӓ();return ӆ;}}x Ӕ;MatrixD ӊ;public x ӕ(){var Ƙ=Ӕ;Ӕ=x.ȝ;return Ƙ;}void Ӓ(){Ӆ=ǲ.Ǳ(Ӎ,L.Ӌ,ӈ);ӄ=
-false;var Ӗ=Ӑ;var ɏ=ӈ/2;ӆ=new x(ɏ-Ӗ.Ķ%ӈ,ɏ-Ӗ.ķ%ӈ,ɏ-Ӗ.ĸ%ӈ);}public override void d(int ͺ){if(ҭ)return;if((ͺ+Ͱ)%Р.П(ͱ)!=0)return
-;L=ʆ.Ҝ();if(ʆ.я||L.Ұ!=Ұ)ҭ=true;ˬ=ˮ;ˮ=(Vector3D)L.Ͷ;Ӕ=ʹ-Ӈ;if(ͱ==ͱ.Ͳ&&(Ӕ*60-ˮ).ȣ()>10000){ӄ=true;Vector3I Ί=(Vector3I)(x.ϼ(
-Ӕ-(ˮ/60),MatrixD.Invert(ӊ))*2);ӗ(Ί);}ӊ=L.Ӌ;ӊ.Translation+=L.ʹ;Ӈ=ʹ;}public override void e(int ͺ){ӂ.Clear();foreach(var Ŵ
-in Ӂ){var Ә=x.ϼ((x)Ŵ.Key*ӈ+ӓ,ӊ);if(Ŵ.Value.Ӏ())continue;ӂ[Ŵ.Key]=Ŵ.Value;Program.C.Ã(Ә,Color.White,0.2f,0.016f,true);}var
-Ƙ=Ӂ;Ӂ=ӂ;ӂ=Ƙ;var ә=new MyOrientedBoundingBoxD(ӎ,L.Ӌ);ә.Center=Ӎ.Center;}public void ұ(Қ қ,IMyLargeTurretBase Ӛ=null,ҍ ҥ=
-null){if(қ.Ұ!=L.Ұ||қ.ӛ==null)return;var Ӝ=(x)қ.ӛ;var ӝ=Ӝ-ʹ;var Ӟ=x.Ў(ӝ,MatrixD.Transpose(ӊ));Ӟ-=ӓ;var ӟ=new Vector3I((int)
-Math.Round(Ӟ.Ķ/ӈ),(int)Math.Round(Ӟ.ķ/ӈ),(int)Math.Round(Ӟ.ĸ/ӈ));var ҽ=ҹ.Ҵ;var Ӡ=Ӛ!=null?Ӛ.GetTargetingGroup():ҥ!=null?ҥ.Ҍ.
-GetTargetingGroup():"";switch(Ӡ){case"Weapons":ҽ=ҹ.ҵ;break;case"Propulsion":ҽ=ҹ.Ҷ;break;case"Power Systems":ҽ=ҹ.ҷ;break;}if(Ӂ.ContainsKey
-(ӟ)){var ʼ=Ӂ[ӟ];if(ҽ!=ʼ.Ҽ)ʼ.Ҽ=ҹ.Ҹ;ʼ.ҿ();return;}else{Ӂ.Add(ӟ,new Ҿ(N.ʆ.ʞ,ҽ));}}void ӗ(Vector3I Ί){var ӡ=new Dictionary<
-Vector3I,Ҿ>();foreach(var Ϯ in Ӂ){ӡ.Add(Ϯ.Key+Ί,Ϯ.Value);}Ӂ=ӡ;}}public static class P{public static readonly List<ͳ>Ӣ=new List<ͳ
->();private static List<Ƥ>ӣ=new List<Ƥ>();public static Dictionary<long,Ƥ>Ӥ=new Dictionary<long,Ƥ>();private static
-IEnumerator<Ƥ>ӥ;private static MyDynamicAABBTreeD Ӧ=new MyDynamicAABBTreeD();static P(){}public static Ρ ɶ{get;set;}public static
-void d(int ͺ){ӧ();for(var Ө=Ӣ.Count-1;Ө>=0;Ө--){var Φ=Ӣ[Ө];Φ.d(ͺ);}foreach(var Φ in Ӣ){var ө=Φ as Ƥ;if(ө==null)continue;var
-Ʊ=ө.Ӎ;if(ө.ӑ!=0){var Ί=ө.ӕ();Ӧ.MoveProxy(ө.ӑ,ref Ʊ,Ί);}else{ө.ӑ=Ӧ.AddProxy(ref Ʊ,ө,0U);}}foreach(var ɯ in Ƴ.ư(Ӧ)){var Ӫ=ɯ
-.Key;var ӫ=ɯ.Value;var Ӭ=Ӫ.Ӎ.Size.LengthSquared();foreach(var ӭ in ӫ){var Ӯ=ӭ.Ӎ.Size.LengthSquared();if(Ӯ>Ӭ){Ӫ.Ҙ=true;
-return;}}Ӫ.Ҙ=false;}}private static void ӧ(){if(!ӥ.MoveNext()){ӥ=ӯ().GetEnumerator();ӥ.MoveNext();}}public static void e(int ͺ
-){for(var Ө=Ӣ.Count-1;Ө>=0;Ө--){var Φ=Ӣ[Ө];Φ.e(ͺ);}}private static IEnumerable<Ƥ>ӯ(){var Ӱ=N.ȥ.ʓ*N.ȥ.ʓ;for(var Ө=Ӣ.Count-
-1;Ө>=0;Ө--){if(Ө>=Ӣ.Count)continue;var Φ=Ӣ[Ө];var ҳ=Φ as Ƥ;if(ҳ==null)continue;var ΰ=ҳ.ʹ;var ӱ=ɶ.ʹ;var Ӳ=(ΰ-ӱ).ȣ();if(Ӳ>Ӱ
-)ҳ.ͱ=ͱ.М;else ҳ.ͱ=ͱ.Ͳ;yield return ҳ;}}public static List<Ƥ>ӵ(ҝ Φ,double Ξ){ӣ.Clear();foreach(var ӳ in Ӣ){var Ӵ=ӳ as Ƥ;if
-(Ӵ==null)continue;if((Ӵ.ʹ-Φ.ʹ).ȣ()<Ξ*Ξ)ӣ.Add(Ӵ);}return ӣ;}public static Ƥ ҩ(Ρ Φ,double Ξ,float Ӷ){var ӷ=ӵ(Φ,Ξ);if(ӷ.
-Count<1)return null;var ѥ=Φ.ε;double Ӹ=Math.Cos(Ӷ*Math.PI/180.0);double ӹ=double.MaxValue;Ƥ Ӻ=null;foreach(var ӻ in ӷ){var Ӽ=
-(ӻ.ʹ-Φ.ʹ);var Ù=Ӽ.Ȩ();var Ν=(Ӽ/Ù).Ό(ѥ);Ν=MathHelperD.Clamp(Ν,-1.0,1.0);if(Ν<Ӹ)continue;var ӽ=(1-Ν)*Ù;if(ӽ<ӹ){Ӻ=ӻ;ӹ=ӽ;}}
-return Ӻ;}public static void Q(IMyCubeGrid ң,IMyGridTerminalSystem Ӿ){var Ϻ=Ӿ.GetBlockGroupWithName(N.ɴ.ʖ);Program.M(
-$"Getting group : {N.ɴ.ʖ}",K.ɑ);var ӿ=Ӿ.GetBlockGroupWithName(N.ɴ.ʗ);Program.M($"Getting group : {N.ɴ.ʗ}",K.ɑ);var Ϭ=new List<IMyTerminalBlock>();
-var Ҥ=new List<IMyTerminalBlock>();if(Ϻ!=null){Ϻ.GetBlocks(Ϭ);Program.M($"Got group: {N.ɴ.ʖ}",K.C);}else Program.M(
-$"Group not present: {N.ɴ.ʖ}",K.ɒ);if(ӿ!=null){ӿ.GetBlocks(Ҥ);Program.M($"Got group: {N.ɴ.ʗ}",K.C);}else Program.M($"Group not present: {N.ɴ.ʗ}",K.ɒ)
-;var Φ=new Ρ(ң,Ϭ,Ҥ);Ӣ.Add(Φ);ɶ=Φ;ӥ=ӯ().GetEnumerator();}public static Ƥ Ҳ(ҍ Ҭ,long Ӊ,Қ è){Ƥ ҳ;if(Ӥ.TryGetValue(Ӊ,out ҳ)){
-Program.M("Restoring defunct ship"+Ӊ,K.C);if(!ҳ.ҭ)return null;ҳ.ʆ=Ҭ;ҳ.ҭ=false;return ҳ;}Program.M("Creating new ship "+Ӊ,K.C);ҳ
-=new Ƥ(Ҭ,Ӊ,è);Ӣ.Add(ҳ);Ӥ.Add(Ӊ,ҳ);return ҳ;}public static void Ԁ(Ƥ ҳ){Ӣ.Remove(ҳ);Ӥ.Remove(ҳ.Ұ);Ӧ.RemoveProxy(ҳ.ӑ);}
-public static bool ү(long ԁ,out ҍ Ү){Ƥ ҳ;var Ԃ=Ӥ.TryGetValue(ԁ,out ҳ);Ү=Ԃ?ҳ.ʆ:null;return Ԃ&&!ҳ.ҭ;}}public struct Қ{
-MyDetectedEntityInfo ԃ;Қ(MyDetectedEntityInfo қ){ԃ=қ;}public static implicit operator Қ(MyDetectedEntityInfo қ)=>new Қ(қ);public long Ұ=>ԃ.
-EntityId;public MyDetectedEntityType Ҽ=>ԃ.Type;public Vector3D?ӛ=>ԃ.HitPosition;public MatrixD Ӌ=>ԃ.Orientation;public Vector3 Ͷ
-=>ԃ.Velocity;public BoundingBoxD ӌ=>ԃ.BoundingBox;public Vector3D ʹ=>ӌ.Center;}public struct x{Vector3D ş;public x(double
-А,double ȸ,double Ԅ){ş=new Vector3D(А,ȸ,Ԅ);}x(Vector3D ź){ş=ź;}public static implicit operator x(Vector3D ź)=>new x(ź);
-public static implicit operator x(Vector3 ź)=>(Vector3D)ź;public static implicit operator Vector3D(x ź)=>ź.ş;public static
-explicit operator Vector3I(x ź)=>(Vector3I)ź.ş;public static explicit operator x(Vector3I ź)=>(Vector3D)ź;public static x
-operator-(x ź)=>-ź.ş;public static bool operator==(x ԅ,x Ԇ)=>ԅ.ş==Ԇ.ş;public static bool operator!=(x ԅ,x Ԇ)=>ԅ.ş!=Ԇ.ş;public
-static x operator+(x ԅ,x Ԇ)=>ԅ.ş+Ԇ.ş;public static x operator-(x ԅ,x Ԇ)=>ԅ.ş-Ԇ.ş;public static x operator*(x ԅ,x Ԇ)=>ԅ.ş*Ԇ.ş;
-public static x operator*(x ź,double ԇ)=>ź.ş*ԇ;public static x operator*(double ԇ,x ź)=>ź.ş*ԇ;public static x operator/(x ԅ,x
-Ԇ)=>ԅ.ş/Ԇ.ş;public static x operator/(x ź,double Ԉ)=>ź.ş/Ԉ;public double Ķ=>ş.X;public double ķ=>ş.Y;public double ĸ=>ş.Z
-;public static x ȝ=>Vector3D.Zero;public static Vector3 ơ=>Vector3D.Forward;public static Vector3 ĕ=>Vector3D.Left;public
-static x Ė=>Vector3D.Up;public double Ȩ()=>ş.Length();public double Ό(x ԉ)=>ş.Dot(ԉ.ş);public double ȣ()=>ş.LengthSquared();
-public static x ϼ(x Ԋ,MatrixD ԋ)=>Vector3D.Transform(Ԋ,ԋ);public static x Ў(x Ԋ,MatrixD ԋ)=>Vector3D.TransformNormal(Ԋ,ԋ);
-public static x ǃ(x ǀ)=>Vector3D.Abs(ǀ);public static x Ȥ(x ƒ)=>Vector3D.Normalize(ƒ.ş);public static x ȩ(x Ԋ,double ª)=>
-Vector3D.ClampToSphere(Ԋ.ş,ª);public static x ȧ(ref x Ԍ,ref x ԍ)=>Vector3D.ProjectOnVector(ref Ԍ.ş,ref ԍ.ş);public static x Ќ(x
-Ԏ,x ԏ)=>Vector3D.Cross(Ԏ,ԏ);public x θ()=>ş.Normalized();public bool Ԑ(x ԉ)=>ş==ԉ.ş;}
+        
+    public static DebugAPI Debug;
+    public static Random RNG;
+    public TimedLog _Log = new TimedLog(10);
+
+    private static Queue<double> updateTimes = new Queue<double>();
+        
+    int _frame;
+    public Program()
+    {
+        try
+        {
+            var startTime = DateTime.UtcNow;
+            _Log.Add("Beginning script setup", LogLevel.Info);
+            I = this;
+            Debug = new DebugAPI(this);
+            RNG = new Random();
+            LogLine("Setup debug and RNG", LogLevel.Debug);
+            Config.Setup(Me);
+            Program.LogLine("Creating this ship as controllable ship", LogLevel.Info);
+            ShipManager.CreateControllableShip(Me.CubeGrid, GridTerminalSystem);
+            Program.LogLine("Creating commands", LogLevel.Info);
+            Commands.Setup();
+                
+            var elapsed = DateTime.UtcNow - startTime;
+            LogLine($"Setup completed in {elapsed.TotalMilliseconds:F1} ms", LogLevel.Highlight);
+        }
+        catch (Exception ex)
+        {
+            Echo("Crashed: " + ex);
+        }
+        Echo(_Log.ToString());
+    }
+        
+    public static Program I { get; private set; }
+        
+    public void Main(string argument, UpdateType updateSource)
+    {
+
+        try
+        {
+            if ((updateSource & UpdateType.Update1) != 0) RunUpdate();
+            if ((updateSource & (UpdateType.Trigger | UpdateType.Terminal)) != 0) RunCommand(argument);
+        }
+        catch (Exception ex)
+        {
+            Echo(ex.ToString());
+            Runtime.UpdateFrequency = UpdateFrequency.None;
+        }
+    }
+
+
+        
+    void RunUpdate()
+    {
+        using (Debug.Measure(duration => { updateTimes.Enqueue(duration.TotalMilliseconds); }))
+        {
+            TimerManager.TickAll();
+            ShipManager.EarlyUpdate(_frame);
+            ShipManager.LateUpdate(_frame++);
+        }
+
+        if (updateTimes.Count > 600) updateTimes.Dequeue();
+        Log(updateTimes.Average());
+        _Log.Update();
+        Log(_Log);
+    }
+    void RunCommand(string argument)
+    {
+        Action action;
+        if (Commands.TryGetValue(argument, out action))
+        {
+            action();
+        }
+        else
+        {
+        }
+    }
+    public static void Log(object obj)
+    {
+        I.Echo(obj.ToString());
+    }
+
+    public static void Log(TimeSpan elapsed, string hint)
+    {
+        double microseconds = elapsed.Ticks / 10.0;
+        I.Echo($"{hint}: {microseconds} µs");
+    }
+        
+    public static void LogLine(object echo, LogLevel level = LogLevel.Info)
+    {
+        I._Log.Add(echo.ToString(), level);
+    }
+}
+public class DebugAPI
+    {
+        public readonly bool ModDetected;
+
+        public void RemoveDraw() => _rmd?.Invoke(_pb);
+        Action<IMyProgrammableBlock> _rmd;
+
+        public void RemoveAll() => _rma?.Invoke(_pb);
+        Action<IMyProgrammableBlock> _rma;
+
+        public void Remove(int id) => _rm?.Invoke(_pb, id);
+        Action<IMyProgrammableBlock, int> _rm;
+
+        public int DrawPoint(AT_Vector3D origin, Color color, float radius = 0.2f, float seconds = DefaultSeconds, bool? onTop = null) => _p?.Invoke(_pb, origin, color, radius, seconds, onTop ?? _defTop) ?? -1;
+        Func<IMyProgrammableBlock, Vector3D, Color, float, float, bool, int> _p;
+
+        public int DrawLine(AT_Vector3D start, AT_Vector3D end, Color color, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _ln?.Invoke(_pb, start, end, color, thickness, seconds, onTop ?? _defTop) ?? -1;
+        Func<IMyProgrammableBlock, Vector3D, Vector3D, Color, float, float, bool, int> _ln;
+
+        public int DrawAABB(BoundingBoxD bb, Color color, Style style = Style.Wireframe, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _bb?.Invoke(_pb, bb, color, (int)style, thickness, seconds, onTop ?? _defTop) ?? -1;
+        Func<IMyProgrammableBlock, BoundingBoxD, Color, int, float, float, bool, int> _bb;
+
+        public int DrawOBB(MyOrientedBoundingBoxD obb, Color color, Style style = Style.Wireframe, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _obb?.Invoke(_pb, obb, color, (int)style, thickness, seconds, onTop ?? _defTop) ?? -1;
+        Func<IMyProgrammableBlock, MyOrientedBoundingBoxD, Color, int, float, float, bool, int> _obb;
+
+        public int DrawSphere(BoundingSphereD sphere, Color color, Style style = Style.Wireframe, float thickness = DefaultThickness, int lineEveryDegrees = 15, float seconds = DefaultSeconds, bool? onTop = null) => _sph?.Invoke(_pb, sphere, color, (int)style, thickness, lineEveryDegrees, seconds, onTop ?? _defTop) ?? -1;
+        Func<IMyProgrammableBlock, BoundingSphereD, Color, int, float, int, float, bool, int> _sph;
+
+        public int DrawMatrix(MatrixD matrix, float length = 1f, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _m?.Invoke(_pb, matrix, length, thickness, seconds, onTop ?? _defTop) ?? -1;
+        Func<IMyProgrammableBlock, MatrixD, float, float, float, bool, int> _m;
+
+        public int DrawGPS(string name, AT_Vector3D origin, Color? color = null, float seconds = DefaultSeconds) => _gps?.Invoke(_pb, name, origin, color, seconds) ?? -1;
+        Func<IMyProgrammableBlock, string, Vector3D, Color?, float, int> _gps;
+
+        public int PrintHUD(string message, Font font = Font.Debug, float seconds = 2) => _hud?.Invoke(_pb, message, font.ToString(), seconds) ?? -1;
+        Func<IMyProgrammableBlock, string, string, float, int> _hud;
+
+        public void PrintChat(string message, string sender = null, Color? senderColor = null, Font font = Font.Debug) => _chat?.Invoke(_pb, message, sender, senderColor, font.ToString());
+        Action<IMyProgrammableBlock, string, string, Color?, string> _chat;
+
+        public void DeclareAdjustNumber(out int id, double initial, double step = 0.05, Input modifier = Input.Control, string label = null) => id = _adj?.Invoke(_pb, initial, step, modifier.ToString(), label) ?? -1;
+        Func<IMyProgrammableBlock, double, double, string, string, int> _adj;
+
+        public double GetAdjustNumber(int id, double noModDefault = 1) => _getAdj?.Invoke(_pb, id) ?? noModDefault;
+        Func<IMyProgrammableBlock, int, double> _getAdj;
+
+        public int GetTick() => _tk?.Invoke() ?? -1;
+        Func<int> _tk;
+
+        public TimeSpan GetTimestamp() => _ts?.Invoke() ?? TimeSpan.Zero;
+        Func<TimeSpan> _ts;
+
+        public MeasureToken Measure(Action<TimeSpan> call) => new MeasureToken(this, call);
+        public struct MeasureToken : IDisposable
+        {
+            DebugAPI A; TimeSpan S; Action<TimeSpan> C;
+            public MeasureToken(DebugAPI api, Action<TimeSpan> call) { A = api; C = call; S = A.GetTimestamp(); }
+            public void Dispose() { C?.Invoke(A.GetTimestamp() - S); }
+        }
+
+        public enum Style { Solid, Wireframe, SolidAndWireframe }
+        public enum Input { MouseLeftButton, MouseRightButton, MouseMiddleButton, MouseExtraButton1, MouseExtraButton2, LeftShift, RightShift, LeftControl, RightControl, LeftAlt, RightAlt, Tab, Shift, Control, Alt, Space, PageUp, PageDown, End, Home, Insert, Delete, Left, Up, Right, Down, D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, NumPad0, NumPad1, NumPad2, NumPad3, NumPad4, NumPad5, NumPad6, NumPad7, NumPad8, NumPad9, Multiply, Add, Separator, Subtract, Decimal, Divide, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12 }
+        public enum Font { Debug, White, Red, Green, Blue, DarkBlue }
+        const float DefaultThickness = 0.02f;
+        const float DefaultSeconds = -1;
+        IMyProgrammableBlock _pb;
+        bool _defTop;
+        public DebugAPI(MyGridProgram program, bool drawOnTopDefault = false)
+        {
+            if(program == null) throw new Exception("Pass `this` into the API, not null.");
+            _defTop = drawOnTopDefault;
+            _pb = program.Me;
+            var methods = _pb.GetProperty("DebugAPI")?.As<IReadOnlyDictionary<string, Delegate>>()?.GetValue(_pb);
+            if(methods != null)
+            {
+                Assign(out _rma, methods["RemoveAll"]);
+                Assign(out _rmd, methods["RemoveDraw"]);
+                Assign(out _rm, methods["Remove"]);
+                Assign(out _p, methods["Point"]);
+                Assign(out _ln, methods["Line"]);
+                Assign(out _bb, methods["AABB"]);
+                Assign(out _obb, methods["OBB"]);
+                Assign(out _sph, methods["Sphere"]);
+                Assign(out _m, methods["Matrix"]);
+                Assign(out _gps, methods["GPS"]);
+                Assign(out _hud, methods["HUDNotification"]);
+                Assign(out _chat, methods["Chat"]);
+                Assign(out _adj, methods["DeclareAdjustNumber"]);
+                Assign(out _getAdj, methods["GetAdjustNumber"]);
+                Assign(out _tk, methods["Tick"]);
+                Assign(out _ts, methods["Timestamp"]);
+                RemoveAll();
+                ModDetected = true;
+            }
+        }
+        void Assign<T>(out T field, object method) => field = (T)method;
+    }
+public struct CachedValue<T>
+{
+    T _value;
+    bool _valid;
+    private readonly Func<T> _getter;
+
+    public CachedValue(Func<T> getter)
+    {
+        if (getter == null)
+            throw new ArgumentNullException("getter");
+
+        _getter = getter;
+        _value = default(T);
+        _valid = false;
+    }
+
+    public T Value
+    {
+        get
+        {
+            if (!_valid)
+            {
+                _value = _getter();
+                _valid = true;
+            }
+            return _value;
+        }
+    }
+
+    public void Invalidate() => _valid = false;
+}
+public enum LogLevel
+{
+    Trace,
+    Debug,
+    Info,
+    Warning,
+    Error,
+    Critical,
+    Highlight
+}
+public class TimedLog
+{
+    Dictionary<LogLevel, string> _logColour = new Dictionary<LogLevel, string>()
+    {
+        { LogLevel.Trace, $"{ColorToHexARGB(Color.Gray)}" },
+        { LogLevel.Debug, $"{ColorToHexARGB(Color.DarkSeaGreen)}"},
+        { LogLevel.Info, $"{ColorToHexARGB(Color.White)}" },
+        { LogLevel.Warning, $"{ColorToHexARGB(Color.Gold)}" },
+        { LogLevel.Error, $"{ColorToHexARGB(Color.Red)}" },
+        { LogLevel.Critical, $"{ColorToHexARGB(Color.DarkRed)}" },
+        { LogLevel.Highlight, $"{ColorToHexARGB(Color.Aquamarine)}"}
+    };
+    private static string ColorToHexARGB(Color color)
+    {
+        return $"[color=#{color.A:X2}{color.R:X2}{color.G:X2}{color.B:X2}]";
+    }
+
+    private static string _footer = "[/color]\n";
+    
+        
+    class Entry
+    {
+        internal readonly string Text;
+        internal readonly double Timestamp;
+        internal readonly LogLevel Level;
+        public Entry(string text, double timestamp, LogLevel level)
+        {
+            Text = text;
+            Timestamp = timestamp;
+            Level = level;
+        }
+            
+    }
+
+    private readonly List<Entry> _entries = new List<Entry>();
+    private readonly double _lifespan;
+
+    public TimedLog(double lifespanSeconds)
+    {
+        _lifespan = lifespanSeconds;
+    }
+
+    public void Add(string message, LogLevel level)
+    {
+        if (level < Config.General.LogLevel) return;
+        double now = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
+        _entries.Add(new Entry(message, now, level));
+    }
+
+    public void Update()
+    {
+        double now = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
+        _entries.RemoveAll(e => now - e.Timestamp > _lifespan);
+    }
+
+    public List<string> GetEntries()
+    {
+        return _entries.Select(e => e.Text).ToList();
+    }
+
+    public override string ToString()
+    {
+        string value = "";
+        foreach (var entry in _entries)
+        {
+            value += _logColour[entry.Level] + entry.Text + _footer;
+        }
+
+        return value;
+    }
+}
+public class PIDController
+{
+    double integral;
+    double lastInput;
+
+    public double gain_p;
+    double gain_i;
+    public double gain_d;
+    double upperLimit_i;
+    double lowerLimit_i;
+    double second;
+
+    public PIDController(double pGain, double iGain, double dGain, double iUpperLimit = 0, double iLowerLimit = 0, double stepsPerSecond = 60)
+    {
+        gain_p = pGain;
+        gain_i = iGain;
+        gain_d = dGain;
+        upperLimit_i = iUpperLimit;
+        lowerLimit_i = iLowerLimit;
+        second = stepsPerSecond;
+    }
+
+    public double Filter(double input, int round_d_digits)
+    {
+        double roundedInput = Math.Round(input, round_d_digits);
+
+        integral = integral + (input / second);
+        integral = (upperLimit_i > 0 && integral > upperLimit_i ? upperLimit_i : integral);
+        integral = (lowerLimit_i < 0 && integral < lowerLimit_i ? lowerLimit_i : integral);
+
+        double derivative = (roundedInput - lastInput) * second;
+        lastInput = roundedInput;
+
+        return (gain_p * input) + (gain_i * integral) + (gain_d * derivative);
+    }
+    public void Reset()
+    {
+        integral = lastInput = 0;
+    }
+}
+public enum Direction : byte
+{
+Forward,
+Backward,
+Left,
+Right,
+Up,
+Down,
+}
+public static class DynamicAABBTreeDHelper
+{
+    private static readonly List<TrackableShip> Elements = new List<TrackableShip>();
+    private static readonly List<BoundingBoxD> Boxes = new List<BoundingBoxD>();
+
+    private static readonly Dictionary<TrackableShip, List<TrackableShip>> ReusedOverlaps =
+        new Dictionary<TrackableShip, List<TrackableShip>>();
+
+    private static readonly List<List<TrackableShip>> ReusedLists = new List<List<TrackableShip>>();
+
+    private static int _rI = 0;
+    private static List<TrackableShip> GetList()
+    {
+        if (_rI >= ReusedLists.Count)
+            ReusedLists.Add(new List<TrackableShip>(8));
+
+        var list = ReusedLists[_rI++];
+        list.Clear();
+        return list;
+    }
+        
+    public static Dictionary<TrackableShip, List<TrackableShip>> GetAllOverlaps(MyDynamicAABBTreeD tree)
+    {
+        _rI = 0;
+        ReusedOverlaps.Clear();
+        tree.GetAll(Elements, clear: true, boxsList: Boxes);
+
+        for (int i = 0; i < Elements.Count; i++)
+        {
+            var entityA = Elements[i];
+            var boxA = Boxes[i];
+
+            var overlapping = GetList();
+            tree.OverlapAllBoundingBox(ref boxA, overlapping, 0U, false);
+
+            foreach (var entityB in overlapping)
+            {
+                if (entityA == entityB) continue;
+                    
+                if (!ReusedOverlaps.ContainsKey(entityA)) ReusedOverlaps.Add(entityA, GetList());
+                ReusedOverlaps[entityA].Add(entityB);
+                    
+                if (!ReusedOverlaps.ContainsKey(entityB)) ReusedOverlaps.Add(entityB, GetList());
+                ReusedOverlaps[entityB].Add(entityA);
+                    
+            }
+        }
+
+        return ReusedOverlaps;
+    }
+    public static List<TrackableShip> GetOverlapsWithBox(MyDynamicAABBTreeD tree, BoundingBoxD box)
+    {
+        _rI = 0;
+        var overlapping = GetList();
+
+        tree.OverlapAllBoundingBox(ref box, overlapping, 0U, false);
+
+        return overlapping;
+    }
+}
+public static class ArgusMath
+{
+    public static double SnapToMultiple(double value, double multiple)
+    {
+        return (Math.Round(value / multiple) * multiple);
+    }
+}
+public static class OBBReconstructor
+{
+        
+private static bool IsObbContained(
+        long i1, long i2, long i3,
+        double gridSize,
+        MatrixD obbRotation,
+        AT_Vector3D worldHalfExtents)
+    {
+        double r1 = i1 * gridSize;
+        double r2 = i2 * gridSize;
+        double r3 = i3 * gridSize;
+        
+        AT_Vector3D u1 = obbRotation.Right;
+        AT_Vector3D u2 = obbRotation.Up;
+        AT_Vector3D u3 = obbRotation.Forward;
+        
+        AT_Vector3D abs_u1 = AT_Vector3D.Abs(u1);
+        AT_Vector3D abs_u2 = AT_Vector3D.Abs(u2);
+        AT_Vector3D abs_u3 = AT_Vector3D.Abs(u3);
+        
+            
+        const double RobustTolerance = 1e-8; 
+        
+        double projectedRadiusX = r1 * abs_u1.X + r2 * abs_u2.X + r3 * abs_u3.X;
+        if (projectedRadiusX > worldHalfExtents.X + RobustTolerance) return false;
+        
+        double projectedRadiusY = r1 * abs_u1.Y + r2 * abs_u2.Y + r3 * abs_u3.Y;
+        if (projectedRadiusY > worldHalfExtents.Y + RobustTolerance) return false;
+        
+        double projectedRadiusZ = r1 * abs_u1.Z + r2 * abs_u2.Z + r3 * abs_u3.Z;
+        if (projectedRadiusZ > worldHalfExtents.Z + RobustTolerance) return false;
+        
+        return true;
+    }
+        
+    private static bool TrySolveContinuousHalfExtents(
+        AT_Vector3D u1, AT_Vector3D u2, AT_Vector3D u3,
+        AT_Vector3D worldHalfExtents,
+        out double r1, out double r2, out double r3)
+    {
+        var a11 = Math.Abs(u1.X); var a12 = Math.Abs(u2.X); var a13 = Math.Abs(u3.X);
+        var a21 = Math.Abs(u1.Y); var a22 = Math.Abs(u2.Y); var a23 = Math.Abs(u3.Y);
+        var a31 = Math.Abs(u1.Z); var a32 = Math.Abs(u2.Z); var a33 = Math.Abs(u3.Z);
+
+        double Hx = worldHalfExtents.X, Hy = worldHalfExtents.Y, Hz = worldHalfExtents.Z;
+
+        double det = a11 * (a22 * a33 - a23 * a32)
+                   - a12 * (a21 * a33 - a23 * a31)
+                   + a13 * (a21 * a32 - a22 * a31);
+
+        const double EPS = 1e-12;
+        if (Math.Abs(det) < EPS)
+        {
+            r1 = r2 = r3 = 0.0;
+            return false;
+        }
+
+        double inv11 =  (a22 * a33 - a23 * a32) / det;
+        double inv12 = -(a12 * a33 - a13 * a32) / det;
+        double inv13 =  (a12 * a23 - a13 * a22) / det;
+
+        double inv21 = -(a21 * a33 - a23 * a31) / det;
+        double inv22 =  (a11 * a33 - a13 * a31) / det;
+        double inv23 = -(a11 * a23 - a13 * a21) / det;
+
+        double inv31 =  (a21 * a32 - a22 * a31) / det;
+        double inv32 = -(a11 * a32 - a12 * a31) / det;
+        double inv33 =  (a11 * a22 - a12 * a21) / det;
+
+        r1 = inv11 * Hx + inv12 * Hy + inv13 * Hz;
+        r2 = inv21 * Hx + inv22 * Hy + inv23 * Hz;
+        r3 = inv31 * Hx + inv32 * Hy + inv33 * Hz;
+
+        const double NEG_CLAMP = -1e-9;
+        if (r1 < NEG_CLAMP || r2 < NEG_CLAMP || r3 < NEG_CLAMP) return false;
+
+        r1 = Math.Max(0.0, r1);
+        r2 = Math.Max(0.0, r2);
+        r3 = Math.Max(0.0, r3);
+
+        return true;
+    }
+
+    public static BoundingBoxD GetMaxInscribedOBB(
+        BoundingBoxD worldAabb,
+        MatrixD obbRotation,
+        double gridSize)
+    {
+        gridSize /= 2;
+            
+        AT_Vector3D worldHalfExtents = worldAabb.HalfExtents;
+        AT_Vector3D u1 = obbRotation.Right;
+        AT_Vector3D u2 = obbRotation.Up;
+        AT_Vector3D u3 = obbRotation.Forward;
+
+        double r1c, r2c, r3c;
+        if (TrySolveContinuousHalfExtents(u1, u2, u3, worldHalfExtents, out r1c, out r2c, out r3c))
+        {
+            long i1 = Math.Max(0, (long)(r1c / gridSize + 1e-12));
+            long i2 = Math.Max(0, (long)(r2c / gridSize + 1e-12));
+            long i3 = Math.Max(0, (long)(r3c / gridSize + 1e-12));
+
+                
+            bool changed;
+            do
+            {
+                changed = false;
+                if (IsObbContained(i1 + 1, i2, i3, gridSize, obbRotation, worldHalfExtents)) { i1++; changed = true; }
+                if (IsObbContained(i1, i2 + 1, i3, gridSize, obbRotation, worldHalfExtents)) { i2++; changed = true; }
+                if (IsObbContained(i1, i2, i3 + 1, gridSize, obbRotation, worldHalfExtents)) { i3++; changed = true; }
+            } while (changed);
+                
+                
+            var obbHalfExtents = new AT_Vector3D(i1 * gridSize, i2 * gridSize, i3 * gridSize);
+            return new BoundingBoxD(-obbHalfExtents, obbHalfExtents);
+        }
+            
+        double maxRadiusWorldX = worldHalfExtents.X / (Math.Abs(u1.X) + Math.Abs(u2.X) + Math.Abs(u3.X));
+        double maxRadiusWorldY = worldHalfExtents.Y / (Math.Abs(u1.Y) + Math.Abs(u2.Y) + Math.Abs(u3.Y));
+        double maxRadiusWorldZ = worldHalfExtents.Z / (Math.Abs(u1.Z) + Math.Abs(u2.Z) + Math.Abs(u3.Z));
+
+        double maxFittingRadius = Math.Min(Math.Min(maxRadiusWorldX, maxRadiusWorldY), maxRadiusWorldZ);
+        long I_max = Math.Max(0, (long)Math.Floor(maxFittingRadius / gridSize));
+            
+        var conservativeHalf = new AT_Vector3D(I_max * gridSize, I_max * gridSize, I_max * gridSize);
+        return new BoundingBoxD(-conservativeHalf, conservativeHalf);
+    }
+}
+    public static class Solver
+    {
+        public static double MaxValueD => Double.MaxValue;
+            
+        public const double
+            epsilon = 1e-6,
+
+            cos120d = -0.5,
+            root3 = 1.73205,
+            sin120d = root3 / 2,
+
+            inv3 = 1.0 / 3.0,
+            inv9 = 1.0 / 9.0,
+            inv6 = 1.0 / 6.0,
+            inv54 = 1.0 / 54.0;
+
+        public static AT_Vector3D BallisticSolver(double maxSpeed, AT_Vector3D missileVelocity, AT_Vector3D missileAcceleration, AT_Vector3D displacementVector, AT_Vector3D targetPosition, AT_Vector3D targetVelocity, AT_Vector3D targetAcceleration, AT_Vector3D targetJerk, bool isMissile, AT_Vector3D gravity = default(AT_Vector3D), bool hasGravity = false)
+        {
+            double tmaxT = 0;
+            AT_Vector3D
+                dOffset = AT_Vector3D.Zero,    
+                targetAccelerationS = targetAcceleration,
+                targetVelocityS = targetVelocity,
+                relativeVelocity, relativeAcceleration;
+
+            if (targetAcceleration.LengthSquared() > 1)
+            {
+                tmaxT = Math.Min((AT_Vector3D.Normalize(targetAcceleration) * Config.General.GridSpeedLimit - AT_Vector3D.ProjectOnVector(ref targetVelocity, ref targetAcceleration)).Length(), 2 * Config.General.GridSpeedLimit) / targetAcceleration.Length();
+                targetVelocity = AT_Vector3D.ClampToSphere(targetVelocity + targetAcceleration * tmaxT, Config.General.GridSpeedLimit);
+                targetVelocityS += targetAcceleration * tmaxT * 0.5;
+                targetAcceleration = AT_Vector3D.Zero;
+            }
+
+            if (missileAcceleration.LengthSquared() > 1)
+            {
+                double
+                    Tmax = Math.Max((AT_Vector3D.Normalize(missileAcceleration) * maxSpeed - AT_Vector3D.ProjectOnVector(ref missileVelocity, ref missileAcceleration)).Length(), 0) / missileAcceleration.Length(),
+                    Dmax = (missileVelocity * Tmax + missileAcceleration * Tmax * Tmax).Length();
+                AT_Vector3D posAtTmax = displacementVector + targetVelocity * Tmax + 0.5 * targetAcceleration * Tmax * Tmax;
+                if (posAtTmax.Length() > Dmax)
+                {
+                    missileAcceleration = AT_Vector3D.Zero;
+                    missileVelocity = AT_Vector3D.ClampToSphere(missileVelocity + missileAcceleration * Tmax, maxSpeed);
+                    displacementVector -= (AT_Vector3D)AT_Vector3D.Normalize(displacementVector) * Dmax;
+                }
+            }
+
+            relativeVelocity = targetVelocity - missileVelocity;
+            relativeAcceleration = targetAcceleration - missileAcceleration;
+            double time = Solve(
+                    relativeAcceleration.LengthSquared() * 0.25,
+                    relativeAcceleration.X * relativeVelocity.X + relativeAcceleration.Y * relativeVelocity.Y + relativeAcceleration.Z * relativeVelocity.Z,
+                    relativeVelocity.LengthSquared() - missileVelocity.LengthSquared() + displacementVector.X * relativeAcceleration.X + displacementVector.Y * relativeAcceleration.Y + displacementVector.Z * relativeAcceleration.Z,
+                    2 * (displacementVector.X * relativeVelocity.X + displacementVector.Y * relativeVelocity.Y + displacementVector.Z * relativeVelocity.Z),
+                    displacementVector.LengthSquared());
+            if (time == MaxValueD || double.IsNaN(time) || time > 100)
+                time = 100;
+
+            if (tmaxT > time)
+            {
+                tmaxT = time;
+                time = 0;
+            }   
+            else
+                time -= tmaxT;
+            return isMissile ?
+                displacementVector + targetVelocity * time + targetVelocityS * tmaxT + 0.5 * targetAccelerationS * tmaxT * tmaxT + 0.5 * targetAcceleration * time * time + dOffset :
+                targetPosition + (targetVelocity - missileVelocity) * time + (targetVelocityS - missileVelocity) * tmaxT + 0.5 * targetAccelerationS * tmaxT * tmaxT + 0.5 * targetAcceleration * time * time + - 0.5 * gravity * (time + tmaxT) * (time + tmaxT) * Convert.ToDouble(hasGravity) + dOffset;
+        }
+
+        public static double Solve(double a, double b, double c, double d, double e)
+        {
+            if (Math.Abs(a) < epsilon) a = a >= 0 ? epsilon : -epsilon;
+            double inva = 1 / a;
+
+            b *= inva;
+            c *= inva;
+            d *= inva;
+            e *= inva;
+
+            double
+                a3 = -c,
+                b3 = b * d - 4 * e,
+                c3 = -b * b * e - d * d + 4 * c * e,
+                y;
+
+            double[] result;
+            bool chooseMaximal = SolveCubic(a3, b3, c3, out result);
+            y = result[0];
+            if (chooseMaximal)
+            {
+                if (Math.Abs(result[1]) > Math.Abs(y))
+                    y = result[1];
+                if (Math.Abs(result[2]) > Math.Abs(y))
+                    y = result[2];
+            }
+
+            double q1, q2, p1, p2, squ;
+
+            double u = y * y - 4 * e;
+            if (Math.Abs(u) < epsilon)
+            {
+                q1 = q2 = y * 0.5;
+                u = b * b - 4 * (c - y);
+
+                if (Math.Abs(u) < epsilon)
+                    p1 = p2 = b * 0.5;
+                else
+                {
+                    squ = Math.Sqrt(u);
+                    p1 = (b + squ) * 0.5;
+                    p2 = (b - squ) * 0.5;
+                }
+            }
+            else
+            {
+                squ = Math.Sqrt(u);
+                q1 = (y + squ) * 0.5;
+                q2 = (y - squ) * 0.5;
+
+                double dm = 1 / (q1 - q2);
+                p1 = (b * q1 - d) * dm;
+                p2 = (d - b * q2) * dm;
+            }
+
+            double v1, v2;
+
+            u = p1 * p1 - 4 * q1;
+            if (u < 0)
+                v1 = MaxValueD;
+            else
+            {
+                squ = Math.Sqrt(u);
+                v1 = MinPosNZ(-p1 + squ, -p1 - squ) * 0.5;
+            }
+
+            u = p2 * p2 - 4 * q2;
+            if (u < 0)
+                v2 = MaxValueD;
+            else
+            {
+                squ = Math.Sqrt(u);
+                v2 = MinPosNZ(-p2 + squ, -p2 - squ) * 0.5;
+            }
+
+            return MinPosNZ(v1, v2);
+        }
+
+        private static bool SolveCubic(double a, double b, double c, out double[] result)
+        {
+            result = new double[4];
+
+            double
+                a2 = a * a,
+                q = (a2 - 3 * b) * inv9,
+                r = (a * (2 * a2 - 9 * b) + 27 * c) * inv54,
+                r2 = r * r,
+                q3 = q * q * q;
+
+            if (r2 < q3)
+            {
+                double
+                    sqq = Math.Sqrt(q),
+                    t = r / (sqq * sqq * sqq);
+
+                if (t < -1)
+                    t = -1;
+                else if (t > 1)
+                    t = 1;
+
+                t = Math.Acos(t);
+
+                a *= inv3;
+                q = -2 * sqq;
+
+                double
+                    costv3 = Math.Cos(t * inv3),
+                    sintv3 = Math.Sin(t * inv3);
+
+                result[0] = q * costv3 - a;
+                result[1] = q * ((costv3 * cos120d) - (sintv3 * sin120d)) - a;
+                result[2] = q * ((costv3 * cos120d) + (sintv3 * sin120d)) - a;
+
+                return true;
+            }
+            else
+            {
+                double
+                    g = -Math.Pow(Math.Abs(r) + Math.Sqrt(r2 - q3), inv3),
+                    h;
+
+                if (r < 0)
+                    g = -g;
+
+                h = g == 0 ? 0 : q / g;
+
+                a *= inv3;
+
+                result[0] = g + h - a;
+                result[1] = -0.5 * (g + h) - a;
+                result[2] = 0.5 * root3 * (g - h);
+
+                if (Math.Abs(result[2]) < epsilon)
+                {
+                    result[2] = result[1];
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        private static double MinPosNZ(double a, double b)
+        {
+            if (a <= 0)
+                return b > 0 ? b : MaxValueD;
+            else if (b <= 0)
+                return a;
+            else
+                return Math.Min(a, b);
+        }
+    }
+public class SimpleTimer
+{
+    public int Remaining;
+    public Action OnComplete;
+}
+public static class TimerManager
+{
+    private static readonly Dictionary<int, SimpleTimer> Timers = new Dictionary<int, SimpleTimer>();
+    private static readonly Dictionary<int, SimpleTimer> _pendingAdditions = new Dictionary<int, SimpleTimer>();
+    private static int _nextId = 1;
+
+public static int Start(int duration, Action onComplete = null)
+    {
+        if (duration <= 0)
+        {
+            if (onComplete != null) onComplete();
+            return -1;
+        }
+
+        int id = _nextId++;
+        var timer = new SimpleTimer
+        {
+            Remaining = duration,
+            OnComplete = onComplete
+        };
+
+        _pendingAdditions[id] = timer;
+        return id;
+    }
+
+    public static int StartSeconds(float duration, Action onComplete = null)
+    {
+        return Start((int)(duration * 60), onComplete);
+    }
+
+public static void Cancel(int id)
+    {
+        Timers.Remove(id);
+        _pendingAdditions.Remove(id);
+    }
+
+public static void TickAll()
+    {
+        if (_pendingAdditions.Count > 0)
+        {
+            foreach (var kvp in _pendingAdditions)
+            {
+                Timers[kvp.Key] = kvp.Value;
+            }
+            _pendingAdditions.Clear();
+        }
+
+        var finished = new List<int>();
+            
+        foreach (var kvp in Timers)
+        {
+            var timer = kvp.Value;
+            timer.Remaining--;
+            if (timer.Remaining <= 0)
+            {
+                timer.OnComplete?.Invoke();
+                finished.Add(kvp.Key);
+            }
+        }
+            
+        foreach (var id in finished)
+        {
+            Timers.Remove(id);
+        }
+    }
+
+    public static bool IsActive(int id)
+    {
+        return Timers.ContainsKey(id) || _pendingAdditions.ContainsKey(id);
+    }
+
+    public static int GetRemaining(int id)
+    {
+        SimpleTimer timer;
+        if (Timers.TryGetValue(id, out timer)) return timer.Remaining;
+        if (_pendingAdditions.TryGetValue(id, out timer)) return timer.Remaining;
+        return -1;
+    }
+}
+public static class Commands
+{
+    private static Dictionary<string, Action> _commands;
+        
+        
+    public static void Setup()
+    {
+        _commands = new Dictionary<string, Action>
+        {
+            { Config.String.ArgumentUnTarget, ShipManager.PrimaryShip.Target },
+            { Config.String.ArgumentTarget, ShipManager.PrimaryShip.UnTarget },
+            { "FireAllTest", ShipManager.PrimaryShip.Guns.FireAll },
+            { "CancelAllTest", ShipManager.PrimaryShip.Guns.CancelAll }
+        };
+
+        if (LogLevel.Trace <= Config.General.LogLevel)
+        {
+            foreach (var command in _commands)
+            {
+                Program.LogLine($"Command: {command.Key}", LogLevel.Trace);
+            }
+        }
+            
+    }
+
+
+    public static bool TryGetValue(string argument, out Action action)
+    {
+        return _commands.TryGetValue(argument, out action);
+    }
+}
+public static class Config
+{
+    private static ConfigTool _configTool = new ConfigTool("General Config", "")
+    {
+        Sync = SyncConfig
+    };
+
+    public static readonly GeneralConfig General = new GeneralConfig();
+    public static readonly StringConfig String = new StringConfig();
+    public static readonly BehaviorConfig Behavior = new BehaviorConfig();
+    public static readonly TrackerConfig Tracker = new TrackerConfig();
+    public static readonly GdriveConfig Gdrive = new GdriveConfig();
+    public static readonly PidConfig Pid = new PidConfig();
+
+    public static void Setup(IMyProgrammableBlock me)
+    {
+        Program.LogLine("Setting up config");
+        GunData.Init();
+        ProjectileData.Init();
+            
+        me.CustomData = ConfigTool.SyncConfig(me.CustomData);
+            
+        Program.LogLine("Written config to custom data", LogLevel.Debug);
+        Program.LogLine("Commands set up", LogLevel.Debug);
+        SetupGlobalState();
+        Program.LogLine("Config setup done", LogLevel.Info);
+            
+    }
+
+    private static void SetupGlobalState()
+    {
+        Program.LogLine("Setting up global state", LogLevel.Debug);
+        GlobalState.PrecisionMode = Gdrive.DefaultPrecisionMode;
+        Program.LogLine($"Precision mode state is {GlobalState.PrecisionMode}", LogLevel.Trace);
+    }
+
+    private static void SyncConfig(Dictionary<string, object> obj)
+    {
+        General.Sync(obj);
+        String.Sync(obj);
+        Behavior.Sync(obj);
+        Tracker.Sync(obj);
+        Gdrive.Sync(obj);
+        Pid.Sync(obj);
+    }
+
+    public class GeneralConfig
+    {
+        public LogLevel LogLevel = LogLevel.Trace;
+        public double MaxWeaponRange = 2000;
+        public double GridSpeedLimit = 104;
+        public double MaxAngularVelocityRpm = 30;
+            
+        internal void Sync(Dictionary<string, object> obj)
+        {
+            var config = ConfigCategory.From(obj, "General Config");
+                
+            config.SyncEnum("LogLevel", ref LogLevel);
+            config.Sync("MaxWeaponRange", ref MaxWeaponRange);
+            config.Sync("GridSpeedLimit", ref GridSpeedLimit);
+            config.Sync("MaxAngularVelocityRPM", ref MaxAngularVelocityRpm);
+        }
+    }
+    public class StringConfig
+    {
+        public string ArgumentTarget = "Target";
+        public string ArgumentUnTarget = "Untarget";
+        public string GroupName = "ArgusV2";
+        public string TrackerGroupName = "TrackerGroup";
+        public string MissileFinderPrefix = "MissileFinder";
+
+        internal void Sync(Dictionary<string, object> obj)
+        {
+            var config = ConfigCategory.From(obj, "String Config");
+                
+            config.Sync("ArgumentTarget", ref ArgumentTarget);
+            config.Sync("ArgumentUnTarget", ref ArgumentUnTarget);
+            config.Sync("GroupName", ref GroupName);
+            config.Sync("TrackerGroupName", ref TrackerGroupName);
+            config.Sync("MissileFinderPrefix", ref MissileFinderPrefix);
+        }
+    }
+
+    public class BehaviorConfig
+    {
+        public double LockRange = 3000;
+        public float LockAngle = 40;
+        public double MinFireDot = 0.999999;
+            
+        internal void Sync(Dictionary<string, object> obj)
+        {
+            var config = ConfigCategory.From(obj, "Behavior Config");
+                
+            config.Sync("LockRange", ref LockRange);
+            config.Sync("LockAngle", ref LockAngle);
+            config.Sync("MinFireDot", ref MinFireDot);
+        }
+    }
+
+    public class TrackerConfig
+    {
+        public string TrackingName = "CTC: Tracking";
+        public string SearchingName = "CTC: Searching";
+        public string StandbyName = "CTC: Standby";
+        public int ScannedBlockMaxValidFrames = 3600;
+            
+        internal void Sync(Dictionary<string, object> obj)
+        {
+            var config = ConfigCategory.From(obj, "Tracker Config");
+                
+            config.Sync("TrackingName", ref TrackingName);
+            config.Sync("SearchingName", ref SearchingName);
+            config.Sync("StandbyName", ref StandbyName);
+            config.Sync("ScannedBlockMaxValidFrames", ref ScannedBlockMaxValidFrames);
+        }
+    }
+
+    public class GdriveConfig
+    {
+        public int TimeoutFrames = 300;
+        public double Acceleration = 9.81;
+        public bool DefaultPrecisionMode = false;
+        public bool DisablePrecisionModeOnEnemyDetected = false;
+        public double Step = 0.005;
+        public int MassBalanceFrequencyFrames = 300;
+        public int BallBalanceFrequencyFrames = 15;
+        public int AccelerationRecalcDelay = 600;
+
+        internal void Sync(Dictionary<string, object> obj)
+        {
+            var config = ConfigCategory.From(obj, "Gravity Config");
+                
+            config.Sync("TimeoutFrames", ref TimeoutFrames);
+            config.Sync("Acceleration", ref Acceleration);
+            config.Sync("DefaultPrecisionMode", ref DefaultPrecisionMode);
+            config.Sync("DisablePrecisionModeOnEnemyDetected", ref DisablePrecisionModeOnEnemyDetected);
+            config.Sync("Step", ref Step);
+            config.Sync("MassBalanceFrequencyFrames", ref MassBalanceFrequencyFrames);
+            config.Sync("BallBalanceFrequencyFrames", ref BallBalanceFrequencyFrames);
+            config.Sync("AccelerationRecalcDelay", ref AccelerationRecalcDelay);
+        }
+    }
+
+    public class PidConfig
+    {
+        public double ProportionalGain = 500;
+        public double IntegralGain = 0;
+        public double DerivativeGain = 30;
+        public double IntegralLowerLimit = -0.05;
+        public double IntegralUpperLimit = 0.05;
+            
+        internal void Sync(Dictionary<string, object> obj)
+        {
+            var config = ConfigCategory.From(obj, "PID Config");
+                
+            config.Sync("ProportionalGain", ref ProportionalGain);
+            config.Sync("IntegralGain", ref IntegralGain);
+            config.Sync("DerivativeGain", ref DerivativeGain);
+            config.Sync("IntegralLowerLimit", ref IntegralLowerLimit);
+            config.Sync("IntegralUpperLimit", ref IntegralUpperLimit);
+        }
+    }
+}
+public class ProjectileData
+{
+    private static readonly ConfigTool Config = new ConfigTool("Projectile Data",
+        "The main list of known projectiles. Gun Data should reference these by name.")
+    {
+        Sync = SyncConfig,
+    };
+
+
+    public static Dictionary<string, ProjectileData> LookupTable = new Dictionary<string, ProjectileData>();
+    public static readonly ProjectileData DefaultProjectile = new ProjectileData(0, 0, 0, 0);
+
+    static ProjectileData()
+    {
+        LookupTable.Add("Default", DefaultProjectile);
+
+        LookupTable.Add("LargeRailgun", new ProjectileData(2000, 2000, 2000, 0));
+        LookupTable.Add("Artillery", new ProjectileData(500, 500, 2000, 0));
+        LookupTable.Add("SmallRailgun", new ProjectileData(1000, 1000, 1400, 0));
+        LookupTable.Add("Gatling", new ProjectileData(400, 400, 800, 0));
+        LookupTable.Add("AssaultCannon", new ProjectileData(500, 500, 1400, 0));
+        LookupTable.Add("Rocket", new ProjectileData(100, 200, 800, 1000));
+    }
+
+    public static void Init()
+    {
+        Program.LogLine("Projectile data loaded", LogLevel.Debug);
+    }
+
+
+    public static ProjectileData Get(string nameThing)
+    {
+        ProjectileData gun;
+        return LookupTable.TryGetValue(nameThing, out gun) ? gun : DefaultProjectile;
+    }
+
+    public float ProjectileVelocity { get; private set; }
+    public float MaxVelocity { get; private set; }
+    public float MaxRange { get; private set; }
+    public float Acceleration { get; private set; }
+
+    public ProjectileData(float projectileVelocity, float maxVelocity, float maxRange, float acceleration)
+    {
+        ProjectileVelocity = projectileVelocity;
+        MaxVelocity = maxVelocity;
+        MaxRange = maxRange;
+        Acceleration = acceleration;
+    }
+
+    private static void SyncConfig(Dictionary<string, object> root)
+    {
+        var copy = new Dictionary<string, ProjectileData>(LookupTable);
+
+        foreach (var kv in copy)
+        {
+            var name = kv.Key;
+            var existing = kv.Value;
+
+            var category = ConfigCategory.From(root, name);
+
+            var projectileVelocity = existing.ProjectileVelocity;
+            var maxVelocity = existing.MaxVelocity;
+            var maxRange = existing.MaxRange;
+            var acceleration = existing.Acceleration;
+
+            category.Sync("ProjectileVelocity", ref projectileVelocity);
+            category.Sync("MaxVelocity", ref maxVelocity);
+            category.Sync("MaxRange", ref maxRange);
+            category.Sync("Acceleration", ref acceleration);
+
+            LookupTable[name] = new ProjectileData(projectileVelocity, maxVelocity, maxRange, acceleration);
+        }
+
+        foreach (var kv in root)
+        {
+            string empty = "";
+            if (!LookupTable.ContainsKey(kv.Key))
+            {
+                var data = kv.Value as Dictionary<string, object>;
+                if (data == null) continue;
+
+                var projectileVelocity = Dwon.GetValue(data, "ProjectileVelocity", ref empty, 0.0f);
+                var maxVelocity = Dwon.GetValue(data, "MaxVelocity", ref empty, 0.0f);
+                var maxRange = Dwon.GetValue(data, "MaxRange", ref empty, 0.0f);
+                var acceleration = Dwon.GetValue(data, "Acceleration", ref empty, 0.0f);
+
+                LookupTable[kv.Key] = new ProjectileData(projectileVelocity, maxVelocity, maxRange, acceleration);
+            }
+        }
+    }
+}
+public class GunData
+{
+    private static readonly ConfigTool Config = new ConfigTool("Gun Data",
+        "The main list of known gun types and their definition names. Should reference a known projectile type.")
+    {
+        Sync = SyncConfig
+    };
+    public static Dictionary<string, GunData> LookupTable = new Dictionary<string, GunData>();
+    public static readonly GunData DefaultGun = new GunData("Default", 0, 0, 0f, 0f);
+        
+    static GunData()
+    {
+        LookupTable.Add("Default", DefaultGun);
+            
+        LookupTable.Add("LargeRailgun", new GunData("LargeRailgun", GunReloadType.NeedsCharging, GunFireType.Delay, 2.0f, 4.0f));
+        LookupTable.Add("LargeBlockLargeCalibreGun", new GunData("Artillery", 0, 0, 0, 12));
+        LookupTable.Add("LargeMissileLauncher", new GunData("Rocket", 0, 0, 0, 0.5f));
+        LookupTable.Add("SmallRailgun", new GunData("SmallRailgun", GunReloadType.NeedsCharging, GunFireType.Delay, 0.5f, 4.0f));
+        LookupTable.Add("SmallBlockAutocannon", new GunData("Gatling", 0, 0, 0.0f, 0.4f));
+        LookupTable.Add("SmallBlockMediumCalibreGun", new GunData("AssaultCannon", 0, 0, 0.0f, 6f));
+        LookupTable.Add("MyObjectBuilder_SmallGatlingGun", new GunData("Gatling", 0, 0, 0.0f, 0.1f));
+        LookupTable.Add("MyObjectBuilder_SmallMissileLauncher", new GunData("Rocket", 0, 0, 0.0f, 1f));
+            
+        LookupTable.Add("SmallRocketLauncherReload", Get("MyObjectBuilder_SmallMissileLauncher"));
+        LookupTable.Add("SmallGatlingGunWarfare2", Get("MyObjectBuilder_SmallGatlingGun"));
+        LookupTable.Add("SmallMissileLauncherWarfare2", Get("MyObjectBuilder_SmallMissileLauncher"));
+            
+    }
+        
+    public static void Init()
+    {
+        Program.LogLine("Gun data loaded", LogLevel.Debug);
+    }
+        
+    public static GunData Get(string nameThing)
+    {
+        GunData gun;
+        return LookupTable.TryGetValue(nameThing, out gun) ? gun : DefaultGun;
+    }
+
+
+    string _projectileDataString;
+    public ProjectileData ProjectileData { get; }
+    public GunReloadType ReloadType { get; }
+    public GunFireType FireType { get; }
+    public int FireTimeFrames { get; }
+    public float FireTime => FireTimeFrames / 60.0f;
+    public int ReloadTimeFrames { get; }
+    public float ReloadTime => ReloadTimeFrames / 60.0f;
+
+    public GunData(string projectileDataName, GunReloadType reloadType, GunFireType fireType, float fireTime, float reloadTime)
+    {
+        _projectileDataString = projectileDataName;
+        ProjectileData = ProjectileData.Get(projectileDataName);
+        ReloadType = reloadType;
+        FireType = fireType;
+        FireTimeFrames = (int)(fireTime * 60);
+        ReloadTimeFrames = (int)(reloadTime * 60);
+    }
+        
+        
+    private static void SyncConfig(Dictionary<string, object> root)
+    {
+
+
+        var copy = new Dictionary<string, GunData>(LookupTable);
+        foreach (var kv in copy)
+        {
+            var name = kv.Key;
+            var existing = kv.Value;
+
+            var category = ConfigCategory.From(root, name);
+
+            var projectile = existing._projectileDataString;
+            var reloadType = existing.ReloadType;
+            var fireType = existing.FireType;
+            var fireTime = existing.FireTime;
+            var reloadTime = existing.ReloadTime;
+
+            category.Sync("Projectile", ref projectile);
+            category.SyncEnum("ReloadType", ref reloadType, "0 = normal, 1 = charged");
+            category.SyncEnum("FireType", ref fireType, "0 = normal, 1 = delay before firing");
+            category.Sync("FireTime", ref fireTime);
+            category.Sync("ReloadTime", ref reloadTime);
+
+            LookupTable[name] = new GunData(projectile, reloadType, fireType, fireTime, reloadTime);
+        }
+
+        foreach (var kv in root)
+        {
+            if (!LookupTable.ContainsKey(kv.Key))
+            {
+                var data = kv.Value as Dictionary<string, object>;
+                if (data == null) continue;
+
+                var emptyStr = "";
+                var projectile = Dwon.GetValue(data, "Projectile", ref emptyStr, "");
+                var reloadType = Dwon.GetValue(data, "ReloadType", ref emptyStr, 0);
+                var fireType = Dwon.GetValue(data, "FireType", ref emptyStr, 0);
+                var fireTime = Dwon.GetValue(data, "FireTime", ref emptyStr, 0.0f);
+                var reloadTime = Dwon.GetValue(data, "ReloadTime", ref emptyStr, 0.0f);
+
+                LookupTable[kv.Key] = new GunData(projectile, (GunReloadType)reloadType, (GunFireType)fireType, fireTime, reloadTime);
+            }
+        }
+    }
+
+        
+}
+public static class GlobalState
+{
+    public static bool PrecisionMode;
+}
+class ConfigCategory
+{
+    private readonly Dictionary<string, object> _values;
+
+    ConfigCategory(Dictionary<string, object> values)
+    {
+        _values = values;
+    }
+
+    public static ConfigCategory From(Dictionary<string, object> root, string name)
+    {
+        Dwon.UnwrapAllComments(root);
+
+        Dictionary<string, object> dict;
+        object obj;
+
+        if (!root.TryGetValue(name, out obj) || (dict = obj as Dictionary<string, object>) == null)
+        {
+            dict = new Dictionary<string, object>();
+            root[name] = dict;
+        }
+
+        return new ConfigCategory(dict);
+    }
+
+    public void SyncEnum<E>(string key, ref E field, string comment = "") where E : struct
+    {
+        int temp = Convert.ToInt32(field);
+        temp = Dwon.GetValue(_values, key, ref comment, temp);
+        field = (E)Enum.ToObject(typeof(E), temp);
+
+        if (!string.IsNullOrEmpty(comment))
+            _values[key] = new Dwon.Comment(temp, comment);
+        else
+            _values[key] = temp;
+    }
+
+
+    public void Sync<T>(string key, ref T field, string comment = "")
+    {
+        var temp = Dwon.GetValue(_values, key, ref comment, field);
+
+        if (!string.IsNullOrEmpty(comment))
+            _values[key] = new Dwon.Comment(temp, comment);
+        else
+            _values[key] = temp;
+
+        field = temp;
+    }
+}
+public class ConfigTool
+{
+    private static readonly Dictionary<string, ConfigTool> Configs = new Dictionary<string, ConfigTool>();
+
+    public delegate void ConfigSync(Dictionary<string, object> dict);
+    public ConfigSync Sync { get; set; }
+
+    public ConfigTool(string name, string comment)
+    {
+        Name = name;
+        Comment = comment;
+        Configs.Add(name, this);
+    }
+
+    public string Name { get; }
+    public string Comment { get; }
+
+    public static string SyncConfig(string input)
+    {
+        var parsed = Dwon.Parse(input);
+            
+        var dict = parsed as Dictionary<string, object>;
+        if (dict == null)
+        {
+            Program.LogLine("Config malformed", LogLevel.Critical);
+            throw new Exception();
+        }
+
+        foreach (var kv in Configs)
+        {
+            if (!dict.ContainsKey(kv.Key))
+                dict[kv.Key] = new Dictionary<string, object>();
+            kv.Value.Sync?.Invoke((Dictionary<string, object>)dict[kv.Key]);
+        }
+
+        return Dwon.Serialize(parsed);
+    }
+}
+    public static class Dwon
+    {
+        public class Comment
+        {
+            public object Obj;
+            public string Com;
+
+            public Comment(object obj, string comment)
+            {
+                Obj = obj;
+                Com = comment;
+            }
+        }
+
+
+        public static string Serialize(object obj, int indent = -1)
+        {
+            var sb = new StringBuilder();
+            Serialize(obj, sb, indent, null);
+            Program.LogLine("Serialized successfully", LogLevel.Debug);
+            return sb.ToString();
+        }
+
+        private static void Serialize(object obj, StringBuilder sb, int indent, string key)
+        {
+            string pad = new string(' ', Math.Max(indent, 0));
+
+            if (obj == null)
+            {
+                if (key != null) sb.AppendLine(pad + key + " = null");
+                return;
+            }
+
+            Comment commentObj = obj as Comment;
+            if (commentObj != null)
+            {
+                bool isPrimitive = IsPrimitive(commentObj.Obj);
+                if (isPrimitive && key != null)
+                {
+                    sb.AppendLine(pad + key + " = " + ValueToString(commentObj.Obj) + "   # " + commentObj.Com);
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(commentObj.Com))
+                        sb.AppendLine(pad + "# " + commentObj.Com);
+                    Serialize(commentObj.Obj, sb, indent, key);
+                }
+                return;
+            }
+
+            IDictionary<string, object> dict = obj as IDictionary<string, object>;
+            if (dict != null)
+            {
+                if (key != null) sb.AppendLine(pad + key + " = [");
+                foreach (var kv in dict)
+                {
+                    Serialize(kv.Value, sb, indent + 2, kv.Key);
+                }
+                if (key != null) sb.AppendLine(pad + "]");
+                return;
+            }
+
+            IEnumerable<object> list = obj as IEnumerable<object>;
+            if (list != null)
+            {
+                if (key != null)
+                {
+                    sb.Append(pad + key + " = { ");
+                    bool first = true;
+                    foreach (object v in list)
+                    {
+                        if (!first) sb.Append(", ");
+                        sb.Append(ValueToString(v));
+                        first = false;
+                    }
+                    sb.AppendLine(" }");
+                }
+                else
+                {
+                    foreach (object v in list)
+                        Serialize(v, sb, indent, null);
+                }
+                return;
+            }
+
+            if (key != null)
+            {
+                sb.AppendLine(pad + key + " = " + ValueToString(obj));
+            }
+        }
+
+        private static string ValueToString(object obj)
+        {
+            if (obj == null) return "null";
+
+            if (obj is AT_Vector3D)
+            {
+                AT_Vector3D v = (AT_Vector3D)obj;
+                return string.Format("Vec3({0} {1} {2})",
+                    v.X.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
+                    v.Y.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
+                    v.Z.ToString("R", System.Globalization.CultureInfo.InvariantCulture));
+            }
+
+            if (obj is string) return "\"" + Escape((string)obj) + "\"";
+            if (obj is bool) return ((bool)obj ? "true" : "false");
+            if (obj is float) return ((float)obj).ToString("0.#####", System.Globalization.CultureInfo.InvariantCulture);
+            if (obj is double) return ((double)obj).ToString("0.##########", System.Globalization.CultureInfo.InvariantCulture); 
+            if (obj is int || obj is long || obj is short || obj is byte) return obj.ToString();
+            return "\"" + Escape(obj.ToString()) + "\"";
+        }
+
+
+        private static string Escape(string s)
+        {
+            return s.Replace("\\", "\\\\").Replace("\"", "\\\"");
+        }
+
+        private static bool IsPrimitive(object value)
+        {
+            return value is string || value is bool ||
+                   value is int || value is long || value is short || value is byte ||
+                   value is float || value is double;
+        }
+
+
+
+        public static object Parse(string dwon)
+        {
+            int idx = 0;
+            var top = new Dictionary<string, object>();
+            while (idx < dwon.Length)
+            {
+                SkipWhitespaceAndComments(dwon, ref idx);
+                if (idx >= dwon.Length) break;
+
+                string key = ParseKey(dwon, ref idx);
+                ExpectChar(dwon, ref idx, '=');
+                object value = ParseValue(dwon, ref idx);
+                string comment = ParseInlineComment(dwon, ref idx);
+                if (comment != null && IsPrimitive(value))
+                    value = new Comment(value, comment);
+
+                top[key] = value;
+            }
+            return top;
+        }
+
+        private static object ParseValue(string s, ref int idx)
+        {
+            SkipWhitespaceAndComments(s, ref idx);
+
+            if (idx >= s.Length) return null;
+
+            char c = s[idx];
+
+            switch (c)
+            {
+                case '[':
+                {
+                    idx++;
+                    var dict = new Dictionary<string, object>();
+                    while (true)
+                    {
+                        SkipWhitespaceAndComments(s, ref idx);
+                        if (idx >= s.Length) break;
+                        if (s[idx] == ']') { idx++; break; }
+
+                        string key = ParseKey(s, ref idx);
+                        ExpectChar(s, ref idx, '=');
+                        object value = ParseValue(s, ref idx);
+
+                        string comment = ParseInlineComment(s, ref idx);
+                        if (comment != null && IsPrimitive(value))
+                            value = new Comment(value, comment);
+
+                        dict[key] = value;
+                    }
+                    return dict;
+                }
+                case '{':
+                {
+                    idx++;
+                    var list = new List<object>();
+                    while (true)
+                    {
+                        SkipWhitespaceAndComments(s, ref idx);
+                        if (idx >= s.Length) break;
+                        if (s[idx] == '}') { idx++; break; }
+
+                        object value = ParseValue(s, ref idx);
+                        string comment = ParseInlineComment(s, ref idx);
+                        if (comment != null && IsPrimitive(value))
+                            value = new Comment(value, comment);
+
+                        list.Add(value);
+
+                        SkipWhitespaceAndComments(s, ref idx);
+                        if (idx < s.Length && s[idx] == ',') idx++;
+                    }
+                    return list;
+                }
+            }
+
+            string token = ParseToken(s, ref idx);
+            string inlineComment = ParseInlineComment(s, ref idx);
+            object primitive = ParsePrimitive(token);
+            if (inlineComment != null && IsPrimitive(primitive))
+                primitive = new Comment(primitive, inlineComment);
+            return primitive;
+        }
+
+        private static void SkipWhitespaceAndComments(string s, ref int idx)
+        {
+            while (idx < s.Length)
+            {
+                if (s[idx] == ' ' || s[idx] == '\t' || s[idx] == '\r' || s[idx] == '\n')
+                {
+                    idx++;
+                    continue;
+                }
+
+                if (s[idx] == '#')
+                {
+                    while (idx < s.Length && s[idx] != '\n') idx++;
+                    continue;
+                }
+                break;
+            }
+        }
+
+        private static string ParseKey(string s, ref int idx)
+        {
+            try
+            {
+                SkipWhitespace(s, ref idx);
+
+                int start = idx;
+
+                while (idx < s.Length)
+                {
+                   
+                    char c = s[idx];
+                    if (c == '=')
+                        break;
+
+                    if (c == '\n' || c == '\r')
+                        throw new Exception("Unexpected newline while reading key");
+
+                    idx++;
+                }
+
+                if (idx == start)
+                    throw new Exception($"Empty key at index {idx}");
+
+                string key = s.Substring(start, idx - start).Trim();
+
+                return key;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"DWON: ParseKey failed with string ({s}). EX: {ex}");
+            }
+            
+        }
+
+        private static string ParseToken(string s, ref int idx)
+        {
+            SkipWhitespace(s, ref idx);
+            if (idx >= s.Length) return "";
+
+            char c = s[idx];
+
+            if (c == '"' || c == '\'')
+            {
+                char quote = c;
+                idx++;
+                int start = idx;
+                while (idx < s.Length && s[idx] != quote) idx++;
+                string str = s.Substring(start, idx - start);
+                if (idx < s.Length) idx++;
+                return str;
+            }
+
+            int startToken = idx;
+            while (idx < s.Length && s[idx] != '\n' && s[idx] != '\r' && s[idx] != '#' && s[idx] != ',' && s[idx] != '}' && s[idx] != ']') idx++;
+            string token = s.Substring(startToken, idx - startToken).Trim();
+            return token;
+        }
+
+        private static string ParseInlineComment(string s, ref int idx)
+        {
+            SkipWhitespace(s, ref idx);
+            if (idx < s.Length && s[idx] == '#')
+            {
+                idx++;
+                int start = idx;
+                while (idx < s.Length && s[idx] != '\n' && s[idx] != '\r') idx++;
+                return s.Substring(start, idx - start).Trim();
+            }
+            return null;
+        }
+
+        private static void SkipWhitespace(string s, ref int idx)
+        {
+            while (idx < s.Length && (s[idx] == ' ' || s[idx] == '\t' || s[idx] == '\r' || s[idx] == '\n')) idx++;
+        }
+
+        private static void ExpectChar(string s, ref int idx, char expected)
+        {
+            SkipWhitespace(s, ref idx);
+            if (idx >= s.Length || s[idx] != expected) throw new Exception("Expected '" + expected + "' at index " + idx);
+            idx++;
+        }
+
+        private static object ParsePrimitive(string token)
+        {
+            if (token.Length == 0) return null;
+
+            if (token == "true") return true;
+            if (token == "false") return false;
+
+            if (token.StartsWith("Vec3(") && token.EndsWith(")"))
+            {
+                string inside = token.Substring(5, token.Length - 6);
+                string[] parts = inside.Split(' ');
+                if (parts.Length == 3)
+                {
+                    double x, y, z;
+                    if (double.TryParse(parts[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out x) &&
+                        double.TryParse(parts[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out y) &&
+                        double.TryParse(parts[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out z))
+                    {
+                        return new AT_Vector3D(x, y, z);
+                    }
+                }
+            }
+
+            int i;
+            if (int.TryParse(token, out i)) return i;
+
+            double f;
+            if (double.TryParse(token, System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture, out f)) return f;
+
+            return token;
+        }
+
+
+
+        
+        public static void UnwrapAllComments(Dictionary<string, object> dict)
+        {
+            var keys = new List<string>(dict.Keys);
+            foreach (var key in keys)
+            {
+                var val = dict[key];
+                var c = val as Comment;
+                var nestedDict = val as Dictionary<string, object>;
+                var list = val as List<object>;
+                if (c != null)
+                    dict[key] = c.Obj;
+                
+                else if (nestedDict != null)
+                    UnwrapAllComments(nestedDict);
+                else if (list != null)
+                {
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        var listItem = list[i];
+                        var cl = listItem as Comment;
+                        list[i] = cl != null ? cl.Obj : list[i];
+                    }
+                        
+                }
+            }
+        }
+
+        public static T GetValue<T>(Dictionary<string, object> dict, string key, ref string comment, T defaultValue = default(T))
+        {
+            comment = "";
+            object value;
+            if (dict.TryGetValue(key, out value))
+            {
+                var temp = value as Comment;
+                if (temp != null)
+                {
+                    value = temp.Obj;
+                    comment = temp.Com;
+                }
+                if (value is T) return (T)value;
+                
+                try
+                {
+                    return (T)Convert.ChangeType(value, typeof(T));
+                }
+                catch
+                {
+                    return defaultValue;
+                }
+            }
+            return defaultValue;
+        }
+    }
+public abstract class ArgusShip
+{
+    protected AT_Vector3D CPreviousVelocity;
+    protected AT_Vector3D CVelocity;
+    protected int RandomUpdateJitter;
+    public PollFrequency PollFrequency = PollFrequency.Realtime;
+
+    public ArgusShip()
+    {
+        Program.LogLine("New ArgusShip", LogLevel.Debug);
+        RandomUpdateJitter = Program.RNG.Next() % 6000;
+    }
+        
+    public abstract AT_Vector3D Position { get; }
+    public abstract AT_Vector3D Velocity { get; }
+    public abstract AT_Vector3D Acceleration { get; }
+    public abstract float GridSize { get; }
+    public abstract string Name { get; }
+
+
+public abstract void EarlyUpdate(int frame);
+        
+public abstract void LateUpdate(int frame);
+        
+        
+public AT_Vector3D GetTargetLeadPosition(ArgusShip target, float projectileVelocity)
+    {
+        AT_Vector3D shooterPos = this.Position;
+        AT_Vector3D shooterVel = this.Velocity;
+            
+        AT_Vector3D targetPos = target.Position;
+        AT_Vector3D targetAcc = target.Acceleration;
+
+        AT_Vector3D relativeVel = target.Velocity - shooterVel;
+            
+        AT_Vector3D displacement = targetPos - shooterPos;
+        double s = projectileVelocity;
+
+        double a = relativeVel.LengthSquared() - s * s;
+        double b = 2.0 * displacement.Dot(relativeVel);
+        double c = displacement.LengthSquared();
+
+        double t;
+
+        if (Math.Abs(a) < 1e-6)
+        {
+            if (Math.Abs(b) < 1e-6)
+                t = 0;
+            else
+                t = -c / b;
+        }
+        else
+        {
+            double discriminant = b * b - 4 * a * c;
+            if (discriminant < 0) return targetPos;
+
+            double sqrtDisc = Math.Sqrt(discriminant);
+            double t1 = (-b + sqrtDisc) / (2 * a);
+            double t2 = (-b - sqrtDisc) / (2 * a);
+
+            t = Math.Min(t1, t2) > 0 ? Math.Min(t1, t2) : Math.Max(t1, t2);
+            if (t < 0) t = Math.Max(t1, t2);
+        }
+
+        AT_Vector3D intercept = targetPos + relativeVel * t + 0.5 * targetAcc * t * t;
+        return intercept;
+    }
+
+        
+        
+
+        
+}
+public struct FiringSolution
+{
+    public readonly AT_Vector3D DesiredForward;
+    public readonly AT_Vector3D TargetPosition;
+    public readonly AT_Vector3D ShooterPosition;
+    public readonly AT_Vector3D CurrentForward;
+    public readonly double Dot;
+    public readonly double Range;
+    public MatrixD WorldMatrix;
+
+    public FiringSolution(AT_Vector3D desiredForward, AT_Vector3D targetPosition, AT_Vector3D shooterPosition, AT_Vector3D currentForward, double dot, double range, MatrixD worldMatrix)
+    {
+        DesiredForward = desiredForward;
+        TargetPosition = targetPosition;
+        ShooterPosition = shooterPosition;
+        CurrentForward = currentForward;
+        Dot = dot;
+        Range = range;
+        WorldMatrix = worldMatrix;
+    }
+}
+public class FireController
+{
+    ControllableShip _ship;
+    GunManager _guns;
+
+    public FireController(ControllableShip ship, GunManager guns)
+    {
+        Program.LogLine($"Setting up FCS", LogLevel.Info);
+        _ship = ship;
+        _guns = guns;
+    }
+public FiringSolution ArbitrateFiringSolution()
+    {
+
+        _guns.SelectFiringGroup();
+            
+        int count = _guns.FireGroupCount;
+        PositionValidity validity = _guns.FireGroupValidity;
+        var pos = _guns.FireRefPos;
+
+        var enemyPos = _ship.GetTargetPosition();
+            
+            
+        var displacement = enemyPos - pos;
+
+        var dist = displacement.Length();
+
+        var dir = displacement / dist;
+
+        var dot = dir.Dot(_ship.WorldForward);
+
+        var solvedPos = _guns.GetBallisticSolution();
+        var solvedForward = (solvedPos - pos).Normalized();
+        Program.Log(solvedForward);
+
+        if (dot > Config.Behavior.MinFireDot && enemyPos != AT_Vector3D.Zero) _guns.TryFire();
+        else _guns.TryCancel();
+
+        return new FiringSolution(solvedForward, enemyPos, pos, _ship.WorldForward, dot, dist, _ship.WorldMatrix);
+    }
+}
+public enum GunReloadType
+{
+    Normal,
+    NeedsCharging
+}
+public enum GunFireType
+{
+    Normal,
+    Delay
+}
+public enum GunState
+{
+    Firing,
+    Cancelling,
+    ReadyToFire,
+    Reloading,
+    Recharging,
+    NonFunctional
+}
+public class Gun
+{
+    private static readonly MyDefinitionId ElectricityId =
+        new MyDefinitionId(typeof(MyObjectBuilder_GasProperties), "Electricity");
+        
+        
+    IMyUserControllableGun _gun;
+    GunReloadType _reloadType;
+    GunFireType _fireType;
+    MyResourceSinkComponent _gunSinkComponent;
+    int _reloadTimerId;
+    int _firingTimerId;
+    CachedValue<GunState> _state;
+        
+        
+        
+        
+    bool _cancelled;
+    GunData _gunData;
+    GunManager _manager;
+
+    public Gun(IMyUserControllableGun gun, GunManager manager)
+    {
+            
+        var blockDefinition = gun.BlockDefinition;
+        Program.LogLine($"Set up new gun {blockDefinition}", LogLevel.Trace);
+        var gunData = GunData.Get(blockDefinition.SubtypeIdAttribute);
+        if (gunData == GunData.DefaultGun) gunData = GunData.Get(blockDefinition.TypeIdString);
+        _gunData = gunData;
+        _manager = manager;
+            
+        _gun = gun;
+        _gunSinkComponent = gun.Components.Get<MyResourceSinkComponent>();
+        _reloadType = _gunData.ReloadType;
+        _fireType = _gunData.FireType;
+
+        _state = new CachedValue<GunState>(EvaluateState);
+    }
+        
+    public AT_Vector3D GridPosition => (Vector3)(_gun.Min + _gun.Max) / 2 * _manager.ThisShip.GridSize;
+    public AT_Vector3D WorldPosition => _gun.GetPosition();
+    public AT_Vector3D Direction { get; set; }
+    public float Velocity => _gunData.ProjectileData.ProjectileVelocity;
+    public float Acceleration => _gunData.ProjectileData.Acceleration;
+    public float MaxVelocity => _gunData.ProjectileData.MaxVelocity;
+    public float MaxRange => _gunData.ProjectileData.MaxRange;
+
+    public GunData GunData => _gunData;
+
+    public GunState State => _state.Value;
+
+    public AT_Vector3D Forward => _gun.WorldMatrix.Forward;
+
+    public void EarlyUpdate(int frame)
+    {
+        _state.Invalidate();
+    }
+
+    public void LateUpdate(int frame)
+    {
+            
+    }
+
+    public bool Fire()
+    {
+        if (State != GunState.ReadyToFire) return false;
+            
+        _gun.ShootOnce();
+        _reloadTimerId = TimerManager.Start(_gunData.ReloadTimeFrames, OnReloadComplete);
+        if (_fireType == GunFireType.Delay)
+        {
+            _firingTimerId = TimerManager.Start(_gunData.FireTimeFrames, OnFireComplete);
+        }
+        else
+        {
+            _firingTimerId = TimerManager.Start(0, OnFireComplete);
+        }
+        return true;
+    }
+
+
+    public bool ForceCancel()
+    {
+        if (State != GunState.Firing) return false;
+        _gun.Enabled = false;
+        TimerManager.Start(0, ReenableGun);
+        _cancelled = true;
+        return true;
+    }
+        
+    public bool CancelIfAboutToFire()
+    {
+
+        if (State != GunState.Firing) return false;
+
+
+        if (TimerManager.GetRemaining(_firingTimerId) > 1) return false;
+        _gun.Enabled = false;
+        TimerManager.Start(0, ReenableGun);
+        _cancelled = true;
+        return true;
+
+    }
+        
+        
+        
+        
+    public AT_Vector3D GetFireVelocity(AT_Vector3D shipVelocity)
+    {
+        AT_Vector3D combinedVelocity = shipVelocity + Direction * Velocity;
+        if (combinedVelocity.LengthSquared() > Velocity * Velocity)
+            combinedVelocity = combinedVelocity.Normalized() * Velocity;
+        return combinedVelocity;
+    }
+        
+        
+        
+    GunState EvaluateState()
+    {
+        bool functional = _gun.IsFunctional;
+        if (!functional) return GunState.NonFunctional;
+                
+        if (_fireType == GunFireType.Delay && TimerManager.IsActive(_firingTimerId)) return _cancelled ? GunState.Cancelling : GunState.Firing;
+                
+        switch (_reloadType)
+        {
+            case GunReloadType.Normal:
+                if (TimerManager.IsActive(_reloadTimerId)) return GunState.Reloading;
+                break;
+            case GunReloadType.NeedsCharging:
+                if (TimerManager.IsActive(_reloadTimerId)) return GunState.Reloading;
+                if (_gunSinkComponent.CurrentInputByType(ElectricityId) > 0.02f) return GunState.Recharging;
+                break;
+        }
+        return GunState.ReadyToFire;
+    }
+
+    void OnFireComplete()
+    {
+        if (_cancelled)
+        {
+            _cancelled = false;
+            return;
+        }
+    }
+
+    void OnReloadComplete()
+    {
+            
+    }
+
+    void ReenableGun()
+    {
+        _gun.Enabled = true;
+    }
+}
+public enum PositionValidity
+{
+    Fallback,
+    Ready,
+    Firing
+}
+public enum FireType
+{
+    FireWhenReady,
+    WaitForAll,
+    Volley
+}
+public class GunManager
+{
+    List<Gun> _guns = new List<Gun>();
+        
+    List<Gun> _currentFiringGroup = new List<Gun>();
+
+    AT_Vector3D _firingReferencePosition;
+    PositionValidity _fireGroupValidity;
+    int _fireGroupCount;
+    GunData _gunData;
+        
+    public GunManager(List<IMyTerminalBlock> blocks, ControllableShip thisShip)
+    {
+        Program.LogLine("Setting up gun manager", LogLevel.Info);
+        foreach (var block in blocks)
+        {
+            var gun = block as IMyUserControllableGun;
+            if (gun != null) _guns.Add(new Gun(gun, this));
+        }
+        if (_guns.Count <= 0) Program.LogLine($"No guns in group {Config.String.GroupName}", LogLevel.Warning);
+        ThisShip = thisShip;
+    }
+
+    public ControllableShip ThisShip { get; }
+    public IMyCubeGrid Grid => ThisShip.Controller.CubeGrid;
+    public int GunCount => _guns.Count;
+        
+    public AT_Vector3D FireRefPos => _firingReferencePosition;
+    public PositionValidity FireGroupValidity => _fireGroupValidity;
+    public int FireGroupCount => _fireGroupCount;
+
+    public void EarlyUpdate(int frame)
+    {
+        foreach (var gun in _guns) gun.EarlyUpdate(frame);
+    }
+
+    public void SelectFiringGroup()
+    {
+        var validity = PositionValidity.Fallback;
+            
+        var fireGroupsReady = new Dictionary<GunData, List<Gun>>();
+        var fireGroupsFiring = new Dictionary<GunData, List<Gun>>();
+        var readyCount = 0;
+        var firingCount = 0;
+            
+        foreach (var gun in _guns)
+        {
+            switch (gun.State)
+            {
+                case GunState.ReadyToFire:
+                    if (!fireGroupsReady.ContainsKey(gun.GunData)) fireGroupsReady.Add(gun.GunData, new List<Gun>());
+                    fireGroupsReady[gun.GunData].Add(gun);
+                    readyCount++;
+                    break;
+                case GunState.Firing:
+                    if (!fireGroupsFiring.ContainsKey(gun.GunData)) fireGroupsFiring.Add(gun.GunData, new List<Gun>());
+                    fireGroupsFiring[gun.GunData].Add(gun);
+                    firingCount++;
+                    break;
+            }
+        }
+        Program.Log(readyCount);
+            
+        var groupDict = fireGroupsFiring;
+        if (readyCount > 0)
+        {
+            _fireGroupValidity = PositionValidity.Ready;
+            groupDict = fireGroupsReady;
+        }
+            
+            
+            
+            
+            
+        if (firingCount > 0)
+        {
+            _fireGroupValidity = PositionValidity.Firing;
+            groupDict = fireGroupsFiring;
+        }
+            
+            
+            
+
+        var target = ThisShip.GetTargetPosition();
+        var ourPosApprox = ThisShip.Position;
+        var rangeSquared = (target - ourPosApprox).LengthSquared();
+            
+        foreach (var group in groupDict)
+        {
+            var data = group.Key;
+            var guns = group.Value;
+            var maxRange = data.ProjectileData.MaxRange;
+            if (maxRange * maxRange < rangeSquared) continue;
+            _currentFiringGroup = guns;
+            _gunData = data;
+            break;
+        }
+
+        _fireGroupCount = _currentFiringGroup.Count;
+
+        if (_fireGroupCount == 0)
+        {
+            _firingReferencePosition = ThisShip.Position;
+            return;
+        }
+            
+        AT_Vector3D average = AT_Vector3D.Zero;
+
+        foreach (var gun in _currentFiringGroup)
+        {
+            average += gun.GridPosition;
+        }
+
+        average /= _fireGroupCount;
+
+        _firingReferencePosition = AT_Vector3D.Transform(average, ThisShip.WorldMatrix);
+
+    }
+        
+
+    public void LateUpdate(int frame)
+    {
+        foreach (var gun in _guns) gun.LateUpdate(frame);
+    }
+
+        
+        
+    public void FireAll()
+    {
+        foreach (var gun in _guns) gun.Fire();
+    }
+
+    public void CancelAll()
+    {
+        foreach (var gun in _guns) gun.ForceCancel();
+    }
+        
+    public void TryFire()
+    {
+        foreach (var gun in _guns) gun.Fire();
+    }
+
+    public void TryCancel()
+    {
+        foreach (var gun in _guns) gun.CancelIfAboutToFire();
+    }
+
+
+    public AT_Vector3D GetBallisticSolution()
+    {
+
+        if (_gunData == null) return AT_Vector3D.Zero;
+        var maxSpeed = _gunData.ProjectileData.MaxVelocity;
+        var target = ThisShip.GetTargetPosition();
+        var displacement = target - _firingReferencePosition;
+
+        var refGun = _currentFiringGroup[0];
+
+        if (refGun == null) return AT_Vector3D.Zero;
+
+        var gravity = ThisShip.Gravity;
+        var hasGravity = gravity.LengthSquared() != 0;
+
+        return Solver.BallisticSolver(maxSpeed, refGun.GetFireVelocity(ThisShip.Velocity) / 60,
+            _gunData.ProjectileData.Acceleration * refGun.Forward,
+            displacement,
+            ThisShip.CurrentTarget.Position, ThisShip.CurrentTarget.Velocity / 60, ThisShip.CurrentTarget.Acceleration / 60,
+            AT_Vector3D.Zero, false, gravity, hasGravity);
+    }
+}
+public class GyroManager
+{
+    private readonly List<IMyGyro> _gyros;
+    private readonly PIDController _pitch;
+    private readonly PIDController _yaw;
+        
+        
+    public GyroManager(List<IMyTerminalBlock> blocks)
+    {
+        Program.LogLine("Setting up gyro manager", LogLevel.Info);
+        _gyros = new List<IMyGyro>();
+        foreach (var b in blocks)
+        {
+            var gyro = b as IMyGyro;
+            if (gyro != null)
+            {
+                _gyros.Add(gyro);
+            }
+        }
+            
+        if (_gyros.Count <= 0) Program.LogLine($"No gyroscopes found in group: {Config.String.GroupName}", LogLevel.Warning);
+            
+            
+        _pitch = new PIDController(Config.Pid.ProportionalGain, Config.Pid.IntegralGain, Config.Pid.DerivativeGain, 
+            Config.Pid.IntegralUpperLimit, Config.Pid.IntegralLowerLimit);
+        _yaw = new PIDController(Config.Pid.ProportionalGain, Config.Pid.IntegralGain, Config.Pid.DerivativeGain,
+            Config.Pid.IntegralUpperLimit, Config.Pid.IntegralLowerLimit);
+    }
+        
+    public void Rotate(ref FiringSolution solution, double roll = 0)
+    {
+        int roundValue = 7;
+        double rotationalGain = 1.0;
+        if (solution.Dot > 0.9999)
+        {
+            rotationalGain *= 0.8;
+            roundValue = 4;
+        }
+
+        if (solution.Dot > 0.99999)
+        {
+            rotationalGain *= 0.8;
+            roundValue = 3;
+        }
+        if (solution.Dot > 0.999999)
+        {
+            rotationalGain *= 0.8;
+            roundValue = 2;
+        }
+        if (solution.Dot > 0.9999999)
+        {
+            rotationalGain *= 0.8;
+            roundValue = 1;
+        }
+            
+        double gp;
+        double gy;
+        var gr = roll;
+
+
+        var waxis = AT_Vector3D.Cross(solution.CurrentForward, solution.DesiredForward);
+        var axis = AT_Vector3D.TransformNormal(waxis, MatrixD.Transpose(solution.WorldMatrix));
+        var x = _pitch.Filter(-axis.X, roundValue);
+        var y = _yaw.Filter(-axis.Y, roundValue);
+
+        gp = MathHelper.Clamp(x, -Config.General.MaxAngularVelocityRpm, Config.General.MaxAngularVelocityRpm);
+        gy = MathHelper.Clamp(y, -Config.General.MaxAngularVelocityRpm, Config.General.MaxAngularVelocityRpm);
+
+        if (Math.Abs(gy) + Math.Abs(gp) > Config.General.MaxAngularVelocityRpm)
+        {
+            var adjust = Config.General.MaxAngularVelocityRpm / (Math.Abs(gy) + Math.Abs(gp));
+            gy *= adjust;
+            gp *= adjust;
+        }
+        gp *= rotationalGain;
+        gy *= rotationalGain;
+        ApplyGyroOverride(gp, gy, gr, solution.WorldMatrix);
+    }
+
+
+    void ApplyGyroOverride(double pitchSpeed, double yawSpeed, double rollSpeed, MatrixD worldMatrix)
+    {
+        var rotationVec = new AT_Vector3D(pitchSpeed, yawSpeed, rollSpeed);
+        var relativeRotationVec = AT_Vector3D.TransformNormal(rotationVec, worldMatrix);
+        foreach (var gyro in _gyros)
+            if (gyro.IsFunctional && gyro.IsWorking && gyro.Enabled && !gyro.Closed)
+            {
+                var transformedRotationVec =
+                    AT_Vector3D.TransformNormal(relativeRotationVec, MatrixD.Transpose(gyro.WorldMatrix));
+                gyro.Pitch = (float)transformedRotationVec.X;
+                gyro.Yaw = (float)transformedRotationVec.Y;
+                gyro.Roll = (float)transformedRotationVec.Z;
+                gyro.GyroOverride = true;
+                return;
+            }
+    }
+
+    public void ResetGyroOverrides()
+    {
+        foreach (var gyro in _gyros)
+            if (gyro.IsFunctional && gyro.IsWorking && gyro.Enabled && !gyro.Closed)
+            {
+                gyro.GyroOverride = false;
+                return;
+            }
+    }
+        
+        
+}
+public enum PayloadType
+{
+    Kinetic,
+    Warhead,
+    Nuke
+}
+public enum LaunchType
+{
+    OneAtATime,
+    Simultaneous,
+    Staggered
+}
+public enum LaunchControl
+{
+    Automatic,
+    Manual,
+    ManualCiwsOverride
+}
+public enum RefuelPriority
+{
+    Low,
+    Medium,
+    High
+}
+[Flags]
+public enum DeliveryType
+{
+    None = 0,
+    Hydrogen = 1 << 0,
+    Ion = 1 << 1,
+    Atmospheric = 1 << 2
+}
+[Flags]
+public enum LaunchMechanism
+{
+    None = 0,
+    Rotor = 1 << 0,
+    Piston = 1 << 1,
+    Connector = 1 << 2,
+    MergeBlock = 1 << 3,
+    PulsedThruster = 1 << 4,
+    Weapon = 1 << 5
+}
+public enum Behavior
+{
+    Interdict,
+    DirectAttack,
+    SurroundAndClose,
+    Defend
+}
+internal class MissileFinder
+{
+    IMyTerminalBlock _finderBlock;
+    AT_Vector3D _offset;
+    AT_Vector3D _extents;
+    List<IMyCubeBlock> _blocks;
+    ControllableShip _thisShip;
+
+    public MissileFinder(IMyTerminalBlock finder, ControllableShip ship)
+    {
+        _finderBlock = finder;
+        _finderBlock.CustomData = SyncConfig(_finderBlock.CustomData);
+        _blocks = new List<IMyCubeBlock>();
+        _thisShip = ship;
+        Program.Log("Finder setup");
+        Program.Log(_offset);
+        Program.Log(_extents);
+        RefreshBlocks();
+    }
+
+    Vector3I FirstCorner => _finderBlock.Position + LocalTranslate(_offset);
+    Vector3I SecondCorner => _finderBlock.Position + LocalTranslate(_offset + _extents);
+        
+    public string SyncConfig(string input)
+    {
+        var parsed = Dwon.Parse(input);
+            
+        var dict = parsed as Dictionary<string, object>;
+        if (dict == null)
+        {
+            Program.LogLine("(MissileFinder) Config malformed", LogLevel.Critical);
+            throw new Exception();
+        }
+
+        var cat = ConfigCategory.From(dict, "MissileFinder");
+            
+        cat.Sync("Offset", ref _offset);
+        cat.Sync("Extents", ref _extents);
+        _offset = _offset.Floor();
+        _extents = _extents.Floor();
+            
+        return Dwon.Serialize(parsed);
+    }
+
+    Vector3I LocalTranslate(AT_Vector3D translation)
+    {
+        var orientation = _finderBlock.Orientation;
+
+        var forward = Base6Directions.Directions[(int)orientation.Forward] * (float)translation.X;
+        var up = Base6Directions.Directions[(int)orientation.Up] * (float)translation.Y;
+        var left = Base6Directions.Directions[(int)orientation.Left] * (float)translation.Z;
+
+
+        return (Vector3I)(forward + up + left);
+    }
+
+    void RefreshBlocks()
+    {
+        _blocks.Clear();
+
+        Vector3I ca = Vector3I.Min(FirstCorner, SecondCorner);
+        Vector3I cb = Vector3I.Max(FirstCorner, SecondCorner);
+            
+            
+        foreach (var pos in Vector3I.EnumerateRange(ca, cb))
+        {
+            var slimBlock = _thisShip.Grid.GetCubeBlock(pos);
+            if (slimBlock != null)
+            {
+                var fullBlock = slimBlock.FatBlock;
+                _blocks.Add(fullBlock);
+                Program.Log($"Got block {fullBlock.DisplayName}");
+            }
+        }
+    }
+        
+}
+public class MissileManager
+{
+
+    List<MissileFinder> _missileFinders;
+
+
+    public MissileManager(List<IMyTerminalBlock> blocks, ControllableShip ship)
+    {
+            
+        _missileFinders = new List<MissileFinder>();
+        foreach (var block in blocks)
+        {
+            if (block.CustomName.StartsWith(Config.String.MissileFinderPrefix)) _missileFinders.Add(new MissileFinder(block, ship));
+        }
+    }
+
+    public void EarlyUpdate(int frame)
+    {
+            
+    }
+
+    public void LateUpdate(int frame)
+    {
+            
+    }
+}
+public enum PollFrequency
+{
+    Low,
+    Medium,
+    High,
+    Realtime
+}
+public class Polling
+{
+    public static int GetFramesBetweenPolls(PollFrequency freq)
+    {
+        switch (freq)
+        {
+            case PollFrequency.Low:      return 600;
+            case PollFrequency.Medium:   return 60;
+            case PollFrequency.High:     return 10;
+            case PollFrequency.Realtime: return 1;
+            default: return Int32.MaxValue;
+        }
+    }
+
+}
+public class BalancedMassSystem
+{
+    private readonly List<BlockMass> _blocks;
+    private readonly List<BallMass> _balls;
+    private readonly List<Mass> _allBlocks;
+    bool _stateChanged;
+    int _updateJitter = 0;
+        
+    AT_Vector3D _currentMassMoment = AT_Vector3D.Zero;
+    AT_Vector3D _currentBallMoment = AT_Vector3D.Zero;
+
+    ControllableShip _ship;
+
+    public BalancedMassSystem(List<IMyTerminalBlock> blocks, ControllableShip ship)
+    {
+        _allBlocks = new List<Mass>();
+        _blocks = new List<BlockMass>();
+        _balls = new List<BallMass>();
+        _ship = ship;
+
+        foreach (var block in blocks)
+        {
+            var ball = block as IMySpaceBall;
+            if (ball != null)
+            {
+                var wrap = new BallMass(ball, this, _ship);
+                _balls.Add(wrap);
+                _allBlocks.Add(wrap);
+                _currentBallMoment += wrap.Moment;
+                continue;
+            }
+
+            var mass = block as IMyArtificialMassBlock;
+            if (mass != null)
+            {
+                var wrap = new BlockMass(mass, this, _ship);
+                _blocks.Add(wrap);
+                _allBlocks.Add(wrap);
+                _currentMassMoment += wrap.Moment;
+            }
+
+        }
+
+        _updateJitter = Program.RNG.Next() % (Math.Max(Config.Gdrive.MassBalanceFrequencyFrames, Config.Gdrive.BallBalanceFrequencyFrames) - 1);
+        CalculateTotalMass();
+
+    }
+        
+    public bool Enabled { get; set; }
+    public double TotalMass { get; private set; }
+    public double TotalMassBlocks { get; private set; }
+
+    public List<Mass> AllBlocks => _allBlocks;
+
+    public void EarlyUpdate(int frame)
+    {
+        if ((frame + _updateJitter) % Config.Gdrive.MassBalanceFrequencyFrames == 0)
+            BalanceMassBlocks();
+        if ((frame + _updateJitter) % Config.Gdrive.BallBalanceFrequencyFrames == 0)
+            BalanceSpaceBalls();
+    }
+
+
+
+    public void LateUpdate(int frame)
+    {
+
+        bool stateChanged = false;
+        foreach (var block in _blocks)
+        {
+            stateChanged |= block.UpdateState();
+        }
+        foreach (var ball in _balls)
+        {
+            stateChanged |= ball.UpdateState();
+        }
+
+        if (stateChanged)
+        {
+            CalculateTotalMass();
+        }
+
+
+            
+            
+    }
+public bool HasStateChanged()
+    {
+        var state = _stateChanged;
+        _stateChanged = false;
+        return state;
+    }
+
+    void CalculateTotalMass()
+    {
+        TotalMass = 0;
+        TotalMassBlocks = 0;
+
+        foreach (var block in _blocks)
+        {
+            TotalMass += block.BalancerVirtualMass;
+            TotalMassBlocks += block.BalancerVirtualMass;
+        }
+
+        foreach (var ball in _balls)
+        {
+            TotalMass += ball.BalancerVirtualMass;
+        }
+    }
+        
+    void BalanceMassBlocks()
+    {
+        AT_Vector3D beforeMoment = _currentMassMoment;
+        double beforeMass = TotalMass;
+
+        foreach (var block in _blocks)
+        {
+            double oldMass = beforeMass;
+            double newMass = beforeMass +
+                             (block.BalancerAllowed ? -block.AbsoluteVirtualMass : block.AbsoluteVirtualMass);
+
+            AT_Vector3D candidate =
+                _currentMassMoment
+                - (block.BalancerAllowed ? block.Moment : AT_Vector3D.Zero)
+                + (block.BalancerAllowed ? AT_Vector3D.Zero : block.Moment);
+
+            if (AcceptChange(_currentMassMoment, candidate, oldMass, newMass, SignificantTorqueGainMass))
+            {
+                block.BalancerAllowed = !block.BalancerAllowed;
+                _currentMassMoment = candidate;
+                beforeMass = newMass;
+            }
+        }
+
+        _stateChanged |= beforeMoment != _currentMassMoment;
+    }
+    void BalanceSpaceBalls()
+    {
+        _currentBallMoment = AT_Vector3D.Zero;
+        foreach (var ball in _balls)
+        {
+            _currentBallMoment += ball.Moment;
+        }
+            
+            
+            
+        AT_Vector3D totalBefore = _currentMassMoment + _currentBallMoment;
+        double totalMass = TotalMass;
+    
+        AT_Vector3D deficit = -totalBefore;
+
+        foreach (var ball in _balls)
+        {
+            var dir = ball.Moment.Normalized();
+        
+            double projection = deficit.Dot(dir) / 250;
+
+            if (Math.Abs(projection) < 0.001)
+                continue;
+
+            float oldMass = ball.BalancerVirtualMass;
+            float newMass = (float)MathHelper.Clamp(oldMass + projection, 0f, 20000f);
+            if (newMass > 0) newMass += (newMass - oldMass) * 0.1f;
+            float applied = newMass - oldMass;
+            if (Math.Abs(applied) < 0.5)
+                continue;
+
+            AT_Vector3D candidateMoment = _currentMassMoment + _currentBallMoment + dir * applied;
+
+            if (AcceptChange(totalBefore, candidateMoment,
+                    totalMass, totalMass + applied, SignificantTorqueGainBall))
+            {
+                ball.BalancerVirtualMass = newMass;
+                _currentBallMoment += dir * applied;
+
+                totalMass += applied;
+
+                _stateChanged |= totalBefore != (_currentMassMoment + _currentBallMoment);
+            }
+        }
+    }
+    private const double SignificantTorqueGainMass = 1;
+    private const double SignificantTorqueGainBall = 0;
+    bool AcceptChange(AT_Vector3D currentMoment, AT_Vector3D candidateMoment,
+        double oldMass, double newMass, double significantTorqueGain)
+    {
+        double before = currentMoment.LengthSquared();
+        double after = candidateMoment.LengthSquared();
+        double improvement = before - after;
+        double massDelta = newMass - oldMass;
+
+        if (massDelta > 0)
+            return improvement > 0;
+        else
+            return improvement > significantTorqueGain;
+    }
+
+
+}
+internal class DirectionalDrive
+{
+    BalancedMassSystem _massSystem;
+        
+    private readonly List<GravityGenerator> _generators;
+    bool _previousEnabled;
+    float _acceleration;
+    float _previousAcceleration;
+    int _framesOff;
+        
+    CachedValue<double> _linearForce;
+    CachedValue<double> _sphericalForce;
+        
+
+    public DirectionalDrive(List<GravityGenerator> generators, Direction direction, BalancedMassSystem massSystem)
+    {
+        _generators = generators;
+        Direction = direction;
+            
+        _linearForce = new CachedValue<double>(() => CalculateLinearForce(massSystem.TotalMass));
+        _sphericalForce = new CachedValue<double>(() => CalculateSphericalForce(massSystem.AllBlocks));
+
+        _massSystem = massSystem;
+    }
+        
+    public Direction Direction { get; private set; }
+    public bool Enabled { get; private set; }
+    public double MaxLinearForce => _linearForce.Value;
+    public double MaxSphericalForce => _sphericalForce.Value;
+    public double MaxForce => MaxLinearForce + MaxSphericalForce;
+        
+    public void EarlyUpdate(int frame)
+    {
+        if (_acceleration == 0) _framesOff++;
+        else _framesOff = 0;
+        if (_framesOff > Config.Gdrive.TimeoutFrames) Enabled = false;
+        _generators.RemoveAll(g => g.Closed);
+
+        if (frame % Config.Gdrive.AccelerationRecalcDelay == 0 && _massSystem.HasStateChanged())
+        {
+            _linearForce.Invalidate();
+            _sphericalForce.Invalidate();
+        }
+    }
+        
+    public void LateUpdate(int frame)
+    {
+        if (_previousEnabled != Enabled) 
+            foreach (var generator in _generators) generator.Enabled = Enabled;
+        _previousEnabled = Enabled;
+        if (_previousAcceleration != _acceleration)
+            foreach (var generator in _generators)
+                generator.Acceleration = (float)(_acceleration * Config.Gdrive.Acceleration);
+        _previousAcceleration = _acceleration;
+    }
+
+    public void SetAcceleration(float acceleration)
+    {
+        acceleration = (float)MathHelperD.Clamp(ArgusMath.SnapToMultiple(acceleration, Config.Gdrive.Step), -1, 1);
+        if (acceleration == _acceleration && acceleration == 0) return;
+        Enabled = true;
+        if (acceleration == _acceleration) return;
+        _acceleration = acceleration;
+    }
+
+
+    double CalculateSphericalForce(List<Mass> masses)
+    {
+        var netForce = AT_Vector3D.Zero;
+        foreach (var generator in _generators)
+        {
+            if (generator is GravityGeneratorSpherical)
+            {
+                foreach (var mass in masses)
+                {
+                    var dir = ((AT_Vector3D)(generator.GridPosition - mass.GridPosition)).Normalized();
+                    var force = dir * mass.BalancerVirtualMass * Config.Gdrive.Acceleration *
+                                generator.InvertedSign;
+                    netForce += force;
+                }
+            }
+        }
+            
+        return netForce.Dot(Base6Directions.Directions[(int)Direction]);
+    }
+    double CalculateLinearForce(double mass)
+    {
+        double acceleration = 0;
+        foreach (var generator in _generators)
+        {
+            var linear = generator as GravityGeneratorLinear;
+            if (linear != null) acceleration += Config.Gdrive.Acceleration;
+        }
+
+        return acceleration * mass;
+    }
+}
+public class GDrive
+{
+    private readonly DirectionalDrive _forwardBackward;
+    private readonly DirectionalDrive _leftRight;
+    private readonly DirectionalDrive _upDown;
+
+    BalancedMassSystem _massSystem;
+    ControllableShip _ship;
+
+
+    bool _previousMassEnabled;
+        
+
+    public GDrive(List<IMyTerminalBlock> blocks, ControllableShip ship)
+    {
+        Program.LogLine($"Setting up gravity drive", LogLevel.Info);
+        _ship = ship;
+            
+        var forwardBackward = new List<GravityGenerator>();
+        var leftRight = new List<GravityGenerator>();
+        var upDown = new List<GravityGenerator>();
+
+        var genCastArray = new Dictionary<Direction, List<GravityGenerator>>
+        {
+            { Direction.Up, upDown },
+            { Direction.Down, upDown },
+            { Direction.Left, leftRight },
+            { Direction.Right, leftRight },
+            { Direction.Forward, forwardBackward },
+            { Direction.Backward, forwardBackward }
+        };
+            
+        foreach (var block in blocks)
+        {
+            var linearGen = block as IMyGravityGenerator;
+            if (linearGen != null)
+            {
+                var dir = (Direction)linearGen.Orientation.Up;
+                var list = genCastArray[dir];
+                bool inverted = (int)dir % 2 == 0;
+                list.Add(new GravityGeneratorLinear(linearGen, dir, inverted));
+            }
+
+            var sphericalGen = block as IMyGravityGeneratorSphere;
+            if (sphericalGen != null)
+            {
+                var forward = _ship.LocalDirectionForward;
+                var forwardDir = Base6Directions.Directions[(int)forward];
+                var inverted = forwardDir.Dot((Vector3D)_ship.LocalCenterOfMass - sphericalGen.Position * _ship.GridSize) > 0;
+                var list = genCastArray[forward];
+                list.Add(new GravityGeneratorSpherical(sphericalGen, forward, inverted));
+                    
+            }
+        }
+
+        if (forwardBackward.Count == 0) Program.LogLine($"No Forward/backward gravity generators", LogLevel.Warning);
+        if (leftRight.Count == 0) Program.LogLine($"No Left/Right gravity generators", LogLevel.Warning);
+        if (upDown.Count == 0) Program.LogLine($"No Up/Down gravity generators", LogLevel.Warning);
+            
+            
+            
+        _massSystem = new BalancedMassSystem(blocks, ship);
+            
+        _forwardBackward = new DirectionalDrive(forwardBackward, Direction.Forward, _massSystem);
+        _leftRight = new DirectionalDrive(leftRight, Direction.Left, _massSystem);
+        _upDown = new DirectionalDrive(upDown, Direction.Up, _massSystem);
+    }
+
+    bool MassEnabled => _forwardBackward.Enabled || _leftRight.Enabled || _upDown.Enabled;
+
+    public double TotalMass => _massSystem.TotalMass;
+
+    public void EarlyUpdate(int frame)
+    {
+        _forwardBackward.EarlyUpdate(frame);
+        _leftRight.EarlyUpdate(frame);
+        _upDown.EarlyUpdate(frame);
+
+        _massSystem.EarlyUpdate(frame);
+    }
+
+    public void LateUpdate(int frame)
+    {
+        _forwardBackward.LateUpdate(frame);
+        _leftRight.LateUpdate(frame);
+        _upDown.LateUpdate(frame);
+
+
+        if (MassEnabled != _previousMassEnabled) _massSystem.Enabled = MassEnabled;
+        Program.Log(_massSystem.Enabled);
+        _previousMassEnabled = MassEnabled;
+        _massSystem.LateUpdate(frame);
+    }
+
+
+    public void ApplyPropulsion(AT_Vector3D propLocal)
+    {
+        _forwardBackward.SetAcceleration((float)propLocal.Dot(AT_Vector3D.Forward));
+        _leftRight.SetAcceleration((float)propLocal.Dot(AT_Vector3D.Left));
+        _upDown.SetAcceleration((float)propLocal.Dot(AT_Vector3D.Up));
+    }
+
+    public double GetForwardBackwardForce()
+    {
+        var force = _forwardBackward.MaxForce;
+        if (force == 0) force = 1;
+        return force;
+    }
+
+    public double GetLeftRightForce()
+    {
+        var force = _leftRight.MaxForce;
+        if (force == 0) force = 1;
+        return force;
+    }
+
+    public double GetUpDownForce()
+    {
+        var force = _upDown.MaxForce;
+        if (force == 0) force = 1;
+        return force;
+    }
+}
+public class BallMass : Mass
+{
+    IMySpaceBall _ball;
+    BalancedMassSystem _massSystem;
+    ControllableShip _ship;
+    float _cachedVirtualMass = 20000;
+    bool _wasActive;
+    public BallMass(IMySpaceBall ball, BalancedMassSystem massSystem, ControllableShip ship)
+    {
+        _ball = ball;
+        _massSystem = massSystem;
+        _ship = ship;
+    }
+
+    public bool BalancerAllowed { get; set; } = true;
+
+    public bool GeneratorRequested => _massSystem.Enabled;
+
+    public bool IsActive => BalancerAllowed && GeneratorRequested;
+    public override AT_Vector3D Position => _ball.GetPosition();
+
+    public override double AbsoluteVirtualMass
+    {
+        get
+        {
+            return _ball.VirtualMass;
+        }
+        set
+        {
+            _ball.VirtualMass = (float)value;
+        }
+    }
+
+    public override float BalancerVirtualMass
+    {
+        get
+        {
+            return _cachedVirtualMass;
+        }
+        set
+        {
+            _cachedVirtualMass = value;
+            if (GeneratorRequested) _ball.VirtualMass = _cachedVirtualMass;
+        }
+    } 
+    public override Vector3I GridPosition => _ball.Position;
+
+    public AT_Vector3D Moment => AbsoluteVirtualMass * ((AT_Vector3D)GridPosition * _ship.GridSize - _ship.LocalCenterOfMass);
+   
+
+    public bool UpdateState()
+    {
+        var r = false;
+
+        if (IsActive != _wasActive)
+        {
+            _ball.Enabled = IsActive;
+            _ball.VirtualMass = _cachedVirtualMass;
+        }
+        _wasActive = IsActive;
+        return r;
+    }
+}
+public class BlockMass : Mass
+{
+    IMyArtificialMassBlock _mass;
+    BalancedMassSystem _massSystem;
+    ControllableShip _ship;
+
+    bool _previousActive;
+    public BlockMass(IMyArtificialMassBlock mass, BalancedMassSystem massSystem, ControllableShip ship)
+    {
+        _mass = mass;
+        _massSystem = massSystem;
+        _ship = ship;
+        _mass.Enabled = false;
+    }
+        
+    public bool BalancerAllowed { get; set; } = true;
+
+    public bool GeneratorRequested => _massSystem.Enabled;
+
+    public bool IsActive => BalancerAllowed && GeneratorRequested;
+    public override AT_Vector3D Position => _mass.GetPosition();
+    public override double AbsoluteVirtualMass
+    {
+        get { return _mass.VirtualMass; }
+        set {  }
+    }
+
+    public override float BalancerVirtualMass
+    {
+        get { return BalancerAllowed ? _mass.VirtualMass : 0; }
+        set {  }
+    }
+
+    public override Vector3I GridPosition => _mass.Position;
+    public AT_Vector3D Moment => AbsoluteVirtualMass * (_mass.GetPosition() - _ship.Controller.CenterOfMass);
+
+    public bool UpdateState()
+    {
+        var stateChanged = false;
+
+        if (_previousActive != IsActive)
+        {
+            _mass.Enabled = IsActive;
+            stateChanged = true;
+        }
+        _previousActive = IsActive;
+        return stateChanged;
+    }
+}
+public abstract class GravityGenerator
+{
+    protected bool IsInverted;
+        
+    public IMyGravityGeneratorBase Generator { get; protected set; }
+    public Direction Direction { get; protected set; }
+
+        
+    public bool Enabled
+    {
+        get { return Generator.Enabled; }
+        set  { Generator.Enabled = value; }
+    }
+
+    public float Acceleration
+    {
+        get
+        {
+            return Generator.GravityAcceleration * InvertedSign;
+        }
+        set
+        {
+            Generator.GravityAcceleration = value * InvertedSign;
+        }
+    }
+
+    public AT_Vector3D Position => Generator.GetPosition();
+    public bool Closed => Generator.Closed;
+
+    public int InvertedSign => IsInverted ? -1 : 1;
+    public Vector3I GridPosition => Generator.Position;
+}
+public class GravityGeneratorLinear : GravityGenerator
+{
+
+    public GravityGeneratorLinear(IMyGravityGenerator gen, Direction dir, bool inverted) 
+    {
+            
+        Generator = gen; 
+        Direction = dir;
+        IsInverted = inverted;
+    }
+}
+public class GravityGeneratorSpherical : GravityGenerator
+{
+
+    public GravityGeneratorSpherical(IMyGravityGeneratorSphere sphericalGen, Direction dir, bool inverted)
+    {
+        Generator = sphericalGen;
+        Direction = dir;
+        IsInverted = inverted;
+    }
+}
+public abstract class Mass
+{
+    public abstract AT_Vector3D Position { get; }
+    public abstract double AbsoluteVirtualMass { get; set; }
+    public abstract float BalancerVirtualMass { get; set; }
+    public abstract Vector3I GridPosition { get; }
+}
+public class PropulsionController
+{
+    GDrive _gDrive;
+    TDrive _tDrive;
+    ControllableShip _ship;
+
+    public PropulsionController(List<IMyTerminalBlock> blocks, ControllableShip ship)
+    {
+        Program.LogLine($"Setting up propulsion controller", LogLevel.Info);
+        _ship = ship;
+        _gDrive = new GDrive(blocks, ship);
+        _tDrive = new TDrive();
+    }
+
+    public void EarlyUpdate(int frame)
+    {
+            
+        _gDrive.EarlyUpdate(frame);
+        _tDrive.EarlyUpdate(frame);
+    }
+
+    public void LateUpdate(int frame)
+    {
+        var userInput = _ship.Controller.MoveIndicator;
+
+        Matrix matrix;
+        _ship.Controller.Orientation.GetMatrix(out matrix);
+
+        AT_Vector3D desiredMovement = AT_Vector3D.Transform(userInput, matrix);
+
+        if (_ship.Controller.DampenersOverride)
+        {
+            var velocity = _ship.Velocity;
+            var localVelocity = AT_Vector3D.TransformNormal(velocity, MatrixD.Invert(_ship.WorldMatrix));
+                
+            var dampenValueForwardBackward = localVelocity * AT_Vector3D.Forward * 10 * GetForwardBackwardAcceleration();
+            var dampenValueLeftRight = localVelocity * AT_Vector3D.Left * 10 * GetLeftRightAcceleration();
+            var dampenValueUpDown = localVelocity * -AT_Vector3D.Up * 10 * GetUpDownAcceleration();
+
+            if (desiredMovement.Dot(AT_Vector3D.Forward) == 0) desiredMovement += dampenValueForwardBackward;
+            if (desiredMovement.Dot(AT_Vector3D.Left) == 0) desiredMovement += dampenValueLeftRight;
+            if (desiredMovement.Dot(AT_Vector3D.Up) == 0) desiredMovement += dampenValueUpDown;
+        }
+            
+            
+        _gDrive.ApplyPropulsion(desiredMovement);
+        _gDrive.LateUpdate(frame);
+        _tDrive.LateUpdate(frame);
+    }
+
+    double GetForwardBackwardAcceleration()
+    {
+        return _ship.Mass.TotalMass / _gDrive.GetForwardBackwardForce();
+    }
+
+    double GetLeftRightAcceleration()
+    {
+        return _ship.Mass.TotalMass / _gDrive.GetLeftRightForce();
+    }
+
+    double GetUpDownAcceleration()
+    {
+        return _ship.Mass.TotalMass / _gDrive.GetUpDownForce();
+    }
+}
+public class TDrive
+{
+    public void EarlyUpdate(int frame)
+    {
+    }
+
+    public void LateUpdate(int frame)
+    {
+    }
+}
+public class TargetTracker
+{
+    public TargetTracker(IMyTurretControlBlock block)
+    {
+        Block = block;
+    }
+
+    public IMyTurretControlBlock Block { get; }
+    public bool Closed => Block.Closed;
+
+    bool _hadTarget;
+
+    bool _wasValid = true;
+
+    public bool HasTarget { get; private set; }
+    public bool JustLostTarget { get; private set; }
+    public bool Invalid { get; private set; }
+    public bool JustInvalidated { get; private set; }
+
+    public bool Enabled
+    {
+        get { return Block.Enabled; }
+        set { Block.Enabled = value; }
+    }
+
+    public string CustomName
+    {
+        get { return Block.CustomName; }
+        set { Block.CustomName = value; }
+    }
+
+    public long TargetedEntity { get; set; }
+    public TrackableShip TrackedShip { get; set; }
+        
+        
+    public AT_Vector3D Position => Block.GetPosition();
+
+public void UpdateState()
+    {
+        var currentHasTarget = Block.HasTarget;
+        JustLostTarget = !currentHasTarget && _hadTarget;
+        _hadTarget = currentHasTarget;
+
+        HasTarget = currentHasTarget;
+
+        var currentInvalid = TrackedShip != null && TrackedShip.IntersectsLargerShipAABB;
+        JustInvalidated = currentInvalid && _wasValid;
+        _wasValid = !currentInvalid;
+
+        Invalid = currentInvalid; 
+            
+
+        if (!currentHasTarget)
+            TargetedEntity = 0;
+    }
+
+public AT_DetectedEntityInfo GetTargetedEntity()
+    {
+        var info = Block.GetTargetedEntity();
+        TargetedEntity = info.EntityId;
+        return info;
+    }
+}
+public class ControllableShip : SupportingShip
+{
+        
+        
+    public readonly GunManager Guns;
+    private readonly GyroManager _gyroManager;
+    private readonly FireController _fireController;
+    private readonly PropulsionController _propulsionController;
+    private readonly MissileManager _missileManager;
+    List<IMyLargeTurretBase> _turrets;
+        
+    CachedValue<AT_Vector3D> _gravity;
+    CachedValue<MyShipMass> _mass;
+    CachedValue<AT_Vector3D> _localCenterOfMass;
+        
+    public ControllableShip(IMyCubeGrid grid, List<IMyTerminalBlock> blocks, List<IMyTerminalBlock> trackerBlocks) : base(grid, trackerBlocks)
+    {
+        Program.LogLine("New ControllableShip : SupportingShip : ArgusShip", LogLevel.Debug);
+        foreach (var block in blocks)
+        {
+            var controller = block as IMyShipController;
+            if (controller != null) Controller = controller;
+        }
+
+        if (Controller == null)
+        {
+            Program.LogLine($"WARNING: Controller not present in group: {Config.String.GroupName}");
+            return;
+        }
+        _gyroManager = new GyroManager(blocks);
+        Guns = new GunManager(blocks, this);
+        _fireController = new FireController(this, Guns);
+            
+        _gravity = new CachedValue<AT_Vector3D>(() => Controller.GetNaturalGravity());
+        _mass = new CachedValue<MyShipMass>(() => Controller.CalculateShipMass());
+        _localCenterOfMass = new CachedValue<AT_Vector3D>(() =>
+            AT_Vector3D.Transform(Controller.CenterOfMass, MatrixD.Invert(WorldMatrix)));
+                
+        _propulsionController = new PropulsionController(blocks, this);
+        _missileManager = new MissileManager(blocks, this);
+    }
+        
+public IMyShipController Controller { get; private set; }
+        
+public MatrixD WorldMatrix => _grid.WorldMatrix;
+public AT_Vector3D WorldForward => Controller.WorldMatrix.Forward; 
+public AT_Vector3D WorldUp => Controller.WorldMatrix.Up;
+public Vector3 LocalForward => Base6Directions.Directions[(int)Controller.Orientation.Forward];
+public Direction LocalDirectionForward => (Direction)Controller.Orientation.Forward;
+public TrackableShip CurrentTarget { get; private set; }
+
+public bool HasTarget => CurrentTarget != null;
+
+public AT_Vector3D Gravity => _gravity.Value;
+
+public MyShipMass Mass => _mass.Value;
+
+    public AT_Vector3D LocalCenterOfMass => _localCenterOfMass.Value;
+
+    public IMyCubeGrid Grid => _grid;
+
+        
+    public override void EarlyUpdate(int frame)
+    {
+        base.EarlyUpdate(frame);
+        Guns.EarlyUpdate(frame);
+        _propulsionController.EarlyUpdate(frame);
+        _missileManager.EarlyUpdate(frame);
+            
+        if ((frame + RandomUpdateJitter) % Polling.GetFramesBetweenPolls(PollFrequency) == 0)
+        {
+            _gravity.Invalidate();
+            _mass.Invalidate();
+            _localCenterOfMass.Invalidate();
+        }
+    }
+    public override void LateUpdate(int frame)
+    {
+        base.LateUpdate(frame);
+        if (HasTarget)
+        {
+                
+            var solution = _fireController.ArbitrateFiringSolution();
+            if (solution.TargetPosition == AT_Vector3D.Zero) _gyroManager.ResetGyroOverrides();
+            else _gyroManager.Rotate(ref solution);
+        }
+        Guns.LateUpdate(frame); 
+        _propulsionController.LateUpdate(frame);
+        _missileManager.EarlyUpdate(frame);
+    }
+        
+        
+public void Target()
+    {
+            
+        CurrentTarget = ShipManager.GetForwardTarget(this, Config.Behavior.LockRange, Config.Behavior.LockAngle);
+        if (CurrentTarget == null)
+        {
+            _gyroManager.ResetGyroOverrides();
+            Program.LogLine("Couldn't find new target", LogLevel.Warning);
+        }
+        else
+        {
+            Program.LogLine("Got new target", LogLevel.Info);
+        }
+    }
+        
+public void UnTarget()
+    {
+        CurrentTarget = null;
+        _gyroManager.ResetGyroOverrides();
+    }
+
+public AT_Vector3D GetTargetPosition()
+    {
+        return CurrentTarget?.Position ?? AT_Vector3D.Zero;
+    }
+}
+public class SupportingShip : ArgusShip 
+{
+    private readonly List<TargetTracker> _targetTrackers;
+    protected readonly IMyCubeGrid _grid;
+
+        
+    public SupportingShip(IMyCubeGrid grid, List<IMyTerminalBlock> trackerBlocks)
+    {
+        Program.LogLine("New SupportingShip : ArgusShip", LogLevel.Debug);
+        IMyUserControllableGun gun = null;
+        IMyMotorStator rotor = null;
+        _targetTrackers = new List<TargetTracker>();
+        foreach (var block in trackerBlocks)
+        {
+            var controller = block as IMyTurretControlBlock;
+            if (controller != null)
+            {
+                    
+                _targetTrackers.Add(new TargetTracker(controller));
+                continue;
+            }
+            gun = gun ?? block as IMyUserControllableGun;
+            rotor = rotor ?? block as IMyMotorStator;
+        }
+
+
+
+        if (gun != null && rotor != null)
+        {
+            Program.LogLine("Setting up trackers", LogLevel.Debug);
+            foreach (var tracker in _targetTrackers)
+            {
+                Program.LogLine($"Set up tracker: {tracker.CustomName}");
+                var block = tracker.Block;
+                block.ClearTools();
+                block.AddTool(gun);
+                block.AzimuthRotor = null;
+                block.ElevationRotor = rotor;
+                block.AIEnabled = true;
+                block.CustomName = Config.Tracker.SearchingName;
+            }
+
+            if (_targetTrackers.Count <= 0) Program.LogLine("No target trackers in group", LogLevel.Warning);
+        }
+        else Program.LogLine($"Gun/rotor not present in group: {Config.String.TrackerGroupName}, cannot setup trackers", LogLevel.Warning);
+            
+        _grid = grid;
+    }
+        
+        
+    public override AT_Vector3D Position => _grid.GetPosition();
+    public override AT_Vector3D Velocity => CVelocity;
+    public override AT_Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
+    public override float GridSize => _grid.GridSize;
+
+    public override string Name => _grid.CustomName;
+    public override string ToString() => Name;
+
+    public override void EarlyUpdate(int frame)
+    {
+        CPreviousVelocity = CVelocity;
+        CVelocity = _grid.LinearVelocity;
+    }
+
+    public override void LateUpdate(int frame)
+    {
+        for (int i = _targetTrackers.Count - 1; i >= 0; i--)
+        {
+            var tracker = _targetTrackers[i];
+
+            if (tracker.Closed)
+            {
+                _targetTrackers.RemoveAt(i);
+                continue;
+            }
+
+            tracker.UpdateState();
+            if (!tracker.HasTarget || tracker.Invalid)
+            {
+                if (tracker.JustLostTarget && !tracker.Enabled)
+                {
+                    tracker.Enabled = true;
+                    tracker.CustomName = Config.Tracker.SearchingName;
+
+                    if (tracker.TrackedShip != null)
+                    {
+                        tracker.TrackedShip.Defunct = true;
+                        tracker.TrackedShip.Tracker = null;
+                    }
+                        
+                    tracker.TrackedShip = null;
+
+                        
+                }
+                else if (tracker.JustInvalidated)
+                {
+                    tracker.Enabled = true;
+                    tracker.CustomName = Config.Tracker.SearchingName;
+                }
+
+                continue;
+            }
+            if (tracker.TargetedEntity != 0) continue;
+                
+            AT_DetectedEntityInfo target = tracker.GetTargetedEntity();
+                
+            TargetTracker existingTracker;
+            if (ShipManager.HasNonDefunctTrackableShip(target.EntityId, out existingTracker))
+            {
+                if (existingTracker == tracker && tracker.Enabled) tracker.Enabled = false;
+                existingTracker.TrackedShip.AddTrackedBlock(target, null, tracker);
+                continue;
+            }
+            var trackableShip = ShipManager.AddTrackableShip(tracker, target.EntityId, target);
+            tracker.TrackedShip = trackableShip;
+            tracker.CustomName = Config.Tracker.TrackingName;
+            tracker.Enabled = false;
+            tracker.TargetedEntity = target.EntityId;   
+                
+        }
+    }
+}
+enum ScannedBlockType
+{
+    Any,
+    Weapons,
+    Propulsion,
+    PowerSystems,
+    LikelyDecoy
+}
+class ScannedBlockTracker
+{
+    int _timer;
+    private readonly int _initialTimer;
+    public ScannedBlockType Type;
+
+    public ScannedBlockTracker(int timer, ScannedBlockType type)
+    {
+        _timer = timer;
+        _initialTimer = timer;
+        Type = type;
+    }
+    public void ResetTimer()
+    {
+        _timer = _initialTimer;
+    }
+
+    public bool Countdown()
+    {
+        _timer--;
+        return _timer <= 0;
+    }
+}
+public class TrackableShip : ArgusShip
+{
+        
+    Dictionary<Vector3I, ScannedBlockTracker> _scannedBlocks = new Dictionary<Vector3I, ScannedBlockTracker>();
+    Dictionary<Vector3I, ScannedBlockTracker> _scannedBlocks_Swap = new Dictionary<Vector3I, ScannedBlockTracker>();
+
+    public SupportingShip TrackingShip;
+
+    public AT_DetectedEntityInfo Info;
+
+    public long EntityId;
+    bool _aabbNeedsRecalc = true;
+    BoundingBoxD _cachedAABB;
+    AT_Vector3D _cachedGridOffset;
+    AT_Vector3D _previousPosition;
+
+    private readonly float _gridSize = 1f;
+
+    public TrackableShip(TargetTracker tracker, long entityId, AT_DetectedEntityInfo initial)
+    {
+        Tracker = tracker;
+        EntityId = entityId;
+        PollFrequency = PollFrequency.Medium;
+
+            
+        switch (initial.Type)
+        {
+            case MyDetectedEntityType.SmallGrid:
+                _gridSize = 0.5f;
+                break;
+            case MyDetectedEntityType.LargeGrid:
+                _gridSize = 2.5f;
+                break;
+        }
+
+        Info = initial;
+        _worldMatrix = Info.Orientation;
+        _worldMatrix.Translation = Info.Position;
+    }
+
+
+    public override AT_Vector3D Position => Info.Position;
+    public override AT_Vector3D Velocity => CVelocity;
+    public override AT_Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
+    public override float GridSize => _gridSize;
+
+    public override string Name => $"Trackable ship {EntityId}";
+
+    public bool Defunct { get; set; } = false;
+
+    public override string ToString() => Name;
+
+    public TargetTracker Tracker { get; set; }
+    public bool IntersectsLargerShipAABB { get; set; }
+
+    public BoundingBoxD WorldAABB => Info.BoundingBox;
+        
+    public AT_Vector3D Extents => LocalAABB.Extents;
+    public AT_Vector3D HalfExtents => LocalAABB.HalfExtents;
+    public int ProxyId { get; set; } = 0;
+        
+
+    public BoundingBoxD LocalAABB
+    {
+        get
+        {
+            if (_aabbNeedsRecalc) GenerateLocalAABB();
+            return _cachedAABB;
+        }
+    }
+
+    public AT_Vector3D GridOffset
+    {
+        get
+        {
+            if (_aabbNeedsRecalc) GenerateLocalAABB();
+            return _cachedGridOffset;
+        }
+    }
+
+
+
+    AT_Vector3D _displacement;
+    MatrixD _worldMatrix;
+
+    public AT_Vector3D TakeDisplacement()
+    {
+        var temp = _displacement;
+        _displacement = AT_Vector3D.Zero;
+        return temp;
+    }
+
+    void GenerateLocalAABB()
+    {
+        _cachedAABB = OBBReconstructor.GetMaxInscribedOBB(WorldAABB, Info.Orientation, _gridSize);
+        _aabbNeedsRecalc = false;
+        var extents = HalfExtents;
+        var h = _gridSize / 2;
+        _cachedGridOffset = new AT_Vector3D(h - extents.X % _gridSize, h - extents.Y % _gridSize, h - extents.Z % _gridSize);
+    }
+    public override void EarlyUpdate(int frame)
+    {
+        if (Defunct) return;
+        if ((frame + RandomUpdateJitter) % Polling.GetFramesBetweenPolls(PollFrequency) != 0) return;
+        Info = Tracker.GetTargetedEntity();
+        if (Tracker.Closed || Info.EntityId != EntityId) Defunct = true;
+        CPreviousVelocity = CVelocity;
+        CVelocity = (Vector3D)Info.Velocity;
+        _displacement = Position - _previousPosition;
+
+        if (PollFrequency == PollFrequency.Realtime && (_displacement * 60 - CVelocity).LengthSquared() > 10000)
+        {
+            _aabbNeedsRecalc = true;
+            Vector3I displacement =
+                (Vector3I)(AT_Vector3D.Transform(_displacement - (CVelocity / 60), MatrixD.Invert(_worldMatrix)) * 2);
+            DisplaceTrackedBlocks(displacement);
+        }
+            
+        _worldMatrix = Info.Orientation;
+        _worldMatrix.Translation += Info.Position;
+        _previousPosition = Position;
+    }
+
+    public override void LateUpdate(int frame)
+    {
+            
+        _scannedBlocks_Swap.Clear();
+        foreach (var kv in _scannedBlocks)
+        {
+            var worldPos = AT_Vector3D.Transform(
+                (AT_Vector3D)kv.Key * _gridSize + GridOffset,
+                _worldMatrix
+            );
+
+            if (kv.Value.Countdown()) continue;
+            _scannedBlocks_Swap[kv.Key] = kv.Value;
+                
+            Program.Debug.DrawPoint(worldPos, Color.White, 0.2f, 0.016f, true);
+        }
+
+        var temp = _scannedBlocks;
+        _scannedBlocks = _scannedBlocks_Swap;
+        _scannedBlocks_Swap = temp;
+            
+        var tempobb = new MyOrientedBoundingBoxD(LocalAABB, Info.Orientation);
+        tempobb.Center = WorldAABB.Center;
+            
+    }
+
+    public void AddTrackedBlock(AT_DetectedEntityInfo info, IMyLargeTurretBase turret = null,
+        TargetTracker controller = null)
+    {
+        if (info.EntityId != Info.EntityId || info.HitPosition == null) return;
+
+        var targetBlockPosition = (AT_Vector3D)info.HitPosition;
+        var worldDirection = targetBlockPosition - Position;
+        var positionInGridDouble =
+            AT_Vector3D.TransformNormal(worldDirection,
+                MatrixD.Transpose(
+                    _worldMatrix));
+        positionInGridDouble-= GridOffset;
+        var positionInGridInt = new Vector3I(
+            (int)Math.Round(positionInGridDouble.X / _gridSize),
+            (int)Math.Round(positionInGridDouble.Y / _gridSize),
+            (int)Math.Round(positionInGridDouble.Z / _gridSize)
+        );
+
+        var type = ScannedBlockType.Any;
+        var targetingGroup = turret != null ? turret.GetTargetingGroup() :
+            controller != null ? controller.Block.GetTargetingGroup() : "";
+        switch (targetingGroup)
+        {
+            case "Weapons":
+                type = ScannedBlockType.Weapons;
+                break;
+            case "Propulsion":
+                type = ScannedBlockType.Propulsion;
+                break;
+            case "Power Systems":
+                type = ScannedBlockType.PowerSystems;
+                break;
+        }
+        if (_scannedBlocks.ContainsKey(positionInGridInt))
+        {
+            var existing = _scannedBlocks[positionInGridInt];
+            if (type != existing.Type) existing.Type = ScannedBlockType.LikelyDecoy;
+            existing.ResetTimer();
+            return;
+        }
+        else
+        {
+            _scannedBlocks.Add(positionInGridInt, new ScannedBlockTracker(Config.Tracker.ScannedBlockMaxValidFrames, type));
+        }
+            
+    }
+
+    void DisplaceTrackedBlocks(Vector3I displacement)
+    {
+        var newBlocks = new Dictionary<Vector3I, ScannedBlockTracker>();
+
+        foreach (var block in _scannedBlocks)
+        {
+            newBlocks.Add(block.Key + displacement, block.Value);
+        }
+
+        _scannedBlocks = newBlocks;
+    }
+}
+public static class ShipManager
+{
+        
+    public static readonly List<ArgusShip> AllShips = new List<ArgusShip>();
+        
+    private static List<TrackableShip> _reusedShipList = new List<TrackableShip>();
+        
+
+    public static Dictionary<long, TrackableShip> EntityIdToTrackableShip = new Dictionary<long, TrackableShip>();
+        
+    private static IEnumerator<TrackableShip> _pollEnumerator;
+
+    private static MyDynamicAABBTreeD _trackableShipTree = new MyDynamicAABBTreeD();
+
+    static ShipManager()
+    {
+            
+    }
+    public static ControllableShip PrimaryShip { get; set; }
+
+        
+        
+    public static void EarlyUpdate(int frame)
+    {
+        UpdatePollFrequency();
+        for (var index = AllShips.Count - 1; index >= 0; index--)
+        {
+            var ship = AllShips[index];
+
+            ship.EarlyUpdate(frame);
+        }
+
+
+
+        foreach (var ship in AllShips)
+        {
+            var trackable = ship as TrackableShip;
+            if (trackable == null) continue;
+            var box = trackable.WorldAABB;
+                    
+            if (trackable.ProxyId != 0)
+            {
+                var displacement = trackable.TakeDisplacement();
+                _trackableShipTree.MoveProxy(trackable.ProxyId, ref box, displacement);
+            }
+            else
+            {
+                trackable.ProxyId = _trackableShipTree.AddProxy(ref box, trackable, 0U);
+            }
+
+        }
+            
+
+        foreach (var kvp in DynamicAABBTreeDHelper.GetAllOverlaps(_trackableShipTree))
+        {
+            var testShip = kvp.Key;
+            var overlaps = kvp.Value;
+
+            var shipSize = testShip.WorldAABB.Size.LengthSquared();
+
+            foreach (var overlapShip in overlaps)
+            {
+                    
+
+                var overlapShipSize = overlapShip.WorldAABB.Size.LengthSquared();
+
+                    
+                if (overlapShipSize > shipSize)
+                {
+                    testShip.IntersectsLargerShipAABB = true;
+                    return;
+                }
+            }
+
+            testShip.IntersectsLargerShipAABB = false;
+        }
+    }
+
+    private static void UpdatePollFrequency()
+    {
+        if (!_pollEnumerator.MoveNext())
+        {
+            _pollEnumerator = UpdatePollFrequenciesOneByOne().GetEnumerator();
+            _pollEnumerator.MoveNext();
+        }
+    }
+
+    public static void LateUpdate(int frame)
+    {
+        for (var index = AllShips.Count - 1; index >= 0; index--)
+        {
+            var ship = AllShips[index];
+            ship.LateUpdate(frame);
+        }
+    }
+        
+        
+    private static IEnumerable<TrackableShip> UpdatePollFrequenciesOneByOne()
+    {
+        var maxSqr = Config.General.MaxWeaponRange * Config.General.MaxWeaponRange;
+
+        for (var index = AllShips.Count - 1; index >= 0; index--)
+        {
+            if (index >= AllShips.Count) continue;
+            var ship = AllShips[index];
+            var trackableShip = ship as TrackableShip;
+            if (trackableShip == null) continue;
+
+            var pos = trackableShip.Position;
+            var ourPos = PrimaryShip.Position;
+            var distSqr = (pos - ourPos).LengthSquared();
+
+            if (distSqr > maxSqr)
+                trackableShip.PollFrequency = PollFrequency.Medium;
+            else
+                trackableShip.PollFrequency = PollFrequency.Realtime;
+
+            yield return trackableShip;
+        }
+    }
+        
+        
+        
+public static List<TrackableShip> GetTargetsInRange(SupportingShip ship, double range)
+    {
+        _reusedShipList.Clear();
+        foreach (var otherShip in AllShips)
+        {
+            var enemyShip = otherShip as TrackableShip;
+            if (enemyShip == null) continue;
+            if ((enemyShip.Position - ship.Position).LengthSquared() < range * range) _reusedShipList.Add(enemyShip);
+        }
+            
+        return _reusedShipList;
+    }
+
+    public static TrackableShip GetForwardTarget(ControllableShip ship, double range, float coneAngleDegrees)
+    {
+        var candidates = GetTargetsInRange(ship, range);
+        if (candidates.Count < 1) return null;
+            
+            
+        var forward = ship.WorldForward;
+        double cosCone = Math.Cos(coneAngleDegrees * Math.PI / 180.0);
+            
+        double bestScore = double.MaxValue;
+        TrackableShip bestCandidate = null;
+            
+        foreach (var candidate in candidates)
+        {
+            var shipToCandidate = (candidate.Position - ship.Position);
+            var length = shipToCandidate.Length();
+
+            var dot = (shipToCandidate / length).Dot(forward);
+            dot = MathHelperD.Clamp(dot, -1.0, 1.0);
+            if (dot < cosCone) continue;
+                
+            var score = (1 - dot) * length;
+            if (score < bestScore)
+            {
+                bestCandidate = candidate;
+                bestScore = score;
+            }
+        }
+        return bestCandidate;
+    }
+
+    public static void CreateControllableShip(IMyCubeGrid grid, IMyGridTerminalSystem gridTerminalSystem)
+    {
+        var group = gridTerminalSystem.GetBlockGroupWithName(Config.String.GroupName);
+        Program.LogLine($"Getting group : {Config.String.GroupName}", LogLevel.Trace);
+        var trackerGroup = gridTerminalSystem.GetBlockGroupWithName(Config.String.TrackerGroupName);
+        Program.LogLine($"Getting group : {Config.String.TrackerGroupName}", LogLevel.Trace);
+        var blocks = new List<IMyTerminalBlock>();
+        var trackerBlocks = new List<IMyTerminalBlock>();
+        if (group != null) {group.GetBlocks(blocks); Program.LogLine($"Got group: {Config.String.GroupName}", LogLevel.Debug);}
+        else Program.LogLine($"Group not present: {Config.String.GroupName}", LogLevel.Warning);
+        if (trackerGroup != null) {trackerGroup.GetBlocks(trackerBlocks); Program.LogLine($"Got group: {Config.String.TrackerGroupName}", LogLevel.Debug);}
+        else Program.LogLine($"Group not present: {Config.String.TrackerGroupName}", LogLevel.Warning);
+        var ship = new ControllableShip(grid, blocks, trackerBlocks);
+        AllShips.Add(ship);
+        PrimaryShip = ship;
+
+            
+        _pollEnumerator = UpdatePollFrequenciesOneByOne().GetEnumerator();
+    }
+
+    public static TrackableShip AddTrackableShip(TargetTracker tracker, long entityId, AT_DetectedEntityInfo initial)
+    {
+        TrackableShip trackableShip;
+        if (EntityIdToTrackableShip.TryGetValue(entityId, out trackableShip))
+        {
+            Program.LogLine("Restoring defunct ship" + entityId, LogLevel.Debug);
+            if (!trackableShip.Defunct) return null;
+            trackableShip.Tracker = tracker;
+            trackableShip.Defunct = false;
+
+            return trackableShip;
+        }
+        Program.LogLine("Creating new ship " + entityId, LogLevel.Debug);
+        trackableShip = new TrackableShip(tracker, entityId, initial);
+        AllShips.Add(trackableShip);
+        EntityIdToTrackableShip.Add(entityId, trackableShip);
+        return trackableShip;
+    }
+    public static void RemoveTrackableShip(TrackableShip trackableShip)
+    {
+        AllShips.Remove(trackableShip);
+        EntityIdToTrackableShip.Remove(trackableShip.EntityId);
+        _trackableShipTree.RemoveProxy(trackableShip.ProxyId);
+    }
+
+
+    public static bool HasNonDefunctTrackableShip(long targetEntityId, out TargetTracker existingTracker)
+    {
+        TrackableShip trackableShip;
+
+        var keyExists = EntityIdToTrackableShip.TryGetValue(targetEntityId, out trackableShip);
+        existingTracker = keyExists ? trackableShip.Tracker : null;
+        return keyExists && !trackableShip.Defunct;
+    }
+}
+public struct AT_DetectedEntityInfo
+{
+    MyDetectedEntityInfo _info;
+        AT_DetectedEntityInfo(MyDetectedEntityInfo info)
+    {
+        _info = info;
+    }
+    public static implicit operator AT_DetectedEntityInfo(MyDetectedEntityInfo info) => new AT_DetectedEntityInfo(info);
+    public long EntityId => _info.EntityId;
+    public MyDetectedEntityType Type => _info.Type;
+    public Vector3D? HitPosition => _info.HitPosition;
+    public MatrixD Orientation => _info.Orientation;
+    public Vector3 Velocity => _info.Velocity;
+    public BoundingBoxD BoundingBox => _info.BoundingBox;
+    public Vector3D Position => BoundingBox.Center;
+
+        
+
+}
+public struct AT_Vector3D
+{
+    Vector3D _value;  
+        
+
+
+    public AT_Vector3D(double x, double y, double z)
+    {
+      _value = new Vector3D(x, y, z);
+    }
+        
+    AT_Vector3D(Vector3D value)
+    {
+      _value = value;
+    }
+        
+    public static implicit operator AT_Vector3D(Vector3D value) => new AT_Vector3D(value);
+    public static implicit operator AT_Vector3D(Vector3 value) => (Vector3D)value;
+    public static implicit operator Vector3D(AT_Vector3D value) => value._value;
+    public static explicit operator Vector3I(AT_Vector3D value) => (Vector3I)value._value;
+    public static explicit operator AT_Vector3D(Vector3I value) => (Vector3D)value;
+
+
+    public static AT_Vector3D operator -(AT_Vector3D value) => -value._value;
+
+    public static bool operator ==(AT_Vector3D value1, AT_Vector3D value2) => value1._value == value2._value;
+        
+    public static bool operator !=(AT_Vector3D value1, AT_Vector3D value2) => value1._value != value2._value;
+        
+
+    public static AT_Vector3D operator +(AT_Vector3D value1, AT_Vector3D value2) => value1._value + value2._value;
+        
+
+        
+    public static AT_Vector3D operator -(AT_Vector3D value1, AT_Vector3D value2) => value1._value - value2._value;
+        
+        
+    public static AT_Vector3D operator *(AT_Vector3D value1, AT_Vector3D value2) => value1._value * value2._value;
+        
+    public static AT_Vector3D operator *(AT_Vector3D value, double scaleFactor) => value._value * scaleFactor;
+        
+    public static AT_Vector3D operator *(double scaleFactor, AT_Vector3D value) => value._value * scaleFactor;
+        
+    public static AT_Vector3D operator /(AT_Vector3D value1, AT_Vector3D value2) => value1._value / value2._value;
+        
+    public static AT_Vector3D operator /(AT_Vector3D value, double divider) => value._value / divider;
+
+
+    public double X => _value.X;
+    public double Y => _value.Y;
+    public double Z => _value.Z;
+        
+
+
+    public static AT_Vector3D Zero => Vector3D.Zero;
+    public static AT_Vector3D Forward => Vector3D.Forward;
+    public static AT_Vector3D Left => Vector3D.Left;
+    public static AT_Vector3D Up => Vector3D.Up;
+    public double Length() => _value.Length();
+
+    public double Dot(AT_Vector3D other) => _value.Dot(other._value);
+
+    public double LengthSquared() => _value.LengthSquared();
+
+    public static AT_Vector3D Transform(AT_Vector3D vec, MatrixD mat) => Vector3D.Transform(vec, mat);
+
+    public static AT_Vector3D TransformNormal(AT_Vector3D vec, MatrixD mat) => Vector3D.TransformNormal(vec, mat);
+
+    public static AT_Vector3D Abs(AT_Vector3D u1) => Vector3D.Abs(u1);
+
+    public static AT_Vector3D Normalize(AT_Vector3D val) => Vector3D.Normalize(val._value);
+
+    public static AT_Vector3D ClampToSphere(AT_Vector3D vec, double radius) =>
+      Vector3D.ClampToSphere(vec._value, radius);
+
+    public static AT_Vector3D ProjectOnVector(ref AT_Vector3D valA, ref AT_Vector3D valB) =>
+      Vector3D.ProjectOnVector(ref valA._value, ref valB._value);
+
+    public static AT_Vector3D Cross(AT_Vector3D vecA, AT_Vector3D vecB) => Vector3D.Cross(vecA, vecB);
+
+    public AT_Vector3D Normalized() => _value.Normalized();
+
+    public bool Equals(AT_Vector3D other) => _value == other._value;
+
+    public override string ToString() => _value.ToString();
+
+    public AT_Vector3D Floor() => (AT_Vector3D)Vector3D.Floor(_value);
+}

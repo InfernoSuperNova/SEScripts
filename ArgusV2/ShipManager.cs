@@ -63,9 +63,9 @@ namespace IngameScript
                 }
 
             }
-            
 
-            foreach (var kvp in DynamicAABBTreeDHelper.GetAllOverlaps(_trackableShipTree))
+            var allOverlaps = TrackableShipAABBTreeHelper.GetAllOverlaps(_trackableShipTree);
+            foreach (var kvp in allOverlaps)
             {
                 var testShip = kvp.Key;
                 var overlaps = kvp.Value;
@@ -84,12 +84,13 @@ namespace IngameScript
                     if (overlapShipSize > shipSize)
                     {
                         testShip.IntersectsLargerShipAABB = true;
-                        return;
+                        break;
                     }
                 }
-
+                overlaps.Clear(); // Avoids static list induced memory leaks
                 testShip.IntersectsLargerShipAABB = false;
             }
+            allOverlaps.Clear(); // Avoids static list induced memory leaks
         }
 
         private static void UpdatePollFrequency()

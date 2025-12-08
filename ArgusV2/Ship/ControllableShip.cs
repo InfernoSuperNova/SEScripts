@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using IngameScript.Helper;
 using IngameScript.Ship.Components;
+using IngameScript.Ship.Components.Missiles;
 using IngameScript.Ship.Components.Propulsion;
 using IngameScript.TruncationWrappers;
 using Sandbox.ModAPI.Ingame;
@@ -20,10 +21,12 @@ namespace IngameScript.Ship
         private readonly GyroManager _gyroManager;
         private readonly FireController _fireController;
         private readonly PropulsionController _propulsionController;
+        private readonly MissileManager _missileManager;
         private List<IMyLargeTurretBase> _turrets; // TODO: Abstract into a turrets handler, assign
         
         private CachedValue<AT_Vector3D> _gravity;
         private CachedValue<MyShipMass> _mass;
+        private CachedValue<AT_Vector3D> _localCenterOfMass;
         #endregion
         
         public ControllableShip(IMyCubeGrid grid, List<IMyTerminalBlock> blocks, List<IMyTerminalBlock> trackerBlocks) : base(grid, trackerBlocks)
@@ -47,9 +50,11 @@ namespace IngameScript.Ship
             
             _gravity = new CachedValue<AT_Vector3D>(() => Controller.GetNaturalGravity());
             _mass = new CachedValue<MyShipMass>(() => Controller.CalculateShipMass());
-            
+            _localCenterOfMass = new CachedValue<AT_Vector3D>(() =>
+                AT_Vector3D.Transform(Controller.CenterOfMass, MatrixD.Invert(WorldMatrix)));
+                
             _propulsionController = new PropulsionController(blocks, this);
-            
+            _missileManager = new MissileManager(blocks, this);
         }
         
         #region Properties
@@ -101,6 +106,11 @@ namespace IngameScript.Ship
         /// Gets the mass details of the grid. Subject to inaccuracy if being changed rapidly.
         /// </summary>
         public MyShipMass Mass => _mass.Value;
+
+        public AT_Vector3D LocalCenterOfMass => _localCenterOfMass.Value;
+
+        public IMyCubeGrid Grid => _grid;
+
         #endregion
         
         // Could possibly subscribe these and make them private?
@@ -112,11 +122,13 @@ namespace IngameScript.Ship
             base.EarlyUpdate(frame);
             Guns.EarlyUpdate(frame);
             _propulsionController.EarlyUpdate(frame);
+            _missileManager.EarlyUpdate(frame);
             
             if ((frame + RandomUpdateJitter) % Polling.GetFramesBetweenPolls(PollFrequency) == 0)
             {
                 _gravity.Invalidate();
                 _mass.Invalidate();
+                _localCenterOfMass.Invalidate();
             }
         }
         // Late Update is called in a deterministic, but undefined order. Designed for acting on data.
@@ -130,14 +142,10 @@ namespace IngameScript.Ship
                 var solution = _fireController.ArbitrateFiringSolution();
                 if (solution.TargetPosition == AT_Vector3D.Zero) _gyroManager.ResetGyroOverrides(); // TODO: Don't spam this
                 else _gyroManager.Rotate(ref solution);
-                
-                // TODO: A little inconsistent to put this in a check when the EarlyUpdate is not.
-                // Instead guns itself should handle the gatekeeping.
-                // Technically this all works the way it should but in a questionable way.
-                Guns.LateUpdate(frame); 
-                
             }
+            Guns.LateUpdate(frame); 
             _propulsionController.LateUpdate(frame);
+            _missileManager.EarlyUpdate(frame);
         }
         #endregion
         

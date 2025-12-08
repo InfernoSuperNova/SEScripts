@@ -59,7 +59,7 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
                 {
                     var forward = _ship.LocalDirectionForward;
                     var forwardDir = Base6Directions.Directions[(int)forward];
-                    var inverted = forwardDir.Dot((Vector3D)_ship.Position - sphericalGen.GetPosition()) > 0;
+                    var inverted = forwardDir.Dot((Vector3D)_ship.LocalCenterOfMass - sphericalGen.Position * _ship.GridSize) > 0;
                     var list = genCastArray[forward];
                     list.Add(new GravityGeneratorSpherical(sphericalGen, forward, inverted));
                     
@@ -110,7 +110,7 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
         {
             _forwardBackward.SetAcceleration((float)propLocal.Dot(AT_Vector3D.Forward));
             _leftRight.SetAcceleration((float)propLocal.Dot(AT_Vector3D.Left));
-            _upDown.SetAcceleration((float)propLocal.Dot(-AT_Vector3D.Up));
+            _upDown.SetAcceleration((float)propLocal.Dot(AT_Vector3D.Up));
         }
 
         public double GetForwardBackwardForce()

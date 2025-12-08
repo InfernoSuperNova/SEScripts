@@ -1,9 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using IngameScript;
 
-namespace IngameScript.Helper
+namespace IngameScript
 {
     public static class Dwon
     {
@@ -414,12 +414,29 @@ namespace IngameScript.Helper
             return new ConfigCategory(dict);
         }
 
+        public void SyncEnum<E>(string key, ref E field, string comment = "") where E : struct
+        {
+            int temp = Convert.ToInt32(field);  // enum -> int
+            temp = Dwon.GetValue(_values, key, ref comment, temp);
+            field = (E)Enum.ToObject(typeof(E), temp);
+
+            if (!string.IsNullOrEmpty(comment))
+                _values[key] = new Dwon.Comment(temp, comment);
+            else
+                _values[key] = temp;
+        }
+
+
         public void Sync<T>(string key, ref T field, string comment = "")
         {
             var temp = Dwon.GetValue(_values, key, ref comment, field);
 
-            if (comment != "") _values[key] = new Dwon.Comment(temp, comment);
-            else _values[key] = temp;
+            if (!string.IsNullOrEmpty(comment))
+                _values[key] = new Dwon.Comment(temp, comment);
+            else
+                _values[key] = temp;
+
+            field = temp;
         }
     }
 }

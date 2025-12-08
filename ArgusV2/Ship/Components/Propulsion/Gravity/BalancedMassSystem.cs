@@ -16,7 +16,8 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
         private bool _stateChanged;
         private int _updateJitter = 0;
         
-        private AT_Vector3D _currentMoment = AT_Vector3D.Zero; // running moment
+        private AT_Vector3D _currentMassMoment = AT_Vector3D.Zero; // running moment
+        private AT_Vector3D _currentBallMoment = AT_Vector3D.Zero;
 
         private ControllableShip _ship;
 
@@ -35,7 +36,7 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
                     var wrap = new BallMass(ball, this, _ship);
                     _balls.Add(wrap);
                     _allBlocks.Add(wrap);
-                    _currentMoment += wrap.Moment;
+                    _currentBallMoment += wrap.Moment;
                     continue;
                 }
 
@@ -45,7 +46,7 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
                     var wrap = new BlockMass(mass, this, _ship);
                     _blocks.Add(wrap);
                     _allBlocks.Add(wrap);
-                    _currentMoment += wrap.Moment;
+                    _currentMassMoment += wrap.Moment;
                 }
 
             }
@@ -57,6 +58,7 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
         
         public bool Enabled { get; set; }
         public double TotalMass { get; private set; }
+        public double TotalMassBlocks { get; private set; }
 
         public List<Mass> AllBlocks => _allBlocks;
 
@@ -87,6 +89,10 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
             {
                 CalculateTotalMass();
             }
+
+
+            
+            
         }
         /// <summary>
         /// Returns true if the mass state of the generator has changed since this function was last called.
@@ -102,10 +108,12 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
         private void CalculateTotalMass()
         {
             TotalMass = 0;
+            TotalMassBlocks = 0;
 
             foreach (var block in _blocks)
             {
                 TotalMass += block.BalancerVirtualMass;
+                TotalMassBlocks += block.BalancerVirtualMass;
             }
 
             foreach (var ball in _balls)
@@ -116,29 +124,100 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
         
         private void BalanceMassBlocks()
         {
-            // _currentMoment persists across frames
-            // Each iteration nudges blocks on/off
-            AT_Vector3D momentBefore = _currentMoment;
+            AT_Vector3D beforeMoment = _currentMassMoment;
+            double beforeMass = TotalMass; // however you track total
+
             foreach (var block in _blocks)
             {
-                AT_Vector3D momentToggle = block.BalancerAllowed ? AT_Vector3D.Zero : block.Moment;
+                double oldMass = beforeMass;
+                double newMass = beforeMass +
+                                 (block.BalancerAllowed ? -block.AbsoluteVirtualMass : block.AbsoluteVirtualMass);
 
-                if ((_currentMoment - (block.BalancerAllowed ? block.Moment : AT_Vector3D.Zero) + momentToggle).LengthSquared() <
-                    _currentMoment.LengthSquared())
+                AT_Vector3D candidate =
+                    _currentMassMoment
+                    - (block.BalancerAllowed ? block.Moment : AT_Vector3D.Zero)
+                    + (block.BalancerAllowed ? AT_Vector3D.Zero : block.Moment);
+
+                if (AcceptChange(_currentMassMoment, candidate, oldMass, newMass, SignificantTorqueGainMass))
                 {
                     block.BalancerAllowed = !block.BalancerAllowed;
-                    _currentMoment = _currentMoment - (block.BalancerAllowed ? AT_Vector3D.Zero : block.Moment) + momentToggle;
+                    _currentMassMoment = candidate;
+                    beforeMass = newMass; // update after change
                 }
             }
-            _stateChanged |= momentBefore != _currentMoment;
+
+            _stateChanged |= beforeMoment != _currentMassMoment;
         }
         private void BalanceSpaceBalls()
         {
-            AT_Vector3D momentBefore = _currentMoment;
-                // TODO: Space ball balance logic
+            _currentBallMoment = AT_Vector3D.Zero;
+            foreach (var ball in _balls)
+            {
+                _currentBallMoment += ball.Moment;
+            }
             
             
-            _stateChanged |= momentBefore != _currentMoment;
+            
+            // Total moment before any changes
+            AT_Vector3D totalBefore = _currentMassMoment + _currentBallMoment;
+            double totalMass = TotalMass; // total current mass (blocks + balls)
+    
+            // We want to reduce moment toward zero
+            AT_Vector3D deficit = -totalBefore;
+
+            foreach (var ball in _balls)
+            {
+                // Unit direction of this ball's moment contribution
+                var dir = ball.Moment.Normalized();
+        
+                // Project deficit along this ball's direction
+                double projection = deficit.Dot(dir) / 250;
+
+                // Ignore tiny adjustments
+                if (Math.Abs(projection) < 0.001)
+                    continue;
+
+                float oldMass = ball.BalancerVirtualMass;
+                float newMass = (float)MathHelper.Clamp(oldMass + projection, 0f, 20000f);
+                if (newMass > 0) newMass += (newMass - oldMass) * 0.1f;
+                float applied = newMass - oldMass;
+                // Ignore very tiny changes
+                if (Math.Abs(applied) < 0.5)
+                    continue;
+
+                // Candidate total moment if this change were applied
+                AT_Vector3D candidateMoment = _currentMassMoment + _currentBallMoment + dir * applied;
+
+                // Accept change according to “prefer adding mass” logic
+                if (AcceptChange(totalBefore, candidateMoment,
+                        totalMass, totalMass + applied, SignificantTorqueGainBall))
+                {
+                    // Apply change
+                    ball.BalancerVirtualMass = newMass;
+                    _currentBallMoment += dir * applied;
+
+                    // Update running total mass
+                    totalMass += applied;
+
+                    // Flag if any state changed
+                    _stateChanged |= totalBefore != (_currentMassMoment + _currentBallMoment);
+                }
+            }
+        }
+        private const double SignificantTorqueGainMass = 1;
+        private const double SignificantTorqueGainBall = 0;
+        private bool AcceptChange(AT_Vector3D currentMoment, AT_Vector3D candidateMoment,
+            double oldMass, double newMass, double significantTorqueGain)
+        {
+            double before = currentMoment.LengthSquared();
+            double after = candidateMoment.LengthSquared();
+            double improvement = before - after;
+            double massDelta = newMass - oldMass;
+
+            if (massDelta > 0)
+                return improvement > 0; // adding mass? tiny win is enough
+            else
+                return improvement > significantTorqueGain; // losing mass? must be worth it
         }
 
 

@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Garbage", "Garbage\Garbage.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BallBaller", "BallBaller\BallBaller.csproj", "{A21CC316-1584-4149-BDE7-A9EE357C3EA2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptBits", "ScriptBits\ScriptBits.csproj", "{1D0C325E-A9AB-44F5-81E9-F3F9D813833D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -129,6 +131,10 @@ Global
 		{A21CC316-1584-4149-BDE7-A9EE357C3EA2}.Debug|x64.Build.0 = Debug|x64
 		{A21CC316-1584-4149-BDE7-A9EE357C3EA2}.Release|x64.ActiveCfg = Release|x64
 		{A21CC316-1584-4149-BDE7-A9EE357C3EA2}.Release|x64.Build.0 = Release|x64
+		{1D0C325E-A9AB-44F5-81E9-F3F9D813833D}.Debug|x64.ActiveCfg = Debug|x64
+		{1D0C325E-A9AB-44F5-81E9-F3F9D813833D}.Debug|x64.Build.0 = Debug|x64
+		{1D0C325E-A9AB-44F5-81E9-F3F9D813833D}.Release|x64.ActiveCfg = Release|x64
+		{1D0C325E-A9AB-44F5-81E9-F3F9D813833D}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

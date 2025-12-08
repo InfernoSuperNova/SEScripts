@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Color = VRageMath.Color;
 
-namespace IngameScript.Helper
+namespace IngameScript
 {
     public enum LogLevel
     {
@@ -58,7 +58,7 @@ namespace IngameScript.Helper
 
         public void Add(string message, LogLevel level)
         {
-            if (level < Config.General.LogLevel) return;
+            if (level < Program.I.LogLevel) return;
             double now = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
             _entries.Add(new Entry(message, now, level));
         }

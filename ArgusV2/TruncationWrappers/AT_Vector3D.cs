@@ -66,8 +66,8 @@ namespace IngameScript.TruncationWrappers
 
 
         public static AT_Vector3D Zero => Vector3D.Zero;
-        public static Vector3 Forward => Vector3D.Forward;
-        public static Vector3 Left => Vector3D.Left;
+        public static AT_Vector3D Forward => Vector3D.Forward;
+        public static AT_Vector3D Left => Vector3D.Left;
         public static AT_Vector3D Up => Vector3D.Up;
         public double Length() => _value.Length();
 
@@ -94,7 +94,10 @@ namespace IngameScript.TruncationWrappers
         public AT_Vector3D Normalized() => _value.Normalized();
 
         public bool Equals(AT_Vector3D other) => _value == other._value;
-        
+
+        public override string ToString() => _value.ToString();
+
+        public AT_Vector3D Floor() => (AT_Vector3D)Vector3D.Floor(_value);
     }
     
 }

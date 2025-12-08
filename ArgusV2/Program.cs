@@ -11,7 +11,7 @@ namespace IngameScript
     
     partial class Program : MyGridProgram
     {
-        public static Program I;
+        
         public static DebugAPI Debug;
         public static Random RNG;
         public TimedLog _Log = new TimedLog(10);
@@ -34,7 +34,7 @@ namespace IngameScript
                 ShipManager.CreateControllableShip(Me.CubeGrid, GridTerminalSystem);
                 Program.LogLine("Creating commands", LogLevel.Info);
                 Commands.Setup();
-                Runtime.UpdateFrequency = UpdateFrequency.Update1;
+                //Runtime.UpdateFrequency = UpdateFrequency.Update1;
                 
                 var elapsed = DateTime.UtcNow - startTime;
                 LogLine($"Setup completed in {elapsed.TotalMilliseconds:F1} ms", LogLevel.Highlight);
@@ -43,34 +43,43 @@ namespace IngameScript
             {
                 Echo("Crashed: " + ex);
             }
+            finally
+            {
+                I = null;
+            }
             Echo(_Log.ToString());
         }
+        
+        public static Program I { get; private set; }
         
         public void Main(string argument, UpdateType updateSource)
         {
 
             try
             {
-                    if ((updateSource & UpdateType.Update1) != 0) RunUpdate();
-                    if ((updateSource & (UpdateType.Trigger | UpdateType.Terminal)) != 0) RunCommand(argument);
+                I = this;
+                if ((updateSource & UpdateType.Update1) != 0) RunUpdate();
+                if ((updateSource & (UpdateType.Trigger | UpdateType.Terminal)) != 0) RunCommand(argument);
             }
             catch (Exception ex)
             {
                 Echo(ex.ToString());
                 Runtime.UpdateFrequency = UpdateFrequency.None;
             }
+            finally
+            {
+                I = null;
+            }
         }
 
 
         // TODO to be feature parity with arguslite:
-        // Finish auto balance (add space ball balance, mass block pair reenable)
-        // Get spherical force properly
         // Handle block removal in all systems
         // UI, switches (hud LCD probably)
-        // Finish hooking up variables in config
         // Fix aimbot
         // Auto dodge
         // Turret override
+        // No group early exit
         
         private void RunUpdate()
         {

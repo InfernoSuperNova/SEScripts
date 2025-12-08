@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
 using VRageMath;
-using System.Collections;
-using System.Text;
-using VRage.Game.ModAPI.Ingame;
 using System.Linq;
 using Color = VRageMath.Color;
+using VRage.Game.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame.Utilities;
+using System.Text;
 using Sandbox.Game.EntityComponents;
 using VRage.Game;
 using VRage.Game.ObjectBuilders.Definitions;
@@ -144,417 +143,233 @@ public struct CachedValue<T>
 
     public void Invalidate() => _valid = false;
 }
-    public static class Dwon
-    {
-        public class Comment
-        {
-            public object Obj;
-            public string Com;
-
-            public Comment(object obj, string comment)
-            {
-                Obj = obj;
-                Com = comment;
-            }
-        }
-
-
-        public static string Serialize(object obj, int indent = -1)
-        {
-            var sb = new StringBuilder();
-            Serialize(obj, sb, indent, null);
-            Program.LogLine("Serialized successfully", LogLevel.Debug);
-            return sb.ToString();
-        }
-
-        private static void Serialize(object obj, StringBuilder sb, int indent, string key)
-        {
-            string pad = new string(' ', Math.Max(indent, 0));
-
-            if (obj == null)
-            {
-                if (key != null) sb.AppendLine(pad + key + " = null");
-                return;
-            }
-
-            Comment commentObj = obj as Comment;
-            if (commentObj != null)
-            {
-                bool isPrimitive = IsPrimitive(commentObj.Obj);
-                if (isPrimitive && key != null)
-                {
-                    sb.AppendLine(pad + key + " = " + ValueToString(commentObj.Obj) + "   # " + commentObj.Com);
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(commentObj.Com))
-                        sb.AppendLine(pad + "# " + commentObj.Com);
-                    Serialize(commentObj.Obj, sb, indent, key);
-                }
-                return;
-            }
-
-            IDictionary<string, object> dict = obj as IDictionary<string, object>;
-            if (dict != null)
-            {
-                if (key != null) sb.AppendLine(pad + key + " = [");
-                foreach (var kv in dict)
-                {
-                    Serialize(kv.Value, sb, indent + 2, kv.Key);
-                }
-                if (key != null) sb.AppendLine(pad + "]");
-                return;
-            }
-
-            IEnumerable<object> list = obj as IEnumerable<object>;
-            if (list != null)
-            {
-                if (key != null)
-                {
-                    sb.Append(pad + key + " = { ");
-                    bool first = true;
-                    foreach (object v in list)
-                    {
-                        if (!first) sb.Append(", ");
-                        sb.Append(ValueToString(v));
-                        first = false;
-                    }
-                    sb.AppendLine(" }");
-                }
-                else
-                {
-                    foreach (object v in list)
-                        Serialize(v, sb, indent, null);
-                }
-                return;
-            }
-
-            if (key != null)
-            {
-                sb.AppendLine(pad + key + " = " + ValueToString(obj));
-            }
-        }
-
-        private static string ValueToString(object obj)
-        {
-            if (obj == null) return "null";
-            if (obj is string) return "\"" + Escape((string)obj) + "\"";
-            if (obj is bool) return ((bool)obj ? "true" : "false");
-            if (obj is float) return ((float)obj).ToString("0.#####", System.Globalization.CultureInfo.InvariantCulture);
-            if (obj is double) return ((double)obj).ToString("0.##########", System.Globalization.CultureInfo.InvariantCulture); 
-            // ~10 decimal places, enough for SE precision
-            if (obj is int || obj is long || obj is short || obj is byte) return obj.ToString();
-            return "\"" + Escape(obj.ToString()) + "\"";
-        }
-
-        private static string Escape(string s)
-        {
-            return s.Replace("\\", "\\\\").Replace("\"", "\\\"");
-        }
-
-        private static bool IsPrimitive(object value)
-        {
-            return value is string || value is bool ||
-                   value is int || value is long || value is short || value is byte ||
-                   value is float || value is double;
-        }
-
-
-
-        public static object Parse(string dwon)
-        {
-            int idx = 0;
-            var top = new Dictionary<string, object>();
-            while (idx < dwon.Length)
-            {
-                SkipWhitespaceAndComments(dwon, ref idx);
-                if (idx >= dwon.Length) break;
-
-                string key = ParseKey(dwon, ref idx);
-                Program.Log(key);
-                ExpectChar(dwon, ref idx, '=');
-                object value = ParseValue(dwon, ref idx);
-                string comment = ParseInlineComment(dwon, ref idx);
-                if (comment != null && IsPrimitive(value))
-                    value = new Comment(value, comment);
-
-                top[key] = value;
-            }
-            return top;
-        }
-
-        private static object ParseValue(string s, ref int idx)
-        {
-            SkipWhitespaceAndComments(s, ref idx);
-
-            if (idx >= s.Length) return null;
-
-            char c = s[idx];
-
-            switch (c)
-            {
-                // Dictionary / object
-                case '[':
-                {
-                    idx++;
-                    var dict = new Dictionary<string, object>();
-                    while (true)
-                    {
-                        SkipWhitespaceAndComments(s, ref idx);
-                        if (idx >= s.Length) break;
-                        if (s[idx] == ']') { idx++; break; }
-
-                        string key = ParseKey(s, ref idx);
-                        ExpectChar(s, ref idx, '=');
-                        object value = ParseValue(s, ref idx);
-
-                        // attach inline comment if exists
-                        string comment = ParseInlineComment(s, ref idx);
-                        if (comment != null && IsPrimitive(value))
-                            value = new Comment(value, comment);
-
-                        dict[key] = value;
-                    }
-                    return dict;
-                }
-                // Array / list
-                case '{':
-                {
-                    idx++;
-                    var list = new List<object>();
-                    while (true)
-                    {
-                        SkipWhitespaceAndComments(s, ref idx);
-                        if (idx >= s.Length) break;
-                        if (s[idx] == '}') { idx++; break; }
-
-                        object value = ParseValue(s, ref idx);
-                        string comment = ParseInlineComment(s, ref idx);
-                        if (comment != null && IsPrimitive(value))
-                            value = new Comment(value, comment);
-
-                        list.Add(value);
-
-                        SkipWhitespaceAndComments(s, ref idx);
-                        if (idx < s.Length && s[idx] == ',') idx++; // optional comma
-                    }
-                    return list;
-                }
-            }
-
-            // Primitive or string
-            string token = ParseToken(s, ref idx);
-            string inlineComment = ParseInlineComment(s, ref idx);
-            object primitive = ParsePrimitive(token);
-            if (inlineComment != null && IsPrimitive(primitive))
-                primitive = new Comment(primitive, inlineComment);
-            return primitive;
-        }
-
-        private static void SkipWhitespaceAndComments(string s, ref int idx)
-        {
-            while (idx < s.Length)
-            {
-                if (s[idx] == ' ' || s[idx] == '\t' || s[idx] == '\r' || s[idx] == '\n')
-                {
-                    idx++;
-                    continue;
-                }
-
-                if (s[idx] == '#')
-                {
-                    while (idx < s.Length && s[idx] != '\n') idx++;
-                    continue;
-                }
-                break;
-            }
-        }
-
-        private static string ParseKey(string s, ref int idx)
-        {
-            SkipWhitespace(s, ref idx);
-
-            int start = idx;
-
-            while (idx < s.Length)
-            {
-                char c = s[idx];
-
-                // key ends ONLY at '='
-                if (c == '=')
-                    break;
-
-                // stop if we hit newline before seeing '=' → malformed key
-                if (c == '\n' || c == '\r')
-                    throw new Exception("Unexpected newline while reading key");
-
-                idx++;
-            }
-
-            if (idx == start)
-                throw new Exception($"Empty key at index {idx}");
-
-            string key = s.Substring(start, idx - start).Trim();
-
-            return key;
-        }
-
-        private static string ParseToken(string s, ref int idx)
-        {
-            SkipWhitespace(s, ref idx);
-            if (idx >= s.Length) return "";
-
-            char c = s[idx];
-
-            // Quoted string
-            if (c == '"' || c == '\'')
-            {
-                char quote = c;
-                idx++;
-                int start = idx;
-                while (idx < s.Length && s[idx] != quote) idx++;
-                string str = s.Substring(start, idx - start);
-                if (idx < s.Length) idx++; // skip closing quote
-                return str;
-            }
-
-            // Unquoted token
-            int startToken = idx;
-            while (idx < s.Length && s[idx] != '\n' && s[idx] != '\r' && s[idx] != '#' && s[idx] != ',' && s[idx] != '}' && s[idx] != ']') idx++;
-            string token = s.Substring(startToken, idx - startToken).Trim();
-            return token;
-        }
-
-        private static string ParseInlineComment(string s, ref int idx)
-        {
-            SkipWhitespace(s, ref idx);
-            if (idx < s.Length && s[idx] == '#')
-            {
-                idx++; // skip #
-                int start = idx;
-                while (idx < s.Length && s[idx] != '\n' && s[idx] != '\r') idx++;
-                return s.Substring(start, idx - start).Trim();
-            }
-            return null;
-        }
-
-        private static void SkipWhitespace(string s, ref int idx)
-        {
-            while (idx < s.Length && (s[idx] == ' ' || s[idx] == '\t' || s[idx] == '\r' || s[idx] == '\n')) idx++;
-        }
-
-        private static void ExpectChar(string s, ref int idx, char expected)
-        {
-            SkipWhitespace(s, ref idx);
-            if (idx >= s.Length || s[idx] != expected) throw new Exception("Expected '" + expected + "' at index " + idx);
-            idx++;
-        }
-
-        private static object ParsePrimitive(string token)
-        {
-            if (token.Length == 0) return null;
-
-            if (token == "true") return true;
-            if (token == "false") return false;
-
-            int i;
-            if (int.TryParse(token, out i)) return i;
-
-            double f;
-            if (double.TryParse(token, System.Globalization.NumberStyles.Float,
-                               System.Globalization.CultureInfo.InvariantCulture, out f)) return f;
-
-            return token; // string fallback
-        }
-
-        
-        // Helper: recursively unwrap all Dwon.Comment objects
-        public static void UnwrapAllComments(Dictionary<string, object> dict)
-        {
-            var keys = new List<string>(dict.Keys);
-            foreach (var key in keys)
-            {
-                var val = dict[key];
-                var c = val as Comment;
-                var nestedDict = val as Dictionary<string, object>;
-                var list = val as List<object>;
-                if (c != null)
-                    dict[key] = c.Obj;
-                
-                else if (nestedDict != null)
-                    UnwrapAllComments(nestedDict);
-                else if (list != null)
-                {
-                    for (int i = 0; i < list.Count; i++)
-                    {
-                        var listItem = list[i];
-                        var cl = listItem as Comment;
-                        list[i] = cl != null ? cl.Obj : list[i];
-                    }
-                        
-                }
-            }
-        }
-
-// Helper: safely get value, returns default if missing
-        public static T GetValue<T>(Dictionary<string, object> dict, string key, ref string comment, T defaultValue = default(T))
-        {
-            comment = "";
-            object value;
-            if (dict.TryGetValue(key, out value))
-            {
-                // Handle value types and reference types separately
-                var temp = value as Comment;
-                if (temp != null)
-                {
-                    value = temp.Obj;
-                    comment = temp.Com;
-                }
-                if (value is T) return (T)value;
-                
-                try
-                {
-                    return (T)Convert.ChangeType(value, typeof(T));
-                }
-                catch
-                {
-                    return defaultValue;
-                }
-            }
-            return defaultValue;
-        }
-    }
-class ConfigCategory
+public enum LogLevel
 {
-    private readonly Dictionary<string, object> _values;
-
-    private ConfigCategory(Dictionary<string, object> values)
+    Trace,
+    Debug,
+    Info,
+    Warning,
+    Error,
+    Critical,
+    Highlight
+}
+public class TimedLog
+{
+    private Dictionary<LogLevel, string> _logColour = new Dictionary<LogLevel, string>()
     {
-        _values = values;
+        { LogLevel.Trace, $"{ColorToHexARGB(Color.Gray)}" },
+        { LogLevel.Debug, $"{ColorToHexARGB(Color.DarkSeaGreen)}"},
+        { LogLevel.Info, $"{ColorToHexARGB(Color.White)}" },
+        { LogLevel.Warning, $"{ColorToHexARGB(Color.Gold)}" },
+        { LogLevel.Error, $"{ColorToHexARGB(Color.Red)}" },
+        { LogLevel.Critical, $"{ColorToHexARGB(Color.DarkRed)}" },
+        { LogLevel.Highlight, $"{ColorToHexARGB(Color.Aquamarine)}"}
+    };
+    private static string ColorToHexARGB(Color color)
+    {
+        return $"[color=#{color.A:X2}{color.R:X2}{color.G:X2}{color.B:X2}]";
     }
 
-    public static ConfigCategory From(Dictionary<string, object> root, string name)
+    private static string _footer = "[/color]\n";
+    
+    private class Entry
     {
-        Dwon.UnwrapAllComments(root);
-
-        Dictionary<string, object> dict;
-        object obj;
-
-        if (!root.TryGetValue(name, out obj) || (dict = obj as Dictionary<string, object>) == null)
+        internal readonly string Text;
+        internal readonly double Timestamp; // seconds since epoch
+        internal readonly LogLevel Level;
+        public Entry(string text, double timestamp, LogLevel level)
         {
-            dict = new Dictionary<string, object>();
-            root[name] = dict;
+            Text = text;
+            Timestamp = timestamp;
+            Level = level;
+        }
+            
+    }
+
+    private readonly List<Entry> _entries = new List<Entry>();
+    private readonly double _lifespan; // seconds
+
+    public TimedLog(double lifespanSeconds)
+    {
+        _lifespan = lifespanSeconds;
+    }
+
+    public void Add(string message, LogLevel level)
+    {
+        if (level < Config.General.LogLevel) return;
+        double now = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
+        _entries.Add(new Entry(message, now, level));
+    }
+
+    public void Update()
+    {
+        double now = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
+        _entries.RemoveAll(e => now - e.Timestamp > _lifespan);
+    }
+
+    public List<string> GetEntries()
+    {
+        return _entries.Select(e => e.Text).ToList();
+    }
+
+    public override string ToString()
+    {
+        string value = "";
+        foreach (var entry in _entries)
+        {
+            value += _logColour[entry.Level] + entry.Text + _footer;
         }
 
-        return new ConfigCategory(dict);
+        return value;
+    }
+}
+public class OrientedOccludedSphere : OccludedSphere
+{
+        
+    public OrientedOccludedSphere(MatrixD matrix, double radius, Dictionary<int, Bounds> constraints) : base (radius, constraints)
+    {
+        Matrix = MatrixD.Invert(matrix);
     }
 
-    public void Sync<T>(string key, ref T field, string comment = "")
-    {
-        var temp = Dwon.GetValue(_values, key, ref comment, field);
+    public MatrixD Matrix { get; set; }
 
-        if (comment != "") _values[key] = new Dwon.Comment(temp, comment);
-        else _values[key] = temp;
+    public override bool Intersects(AT_Vector3D point)
+    {
+            
+            
+            
+        point = AT_Vector3D.Transform(point, Matrix);
+        return base.Intersects(point);
+    }
+        
+        
+}
+public class OccludedSphere
+{
+    private Dictionary<int, Bounds> _lookup;
+    protected double Radius;
+
+    public OccludedSphere( double radius, Dictionary<int, Bounds> constraints)
+    {
+        IMyProjector proj;
+        Radius = radius;
+            
+            
+        var keys = constraints.Keys.OrderBy(k => k).ToList();
+        _lookup = new Dictionary<int, Bounds>();
+
+        for (int i = 0; i < keys.Count; i++)
+        {
+            int startKey = keys[i];
+            int endKey = keys[(i + 1) % keys.Count]; // wrap around for 359→0
+            var startBounds = constraints[startKey];
+            var endBounds = constraints[endKey];
+
+            int range = (endKey > startKey) ? endKey - startKey : (360 - startKey + endKey);
+
+            for (int j = 0; j <= range; j++)
+            {
+                int angle = (startKey + j) % 360;
+
+                double t = (double)j / range; // normalized [0,1]
+
+                // linear interpolation for min/max
+                double min = startBounds.Min + (endBounds.Min - startBounds.Min) * t;
+                double max = startBounds.Max + (endBounds.Max - startBounds.Max) * t;
+
+                _lookup[angle] = new Bounds((float)min, (float)max);
+            }
+        }
+    }
+
+    public Bounds Lookup(float azimuth)
+    {
+        var range = azimuth % 360;
+
+        var floor = (int)Math.Floor(range);
+        var ceil = (int)Math.Ceiling(range);
+
+        var lower = _lookup[floor];
+        var upper = _lookup[ceil];
+
+        return Bounds.Lerp(lower, upper, range - floor);
+    }
+    /// <summary>
+    /// Whether a given world point intersects with the non occluded geometry of this sphere.
+    /// </summary>
+    /// <param name="point"></param>
+    /// <returns></returns>
+    public virtual bool Intersects(AT_Vector3D point)
+    {
+        var to = point;
+        if (to.LengthSquared() > Radius * Radius) return false;
+            
+        var azimuth = Math.Atan2(to.Z, to.X) * (180f / Math.PI); // in degrees
+        if (azimuth < 0) azimuth += 360;
+        var bounds = Lookup((float)azimuth);
+        var elevation = Math.Atan2(to.Y, Math.Sqrt(to.X * to.X + to.Z * to.Z)) * (180f / Math.PI);
+            
+        return elevation >= bounds.Min && elevation <= bounds.Max;
+    }
+        
+    public struct Bounds
+    {
+        internal float Min;
+        internal float Max;
+
+        public Bounds(float min = 0, float max = 0)
+        {
+            Min = MathHelper.Clamp(min, -90, 90);
+            Max = MathHelper.Clamp(max, min, 90);
+        }
+
+        public static Bounds Lerp(Bounds first, Bounds second, float t)
+        {
+            var min = MathHelper.Lerp(first.Min, second.Min, t);
+            var max = MathHelper.Lerp(first.Max, second.Max, t);
+
+            return new Bounds(min, max);
+        }
+    }
+}
+public class PIDController
+{
+    double integral;
+    double lastInput;
+
+    public double gain_p;
+    double gain_i;
+    public double gain_d;
+    double upperLimit_i;
+    double lowerLimit_i;
+    double second;
+
+    public PIDController(double pGain, double iGain, double dGain, double iUpperLimit = 0, double iLowerLimit = 0, double stepsPerSecond = 60)
+    {
+        gain_p = pGain;
+        gain_i = iGain;
+        gain_d = dGain;
+        upperLimit_i = iUpperLimit;
+        lowerLimit_i = iLowerLimit;
+        second = stepsPerSecond;
+    }
+
+    public double Filter(double input, int round_d_digits)
+    {
+        double roundedInput = Math.Round(input, round_d_digits);
+
+        integral = integral + (input / second);
+        integral = (upperLimit_i > 0 && integral > upperLimit_i ? upperLimit_i : integral);
+        integral = (lowerLimit_i < 0 && integral < lowerLimit_i ? lowerLimit_i : integral);
+
+        double derivative = (roundedInput - lastInput) * second;
+        lastInput = roundedInput;
+
+        return (gain_p * input) + (gain_i * integral) + (gain_d * derivative);
+    }
+    public void Reset()
+    {
+        integral = lastInput = 0;
     }
 }
 public enum Direction : byte
@@ -816,46 +631,6 @@ public static class OBBReconstructor
         return new BoundingBoxD(-conservativeHalf, conservativeHalf);
     }
 }
-public class PIDController
-{
-    double integral;
-    double lastInput;
-
-    public double gain_p;
-    double gain_i;
-    public double gain_d;
-    double upperLimit_i;
-    double lowerLimit_i;
-    double second;
-
-    public PIDController(double pGain, double iGain, double dGain, double iUpperLimit = 0, double iLowerLimit = 0, double stepsPerSecond = 60)
-    {
-        gain_p = pGain;
-        gain_i = iGain;
-        gain_d = dGain;
-        upperLimit_i = iUpperLimit;
-        lowerLimit_i = iLowerLimit;
-        second = stepsPerSecond;
-    }
-
-    public double Filter(double input, int round_d_digits)
-    {
-        double roundedInput = Math.Round(input, round_d_digits);
-
-        integral = integral + (input / second);
-        integral = (upperLimit_i > 0 && integral > upperLimit_i ? upperLimit_i : integral);
-        integral = (lowerLimit_i < 0 && integral < lowerLimit_i ? lowerLimit_i : integral);
-
-        double derivative = (roundedInput - lastInput) * second;
-        lastInput = roundedInput;
-
-        return (gain_p * input) + (gain_i * integral) + (gain_d * derivative);
-    }
-    public void Reset()
-    {
-        integral = lastInput = 0;
-    }
-}
     public static class Solver
     {
         public static double MaxValueD => Double.MaxValue;
@@ -1099,86 +874,6 @@ public class PIDController
                 return Math.Min(a, b);
         }
     }
-public enum LogLevel
-{
-    Trace,
-    Debug,
-    Info,
-    Warning,
-    Error,
-    Critical,
-    Highlight
-}
-public class TimedLog
-{
-    private Dictionary<LogLevel, string> _logColour = new Dictionary<LogLevel, string>()
-    {
-        { LogLevel.Trace, $"{ColorToHexARGB(Color.Gray)}" },
-        { LogLevel.Debug, $"{ColorToHexARGB(Color.DarkSeaGreen)}"},
-        { LogLevel.Info, $"{ColorToHexARGB(Color.White)}" },
-        { LogLevel.Warning, $"{ColorToHexARGB(Color.Gold)}" },
-        { LogLevel.Error, $"{ColorToHexARGB(Color.Red)}" },
-        { LogLevel.Critical, $"{ColorToHexARGB(Color.DarkRed)}" },
-        { LogLevel.Highlight, $"{ColorToHexARGB(Color.Aquamarine)}"}
-    };
-    private static string ColorToHexARGB(Color color)
-    {
-        return $"[color=#{color.A:X2}{color.R:X2}{color.G:X2}{color.B:X2}]";
-    }
-
-    private static string _footer = "[/color]\n";
-    
-    private class Entry
-    {
-        internal readonly string Text;
-        internal readonly double Timestamp; // seconds since epoch
-        internal readonly LogLevel Level;
-        public Entry(string text, double timestamp, LogLevel level)
-        {
-            Text = text;
-            Timestamp = timestamp;
-            Level = level;
-        }
-            
-    }
-
-    private readonly List<Entry> _entries = new List<Entry>();
-    private readonly double _lifespan; // seconds
-
-    public TimedLog(double lifespanSeconds)
-    {
-        _lifespan = lifespanSeconds;
-    }
-
-    public void Add(string message, LogLevel level)
-    {
-        if (level < Config.General.LogLevel) return;
-        double now = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
-        _entries.Add(new Entry(message, now, level));
-    }
-
-    public void Update()
-    {
-        double now = (System.DateTime.UtcNow - new System.DateTime(1970,1,1)).TotalSeconds;
-        _entries.RemoveAll(e => now - e.Timestamp > _lifespan);
-    }
-
-    public List<string> GetEntries()
-    {
-        return _entries.Select(e => e.Text).ToList();
-    }
-
-    public override string ToString()
-    {
-        string value = "";
-        foreach (var entry in _entries)
-        {
-            value += _logColour[entry.Level] + entry.Text + _footer;
-        }
-
-        return value;
-    }
-}
 public class SimpleTimer
 {
     public int Remaining;
@@ -1276,7 +971,7 @@ public static class TimerManager
 }
 partial class Program : MyGridProgram
 {
-    public static Program I;
+        
     public static DebugAPI Debug;
     public static Random RNG;
     public TimedLog _Log = new TimedLog(10);
@@ -1299,7 +994,7 @@ partial class Program : MyGridProgram
             ShipManager.CreateControllableShip(Me.CubeGrid, GridTerminalSystem);
             Program.LogLine("Creating commands", LogLevel.Info);
             Commands.Setup();
-            Runtime.UpdateFrequency = UpdateFrequency.Update1;
+            //Runtime.UpdateFrequency = UpdateFrequency.Update1;
                 
             var elapsed = DateTime.UtcNow - startTime;
             LogLine($"Setup completed in {elapsed.TotalMilliseconds:F1} ms", LogLevel.Highlight);
@@ -1311,13 +1006,15 @@ partial class Program : MyGridProgram
         Echo(_Log.ToString());
     }
         
+    public static Program I { get; private set; }
+        
     public void Main(string argument, UpdateType updateSource)
     {
 
         try
         {
-                if ((updateSource & UpdateType.Update1) != 0) RunUpdate();
-                if ((updateSource & (UpdateType.Trigger | UpdateType.Terminal)) != 0) RunCommand(argument);
+            if ((updateSource & UpdateType.Update1) != 0) RunUpdate();
+            if ((updateSource & (UpdateType.Trigger | UpdateType.Terminal)) != 0) RunCommand(argument);
         }
         catch (Exception ex)
         {
@@ -1328,14 +1025,12 @@ partial class Program : MyGridProgram
 
 
     // TODO to be feature parity with arguslite:
-    // Finish auto balance (add space ball balance, mass block pair reenable)
-    // Get spherical force properly
     // Handle block removal in all systems
     // UI, switches (hud LCD probably)
-    // Finish hooking up variables in config
     // Fix aimbot
     // Auto dodge
     // Turret override
+    // No group early exit
         
     private void RunUpdate()
     {
@@ -1436,12 +1131,12 @@ public static class Config
             
         Program.LogLine("Written config to custom data", LogLevel.Debug);
         Program.LogLine("Commands set up", LogLevel.Debug);
-        SetupGlobalState(me);
+        SetupGlobalState();
         Program.LogLine("Config setup done", LogLevel.Info);
             
     }
 
-    private static void SetupGlobalState(IMyProgrammableBlock me)
+    private static void SetupGlobalState()
     {
         Program.LogLine("Setting up global state", LogLevel.Debug);
         GlobalState.PrecisionMode = Gdrive.DefaultPrecisionMode;
@@ -1469,7 +1164,7 @@ public static class Config
         {
             var config = ConfigCategory.From(obj, "General Config");
                 
-            config.Sync("LogLevel", ref LogLevel);
+            config.SyncEnum("LogLevel", ref LogLevel);
             config.Sync("MaxWeaponRange", ref MaxWeaponRange);
             config.Sync("GridSpeedLimit", ref GridSpeedLimit);
             config.Sync("MaxAngularVelocityRPM", ref MaxAngularVelocityRpm);
@@ -1481,7 +1176,8 @@ public static class Config
         public string ArgumentUnTarget = "Untarget";
         public string GroupName = "ArgusV2";
         public string TrackerGroupName = "TrackerGroup";
-            
+        public string MissileFinderPrefix = "MissileFinder";
+
         internal void Sync(Dictionary<string, object> obj)
         {
             var config = ConfigCategory.From(obj, "String Config");
@@ -1490,6 +1186,7 @@ public static class Config
             config.Sync("ArgumentUnTarget", ref ArgumentUnTarget);
             config.Sync("GroupName", ref GroupName);
             config.Sync("TrackerGroupName", ref TrackerGroupName);
+            config.Sync("MissileFinderPrefix", ref MissileFinderPrefix);
         }
     }
 
@@ -1535,7 +1232,7 @@ public static class Config
         public bool DisablePrecisionModeOnEnemyDetected = false;
         public double Step = 0.005;
         public int MassBalanceFrequencyFrames = 300;
-        public int BallBalanceFrequencyFrames = 600;
+        public int BallBalanceFrequencyFrames = 15;
         public int AccelerationRecalcDelay = 600;
 
         internal void Sync(Dictionary<string, object> obj)
@@ -1571,44 +1268,6 @@ public static class Config
             config.Sync("IntegralLowerLimit", ref IntegralLowerLimit);
             config.Sync("IntegralUpperLimit", ref IntegralUpperLimit);
         }
-    }
-}
-public class ConfigTool
-{
-    private static readonly Dictionary<string, ConfigTool> Configs = new Dictionary<string, ConfigTool>();
-
-    public delegate void ConfigSync(Dictionary<string, object> dict);
-    public ConfigSync Sync { get; set; }
-
-    public ConfigTool(string name, string comment)
-    {
-        Name = name;
-        Comment = comment;
-        Configs.Add(name, this);
-    }
-
-    public string Name { get; }
-    public string Comment { get; }
-
-    public static string SyncConfig(string input)
-    {
-        var parsed = Dwon.Parse(input);
-            
-        var dict = parsed as Dictionary<string, object>;
-        if (dict == null)
-        {
-            Program.LogLine("Config malformed", LogLevel.Critical);
-            throw new Exception();
-        }
-
-        foreach (var kv in Configs)
-        {
-            if (!dict.ContainsKey(kv.Key))
-                dict[kv.Key] = new Dictionary<string, object>();
-            kv.Value.Sync?.Invoke((Dictionary<string, object>)dict[kv.Key]); // sync fields < - > dictionary
-        }
-
-        return Dwon.Serialize(parsed);
     }
 }
 public class ProjectileData
@@ -1790,8 +1449,8 @@ public class GunData
             var reloadTime = existing.ReloadTime;
 
             category.Sync("Projectile", ref projectile);
-            category.Sync("ReloadType", ref reloadType, "0 = normal, 1 = charged");
-            category.Sync("FireType", ref fireType, "0 = normal, 1 = delay before firing");
+            category.SyncEnum("ReloadType", ref reloadType, "0 = normal, 1 = charged");
+            category.SyncEnum("FireType", ref fireType, "0 = normal, 1 = delay before firing");
             category.Sync("FireTime", ref fireTime);
             category.Sync("ReloadTime", ref reloadTime);
 
@@ -1825,6 +1484,509 @@ public static class GlobalState
 {
     public static bool PrecisionMode;
 }
+class ConfigCategory
+{
+    private readonly Dictionary<string, object> _values;
+
+    private ConfigCategory(Dictionary<string, object> values)
+    {
+        _values = values;
+    }
+
+    public static ConfigCategory From(Dictionary<string, object> root, string name)
+    {
+        Dwon.UnwrapAllComments(root);
+
+        Dictionary<string, object> dict;
+        object obj;
+
+        if (!root.TryGetValue(name, out obj) || (dict = obj as Dictionary<string, object>) == null)
+        {
+            dict = new Dictionary<string, object>();
+            root[name] = dict;
+        }
+
+        return new ConfigCategory(dict);
+    }
+
+    public void SyncEnum<E>(string key, ref E field, string comment = "") where E : struct
+    {
+        int temp = Convert.ToInt32(field);  // enum -> int
+        temp = Dwon.GetValue(_values, key, ref comment, temp);
+        field = (E)Enum.ToObject(typeof(E), temp);
+
+        if (!string.IsNullOrEmpty(comment))
+            _values[key] = new Dwon.Comment(temp, comment);
+        else
+            _values[key] = temp;
+    }
+
+
+    public void Sync<T>(string key, ref T field, string comment = "")
+    {
+        var temp = Dwon.GetValue(_values, key, ref comment, field);
+
+        if (!string.IsNullOrEmpty(comment))
+            _values[key] = new Dwon.Comment(temp, comment);
+        else
+            _values[key] = temp;
+
+        field = temp;
+    }
+}
+public class ConfigTool
+{
+    private static readonly Dictionary<string, ConfigTool> Configs = new Dictionary<string, ConfigTool>();
+
+    public delegate void ConfigSync(Dictionary<string, object> dict);
+    public ConfigSync Sync { get; set; }
+
+    public ConfigTool(string name, string comment)
+    {
+        Name = name;
+        Comment = comment;
+        Configs.Add(name, this);
+    }
+
+    public string Name { get; }
+    public string Comment { get; }
+
+    public static string SyncConfig(string input)
+    {
+        var parsed = Dwon.Parse(input);
+            
+        var dict = parsed as Dictionary<string, object>;
+        if (dict == null)
+        {
+            Program.LogLine("Config malformed", LogLevel.Critical);
+            throw new Exception();
+        }
+
+        foreach (var kv in Configs)
+        {
+            if (!dict.ContainsKey(kv.Key))
+                dict[kv.Key] = new Dictionary<string, object>();
+            kv.Value.Sync?.Invoke((Dictionary<string, object>)dict[kv.Key]); // sync fields < - > dictionary
+        }
+
+        return Dwon.Serialize(parsed);
+    }
+}
+    public static class Dwon
+    {
+        public class Comment
+        {
+            public object Obj;
+            public string Com;
+
+            public Comment(object obj, string comment)
+            {
+                Obj = obj;
+                Com = comment;
+            }
+        }
+
+
+        public static string Serialize(object obj, int indent = -1)
+        {
+            var sb = new StringBuilder();
+            Serialize(obj, sb, indent, null);
+            Program.LogLine("Serialized successfully", LogLevel.Debug);
+            return sb.ToString();
+        }
+
+        private static void Serialize(object obj, StringBuilder sb, int indent, string key)
+        {
+            string pad = new string(' ', Math.Max(indent, 0));
+
+            if (obj == null)
+            {
+                if (key != null) sb.AppendLine(pad + key + " = null");
+                return;
+            }
+
+            Comment commentObj = obj as Comment;
+            if (commentObj != null)
+            {
+                bool isPrimitive = IsPrimitive(commentObj.Obj);
+                if (isPrimitive && key != null)
+                {
+                    sb.AppendLine(pad + key + " = " + ValueToString(commentObj.Obj) + "   # " + commentObj.Com);
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(commentObj.Com))
+                        sb.AppendLine(pad + "# " + commentObj.Com);
+                    Serialize(commentObj.Obj, sb, indent, key);
+                }
+                return;
+            }
+
+            IDictionary<string, object> dict = obj as IDictionary<string, object>;
+            if (dict != null)
+            {
+                if (key != null) sb.AppendLine(pad + key + " = [");
+                foreach (var kv in dict)
+                {
+                    Serialize(kv.Value, sb, indent + 2, kv.Key);
+                }
+                if (key != null) sb.AppendLine(pad + "]");
+                return;
+            }
+
+            IEnumerable<object> list = obj as IEnumerable<object>;
+            if (list != null)
+            {
+                if (key != null)
+                {
+                    sb.Append(pad + key + " = { ");
+                    bool first = true;
+                    foreach (object v in list)
+                    {
+                        if (!first) sb.Append(", ");
+                        sb.Append(ValueToString(v));
+                        first = false;
+                    }
+                    sb.AppendLine(" }");
+                }
+                else
+                {
+                    foreach (object v in list)
+                        Serialize(v, sb, indent, null);
+                }
+                return;
+            }
+
+            if (key != null)
+            {
+                sb.AppendLine(pad + key + " = " + ValueToString(obj));
+            }
+        }
+
+        private static string ValueToString(object obj)
+        {
+            if (obj == null) return "null";
+
+            if (obj is AT_Vector3D)
+            {
+                AT_Vector3D v = (AT_Vector3D)obj;
+                return string.Format("Vec3({0} {1} {2})",
+                    v.X.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
+                    v.Y.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
+                    v.Z.ToString("R", System.Globalization.CultureInfo.InvariantCulture));
+            }
+
+            if (obj is string) return "\"" + Escape((string)obj) + "\"";
+            if (obj is bool) return ((bool)obj ? "true" : "false");
+            if (obj is float) return ((float)obj).ToString("0.#####", System.Globalization.CultureInfo.InvariantCulture);
+            if (obj is double) return ((double)obj).ToString("0.##########", System.Globalization.CultureInfo.InvariantCulture); 
+            if (obj is int || obj is long || obj is short || obj is byte) return obj.ToString();
+            return "\"" + Escape(obj.ToString()) + "\"";
+        }
+
+
+        private static string Escape(string s)
+        {
+            return s.Replace("\\", "\\\\").Replace("\"", "\\\"");
+        }
+
+        private static bool IsPrimitive(object value)
+        {
+            return value is string || value is bool ||
+                   value is int || value is long || value is short || value is byte ||
+                   value is float || value is double;
+        }
+
+
+
+        public static object Parse(string dwon)
+        {
+            int idx = 0;
+            var top = new Dictionary<string, object>();
+            while (idx < dwon.Length)
+            {
+                SkipWhitespaceAndComments(dwon, ref idx);
+                if (idx >= dwon.Length) break;
+
+                string key = ParseKey(dwon, ref idx);
+                ExpectChar(dwon, ref idx, '=');
+                object value = ParseValue(dwon, ref idx);
+                string comment = ParseInlineComment(dwon, ref idx);
+                if (comment != null && IsPrimitive(value))
+                    value = new Comment(value, comment);
+
+                top[key] = value;
+            }
+            return top;
+        }
+
+        private static object ParseValue(string s, ref int idx)
+        {
+            SkipWhitespaceAndComments(s, ref idx);
+
+            if (idx >= s.Length) return null;
+
+            char c = s[idx];
+
+            switch (c)
+            {
+                // Dictionary / object
+                case '[':
+                {
+                    idx++;
+                    var dict = new Dictionary<string, object>();
+                    while (true)
+                    {
+                        SkipWhitespaceAndComments(s, ref idx);
+                        if (idx >= s.Length) break;
+                        if (s[idx] == ']') { idx++; break; }
+
+                        string key = ParseKey(s, ref idx);
+                        ExpectChar(s, ref idx, '=');
+                        object value = ParseValue(s, ref idx);
+
+                        // attach inline comment if exists
+                        string comment = ParseInlineComment(s, ref idx);
+                        if (comment != null && IsPrimitive(value))
+                            value = new Comment(value, comment);
+
+                        dict[key] = value;
+                    }
+                    return dict;
+                }
+                // Array / list
+                case '{':
+                {
+                    idx++;
+                    var list = new List<object>();
+                    while (true)
+                    {
+                        SkipWhitespaceAndComments(s, ref idx);
+                        if (idx >= s.Length) break;
+                        if (s[idx] == '}') { idx++; break; }
+
+                        object value = ParseValue(s, ref idx);
+                        string comment = ParseInlineComment(s, ref idx);
+                        if (comment != null && IsPrimitive(value))
+                            value = new Comment(value, comment);
+
+                        list.Add(value);
+
+                        SkipWhitespaceAndComments(s, ref idx);
+                        if (idx < s.Length && s[idx] == ',') idx++; // optional comma
+                    }
+                    return list;
+                }
+            }
+
+            // Primitive or string
+            string token = ParseToken(s, ref idx);
+            string inlineComment = ParseInlineComment(s, ref idx);
+            object primitive = ParsePrimitive(token);
+            if (inlineComment != null && IsPrimitive(primitive))
+                primitive = new Comment(primitive, inlineComment);
+            return primitive;
+        }
+
+        private static void SkipWhitespaceAndComments(string s, ref int idx)
+        {
+            while (idx < s.Length)
+            {
+                if (s[idx] == ' ' || s[idx] == '\t' || s[idx] == '\r' || s[idx] == '\n')
+                {
+                    idx++;
+                    continue;
+                }
+
+                if (s[idx] == '#')
+                {
+                    while (idx < s.Length && s[idx] != '\n') idx++;
+                    continue;
+                }
+                break;
+            }
+        }
+
+        private static string ParseKey(string s, ref int idx)
+        {
+            try
+            {
+                SkipWhitespace(s, ref idx);
+
+                int start = idx;
+
+                while (idx < s.Length)
+                {
+                   
+                    char c = s[idx];
+                    // key ends ONLY at '='
+                    if (c == '=')
+                        break;
+
+                    // stop if we hit newline before seeing '=' → malformed key
+                    if (c == '\n' || c == '\r')
+                        throw new Exception("Unexpected newline while reading key");
+
+                    idx++;
+                }
+
+                if (idx == start)
+                    throw new Exception($"Empty key at index {idx}");
+
+                string key = s.Substring(start, idx - start).Trim();
+
+                return key;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"DWON: ParseKey failed with string ({s}). EX: {ex}");
+            }
+            
+        }
+
+        private static string ParseToken(string s, ref int idx)
+        {
+            SkipWhitespace(s, ref idx);
+            if (idx >= s.Length) return "";
+
+            char c = s[idx];
+
+            // Quoted string
+            if (c == '"' || c == '\'')
+            {
+                char quote = c;
+                idx++;
+                int start = idx;
+                while (idx < s.Length && s[idx] != quote) idx++;
+                string str = s.Substring(start, idx - start);
+                if (idx < s.Length) idx++; // skip closing quote
+                return str;
+            }
+
+            // Unquoted token
+            int startToken = idx;
+            while (idx < s.Length && s[idx] != '\n' && s[idx] != '\r' && s[idx] != '#' && s[idx] != ',' && s[idx] != '}' && s[idx] != ']') idx++;
+            string token = s.Substring(startToken, idx - startToken).Trim();
+            return token;
+        }
+
+        private static string ParseInlineComment(string s, ref int idx)
+        {
+            SkipWhitespace(s, ref idx);
+            if (idx < s.Length && s[idx] == '#')
+            {
+                idx++; // skip #
+                int start = idx;
+                while (idx < s.Length && s[idx] != '\n' && s[idx] != '\r') idx++;
+                return s.Substring(start, idx - start).Trim();
+            }
+            return null;
+        }
+
+        private static void SkipWhitespace(string s, ref int idx)
+        {
+            while (idx < s.Length && (s[idx] == ' ' || s[idx] == '\t' || s[idx] == '\r' || s[idx] == '\n')) idx++;
+        }
+
+        private static void ExpectChar(string s, ref int idx, char expected)
+        {
+            SkipWhitespace(s, ref idx);
+            if (idx >= s.Length || s[idx] != expected) throw new Exception("Expected '" + expected + "' at index " + idx);
+            idx++;
+        }
+
+        private static object ParsePrimitive(string token)
+        {
+            if (token.Length == 0) return null;
+
+            if (token == "true") return true;
+            if (token == "false") return false;
+
+            if (token.StartsWith("Vec3(") && token.EndsWith(")"))
+            {
+                string inside = token.Substring(5, token.Length - 6); // remove "Vec3(" and ")"
+                string[] parts = inside.Split(' ');
+                if (parts.Length == 3)
+                {
+                    double x, y, z;
+                    if (double.TryParse(parts[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out x) &&
+                        double.TryParse(parts[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out y) &&
+                        double.TryParse(parts[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out z))
+                    {
+                        return new AT_Vector3D(x, y, z);
+                    }
+                }
+            }
+
+            int i;
+            if (int.TryParse(token, out i)) return i;
+
+            double f;
+            if (double.TryParse(token, System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture, out f)) return f;
+
+            return token; // fallback to string
+        }
+
+
+
+        
+        // Helper: recursively unwrap all Dwon.Comment objects
+        public static void UnwrapAllComments(Dictionary<string, object> dict)
+        {
+            var keys = new List<string>(dict.Keys);
+            foreach (var key in keys)
+            {
+                var val = dict[key];
+                var c = val as Comment;
+                var nestedDict = val as Dictionary<string, object>;
+                var list = val as List<object>;
+                if (c != null)
+                    dict[key] = c.Obj;
+                
+                else if (nestedDict != null)
+                    UnwrapAllComments(nestedDict);
+                else if (list != null)
+                {
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        var listItem = list[i];
+                        var cl = listItem as Comment;
+                        list[i] = cl != null ? cl.Obj : list[i];
+                    }
+                        
+                }
+            }
+        }
+
+// Helper: safely get value, returns default if missing
+        public static T GetValue<T>(Dictionary<string, object> dict, string key, ref string comment, T defaultValue = default(T))
+        {
+            comment = "";
+            object value;
+            if (dict.TryGetValue(key, out value))
+            {
+                // Handle value types and reference types separately
+                var temp = value as Comment;
+                if (temp != null)
+                {
+                    value = temp.Obj;
+                    comment = temp.Com;
+                }
+                if (value is T) return (T)value;
+                
+                try
+                {
+                    return (T)Convert.ChangeType(value, typeof(T));
+                }
+                catch
+                {
+                    return defaultValue;
+                }
+            }
+            return defaultValue;
+        }
+    }
 public abstract class ArgusShip
 {
     protected AT_Vector3D CPreviousVelocity;
@@ -2456,6 +2618,159 @@ public class GyroManager
         
         
 }
+public enum PayloadType
+{
+    Kinetic,            // Effectively: No payload
+    Warhead,            // Versatile
+    Nuke                // Ammo bomb
+}
+public enum LaunchType
+{
+    OneAtATime,         // One missile launch per button press
+    Simultaneous,       // All launchers fire on button press
+    Staggered           // All launchers fire on button press, but with a delay between them
+}
+public enum LaunchControl
+{
+    Automatic,          // Launch to a quota whenever any target is tracked. See refuel state for further launch conditions
+    Manual,             // Launch only when commanded to by the controlling player. See refuel state for further launch conditions
+    ManualCiwsOverride  // Launch only when commanded to by the controlling player, or when CIWS system requests a missile and none are nearby. See refuel state for further launch conditions
+}
+public enum RefuelPriority
+{
+    Low,                // Allows: Automatic launch @ 10% fuel, manual launch @ any%, CIWS launch @ any%
+    Medium,             // Allows: Automatic launch @ 100% fuel, manual launch @ 10%, CIWS launch @ any%
+    High                // Allows: Automatic launch @ 100% fuel, manual launch @ 100% out of combat, 10% with a tracked target, CIWS launch @ 1%
+}
+[Flags]
+public enum DeliveryType
+{
+    None = 0,
+    Hydrogen = 1 << 0,
+    Ion = 1 << 1,
+    Atmospheric = 1 << 2
+}
+[Flags]
+public enum LaunchMechanism
+{
+    None = 0,
+    Rotor = 1 << 0,
+    Piston = 1 << 1,
+    Connector = 1 << 2,
+    MergeBlock = 1 << 3,
+    PulsedThruster = 1 << 4,
+    Weapon = 1 << 5
+}
+public enum Behavior
+{
+    Interdict,          // Hang out at a random point far away from the ship and chase down any detected target that gets too close
+    DirectAttack,       // Go straight for the primary detected target on launch. As a fallback, either beamride or idle near the launching ship
+    SurroundAndClose,   // Surround an enemy target and wait for the signal to attack. As a fallback, surround the controlling ship instead
+    Defend              // Effectively the same as Interdict, but at a much much tighter area, just a couple hundred meters
+}
+internal class MissileFinder
+{
+    private IMyTerminalBlock _finderBlock;
+    private AT_Vector3D _offset;
+    private AT_Vector3D _extents;
+    private List<IMyCubeBlock> _blocks;
+    private ControllableShip _thisShip;
+
+    public MissileFinder(IMyTerminalBlock finder, ControllableShip ship)
+    {
+        _finderBlock = finder;
+        _finderBlock.CustomData = SyncConfig(_finderBlock.CustomData);
+        _blocks = new List<IMyCubeBlock>();
+        _thisShip = ship;
+        Program.Log("Finder setup");
+        Program.Log(_offset);
+        Program.Log(_extents);
+        RefreshBlocks();
+    }
+
+    private Vector3I FirstCorner => _finderBlock.Position + LocalTranslate(_offset);
+    private Vector3I SecondCorner => _finderBlock.Position + LocalTranslate(_offset + _extents);
+        
+    public string SyncConfig(string input)
+    {
+        var parsed = Dwon.Parse(input);
+            
+        var dict = parsed as Dictionary<string, object>;
+        if (dict == null)
+        {
+            Program.LogLine("(MissileFinder) Config malformed", LogLevel.Critical);
+            throw new Exception();
+        }
+
+        var cat = ConfigCategory.From(dict, "MissileFinder");
+            
+        cat.Sync("Offset", ref _offset);
+        cat.Sync("Extents", ref _extents);
+        _offset = _offset.Floor();
+        _extents = _extents.Floor();
+            
+        return Dwon.Serialize(parsed);
+    }
+
+    private Vector3I LocalTranslate(AT_Vector3D translation)
+    {
+        var orientation = _finderBlock.Orientation;
+
+        var forward = Base6Directions.Directions[(int)orientation.Forward] * (float)translation.X;
+        var up = Base6Directions.Directions[(int)orientation.Up] * (float)translation.Y;
+        var left = Base6Directions.Directions[(int)orientation.Left] * (float)translation.Z;
+
+
+        return (Vector3I)(forward + up + left);
+    }
+
+    private void RefreshBlocks()
+    {
+        _blocks.Clear();
+
+        Vector3I ca = Vector3I.Min(FirstCorner, SecondCorner);
+        Vector3I cb = Vector3I.Max(FirstCorner, SecondCorner);
+            
+            
+        foreach (var pos in Vector3I.EnumerateRange(ca, cb))
+        {
+            var slimBlock = _thisShip.Grid.GetCubeBlock(pos);
+            if (slimBlock != null)
+            {
+                var fullBlock = slimBlock.FatBlock;
+                _blocks.Add(fullBlock);
+                Program.Log($"Got block {fullBlock.DisplayName}");
+            }
+        }
+    }
+        
+}
+public class MissileManager
+{
+
+    private List<MissileFinder> _missileFinders;
+
+
+    public MissileManager(List<IMyTerminalBlock> blocks, ControllableShip ship)
+    {
+            
+        _missileFinders = new List<MissileFinder>();
+        foreach (var block in blocks)
+        {
+            if (block.CustomName.StartsWith(Config.String.MissileFinderPrefix)) _missileFinders.Add(new MissileFinder(block, ship));
+        }
+    }
+
+    public void EarlyUpdate(int frame)
+    {
+            
+    }
+
+    public void LateUpdate(int frame)
+    {
+            
+    }
+}
 public enum PollFrequency
 {
     Low,        // For targets veeery far away (>10x max weapon range)
@@ -2486,7 +2801,8 @@ public class BalancedMassSystem
     private bool _stateChanged;
     private int _updateJitter = 0;
         
-    private AT_Vector3D _currentMoment = AT_Vector3D.Zero; // running moment
+    private AT_Vector3D _currentMassMoment = AT_Vector3D.Zero; // running moment
+    private AT_Vector3D _currentBallMoment = AT_Vector3D.Zero;
 
     private ControllableShip _ship;
 
@@ -2505,7 +2821,7 @@ public class BalancedMassSystem
                 var wrap = new BallMass(ball, this, _ship);
                 _balls.Add(wrap);
                 _allBlocks.Add(wrap);
-                _currentMoment += wrap.Moment;
+                _currentBallMoment += wrap.Moment;
                 continue;
             }
 
@@ -2515,7 +2831,7 @@ public class BalancedMassSystem
                 var wrap = new BlockMass(mass, this, _ship);
                 _blocks.Add(wrap);
                 _allBlocks.Add(wrap);
-                _currentMoment += wrap.Moment;
+                _currentMassMoment += wrap.Moment;
             }
 
         }
@@ -2527,6 +2843,7 @@ public class BalancedMassSystem
         
     public bool Enabled { get; set; }
     public double TotalMass { get; private set; }
+    public double TotalMassBlocks { get; private set; }
 
     public List<Mass> AllBlocks => _allBlocks;
 
@@ -2557,6 +2874,10 @@ public class BalancedMassSystem
         {
             CalculateTotalMass();
         }
+
+
+            
+            
     }
     /// <summary>
     /// Returns true if the mass state of the generator has changed since this function was last called.
@@ -2572,10 +2893,12 @@ public class BalancedMassSystem
     private void CalculateTotalMass()
     {
         TotalMass = 0;
+        TotalMassBlocks = 0;
 
         foreach (var block in _blocks)
         {
             TotalMass += block.BalancerVirtualMass;
+            TotalMassBlocks += block.BalancerVirtualMass;
         }
 
         foreach (var ball in _balls)
@@ -2586,29 +2909,100 @@ public class BalancedMassSystem
         
     private void BalanceMassBlocks()
     {
-        // _currentMoment persists across frames
-        // Each iteration nudges blocks on/off
-        AT_Vector3D momentBefore = _currentMoment;
+        AT_Vector3D beforeMoment = _currentMassMoment;
+        double beforeMass = TotalMass; // however you track total
+
         foreach (var block in _blocks)
         {
-            AT_Vector3D momentToggle = block.BalancerAllowed ? AT_Vector3D.Zero : block.Moment;
+            double oldMass = beforeMass;
+            double newMass = beforeMass +
+                             (block.BalancerAllowed ? -block.AbsoluteVirtualMass : block.AbsoluteVirtualMass);
 
-            if ((_currentMoment - (block.BalancerAllowed ? block.Moment : AT_Vector3D.Zero) + momentToggle).LengthSquared() <
-                _currentMoment.LengthSquared())
+            AT_Vector3D candidate =
+                _currentMassMoment
+                - (block.BalancerAllowed ? block.Moment : AT_Vector3D.Zero)
+                + (block.BalancerAllowed ? AT_Vector3D.Zero : block.Moment);
+
+            if (AcceptChange(_currentMassMoment, candidate, oldMass, newMass, SignificantTorqueGainMass))
             {
                 block.BalancerAllowed = !block.BalancerAllowed;
-                _currentMoment = _currentMoment - (block.BalancerAllowed ? AT_Vector3D.Zero : block.Moment) + momentToggle;
+                _currentMassMoment = candidate;
+                beforeMass = newMass; // update after change
             }
         }
-        _stateChanged |= momentBefore != _currentMoment;
+
+        _stateChanged |= beforeMoment != _currentMassMoment;
     }
     private void BalanceSpaceBalls()
     {
-        AT_Vector3D momentBefore = _currentMoment;
-            // TODO: Space ball balance logic
+        _currentBallMoment = AT_Vector3D.Zero;
+        foreach (var ball in _balls)
+        {
+            _currentBallMoment += ball.Moment;
+        }
             
             
-        _stateChanged |= momentBefore != _currentMoment;
+            
+        // Total moment before any changes
+        AT_Vector3D totalBefore = _currentMassMoment + _currentBallMoment;
+        double totalMass = TotalMass; // total current mass (blocks + balls)
+    
+        // We want to reduce moment toward zero
+        AT_Vector3D deficit = -totalBefore;
+
+        foreach (var ball in _balls)
+        {
+            // Unit direction of this ball's moment contribution
+            var dir = ball.Moment.Normalized();
+        
+            // Project deficit along this ball's direction
+            double projection = deficit.Dot(dir) / 250;
+
+            // Ignore tiny adjustments
+            if (Math.Abs(projection) < 0.001)
+                continue;
+
+            float oldMass = ball.BalancerVirtualMass;
+            float newMass = (float)MathHelper.Clamp(oldMass + projection, 0f, 20000f);
+            if (newMass > 0) newMass += (newMass - oldMass) * 0.1f;
+            float applied = newMass - oldMass;
+            // Ignore very tiny changes
+            if (Math.Abs(applied) < 0.5)
+                continue;
+
+            // Candidate total moment if this change were applied
+            AT_Vector3D candidateMoment = _currentMassMoment + _currentBallMoment + dir * applied;
+
+            // Accept change according to “prefer adding mass” logic
+            if (AcceptChange(totalBefore, candidateMoment,
+                    totalMass, totalMass + applied, SignificantTorqueGainBall))
+            {
+                // Apply change
+                ball.BalancerVirtualMass = newMass;
+                _currentBallMoment += dir * applied;
+
+                // Update running total mass
+                totalMass += applied;
+
+                // Flag if any state changed
+                _stateChanged |= totalBefore != (_currentMassMoment + _currentBallMoment);
+            }
+        }
+    }
+    private const double SignificantTorqueGainMass = 1;
+    private const double SignificantTorqueGainBall = 0;
+    private bool AcceptChange(AT_Vector3D currentMoment, AT_Vector3D candidateMoment,
+        double oldMass, double newMass, double significantTorqueGain)
+    {
+        double before = currentMoment.LengthSquared();
+        double after = candidateMoment.LengthSquared();
+        double improvement = before - after;
+        double massDelta = newMass - oldMass;
+
+        if (massDelta > 0)
+            return improvement > 0; // adding mass? tiny win is enough
+        else
+            return improvement > significantTorqueGain; // losing mass? must be worth it
     }
 
 
@@ -2688,7 +3082,7 @@ internal class DirectionalDrive
             {
                 foreach (var mass in masses)
                 {
-                    var dir = ((AT_Vector3D)(mass.GridPosition - generator.GridPosition)).Normalized();
+                    var dir = ((AT_Vector3D)(generator.GridPosition - mass.GridPosition)).Normalized();
                     var force = dir * mass.BalancerVirtualMass * Config.Gdrive.Acceleration *
                                 generator.InvertedSign;
                     netForce += force;
@@ -2758,7 +3152,7 @@ public class GDrive
             {
                 var forward = _ship.LocalDirectionForward;
                 var forwardDir = Base6Directions.Directions[(int)forward];
-                var inverted = forwardDir.Dot((Vector3D)_ship.Position - sphericalGen.GetPosition()) > 0;
+                var inverted = forwardDir.Dot((Vector3D)_ship.LocalCenterOfMass - sphericalGen.Position * _ship.GridSize) > 0;
                 var list = genCastArray[forward];
                 list.Add(new GravityGeneratorSpherical(sphericalGen, forward, inverted));
                     
@@ -2809,7 +3203,7 @@ public class GDrive
     {
         _forwardBackward.SetAcceleration((float)propLocal.Dot(AT_Vector3D.Forward));
         _leftRight.SetAcceleration((float)propLocal.Dot(AT_Vector3D.Left));
-        _upDown.SetAcceleration((float)propLocal.Dot(-AT_Vector3D.Up));
+        _upDown.SetAcceleration((float)propLocal.Dot(AT_Vector3D.Up));
     }
 
     public double GetForwardBackwardForce()
@@ -2838,11 +3232,13 @@ public class BallMass : Mass
     private IMySpaceBall _ball;
     private BalancedMassSystem _massSystem;
     private ControllableShip _ship;
+    private float _cachedVirtualMass = 20000;
+    private bool _wasActive;
     public BallMass(IMySpaceBall ball, BalancedMassSystem massSystem, ControllableShip ship)
     {
         _ball = ball;
         _massSystem = massSystem;
-        _ship = _ship;
+        _ship = ship;
     }
 
     public bool BalancerAllowed { get; set; } = true;
@@ -2851,15 +3247,47 @@ public class BallMass : Mass
 
     public bool IsActive => BalancerAllowed && GeneratorRequested;
     public override AT_Vector3D Position => _ball.GetPosition();
-    public override double AbsoluteVirtualMass => _ball.VirtualMass;
-    public override double BalancerVirtualMass => BalancerAllowed ? _ball.VirtualMass : 0;
+
+    public override double AbsoluteVirtualMass
+    {
+        get
+        {
+            return _ball.VirtualMass;
+        }
+        set
+        {
+            _ball.VirtualMass = (float)value;
+        }
+    }
+
+    public override float BalancerVirtualMass
+    {
+        get
+        {
+            return _cachedVirtualMass;
+        }
+        set
+        {
+            _cachedVirtualMass = value;
+            if (GeneratorRequested) _ball.VirtualMass = _cachedVirtualMass;
+        }
+    } 
     public override Vector3I GridPosition => _ball.Position;
-    public AT_Vector3D Moment => AbsoluteVirtualMass * (_ball.GetPosition() - _ship.Controller.CenterOfMass);
+
+    public AT_Vector3D Moment => AbsoluteVirtualMass * ((AT_Vector3D)GridPosition * _ship.GridSize - _ship.LocalCenterOfMass);
+    //public AT_Vector3D Moment => AbsoluteVirtualMass * (_ball.GetPosition() - _ship.Controller.CenterOfMass);
+   
 
     public bool UpdateState()
     {
         var r = false;
-        _ball.Enabled = IsActive;
+
+        if (IsActive != _wasActive)
+        {
+            _ball.Enabled = IsActive;
+            _ball.VirtualMass = _cachedVirtualMass;
+        }
+        _wasActive = IsActive;
         return r;
     }
 }
@@ -2884,8 +3312,18 @@ public class BlockMass : Mass
 
     public bool IsActive => BalancerAllowed && GeneratorRequested;
     public override AT_Vector3D Position => _mass.GetPosition();
-    public override double AbsoluteVirtualMass => _mass.VirtualMass;
-    public override double BalancerVirtualMass => BalancerAllowed ? _mass.VirtualMass : 0;
+    public override double AbsoluteVirtualMass
+    {
+        get { return _mass.VirtualMass; }
+        set {  } // Just a stub since can't set virtual mass on a mass block
+    }
+
+    public override float BalancerVirtualMass
+    {
+        get { return BalancerAllowed ? _mass.VirtualMass : 0; }
+        set {  }
+    }
+
     public override Vector3I GridPosition => _mass.Position;
     public AT_Vector3D Moment => AbsoluteVirtualMass * (_mass.GetPosition() - _ship.Controller.CenterOfMass);
 
@@ -2959,8 +3397,8 @@ public class GravityGeneratorSpherical : GravityGenerator
 public abstract class Mass
 {
     public abstract AT_Vector3D Position { get; }
-    public abstract double AbsoluteVirtualMass { get; }
-    public abstract double BalancerVirtualMass { get; }
+    public abstract double AbsoluteVirtualMass { get; set; }
+    public abstract float BalancerVirtualMass { get; set; }
     public abstract Vector3I GridPosition { get; }
 }
 public class PropulsionController
@@ -3001,7 +3439,7 @@ public class PropulsionController
                 
             var dampenValueForwardBackward = localVelocity * AT_Vector3D.Forward * 10 * GetForwardBackwardAcceleration();
             var dampenValueLeftRight = localVelocity * AT_Vector3D.Left * 10 * GetLeftRightAcceleration();
-            var dampenValueUpDown = localVelocity * AT_Vector3D.Up * 10 * GetUpDownAcceleration();
+            var dampenValueUpDown = localVelocity * -AT_Vector3D.Up * 10 * GetUpDownAcceleration();
 
             if (desiredMovement.Dot(AT_Vector3D.Forward) == 0) desiredMovement += dampenValueForwardBackward;
             if (desiredMovement.Dot(AT_Vector3D.Left) == 0) desiredMovement += dampenValueLeftRight;
@@ -3118,10 +3556,12 @@ public class ControllableShip : SupportingShip
     private readonly GyroManager _gyroManager;
     private readonly FireController _fireController;
     private readonly PropulsionController _propulsionController;
+    private readonly MissileManager _missileManager;
     private List<IMyLargeTurretBase> _turrets; // TODO: Abstract into a turrets handler, assign
         
     private CachedValue<AT_Vector3D> _gravity;
     private CachedValue<MyShipMass> _mass;
+    private CachedValue<AT_Vector3D> _localCenterOfMass;
         
     public ControllableShip(IMyCubeGrid grid, List<IMyTerminalBlock> blocks, List<IMyTerminalBlock> trackerBlocks) : base(grid, trackerBlocks)
     {
@@ -3144,9 +3584,11 @@ public class ControllableShip : SupportingShip
             
         _gravity = new CachedValue<AT_Vector3D>(() => Controller.GetNaturalGravity());
         _mass = new CachedValue<MyShipMass>(() => Controller.CalculateShipMass());
-            
+        _localCenterOfMass = new CachedValue<AT_Vector3D>(() =>
+            AT_Vector3D.Transform(Controller.CenterOfMass, MatrixD.Invert(WorldMatrix)));
+                
         _propulsionController = new PropulsionController(blocks, this);
-            
+        _missileManager = new MissileManager(blocks, this);
     }
         
     /// <summary>
@@ -3197,6 +3639,11 @@ public class ControllableShip : SupportingShip
     /// Gets the mass details of the grid. Subject to inaccuracy if being changed rapidly.
     /// </summary>
     public MyShipMass Mass => _mass.Value;
+
+    public AT_Vector3D LocalCenterOfMass => _localCenterOfMass.Value;
+
+    public IMyCubeGrid Grid => _grid;
+
         
     // Could possibly subscribe these and make them private?
     // Early Update is called in a deterministic, but undefined order. Designed for gathering data.
@@ -3206,11 +3653,13 @@ public class ControllableShip : SupportingShip
         base.EarlyUpdate(frame);
         Guns.EarlyUpdate(frame);
         _propulsionController.EarlyUpdate(frame);
+        _missileManager.EarlyUpdate(frame);
             
         if ((frame + RandomUpdateJitter) % Polling.GetFramesBetweenPolls(PollFrequency) == 0)
         {
             _gravity.Invalidate();
             _mass.Invalidate();
+            _localCenterOfMass.Invalidate();
         }
     }
     // Late Update is called in a deterministic, but undefined order. Designed for acting on data.
@@ -3224,14 +3673,10 @@ public class ControllableShip : SupportingShip
             var solution = _fireController.ArbitrateFiringSolution();
             if (solution.TargetPosition == AT_Vector3D.Zero) _gyroManager.ResetGyroOverrides(); // TODO: Don't spam this
             else _gyroManager.Rotate(ref solution);
-                
-            // TODO: A little inconsistent to put this in a check when the EarlyUpdate is not.
-            // Instead guns itself should handle the gatekeeping.
-            // Technically this all works the way it should but in a questionable way.
-            Guns.LateUpdate(frame); 
-                
         }
+        Guns.LateUpdate(frame); 
         _propulsionController.LateUpdate(frame);
+        _missileManager.EarlyUpdate(frame);
     }
         
         
@@ -3961,8 +4406,8 @@ public struct AT_Vector3D
 
 
     public static AT_Vector3D Zero => Vector3D.Zero;
-    public static Vector3 Forward => Vector3D.Forward;
-    public static Vector3 Left => Vector3D.Left;
+    public static AT_Vector3D Forward => Vector3D.Forward;
+    public static AT_Vector3D Left => Vector3D.Left;
     public static AT_Vector3D Up => Vector3D.Up;
     public double Length() => _value.Length();
 
@@ -3989,5 +4434,8 @@ public struct AT_Vector3D
     public AT_Vector3D Normalized() => _value.Normalized();
 
     public bool Equals(AT_Vector3D other) => _value == other._value;
-        
+
+    public override string ToString() => _value.ToString();
+
+    public AT_Vector3D Floor() => (AT_Vector3D)Vector3D.Floor(_value);
 }

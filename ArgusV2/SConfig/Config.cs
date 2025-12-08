@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using IngameScript.Helper;
 using IngameScript.SConfig;
 using IngameScript.SConfig.Database;
+using IngameScript.SConfig.Helper;
 using Sandbox.ModAPI.Ingame;
 
 namespace IngameScript
@@ -32,12 +33,12 @@ namespace IngameScript
             
             Program.LogLine("Written config to custom data", LogLevel.Debug);
             Program.LogLine("Commands set up", LogLevel.Debug);
-            SetupGlobalState(me);
+            SetupGlobalState();
             Program.LogLine("Config setup done", LogLevel.Info);
             
         }
 
-        private static void SetupGlobalState(IMyProgrammableBlock me)
+        private static void SetupGlobalState()
         {
             Program.LogLine("Setting up global state", LogLevel.Debug);
             GlobalState.PrecisionMode = Gdrive.DefaultPrecisionMode;
@@ -65,7 +66,7 @@ namespace IngameScript
             {
                 var config = ConfigCategory.From(obj, "General Config");
                 
-                config.Sync("LogLevel", ref LogLevel);
+                config.SyncEnum("LogLevel", ref LogLevel);
                 config.Sync("MaxWeaponRange", ref MaxWeaponRange);
                 config.Sync("GridSpeedLimit", ref GridSpeedLimit);
                 config.Sync("MaxAngularVelocityRPM", ref MaxAngularVelocityRpm);
@@ -77,7 +78,8 @@ namespace IngameScript
             public string ArgumentUnTarget = "Untarget";
             public string GroupName = "ArgusV2";
             public string TrackerGroupName = "TrackerGroup";
-            
+            public string MissileFinderPrefix = "MissileFinder";
+
             internal void Sync(Dictionary<string, object> obj)
             {
                 var config = ConfigCategory.From(obj, "String Config");
@@ -86,6 +88,7 @@ namespace IngameScript
                 config.Sync("ArgumentUnTarget", ref ArgumentUnTarget);
                 config.Sync("GroupName", ref GroupName);
                 config.Sync("TrackerGroupName", ref TrackerGroupName);
+                config.Sync("MissileFinderPrefix", ref MissileFinderPrefix);
             }
         }
 
@@ -131,7 +134,7 @@ namespace IngameScript
             public bool DisablePrecisionModeOnEnemyDetected = false;
             public double Step = 0.005;
             public int MassBalanceFrequencyFrames = 300;
-            public int BallBalanceFrequencyFrames = 600;
+            public int BallBalanceFrequencyFrames = 15;
             public int AccelerationRecalcDelay = 600;
 
             internal void Sync(Dictionary<string, object> obj)

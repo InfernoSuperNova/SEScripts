@@ -82,7 +82,7 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
                 {
                     foreach (var mass in masses)
                     {
-                        var dir = ((AT_Vector3D)(mass.GridPosition - generator.GridPosition)).Normalized();
+                        var dir = ((AT_Vector3D)(generator.GridPosition - mass.GridPosition)).Normalized();
                         var force = dir * mass.BalancerVirtualMass * Config.Gdrive.Acceleration *
                                     generator.InvertedSign;
                         netForce += force;

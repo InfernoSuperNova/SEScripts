@@ -7,8 +7,8 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity.Wrapper
     public abstract class Mass
     {
         public abstract AT_Vector3D Position { get; }
-        public abstract double AbsoluteVirtualMass { get; }
-        public abstract double BalancerVirtualMass { get; }
+        public abstract double AbsoluteVirtualMass { get; set; }
+        public abstract float BalancerVirtualMass { get; set; }
         public abstract Vector3I GridPosition { get; }
     }
 }

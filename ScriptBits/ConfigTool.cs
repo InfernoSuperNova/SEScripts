@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using IngameScript.Helper;
-using VRage.Game.ModAPI.Ingame.Utilities;
+using IngameScript;
 
-namespace IngameScript.SConfig
+namespace IngameScript
 {
     public class ConfigTool
     {

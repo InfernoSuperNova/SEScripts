@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using IngameScript.Helper;
+using IngameScript.SConfig.Helper;
 using IngameScript.Ship.Components;
 
 namespace IngameScript.SConfig.Database
@@ -185,8 +186,8 @@ namespace IngameScript.SConfig.Database
                 var reloadTime = existing.ReloadTime;
 
                 category.Sync("Projectile", ref projectile);
-                category.Sync("ReloadType", ref reloadType, "0 = normal, 1 = charged");
-                category.Sync("FireType", ref fireType, "0 = normal, 1 = delay before firing");
+                category.SyncEnum("ReloadType", ref reloadType, "0 = normal, 1 = charged");
+                category.SyncEnum("FireType", ref fireType, "0 = normal, 1 = delay before firing");
                 category.Sync("FireTime", ref fireTime);
                 category.Sync("ReloadTime", ref reloadTime);
 
