@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using IngameScript.Helper;
+using IngameScript.Helper.Log;
 
 namespace IngameScript.SConfig
 {

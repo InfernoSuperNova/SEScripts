@@ -1,5 +1,6 @@
 
 using IngameScript.Helper;
+using IngameScript.Helper.Log;
 using IngameScript.SConfig.Database;
 using IngameScript.TruncationWrappers;
 using Sandbox.Game.EntityComponents;

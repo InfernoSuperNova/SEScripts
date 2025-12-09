@@ -1,4 +1,5 @@
 using IngameScript.Helper;
+using IngameScript.Helper.Log;
 using IngameScript.TruncationWrappers;
 using VRageMath;
 

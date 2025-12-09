@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using IngameScript.Helper;
+using IngameScript.Helper.Log;
 using IngameScript.SConfig;
 
 namespace IngameScript

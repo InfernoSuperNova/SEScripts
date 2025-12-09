@@ -1,4 +1,4 @@
-namespace IngameScript.Helper
+namespace IngameScript.Helper.Log
 {
     public enum LogLevel
     {

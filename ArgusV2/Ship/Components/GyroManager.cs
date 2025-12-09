@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using IngameScript.Helper;
+using IngameScript.Helper.Log;
 using IngameScript.TruncationWrappers;
 using Sandbox.ModAPI.Ingame;
 using VRageMath;

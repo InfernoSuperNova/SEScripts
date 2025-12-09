@@ -40,6 +40,7 @@ class Program : MyGridProgram
             ShipManager.CreateControllableShip(Me.CubeGrid, GridTerminalSystem);
             Program.LogLine("Creating commands", LogLevel.Info);
             Commands.Setup();
+            //Runtime.UpdateFrequency = UpdateFrequency.Update1;
                 
             var elapsed = DateTime.UtcNow - startTime;
             LogLine($"Setup completed in {elapsed.TotalMilliseconds:F1} ms", LogLevel.Highlight);
@@ -47,6 +48,10 @@ class Program : MyGridProgram
         catch (Exception ex)
         {
             Echo("Crashed: " + ex);
+        }
+        finally
+        {
+            I = null;
         }
         Echo(_Log.ToString());
     }
@@ -58,6 +63,7 @@ class Program : MyGridProgram
 
         try
         {
+            I = this;
             if ((updateSource & UpdateType.Update1) != 0) RunUpdate();
             if ((updateSource & (UpdateType.Trigger | UpdateType.Terminal)) != 0) RunCommand(argument);
         }
@@ -66,9 +72,20 @@ class Program : MyGridProgram
             Echo(ex.ToString());
             Runtime.UpdateFrequency = UpdateFrequency.None;
         }
+        finally
+        {
+            I = null;
+        }
     }
 
 
+    // TODO to be feature parity with arguslite:
+    // Handle block removal in all systems
+    // UI, switches (hud LCD probably)
+    // Fix aimbot
+    // Auto dodge
+    // Turret override
+    // No group early exit
         
     void RunUpdate()
     {
@@ -93,6 +110,8 @@ class Program : MyGridProgram
         }
         else
         {
+            // Optional: handle unknown command
+            // e.g., Log("Unknown command: " + argument);
         }
     }
     public static void Log(object obj)
@@ -272,7 +291,7 @@ public class TimedLog
     class Entry
     {
         internal readonly string Text;
-        internal readonly double Timestamp;
+        internal readonly double Timestamp; // seconds since epoch
         internal readonly LogLevel Level;
         public Entry(string text, double timestamp, LogLevel level)
         {
@@ -284,7 +303,7 @@ public class TimedLog
     }
 
     private readonly List<Entry> _entries = new List<Entry>();
-    private readonly double _lifespan;
+    private readonly double _lifespan; // seconds
 
     public TimedLog(double lifespanSeconds)
     {
@@ -362,72 +381,30 @@ public class PIDController
 }
 public enum Direction : byte
 {
-Forward,
-Backward,
-Left,
-Right,
-Up,
-Down,
-}
-public static class DynamicAABBTreeDHelper
-{
-    private static readonly List<TrackableShip> Elements = new List<TrackableShip>();
-    private static readonly List<BoundingBoxD> Boxes = new List<BoundingBoxD>();
-
-    private static readonly Dictionary<TrackableShip, List<TrackableShip>> ReusedOverlaps =
-        new Dictionary<TrackableShip, List<TrackableShip>>();
-
-    private static readonly List<List<TrackableShip>> ReusedLists = new List<List<TrackableShip>>();
-
-    private static int _rI = 0;
-    private static List<TrackableShip> GetList()
-    {
-        if (_rI >= ReusedLists.Count)
-            ReusedLists.Add(new List<TrackableShip>(8));
-
-        var list = ReusedLists[_rI++];
-        list.Clear();
-        return list;
-    }
-        
-    public static Dictionary<TrackableShip, List<TrackableShip>> GetAllOverlaps(MyDynamicAABBTreeD tree)
-    {
-        _rI = 0;
-        ReusedOverlaps.Clear();
-        tree.GetAll(Elements, clear: true, boxsList: Boxes);
-
-        for (int i = 0; i < Elements.Count; i++)
-        {
-            var entityA = Elements[i];
-            var boxA = Boxes[i];
-
-            var overlapping = GetList();
-            tree.OverlapAllBoundingBox(ref boxA, overlapping, 0U, false);
-
-            foreach (var entityB in overlapping)
-            {
-                if (entityA == entityB) continue;
-                    
-                if (!ReusedOverlaps.ContainsKey(entityA)) ReusedOverlaps.Add(entityA, GetList());
-                ReusedOverlaps[entityA].Add(entityB);
-                    
-                if (!ReusedOverlaps.ContainsKey(entityB)) ReusedOverlaps.Add(entityB, GetList());
-                ReusedOverlaps[entityB].Add(entityA);
-                    
-            }
-        }
-
-        return ReusedOverlaps;
-    }
-    public static List<TrackableShip> GetOverlapsWithBox(MyDynamicAABBTreeD tree, BoundingBoxD box)
-    {
-        _rI = 0;
-        var overlapping = GetList();
-
-        tree.OverlapAllBoundingBox(ref box, overlapping, 0U, false);
-
-        return overlapping;
-    }
+    /// <summary>
+    /// 
+    /// </summary>
+    Forward,
+    /// <summary>
+    /// 
+    /// </summary>
+    Backward,
+    /// <summary>
+    /// 
+    /// </summary>
+    Left,
+    /// <summary>
+    /// 
+    /// </summary>
+    Right,
+    /// <summary>
+    /// 
+    /// </summary>
+    Up,
+    /// <summary>
+    /// 
+    /// </summary>
+    Down,
 }
 public static class ArgusMath
 {
@@ -439,16 +416,22 @@ public static class ArgusMath
 public static class OBBReconstructor
 {
         
-private static bool IsObbContained(
+    /// <summary>
+    /// Checks if a hypothetical OBB (defined by its integer grid extents)
+    /// is fully contained within the world-space AABB using SAT.
+    /// </summary>
+    private static bool IsObbContained(
         long i1, long i2, long i3,
         double gridSize,
         MatrixD obbRotation,
         AT_Vector3D worldHalfExtents)
     {
+        // 1. Calculate the OBB's continuous half-extents.
         double r1 = i1 * gridSize;
         double r2 = i2 * gridSize;
         double r3 = i3 * gridSize;
         
+        // 2. Get the OBB's local axes and absolute components.
         AT_Vector3D u1 = obbRotation.Right;
         AT_Vector3D u2 = obbRotation.Up;
         AT_Vector3D u3 = obbRotation.Forward;
@@ -457,21 +440,30 @@ private static bool IsObbContained(
         AT_Vector3D abs_u2 = AT_Vector3D.Abs(u2);
         AT_Vector3D abs_u3 = AT_Vector3D.Abs(u3);
         
+        // 3. Perform the Separating Axis Theorem (SAT) check.
+        // Check projection onto World X, Y, Z axes.
             
+        // Robust Tolerance: Prevents premature pruning due to floating point inaccuracies 
+        // when OBB projections are extremely close to the AABB boundaries (hard diagonals).
         const double RobustTolerance = 1e-8; 
         
+        // Projected Radius onto World X-axis: R_x = r1|u1.X| + r2|u2.X| + r3|u3.X|
         double projectedRadiusX = r1 * abs_u1.X + r2 * abs_u2.X + r3 * abs_u3.X;
         if (projectedRadiusX > worldHalfExtents.X + RobustTolerance) return false;
         
+        // Projected Radius onto World Y-axis: R_y = r1|u1.Y| + r2|u2.Y| + r3|u3.Y|
         double projectedRadiusY = r1 * abs_u1.Y + r2 * abs_u2.Y + r3 * abs_u3.Y;
         if (projectedRadiusY > worldHalfExtents.Y + RobustTolerance) return false;
         
+        // Projected Radius onto World Z-axis: R_z = r1|u1.Z| + r2 * abs_u2.Z + r3 * abs_u3.Z;
         double projectedRadiusZ = r1 * abs_u1.Z + r2 * abs_u2.Z + r3 * abs_u3.Z;
         if (projectedRadiusZ > worldHalfExtents.Z + RobustTolerance) return false;
         
         return true;
     }
         
+    // Helper: Try to solve A * r = H for r = [r1,r2,r3].
+    // A_{row, col} = abs(u_col.{X,Y,Z})
     private static bool TrySolveContinuousHalfExtents(
         AT_Vector3D u1, AT_Vector3D u2, AT_Vector3D u3,
         AT_Vector3D worldHalfExtents,
@@ -483,6 +475,7 @@ private static bool IsObbContained(
 
         double Hx = worldHalfExtents.X, Hy = worldHalfExtents.Y, Hz = worldHalfExtents.Z;
 
+        // Determinant
         double det = a11 * (a22 * a33 - a23 * a32)
                    - a12 * (a21 * a33 - a23 * a31)
                    + a13 * (a21 * a32 - a22 * a31);
@@ -494,6 +487,7 @@ private static bool IsObbContained(
             return false;
         }
 
+        // Inverse (adjugate / det)
         double inv11 =  (a22 * a33 - a23 * a32) / det;
         double inv12 = -(a12 * a33 - a13 * a32) / det;
         double inv13 =  (a12 * a23 - a13 * a22) / det;
@@ -510,6 +504,7 @@ private static bool IsObbContained(
         r2 = inv21 * Hx + inv22 * Hy + inv23 * Hz;
         r3 = inv31 * Hx + inv32 * Hy + inv33 * Hz;
 
+        // All radii must be non-negative (tiny negative due to FP -> clamp)
         const double NEG_CLAMP = -1e-9;
         if (r1 < NEG_CLAMP || r2 < NEG_CLAMP || r3 < NEG_CLAMP) return false;
 
@@ -532,6 +527,7 @@ private static bool IsObbContained(
         AT_Vector3D u2 = obbRotation.Up;
         AT_Vector3D u3 = obbRotation.Forward;
 
+        // Try direct linear solve first (this will typically recover the original slender box)
         double r1c, r2c, r3c;
         if (TrySolveContinuousHalfExtents(u1, u2, u3, worldHalfExtents, out r1c, out r2c, out r3c))
         {
@@ -540,6 +536,7 @@ private static bool IsObbContained(
             long i3 = Math.Max(0, (long)(r3c / gridSize + 1e-12));
 
                 
+            // Greedily grow each axis by +1 while it still fits (reclaim integer slack). This helps eliminate weird edge cases
             bool changed;
             do
             {
@@ -592,6 +589,7 @@ private static bool IsObbContained(
 
             if (targetAcceleration.LengthSquared() > 1)
             {
+                //Target Max Speed Math
                 tmaxT = Math.Min((AT_Vector3D.Normalize(targetAcceleration) * Config.General.GridSpeedLimit - AT_Vector3D.ProjectOnVector(ref targetVelocity, ref targetAcceleration)).Length(), 2 * Config.General.GridSpeedLimit) / targetAcceleration.Length();
                 targetVelocity = AT_Vector3D.ClampToSphere(targetVelocity + targetAcceleration * tmaxT, Config.General.GridSpeedLimit);
                 targetVelocityS += targetAcceleration * tmaxT * 0.5;
@@ -612,6 +610,7 @@ private static bool IsObbContained(
                 }
             }
 
+            //Quartic
             relativeVelocity = targetVelocity - missileVelocity;
             relativeAcceleration = targetAcceleration - missileAcceleration;
             double time = Solve(
@@ -630,11 +629,31 @@ private static bool IsObbContained(
             }   
             else
                 time -= tmaxT;
+            //sbDebug.AppendLine($"{Math.Round(time, 2)} {Math.Round(relativeVelocity.Length(), 2)} {Math.Round(relativeAcceleration.Length(), 2)}\n");
             return isMissile ?
                 displacementVector + targetVelocity * time + targetVelocityS * tmaxT + 0.5 * targetAccelerationS * tmaxT * tmaxT + 0.5 * targetAcceleration * time * time + dOffset :
                 targetPosition + (targetVelocity - missileVelocity) * time + (targetVelocityS - missileVelocity) * tmaxT + 0.5 * targetAccelerationS * tmaxT * tmaxT + 0.5 * targetAcceleration * time * time + - 0.5 * gravity * (time + tmaxT) * (time + tmaxT) * Convert.ToDouble(hasGravity) + dOffset;
         }
+        // public static Vector3D SelectOffsetPosition(PDCTarget target, bool isMissile)
+        // {
+        //     int
+        //         RaycastPointCount = target.RaycastPoints.Count,
+        //         TurretPointCount = target.TurretPoints.Count;
+        //
+        //     if (RaycastPointCount + TurretPointCount == 0 || target.Orientation == null)
+        //         return Vector3D.Zero;
+        //
+        //     if (isMissile)
+        //         return RaycastPointCount != 0 ?
+        //             target.RaycastPoints.ElementAt(Program.RNG.Next(0, RaycastPointCount)) :
+        //             target.TurretPoints.ElementAt(Program.RNG.Next(0, TurretPointCount));
+        //     else
+        //         return TurretPointCount != 0 ?
+        //             target.TurretPoints.ElementAt(Program.RNG.Next(0, TurretPointCount)) :
+        //             target.RaycastPoints.ElementAt(Program.RNG.Next(0, RaycastPointCount));
+        // }
 
+        //Shortcut Ignoring Of Complex Values And Return Smallest Real Number
         public static double Solve(double a, double b, double c, double d, double e)
         {
             if (Math.Abs(a) < epsilon) a = a >= 0 ? epsilon : -epsilon;
@@ -786,6 +805,77 @@ private static bool IsObbContained(
                 return Math.Min(a, b);
         }
     }
+public static class TrackableShipAABBTreeHelper
+{
+    private static readonly List<TrackableShip> Elements = new List<TrackableShip>();
+    private static readonly List<BoundingBoxD> Boxes = new List<BoundingBoxD>();
+
+    private static readonly Dictionary<TrackableShip, List<TrackableShip>> ReusedOverlaps =
+        new Dictionary<TrackableShip, List<TrackableShip>>();
+
+    private static readonly List<List<TrackableShip>> ReusedLists = new List<List<TrackableShip>>();
+
+    private static int _rI = 0;
+    // Diabolical
+    private static List<TrackableShip> GetList()
+    {
+        if (_rI >= ReusedLists.Count)
+            ReusedLists.Add(new List<TrackableShip>(8));
+
+        var list = ReusedLists[_rI++];
+        list.Clear();
+        return list;
+    }
+        
+    /// <summary>
+    /// Returns a static list with references to game objects. CLEAN UP WHEN YOU ARE DONE OR MEMORY WILL LEAK!
+    /// </summary>
+    /// <param name="tree"></param>
+    /// <returns></returns>
+    public static Dictionary<TrackableShip, List<TrackableShip>> GetAllOverlaps(MyDynamicAABBTreeD tree)
+    {
+        _rI = 0;
+        ReusedOverlaps.Clear();
+        // Get all entities and their AABBs
+        tree.GetAll(Elements, clear: true, boxsList: Boxes);
+
+        for (int i = 0; i < Elements.Count; i++)
+        {
+            var entityA = Elements[i];
+            var boxA = Boxes[i];
+
+            var overlapping = GetList();
+            tree.OverlapAllBoundingBox(ref boxA, overlapping, 0U, false);
+
+            foreach (var entityB in overlapping)
+            {
+                if (entityA == entityB) continue;
+                    
+                if (!ReusedOverlaps.ContainsKey(entityA)) ReusedOverlaps.Add(entityA, GetList());
+                ReusedOverlaps[entityA].Add(entityB);
+                    
+                if (!ReusedOverlaps.ContainsKey(entityB)) ReusedOverlaps.Add(entityB, GetList());
+                ReusedOverlaps[entityB].Add(entityA);
+                    
+            }
+            overlapping.Clear(); // Clear before returning this list to the cache to avoid memory leaks
+        }
+        Elements.Clear();
+        Boxes.Clear();
+        return ReusedOverlaps;
+    }
+    public static List<TrackableShip> GetOverlapsWithBox(MyDynamicAABBTreeD tree, BoundingBoxD box)
+    {
+        _rI = 0;
+        // Get a temporary list from the pool
+        var overlapping = GetList();
+
+        // Query the tree for all leaf nodes overlapping the given box
+        tree.OverlapAllBoundingBox(ref box, overlapping, 0U, false);
+
+        return overlapping;
+    }
+}
 public class SimpleTimer
 {
     public int Remaining;
@@ -797,7 +887,11 @@ public static class TimerManager
     private static readonly Dictionary<int, SimpleTimer> _pendingAdditions = new Dictionary<int, SimpleTimer>();
     private static int _nextId = 1;
 
-public static int Start(int duration, Action onComplete = null)
+    /// <summary>
+    /// Starts a timer for the given duration and optional callback.
+    /// Returns a unique timer ID that is never reused.
+    /// </summary>
+    public static int Start(int duration, Action onComplete = null)
     {
         if (duration <= 0)
         {
@@ -812,6 +906,7 @@ public static int Start(int duration, Action onComplete = null)
             OnComplete = onComplete
         };
 
+        // Queue addition so TickAll can safely insert at the start
         _pendingAdditions[id] = timer;
         return id;
     }
@@ -821,13 +916,19 @@ public static int Start(int duration, Action onComplete = null)
         return Start((int)(duration * 60), onComplete);
     }
 
-public static void Cancel(int id)
+    /// <summary>
+    /// Cancels a timer immediately.
+    /// </summary>
+    public static void Cancel(int id)
     {
         Timers.Remove(id);
         _pendingAdditions.Remove(id);
     }
 
-public static void TickAll()
+    /// <summary>
+    /// Tick all active timers. Call once per frame.
+    /// </summary>
+    public static void TickAll()
     {
         if (_pendingAdditions.Count > 0)
         {
@@ -903,6 +1004,8 @@ public static class Commands
 }
 public static class Config
 {
+        
+
     private static ConfigTool _configTool = new ConfigTool("General Config", "")
     {
         Sync = SyncConfig
@@ -914,10 +1017,12 @@ public static class Config
     public static readonly TrackerConfig Tracker = new TrackerConfig();
     public static readonly GdriveConfig Gdrive = new GdriveConfig();
     public static readonly PidConfig Pid = new PidConfig();
+    public static readonly MissileConfig Missile = new MissileConfig();
 
     public static void Setup(IMyProgrammableBlock me)
     {
         Program.LogLine("Setting up config");
+        // We touch the static classes that have config data that needs collecting/setting
         GunData.Init();
         ProjectileData.Init();
             
@@ -945,6 +1050,7 @@ public static class Config
         Tracker.Sync(obj);
         Gdrive.Sync(obj);
         Pid.Sync(obj);
+        Missile.Sync(obj);
     }
 
     public class GeneralConfig
@@ -986,9 +1092,9 @@ public static class Config
 
     public class BehaviorConfig
     {
-        public double LockRange = 3000;
-        public float LockAngle = 40;
-        public double MinFireDot = 0.999999;
+        public double LockRange = 3000; // m
+        public float LockAngle = 40; // deg
+        public double MinFireDot = 0.999999; // Should be updated further
             
         internal void Sync(Dictionary<string, object> obj)
         {
@@ -1005,7 +1111,7 @@ public static class Config
         public string TrackingName = "CTC: Tracking";
         public string SearchingName = "CTC: Searching";
         public string StandbyName = "CTC: Standby";
-        public int ScannedBlockMaxValidFrames = 3600;
+        public int ScannedBlockMaxValidFrames = 3600; // 1 minutes
             
         internal void Sync(Dictionary<string, object> obj)
         {
@@ -1062,6 +1168,271 @@ public static class Config
             config.Sync("IntegralLowerLimit", ref IntegralLowerLimit);
             config.Sync("IntegralUpperLimit", ref IntegralUpperLimit);
         }
+    }
+
+    public class MissileConfig
+    {
+        public int FinderRefreshFrequencyFrames = 60;
+            
+        internal void Sync(Dictionary<string, object> obj)
+        {
+            var config = ConfigCategory.From(obj, "Missile Config");
+                
+            config.Sync("FinderRefreshFrequencyFrames", ref FinderRefreshFrequencyFrames);
+        }
+    }
+}
+    public static class EnumLookup
+{
+    
+    private static readonly List<Type> isFlags = new List<Type>
+    {
+        typeof(DeliveryType),
+        typeof(LaunchMechanism)
+    };
+    private static readonly Dictionary<Type, Dictionary<int, string>> enumToString =
+        new Dictionary<Type, Dictionary<int, string>>
+        {
+            {
+                typeof(LogLevel),
+                new Dictionary<int, string>
+                {
+                    { (int)LogLevel.Trace, "Trace" },
+                    { (int)LogLevel.Debug, "Debug" },
+                    { (int)LogLevel.Info, "Info" },
+                    { (int)LogLevel.Warning, "Warning" },
+                    { (int)LogLevel.Error, "Error" },
+                    { (int)LogLevel.Critical, "Critical" },
+                    { (int)LogLevel.Highlight, "Highlight" } 
+                }
+            },
+            {
+                typeof(GunReloadType),
+                new Dictionary<int, string>
+                {
+                    { (int)GunReloadType.Normal, "None" },
+                    { (int)GunReloadType.NeedsCharging, "NeedsCharging" },
+                }
+            },
+            {
+                typeof(GunFireType), 
+                new Dictionary<int, string>
+                {
+                    { (int)GunFireType.Normal, "Normal" },
+                    { (int)GunFireType.Delay, "Delay" },
+                }
+            },
+            {
+                typeof(PayloadType),
+                new Dictionary<int, string>
+                {
+                    { (int)PayloadType.Kinetic, "Kinetic" },
+                    { (int)PayloadType.Warhead, "Warhead" },
+                    { (int)PayloadType.Nuke, "Nuke" }
+                }
+            },
+            {
+                typeof(LaunchType),
+                new Dictionary<int, string>
+                {
+                    { (int)LaunchType.OneAtATime, "OneAtATime" },
+                    { (int)LaunchType.Simultaneous, "Simultaneous" },
+                    { (int)LaunchType.Staggered, "Staggered" }
+                }
+            },
+            {
+                typeof(LaunchControl),
+                new Dictionary<int, string>
+                {
+                    { (int)LaunchControl.Automatic, "Automatic" },
+                    { (int)LaunchControl.Manual, "Manual" },
+                    { (int)LaunchControl.ManualCiwsOverride, "ManualCiwsOverride" }
+                }
+            },
+            {
+                typeof(RefuelPriority),
+                new Dictionary<int, string>
+                {
+                    { (int)RefuelPriority.Low, "Low" },
+                    { (int)RefuelPriority.Medium, "Medium" },
+                    { (int)RefuelPriority.High, "High" }
+                }
+            },
+            {
+                typeof(DeliveryType),
+                new Dictionary<int, string>
+                {
+                    { (int)DeliveryType.None, "None" },
+                    { (int)DeliveryType.Hydrogen, "Hydrogen" },
+                    { (int)DeliveryType.Ion, "Ion" },
+                    { (int)DeliveryType.Atmospheric, "Atmospheric" }
+                }
+            },
+            {
+                typeof(LaunchMechanism),
+                new Dictionary<int, string>
+                {
+                    { (int)LaunchMechanism.None, "None" },
+                    { (int)LaunchMechanism.Mechanical, "Mechanical" },
+                    { (int)LaunchMechanism.Connector, "Connector" },
+                    { (int)LaunchMechanism.MergeBlock, "MergeBlock" },
+                    { (int)LaunchMechanism.PulsedThruster, "PulsedThruster" },
+                    { (int)LaunchMechanism.Weapon, "Weapon" }
+                }
+            },
+            {
+                typeof(Behavior),
+                new Dictionary<int, string>
+                {
+                    { (int)Behavior.Interdict, "Interdict" },
+                    { (int)Behavior.DirectAttack, "DirectAttack" },
+                    { (int)Behavior.SurroundAndClose, "SurroundAndClose" },
+                    { (int)Behavior.Defend, "Defend" }
+                }
+            }
+        };
+
+    // Built automatically
+    private static readonly Dictionary<Type, Dictionary<string, int>> stringToEnum =
+        new Dictionary<Type, Dictionary<string, int>>();
+
+    // Build reverse tables on startup
+    static EnumLookup()
+    {
+        foreach (var pair in enumToString)
+        {
+            Type type = pair.Key;
+            Dictionary<int, string> forward = pair.Value;
+
+            var reverse = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            foreach (var kvp in forward)
+            {
+                // kvp.Key   = int value
+                // kvp.Value = name
+                reverse[kvp.Value] = kvp.Key;
+            }
+
+            stringToEnum[type] = reverse;
+        }
+    }
+
+    // Forward: enum → string
+    public static string GetName<T>(T value) where T : struct
+    {
+        Type type = typeof(T);
+        int intVal = Convert.ToInt32(value);
+
+        Dictionary<int, string> map;
+        if (enumToString.TryGetValue(type, out map))
+        {
+            // Check if this is a flags enum
+            if (IsFlags(type))
+            {
+                // Handle flags enum - combine multiple values with " | "
+                List<string> flagNames = new List<string>();
+
+                foreach (var kvp in map)
+                {
+                    int flagValue = kvp.Key;
+                    // Skip "None" value (0) if other flags are set
+                    if (flagValue == 0 && intVal != 0)
+                        continue;
+
+                    // Check if this flag is set in the value
+                    if (flagValue != 0 && (intVal & flagValue) == flagValue)
+                    {
+                        flagNames.Add(kvp.Value);
+                    }
+                    else if (flagValue == 0 && intVal == 0)
+                    {
+                        // Only return "None" if the value is exactly 0
+                        return kvp.Value;
+                    }
+                }
+
+                if (flagNames.Count > 0)
+                    return string.Join(" | ", flagNames);
+            }
+            else
+            {
+                // Regular enum - direct lookup
+                string s;
+                if (map.TryGetValue(intVal, out s))
+                    return s;
+            }
+        }
+
+        return intVal.ToString();
+    }
+
+    // Reverse: string → int → enum
+    public static bool TryGetValue<T>(string name, out T value) where T : struct
+    {
+        Type type = typeof(T);
+
+        Dictionary<string, int> map;
+        if (stringToEnum.TryGetValue(type, out map))
+        {
+            // Check if this is a flags enum and the string contains " | "
+            if (IsFlags(type) && name.Contains(" | "))
+            {
+                // Parse multiple flags separated by " | "
+                string[] parts = name.Split(new[] { " | " }, StringSplitOptions.None);
+                int combinedValue = 0;
+                bool allValid = true;
+
+                foreach (string part in parts)
+                {
+                    string trimmedPart = part.Trim();
+                    int flagValue;
+                    if (map.TryGetValue(trimmedPart, out flagValue))
+                    {
+                        combinedValue |= flagValue;
+                    }
+                    else
+                    {
+                        allValid = false;
+                        break;
+                    }
+                }
+
+                if (allValid)
+                {
+                    value = (T)Enum.ToObject(type, combinedValue);
+                    return true;
+                }
+                // If parsing fails, then instead return the default value
+                value = default(T);
+                return false; 
+            }
+            else
+            {
+                // Regular enum or single flag value - direct lookup
+                int raw;
+                if (map.TryGetValue(name, out raw))
+                {
+                    value = (T)Enum.ToObject(type, raw);
+                    return true;
+                }
+                value = default(T);
+                return false;
+            }
+        }
+
+        value = default(T);
+        return false;
+    }
+
+    public static bool IsFlags(Type type)
+    {
+        return isFlags.Contains(type);
+    }
+
+    public static string[] GetNames(Type type)
+    {
+        Dictionary<int, string> map;
+        return enumToString.TryGetValue(type, out map) ? map.Values.ToArray() : Array.Empty<string>();
     }
 }
 public class ProjectileData
@@ -1122,8 +1493,10 @@ public class ProjectileData
             var name = kv.Key;
             var existing = kv.Value;
 
+            // Get or create dictionary for this projectile
             var category = ConfigCategory.From(root, name);
 
+            // Sync each property
             var projectileVelocity = existing.ProjectileVelocity;
             var maxVelocity = existing.MaxVelocity;
             var maxRange = existing.MaxRange;
@@ -1134,9 +1507,11 @@ public class ProjectileData
             category.Sync("MaxRange", ref maxRange);
             category.Sync("Acceleration", ref acceleration);
 
+            // Update the LookupTable with the synced values
             LookupTable[name] = new ProjectileData(projectileVelocity, maxVelocity, maxRange, acceleration);
         }
 
+        // Handle any new entries in the dictionary that aren't in LookupTable yet
         foreach (var kv in root)
         {
             string empty = "";
@@ -1169,9 +1544,11 @@ public class GunData
     {
         LookupTable.Add("Default", DefaultGun);
             
+        // Large grid
         LookupTable.Add("LargeRailgun", new GunData("LargeRailgun", GunReloadType.NeedsCharging, GunFireType.Delay, 2.0f, 4.0f));
         LookupTable.Add("LargeBlockLargeCalibreGun", new GunData("Artillery", 0, 0, 0, 12));
         LookupTable.Add("LargeMissileLauncher", new GunData("Rocket", 0, 0, 0, 0.5f));
+        // Small grid
         LookupTable.Add("SmallRailgun", new GunData("SmallRailgun", GunReloadType.NeedsCharging, GunFireType.Delay, 0.5f, 4.0f));
         LookupTable.Add("SmallBlockAutocannon", new GunData("Gatling", 0, 0, 0.0f, 0.4f));
         LookupTable.Add("SmallBlockMediumCalibreGun", new GunData("AssaultCannon", 0, 0, 0.0f, 6f));
@@ -1226,8 +1603,10 @@ public class GunData
             var name = kv.Key;
             var existing = kv.Value;
 
+            // Get or create dictionary for this gun
             var category = ConfigCategory.From(root, name);
 
+            // Sync each property
             var projectile = existing._projectileDataString;
             var reloadType = existing.ReloadType;
             var fireType = existing.FireType;
@@ -1235,14 +1614,16 @@ public class GunData
             var reloadTime = existing.ReloadTime;
 
             category.Sync("Projectile", ref projectile);
-            category.SyncEnum("ReloadType", ref reloadType, "0 = normal, 1 = charged");
-            category.SyncEnum("FireType", ref fireType, "0 = normal, 1 = delay before firing");
+            category.SyncEnum("ReloadType", ref reloadType);
+            category.SyncEnum("FireType", ref fireType);
             category.Sync("FireTime", ref fireTime);
             category.Sync("ReloadTime", ref reloadTime);
 
+            // Update the LookupTable with the synced values
             LookupTable[name] = new GunData(projectile, reloadType, fireType, fireTime, reloadTime);
         }
 
+        // Handle any new entries in the dictionary not in LookupTable yet
         foreach (var kv in root)
         {
             if (!LookupTable.ContainsKey(kv.Key))
@@ -1279,41 +1660,78 @@ class ConfigCategory
 
     public static ConfigCategory From(Dictionary<string, object> root, string name)
     {
-        Dwon.UnwrapAllComments(root);
-
-        Dictionary<string, object> dict;
         object obj;
 
-        if (!root.TryGetValue(name, out obj) || (dict = obj as Dictionary<string, object>) == null)
+        if (!root.TryGetValue(name, out obj))
         {
-            dict = new Dictionary<string, object>();
-            root[name] = dict;
+            var dict = new Dictionary<string, object>();
+            root[name] = new Dwon.Field(dict);
+            return new ConfigCategory(dict);
         }
 
-        return new ConfigCategory(dict);
+        // Extract the actual dictionary from Field if wrapped
+        Dwon.Field field = obj as Dwon.Field;
+        Dictionary<string, object> extractedDict = field != null
+            ? (field.Obj as Dictionary<string, object>)
+            : (obj as Dictionary<string, object>);
+
+        // If extraction failed, create new and wrap
+        if (extractedDict == null)
+        {
+            extractedDict = new Dictionary<string, object>();
+            root[name] = new Dwon.Field(extractedDict);
+        }
+        else if (field == null)
+        {
+            // If it wasn't wrapped, wrap it now
+            root[name] = new Dwon.Field(extractedDict);
+        }
+
+        return new ConfigCategory(extractedDict);
     }
 
-    public void SyncEnum<E>(string key, ref E field, string comment = "") where E : struct
+    public void SyncEnum<E>(string key, ref E scriptField, string beforeComment = "", string inlineComment = "") where E : struct
     {
-        int temp = Convert.ToInt32(field);
-        temp = Dwon.GetValue(_values, key, ref comment, temp);
-        field = (E)Enum.ToObject(typeof(E), temp);
+        var field = Dwon.GetField(_values, key, scriptField);
+        var enumName = field.Obj.ToString();
 
-        if (!string.IsNullOrEmpty(comment))
-            _values[key] = new Dwon.Comment(temp, comment);
-        else
-            _values[key] = temp;
+        EnumLookup.TryGetValue(enumName, out scriptField);
+        enumName = EnumLookup.GetName(scriptField);
+
+        // Determine which comment to use: Existing > Provided > Auto-generated
+        if (string.IsNullOrEmpty(field.BeforeComment))
+        {
+            var isFlags = EnumLookup.IsFlags(typeof(E));
+            var join = isFlags ? " | " : ", ";
+            var prefix = isFlags ? "BitFlags: " : "Enum: ";
+            field.BeforeComment = !string.IsNullOrEmpty(beforeComment)
+                ? beforeComment
+                : $"{prefix}{string.Join(join, EnumLookup.GetNames(typeof(E)))}";
+        }
+
+        if (string.IsNullOrEmpty(field.InlineComment))
+        {
+            field.InlineComment = inlineComment;
+        }
+
+        // Update the value and store the reused field
+        field.Obj = enumName;
+        _values[key] = field;
     }
 
 
-    public void Sync<T>(string key, ref T field, string comment = "")
+    public void Sync<T>(string key, ref T field, string beforeComment = "", string inlineComment = "")
     {
-        var temp = Dwon.GetValue(_values, key, ref comment, field);
+        var existingField = Dwon.GetField(_values, key, field);
+        var temp = (T)existingField.Obj;
 
-        if (!string.IsNullOrEmpty(comment))
-            _values[key] = new Dwon.Comment(temp, comment);
-        else
-            _values[key] = temp;
+        // Use existing comments if present, otherwise use provided comments
+        existingField.BeforeComment = !string.IsNullOrEmpty(existingField.BeforeComment) ? existingField.BeforeComment : beforeComment;
+        existingField.InlineComment = !string.IsNullOrEmpty(existingField.InlineComment) ? existingField.InlineComment : inlineComment;
+
+        // Update the value and store the reused field
+        existingField.Obj = temp;
+        _values[key] = existingField;
 
         field = temp;
     }
@@ -1349,417 +1767,593 @@ public class ConfigTool
         foreach (var kv in Configs)
         {
             if (!dict.ContainsKey(kv.Key))
-                dict[kv.Key] = new Dictionary<string, object>();
-            kv.Value.Sync?.Invoke((Dictionary<string, object>)dict[kv.Key]);
+            {
+                // Create new Field with empty dictionary
+                dict[kv.Key] = new Dwon.Field(new Dictionary<string, object>());
+            }
+
+            // Unwrap Field to get the dictionary
+            var field = dict[kv.Key] as Dwon.Field;
+            var configDict = field != null ? field.Obj as Dictionary<string, object> : dict[kv.Key] as Dictionary<string, object>;
+
+            if (configDict != null)
+            {
+                kv.Value.Sync?.Invoke(configDict); // sync fields < - > dictionary
+            }
         }
 
         return Dwon.Serialize(parsed);
     }
 }
-    public static class Dwon
+public static class Dwon
+{
+    /// <summary>
+    /// Represents a field in the DWON object tree with optional before/inline comments
+    /// </summary>
+    public class Field
     {
-        public class Comment
-        {
-            public object Obj;
-            public string Com;
+        public object Obj;
+        public string BeforeComment;
+        public string InlineComment;
 
-            public Comment(object obj, string comment)
-            {
-                Obj = obj;
-                Com = comment;
-            }
+        public Field(object obj, string beforeComment = "", string inlineComment = "")
+        {
+            Obj = obj;
+            BeforeComment = beforeComment ?? "";
+            InlineComment = inlineComment ?? "";
+        }
+    }
+
+
+    public static string Serialize(object obj, int indent = -1)
+    {
+        var sb = new StringBuilder();
+        Serialize(obj, sb, indent, null);
+        Program.LogLine("Serialized successfully", LogLevel.Debug);
+        return sb.ToString();
+    }
+
+    private static void Serialize(object obj, StringBuilder sb, int indent, string key)
+    {
+        string pad = new string(' ', Math.Max(indent, 0));
+
+        if (obj == null)
+        {
+            if (key != null) sb.AppendLine(pad + key + " = null");
+            return;
         }
 
-
-        public static string Serialize(object obj, int indent = -1)
+        Field fieldObj = obj as Field;
+        if (fieldObj != null)
         {
-            var sb = new StringBuilder();
-            Serialize(obj, sb, indent, null);
-            Program.LogLine("Serialized successfully", LogLevel.Debug);
-            return sb.ToString();
+            SerializeField(fieldObj, sb, indent, key);
+            return;
         }
 
-        private static void Serialize(object obj, StringBuilder sb, int indent, string key)
+        IDictionary<string, object> dict = obj as IDictionary<string, object>;
+        if (dict != null)
         {
-            string pad = new string(' ', Math.Max(indent, 0));
+            SerializeDictionary(dict, sb, indent, key, pad);
+            return;
+        }
 
-            if (obj == null)
+        IEnumerable<object> list = obj as IEnumerable<object>;
+        if (list != null)
+        {
+            SerializeList(list, sb, indent, key, pad);
+            return;
+        }
+
+        if (key != null)
+        {
+            sb.AppendLine(pad + key + " = " + ValueToString(obj));
+        }
+    }
+
+    private static void SerializeField(Field fieldObj, StringBuilder sb, int indent, string key)
+    {
+        string pad = new string(' ', Math.Max(indent, 0)) + "    ";
+            
+        // Write before comment on its own line
+        if (!string.IsNullOrEmpty(fieldObj.BeforeComment))
+            sb.AppendLine(pad + "# " + fieldObj.BeforeComment);
+            
+        // Serialize the actual value
+        if (key != null && IsPrimitive(fieldObj.Obj))
+        {
+            // For primitives, write inline
+            sb.Append(pad + key + " = " + ValueToString(fieldObj.Obj));
+                
+            // Add inline comment if present
+            if (!string.IsNullOrEmpty(fieldObj.InlineComment))
+                sb.Append("   # " + fieldObj.InlineComment);
+                
+            sb.AppendLine();
+        }
+        else
+        {
+            // For complex objects (dictionaries, lists), serialize with the key
+            // The before comment has already been written above
+            IDictionary<string, object> dict = fieldObj.Obj as IDictionary<string, object>;
+            if (dict != null && key != null)
             {
-                if (key != null) sb.AppendLine(pad + key + " = null");
-                return;
+                SerializeDictionary(dict, sb, indent, key, pad);
             }
-
-            Comment commentObj = obj as Comment;
-            if (commentObj != null)
+            else
             {
-                bool isPrimitive = IsPrimitive(commentObj.Obj);
-                if (isPrimitive && key != null)
+                IEnumerable<object> list = fieldObj.Obj as IEnumerable<object>;
+                if (list != null && key != null)
                 {
-                    sb.AppendLine(pad + key + " = " + ValueToString(commentObj.Obj) + "   # " + commentObj.Com);
+                    SerializeList(list, sb, indent, key, pad);
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(commentObj.Com))
-                        sb.AppendLine(pad + "# " + commentObj.Com);
-                    Serialize(commentObj.Obj, sb, indent, key);
+                    // Fallback for other types
+                    Serialize(fieldObj.Obj, sb, indent, key);
                 }
-                return;
-            }
-
-            IDictionary<string, object> dict = obj as IDictionary<string, object>;
-            if (dict != null)
-            {
-                if (key != null) sb.AppendLine(pad + key + " = [");
-                foreach (var kv in dict)
-                {
-                    Serialize(kv.Value, sb, indent + 2, kv.Key);
-                }
-                if (key != null) sb.AppendLine(pad + "]");
-                return;
-            }
-
-            IEnumerable<object> list = obj as IEnumerable<object>;
-            if (list != null)
-            {
-                if (key != null)
-                {
-                    sb.Append(pad + key + " = { ");
-                    bool first = true;
-                    foreach (object v in list)
-                    {
-                        if (!first) sb.Append(", ");
-                        sb.Append(ValueToString(v));
-                        first = false;
-                    }
-                    sb.AppendLine(" }");
-                }
-                else
-                {
-                    foreach (object v in list)
-                        Serialize(v, sb, indent, null);
-                }
-                return;
-            }
-
-            if (key != null)
-            {
-                sb.AppendLine(pad + key + " = " + ValueToString(obj));
             }
         }
+    }
 
-        private static string ValueToString(object obj)
+    private static void SerializeDictionary(IDictionary<string, object> dict, StringBuilder sb, int indent, string key, string pad)
+    {
+        if (key != null) sb.AppendLine(pad + key + " = [");
+        foreach (var kv in dict)
         {
-            if (obj == null) return "null";
+            Serialize(kv.Value, sb, indent + 2, kv.Key);
+        }
+        if (key != null) sb.AppendLine(pad + "]");
+    }
 
-            if (obj is AT_Vector3D)
+    private static void SerializeList(IEnumerable<object> list, StringBuilder sb, int indent, string key, string pad)
+    {
+        if (key != null)
+        {
+            sb.Append(pad + key + " = { ");
+            bool first = true;
+            foreach (object v in list)
             {
-                AT_Vector3D v = (AT_Vector3D)obj;
-                return string.Format("Vec3({0} {1} {2})",
-                    v.X.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
-                    v.Y.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
-                    v.Z.ToString("R", System.Globalization.CultureInfo.InvariantCulture));
+                if (!first) sb.Append(", ");
+                sb.Append(ValueToString(v));
+                first = false;
             }
-
-            if (obj is string) return "\"" + Escape((string)obj) + "\"";
-            if (obj is bool) return ((bool)obj ? "true" : "false");
-            if (obj is float) return ((float)obj).ToString("0.#####", System.Globalization.CultureInfo.InvariantCulture);
-            if (obj is double) return ((double)obj).ToString("0.##########", System.Globalization.CultureInfo.InvariantCulture); 
-            if (obj is int || obj is long || obj is short || obj is byte) return obj.ToString();
-            return "\"" + Escape(obj.ToString()) + "\"";
+            sb.AppendLine(" }");
         }
-
-
-        private static string Escape(string s)
+        else
         {
-            return s.Replace("\\", "\\\\").Replace("\"", "\\\"");
+            foreach (object v in list)
+                Serialize(v, sb, indent, null);
         }
+    }
 
-        private static bool IsPrimitive(object value)
+    private static string ValueToString(object obj)
+    {
+        if (obj == null) return "null";
+        if (obj is AT_Vector3D) return FormatVec3((AT_Vector3D)obj);
+        if (obj is string)
         {
-            return value is string || value is bool ||
-                   value is int || value is long || value is short || value is byte ||
-                   value is float || value is double;
+            string str = (string)obj;
+            // Check if string looks like an unquoted identifier or enum value
+            if (IsUnquotedIdentifier(str))
+                return str;
+            return "\"" + Escape(str) + "\"";
         }
+        if (obj is bool) return ((bool)obj ? "true" : "false");
+        if (obj is float) return ((float)obj).ToString("0.#####", System.Globalization.CultureInfo.InvariantCulture);
+        if (obj is double) return ((double)obj).ToString("0.##########", System.Globalization.CultureInfo.InvariantCulture);
+        if (obj is int || obj is long || obj is short || obj is byte) return obj.ToString();
+        return "\"" + Escape(obj.ToString()) + "\"";
+    }
 
+    private static bool IsUnquotedIdentifier(string str)
+    {
+        if (string.IsNullOrEmpty(str)) return false;
 
-
-        public static object Parse(string dwon)
+        // Allow alphanumeric, underscore, pipe, colon, and spaces (for enum flags and labels)
+        foreach (char c in str)
         {
-            int idx = 0;
-            var top = new Dictionary<string, object>();
-            while (idx < dwon.Length)
-            {
-                SkipWhitespaceAndComments(dwon, ref idx);
-                if (idx >= dwon.Length) break;
-
-                string key = ParseKey(dwon, ref idx);
-                ExpectChar(dwon, ref idx, '=');
-                object value = ParseValue(dwon, ref idx);
-                string comment = ParseInlineComment(dwon, ref idx);
-                if (comment != null && IsPrimitive(value))
-                    value = new Comment(value, comment);
-
-                top[key] = value;
-            }
-            return top;
+            if (!char.IsLetterOrDigit(c) && c != '_' && c != '|' && c != ' ' && c != ':')
+                return false;
         }
+        return true;
+    }
 
-        private static object ParseValue(string s, ref int idx)
+    private static string FormatVec3(AT_Vector3D v)
+    {
+        return string.Format("Vec3({0} {1} {2})",
+            v.X.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
+            v.Y.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
+            v.Z.ToString("R", System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+
+    private static string Escape(string s)
+    {
+        return s.Replace("\\", "\\\\").Replace("\"", "\\\"");
+    }
+
+    private static bool IsPrimitive(object value)
+    {
+        return value is string || value is bool ||
+               value is int || value is long || value is short || value is byte ||
+               value is float || value is double;
+    }
+
+
+
+    public static object Parse(string dwon)
+    {
+        int idx = 0;
+        var top = new Dictionary<string, object>();
+        while (idx < dwon.Length)
         {
-            SkipWhitespaceAndComments(s, ref idx);
+            string precedingComment = SkipWhitespaceAndCaptureComments(dwon, ref idx);
+            if (idx >= dwon.Length) break;
 
-            if (idx >= s.Length) return null;
+            string key = ParseKey(dwon, ref idx);
+            ExpectChar(dwon, ref idx, '=');
+            object value = ParseValue(dwon, ref idx);
+            string inlineComment = ParseInlineComment(dwon, ref idx);
 
-            char c = s[idx];
+            // Always wrap in Field object
+            top[key] = new Field(value, precedingComment ?? "", inlineComment ?? "");
+        }
+        return top;
+    }
 
-            switch (c)
-            {
-                case '[':
-                {
-                    idx++;
-                    var dict = new Dictionary<string, object>();
-                    while (true)
-                    {
-                        SkipWhitespaceAndComments(s, ref idx);
-                        if (idx >= s.Length) break;
-                        if (s[idx] == ']') { idx++; break; }
+    private static object ParseValue(string s, ref int idx)
+    {
+        SkipWhitespaceAndComments(s, ref idx);
 
-                        string key = ParseKey(s, ref idx);
-                        ExpectChar(s, ref idx, '=');
-                        object value = ParseValue(s, ref idx);
+        if (idx >= s.Length) return null;
 
-                        string comment = ParseInlineComment(s, ref idx);
-                        if (comment != null && IsPrimitive(value))
-                            value = new Comment(value, comment);
+        char c = s[idx];
 
-                        dict[key] = value;
-                    }
-                    return dict;
-                }
-                case '{':
-                {
-                    idx++;
-                    var list = new List<object>();
-                    while (true)
-                    {
-                        SkipWhitespaceAndComments(s, ref idx);
-                        if (idx >= s.Length) break;
-                        if (s[idx] == '}') { idx++; break; }
+        switch (c)
+        {
+            case '[':
+                return ParseDictionary(s, ref idx);
+            case '{':
+                return ParseList(s, ref idx);
+            default:
+                return ParsePrimitiveValue(s, ref idx);
+        }
+    }
 
-                        object value = ParseValue(s, ref idx);
-                        string comment = ParseInlineComment(s, ref idx);
-                        if (comment != null && IsPrimitive(value))
-                            value = new Comment(value, comment);
+    private static object ParseDictionary(string s, ref int idx)
+    {
+        idx++; // skip '['
+        var dict = new Dictionary<string, object>();
 
-                        list.Add(value);
+        while (true)
+        {
+            string precedingComment = SkipWhitespaceAndCaptureComments(s, ref idx);
+            if (idx >= s.Length) break;
+            if (s[idx] == ']') { idx++; break; }
 
-                        SkipWhitespaceAndComments(s, ref idx);
-                        if (idx < s.Length && s[idx] == ',') idx++;
-                    }
-                    return list;
-                }
-            }
-
-            string token = ParseToken(s, ref idx);
+            string key = ParseKey(s, ref idx);
+            ExpectChar(s, ref idx, '=');
+            object value = ParseValue(s, ref idx);
             string inlineComment = ParseInlineComment(s, ref idx);
-            object primitive = ParsePrimitive(token);
-            if (inlineComment != null && IsPrimitive(primitive))
-                primitive = new Comment(primitive, inlineComment);
-            return primitive;
+
+            // Always wrap in Field object
+            dict[key] = new Field(value, precedingComment ?? "", inlineComment ?? "");
         }
 
-        private static void SkipWhitespaceAndComments(string s, ref int idx)
+        return dict;
+    }
+
+    private static object ParseList(string s, ref int idx)
+    {
+        idx++; // skip '{'
+        var list = new List<object>();
+
+        while (true)
         {
+            string precedingComment = SkipWhitespaceAndCaptureComments(s, ref idx);
+            if (idx >= s.Length) break;
+            if (s[idx] == '}') { idx++; break; }
+
+            object value = ParseValue(s, ref idx);
+            string inlineComment = ParseInlineComment(s, ref idx);
+
+            // Always wrap in Field object
+            list.Add(new Field(value, precedingComment ?? "", inlineComment ?? ""));
+
+            SkipWhitespaceAndComments(s, ref idx);
+            if (idx < s.Length && s[idx] == ',') idx++; // optional comma
+        }
+
+        return list;
+    }
+
+    private static object ParsePrimitiveValue(string s, ref int idx)
+    {
+        string token = ParseToken(s, ref idx);
+        return ParsePrimitive(token);
+    }
+
+    private static void SkipWhitespaceAndComments(string s, ref int idx)
+    {
+        while (idx < s.Length)
+        {
+            if (IsWhitespace(s[idx]))
+            {
+                idx++;
+                continue;
+            }
+
+            if (s[idx] == '#')
+            {
+                SkipToEndOfLine(s, ref idx);
+                continue;
+            }
+            break;
+        }
+    }
+
+    private static string SkipWhitespaceAndCaptureComments(string s, ref int idx)
+    {
+        string lastComment = null;
+        while (idx < s.Length)
+        {
+            if (IsWhitespace(s[idx]))
+            {
+                idx++;
+                continue;
+            }
+
+            if (s[idx] == '#')
+            {
+                lastComment = CaptureComment(s, ref idx);
+                continue;
+            }
+            break;
+        }
+        return lastComment;
+    }
+
+    private static string CaptureComment(string s, ref int idx)
+    {
+        idx++; // skip #
+        int start = idx;
+        while (idx < s.Length && !IsNewline(s[idx])) idx++;
+        return s.Substring(start, idx - start).Trim();
+    }
+
+    private static void SkipToEndOfLine(string s, ref int idx)
+    {
+        while (idx < s.Length && s[idx] != '\n') idx++;
+    }
+
+    private static bool IsWhitespace(char c)
+    {
+        return c == ' ' || c == '\t' || c == '\r' || c == '\n';
+    }
+
+    private static bool IsNewline(char c)
+    {
+        return c == '\n' || c == '\r';
+    }
+
+    private static string ParseKey(string s, ref int idx)
+    {
+        try
+        {
+            SkipWhitespace(s, ref idx);
+
+            int start = idx;
+
             while (idx < s.Length)
             {
-                if (s[idx] == ' ' || s[idx] == '\t' || s[idx] == '\r' || s[idx] == '\n')
-                {
-                    idx++;
-                    continue;
-                }
-
-                if (s[idx] == '#')
-                {
-                    while (idx < s.Length && s[idx] != '\n') idx++;
-                    continue;
-                }
-                break;
-            }
-        }
-
-        private static string ParseKey(string s, ref int idx)
-        {
-            try
-            {
-                SkipWhitespace(s, ref idx);
-
-                int start = idx;
-
-                while (idx < s.Length)
-                {
                    
-                    char c = s[idx];
-                    if (c == '=')
-                        break;
+                char c = s[idx];
+                if (c == '=') break;
+                if (IsNewline(c))
+                    throw new Exception("Unexpected newline while reading key");
 
-                    if (c == '\n' || c == '\r')
-                        throw new Exception("Unexpected newline while reading key");
-
-                    idx++;
-                }
-
-                if (idx == start)
-                    throw new Exception($"Empty key at index {idx}");
-
-                string key = s.Substring(start, idx - start).Trim();
-
-                return key;
+                idx++;
             }
-            catch (Exception ex)
-            {
-                throw new Exception($"DWON: ParseKey failed with string ({s}). EX: {ex}");
-            }
+
+            if (idx == start)
+                throw new Exception($"Empty key at index {idx}");
+
+            return s.Substring(start, idx - start).Trim();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"DWON: ParseKey failed with string ({s}). EX: {ex}");
+        }
             
-        }
+    }
 
-        private static string ParseToken(string s, ref int idx)
+    private static string ParseToken(string s, ref int idx)
+    {
+        SkipWhitespace(s, ref idx);
+        if (idx >= s.Length) return "";
+
+        char c = s[idx];
+
+        // Quoted string
+        if (c == '"' || c == '\'')
         {
-            SkipWhitespace(s, ref idx);
-            if (idx >= s.Length) return "";
-
-            char c = s[idx];
-
-            if (c == '"' || c == '\'')
-            {
-                char quote = c;
-                idx++;
-                int start = idx;
-                while (idx < s.Length && s[idx] != quote) idx++;
-                string str = s.Substring(start, idx - start);
-                if (idx < s.Length) idx++;
-                return str;
-            }
-
-            int startToken = idx;
-            while (idx < s.Length && s[idx] != '\n' && s[idx] != '\r' && s[idx] != '#' && s[idx] != ',' && s[idx] != '}' && s[idx] != ']') idx++;
-            string token = s.Substring(startToken, idx - startToken).Trim();
-            return token;
-        }
-
-        private static string ParseInlineComment(string s, ref int idx)
-        {
-            SkipWhitespace(s, ref idx);
-            if (idx < s.Length && s[idx] == '#')
-            {
-                idx++;
-                int start = idx;
-                while (idx < s.Length && s[idx] != '\n' && s[idx] != '\r') idx++;
-                return s.Substring(start, idx - start).Trim();
-            }
-            return null;
-        }
-
-        private static void SkipWhitespace(string s, ref int idx)
-        {
-            while (idx < s.Length && (s[idx] == ' ' || s[idx] == '\t' || s[idx] == '\r' || s[idx] == '\n')) idx++;
-        }
-
-        private static void ExpectChar(string s, ref int idx, char expected)
-        {
-            SkipWhitespace(s, ref idx);
-            if (idx >= s.Length || s[idx] != expected) throw new Exception("Expected '" + expected + "' at index " + idx);
+            char quote = c;
             idx++;
+            int start = idx;
+            while (idx < s.Length && s[idx] != quote) idx++;
+            string str = s.Substring(start, idx - start);
+            if (idx < s.Length) idx++; // skip closing quote
+            return str;
         }
 
-        private static object ParsePrimitive(string token)
+        // Unquoted token
+        int startToken = idx;
+        while (idx < s.Length && s[idx] != '\n' && s[idx] != '\r' && s[idx] != '#' && s[idx] != ',' && s[idx] != '}' && s[idx] != ']') idx++;
+        string token = s.Substring(startToken, idx - startToken).Trim();
+        return token;
+    }
+
+    private static string ParseInlineComment(string s, ref int idx)
+    {
+        SkipWhitespace(s, ref idx);
+        if (idx < s.Length && s[idx] == '#')
         {
-            if (token.Length == 0) return null;
-
-            if (token == "true") return true;
-            if (token == "false") return false;
-
-            if (token.StartsWith("Vec3(") && token.EndsWith(")"))
-            {
-                string inside = token.Substring(5, token.Length - 6);
-                string[] parts = inside.Split(' ');
-                if (parts.Length == 3)
-                {
-                    double x, y, z;
-                    if (double.TryParse(parts[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out x) &&
-                        double.TryParse(parts[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out y) &&
-                        double.TryParse(parts[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out z))
-                    {
-                        return new AT_Vector3D(x, y, z);
-                    }
-                }
-            }
-
-            int i;
-            if (int.TryParse(token, out i)) return i;
-
-            double f;
-            if (double.TryParse(token, System.Globalization.NumberStyles.Float,
-                    System.Globalization.CultureInfo.InvariantCulture, out f)) return f;
-
-            return token;
+            return CaptureComment(s, ref idx);
         }
+        return null;
+    }
+
+    private static void SkipWhitespace(string s, ref int idx)
+    {
+        while (idx < s.Length && IsWhitespace(s[idx])) idx++;
+    }
+
+    private static void ExpectChar(string s, ref int idx, char expected)
+    {
+        SkipWhitespace(s, ref idx);
+        if (idx >= s.Length || s[idx] != expected) throw new Exception("Expected '" + expected + "' at index " + idx);
+        idx++;
+    }
+
+    private static object ParsePrimitive(string token)
+    {
+        if (token.Length == 0) return null;
+
+        if (token == "true") return true;
+        if (token == "false") return false;
+
+        object vec3 = TryParseVec3(token);
+        if (vec3 != null) return vec3;
+
+        int i;
+        if (int.TryParse(token, out i)) return i;
+
+        double f;
+        if (double.TryParse(token, System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out f)) return f;
+
+        return token; // fallback to string
+    }
+
+    private static object TryParseVec3(string token)
+    {
+        if (!token.StartsWith("Vec3(") || !token.EndsWith(")"))
+            return null;
+
+        string inside = token.Substring(5, token.Length - 6);
+        string[] parts = inside.Split(' ');
+
+        if (parts.Length != 3)
+            return null;
+
+        double x, y, z;
+        if (double.TryParse(parts[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out x) &&
+            double.TryParse(parts[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out y) &&
+            double.TryParse(parts[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out z))
+        {
+            return new AT_Vector3D(x, y, z);
+        }
+
+        return null;
+    }
 
 
 
         
-        public static void UnwrapAllComments(Dictionary<string, object> dict)
+    // Helper: recursively unwrap all Dwon.Comment objects
+    public static void UnwrapAllComments(Dictionary<string, object> dict)
+    {
+        var keys = new List<string>(dict.Keys);
+        foreach (var key in keys)
         {
-            var keys = new List<string>(dict.Keys);
-            foreach (var key in keys)
-            {
-                var val = dict[key];
-                var c = val as Comment;
-                var nestedDict = val as Dictionary<string, object>;
-                var list = val as List<object>;
-                if (c != null)
-                    dict[key] = c.Obj;
-                
-                else if (nestedDict != null)
-                    UnwrapAllComments(nestedDict);
-                else if (list != null)
-                {
-                    for (int i = 0; i < list.Count; i++)
-                    {
-                        var listItem = list[i];
-                        var cl = listItem as Comment;
-                        list[i] = cl != null ? cl.Obj : list[i];
-                    }
-                        
-                }
-            }
+            dict[key] = UnwrapValue(dict[key]);
+        }
+    }
+
+    private static object UnwrapValue(object val)
+    {
+        // Unwrap Field to get the actual value
+        Field field = val as Field;
+        if (field != null)
+            val = field.Obj;
+
+        // Recursively unwrap nested structures
+        Dictionary<string, object> nestedDict = val as Dictionary<string, object>;
+        if (nestedDict != null)
+        {
+            UnwrapAllComments(nestedDict);
+            return nestedDict;
         }
 
-        public static T GetValue<T>(Dictionary<string, object> dict, string key, ref string comment, T defaultValue = default(T))
+        List<object> list = val as List<object>;
+        if (list != null)
         {
-            comment = "";
-            object value;
-            if (dict.TryGetValue(key, out value))
+            UnwrapList(list);
+            return list;
+        }
+
+        return val;
+    }
+
+    private static void UnwrapList(List<object> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            Field field = list[i] as Field;
+            if (field != null)
             {
-                var temp = value as Comment;
-                if (temp != null)
-                {
-                    value = temp.Obj;
-                    comment = temp.Com;
-                }
-                if (value is T) return (T)value;
-                
-                try
-                {
-                    return (T)Convert.ChangeType(value, typeof(T));
-                }
-                catch
-                {
-                    return defaultValue;
-                }
+                list[i] = field.Obj;
             }
+        }
+    }
+
+    // Helper: safely get field, returns Field with default value if missing
+    public static Field GetField<T>(Dictionary<string, object> dict, string key, T defaultValue = default(T))
+    {
+        object value;
+        if (!dict.TryGetValue(key, out value))
+        {
+            return new Field(defaultValue);
+        }
+
+        // Extract Field if present
+        Field field = value as Field;
+        if (field != null)
+        {
+            // Convert the wrapped value to the correct type
+            T convertedValue = ConvertValue<T>(field.Obj, defaultValue);
+            return new Field(convertedValue, field.BeforeComment, field.InlineComment);
+        }
+        else
+        {
+            // Not wrapped in Field, convert directly
+            T convertedValue = ConvertValue<T>(value, defaultValue);
+            return new Field(convertedValue);
+        }
+    }
+
+    // Helper: safely get value, returns default if missing (legacy method for backward compatibility)
+    public static T GetValue<T>(Dictionary<string, object> dict, string key, ref string comment, T defaultValue = default(T))
+    {
+        Field field = GetField(dict, key, defaultValue);
+        comment = field.BeforeComment;
+        return ConvertValue<T>(field.Obj, defaultValue);
+    }
+
+    private static T ConvertValue<T>(object value, T defaultValue)
+    {
+        if (value is T) return (T)value;
+
+        try
+        {
+            return (T)Convert.ChangeType(value, typeof(T));
+        }
+        catch
+        {
             return defaultValue;
         }
     }
+}
 public abstract class ArgusShip
 {
     protected AT_Vector3D CPreviousVelocity;
@@ -1780,12 +2374,30 @@ public abstract class ArgusShip
     public abstract string Name { get; }
 
 
-public abstract void EarlyUpdate(int frame);
+    /// <summary>
+    /// The first update to be called. This should be for grabbing new data from the API, e.g. positions, velocities, targets.
+    /// </summary>
+    /// <param name="frame"></param>
+    public abstract void EarlyUpdate(int frame);
         
-public abstract void LateUpdate(int frame);
+    /// <summary>
+    /// The second update to be called. This would be for anything that depends on up-to-date data from other ships, e.g. ballistic calculations, distance checks.
+    /// </summary>
+    /// <param name="frame"></param>
+    public abstract void LateUpdate(int frame);
         
         
-public AT_Vector3D GetTargetLeadPosition(ArgusShip target, float projectileVelocity)
+    /// <summary>
+    /// Calculates a direction to aim in order to hit the specified target ship with a projectile
+    /// traveling at the given velocity. 
+    /// 
+    /// WARNING: Should only be called during LateUpdate, when target and shooter velocities are up to date.
+    /// Returns a vector pointing from this ship toward the predicted intercept point.
+    /// </summary>
+    /// <param name="target">The target ship to hit.</param>
+    /// <param name="projectileVelocity">The speed of the projectile.</param>
+    /// <returns>A normalized direction vector to aim at for impact.</returns>
+    public AT_Vector3D GetTargetLeadPosition(ArgusShip target, float projectileVelocity)
     {
         AT_Vector3D shooterPos = this.Position;
         AT_Vector3D shooterVel = this.Velocity;
@@ -1793,37 +2405,40 @@ public AT_Vector3D GetTargetLeadPosition(ArgusShip target, float projectileVeloc
         AT_Vector3D targetPos = target.Position;
         AT_Vector3D targetAcc = target.Acceleration;
 
-        AT_Vector3D relativeVel = target.Velocity - shooterVel;
+        AT_Vector3D relativeVel = target.Velocity - shooterVel; // target motion relative to shooter
             
         AT_Vector3D displacement = targetPos - shooterPos;
         double s = projectileVelocity;
 
+        // Quadratic coefficients: a t^2 + b t + c = 0
         double a = relativeVel.LengthSquared() - s * s;
         double b = 2.0 * displacement.Dot(relativeVel);
         double c = displacement.LengthSquared();
 
         double t;
 
-        if (Math.Abs(a) < 1e-6)
+        // Solve quadratic
+        if (Math.Abs(a) < 1e-6) // handle edge case: target velocity ~= projectile speed
         {
             if (Math.Abs(b) < 1e-6)
-                t = 0;
+                t = 0; // target on top of shooter
             else
                 t = -c / b;
         }
         else
         {
             double discriminant = b * b - 4 * a * c;
-            if (discriminant < 0) return targetPos;
+            if (discriminant < 0) return targetPos; // cannot reach target, aim at current pos
 
             double sqrtDisc = Math.Sqrt(discriminant);
             double t1 = (-b + sqrtDisc) / (2 * a);
             double t2 = (-b - sqrtDisc) / (2 * a);
 
             t = Math.Min(t1, t2) > 0 ? Math.Min(t1, t2) : Math.Max(t1, t2);
-            if (t < 0) t = Math.Max(t1, t2);
+            if (t < 0) t = Math.Max(t1, t2); // if both negative, aim at current pos
         }
 
+        // Include acceleration via a single-step approximation
         AT_Vector3D intercept = targetPos + relativeVel * t + 0.5 * targetAcc * t * t;
         return intercept;
     }
@@ -1865,7 +2480,10 @@ public class FireController
         _ship = ship;
         _guns = guns;
     }
-public FiringSolution ArbitrateFiringSolution()
+    /// <summary>
+    /// What a cool function name, that's how you know it's cool
+    /// </summary>
+    public FiringSolution ArbitrateFiringSolution()
     {
 
         _guns.SelectFiringGroup();
@@ -1998,7 +2616,7 @@ public class Gun
     public bool ForceCancel()
     {
         if (State != GunState.Firing) return false;
-        _gun.Enabled = false;
+        _gun.Enabled = false; // The only way to force a gun to not fire is to turn it off
         TimerManager.Start(0, ReenableGun);
         _cancelled = true;
         return true;
@@ -2011,7 +2629,7 @@ public class Gun
 
 
         if (TimerManager.GetRemaining(_firingTimerId) > 1) return false;
-        _gun.Enabled = false;
+        _gun.Enabled = false; // The only way to force a gun to not fire is to turn it off
         TimerManager.Start(0, ReenableGun);
         _cancelled = true;
         return true;
@@ -2044,7 +2662,7 @@ public class Gun
                 if (TimerManager.IsActive(_reloadTimerId)) return GunState.Reloading;
                 break;
             case GunReloadType.NeedsCharging:
-                if (TimerManager.IsActive(_reloadTimerId)) return GunState.Reloading;
+                if (TimerManager.IsActive(_reloadTimerId)) return GunState.Reloading; // Railguns for example have a 4 second refractory period after attempting to fire so we start this timer too anyway
                 if (_gunSinkComponent.CurrentInputByType(ElectricityId) > 0.02f) return GunState.Recharging;
                 break;
         }
@@ -2143,23 +2761,26 @@ public class GunManager
                     break;
             }
         }
-        Program.Log(readyCount);
             
-        var groupDict = fireGroupsFiring;
+        var groupDict = fireGroupsFiring; // TODO: Make sure there's always a fallback
         if (readyCount > 0)
         {
+            //_fireGroupCount = readyCount;
             _fireGroupValidity = PositionValidity.Ready;
             groupDict = fireGroupsReady;
+            //_firingReferencePosition = Vector3D.Transform(readyPos / readyCount, ThisShip.WorldMatrix);
         }
             
             
             
             
             
-        if (firingCount > 0)
+        if (firingCount > 0) // We do firing last so it is always prioritized
         {
+            //_fireGroupCount = firingCount;
             _fireGroupValidity = PositionValidity.Firing;
             groupDict = fireGroupsFiring;
+            //_firingReferencePosition = Vector3D.Transform(firingPos / firingCount, ThisShip.WorldMatrix);
         }
             
             
@@ -2174,7 +2795,7 @@ public class GunManager
             var data = group.Key;
             var guns = group.Value;
             var maxRange = data.ProjectileData.MaxRange;
-            if (maxRange * maxRange < rangeSquared) continue;
+            if (maxRange * maxRange < rangeSquared) continue; // Completely ignore gun cases that are out of range
             _currentFiringGroup = guns;
             _gunData = data;
             break;
@@ -2209,6 +2830,7 @@ public class GunManager
 
         
         
+    // API
     public void FireAll()
     {
         foreach (var gun in _guns) gun.Fire();
@@ -2311,6 +2933,7 @@ public class GyroManager
         double gy;
         var gr = roll;
 
+        //Rotate Toward forward
 
         var waxis = AT_Vector3D.Cross(solution.CurrentForward, solution.DesiredForward);
         var axis = AT_Vector3D.TransformNormal(waxis, MatrixD.Transpose(solution.WorldMatrix));
@@ -2363,27 +2986,27 @@ public class GyroManager
 }
 public enum PayloadType
 {
-    Kinetic,
-    Warhead,
-    Nuke
+    Kinetic,            // Effectively: No payload
+    Warhead,            // Versatile
+    Nuke                // Ammo bomb
 }
 public enum LaunchType
 {
-    OneAtATime,
-    Simultaneous,
-    Staggered
+    OneAtATime,         // One missile launch per button press
+    Simultaneous,       // All launchers fire on button press
+    Staggered           // All launchers fire on button press, but with a delay between them
 }
 public enum LaunchControl
 {
-    Automatic,
-    Manual,
-    ManualCiwsOverride
+    Automatic,          // Launch to a quota whenever any target is tracked. See refuel state for further launch conditions
+    Manual,             // Launch only when commanded to by the controlling player. See refuel state for further launch conditions
+    ManualCiwsOverride  // Launch only when commanded to by the controlling player, or when CIWS system requests a missile and none are nearby. See refuel state for further launch conditions
 }
 public enum RefuelPriority
 {
-    Low,
-    Medium,
-    High
+    Low,                // Allows: Automatic launch @ 10% fuel, manual launch @ any%, CIWS launch @ any%
+    Medium,             // Allows: Automatic launch @ 100% fuel, manual launch @ 10%, CIWS launch @ any%
+    High                // Allows: Automatic launch @ 100% fuel, manual launch @ 100% out of combat, 10% with a tracked target, CIWS launch @ 1%
 }
 [Flags]
 public enum DeliveryType
@@ -2397,44 +3020,121 @@ public enum DeliveryType
 public enum LaunchMechanism
 {
     None = 0,
-    Rotor = 1 << 0,
-    Piston = 1 << 1,
-    Connector = 1 << 2,
-    MergeBlock = 1 << 3,
-    PulsedThruster = 1 << 4,
-    Weapon = 1 << 5
+    Mechanical = 1 << 0,
+    Connector = 1 << 1,
+    MergeBlock = 1 << 2,
+    PulsedThruster = 1 << 3,
+    Weapon = 1 << 4
 }
 public enum Behavior
 {
-    Interdict,
-    DirectAttack,
-    SurroundAndClose,
-    Defend
+    Interdict,          // Hang out at a random point far away from the ship and chase down any detected target that gets too close
+    DirectAttack,       // Go straight for the primary detected target on launch. As a fallback, either beamride or idle near the launching ship
+    SurroundAndClose,   // Surround an enemy target and wait for the signal to attack. As a fallback, surround the controlling ship instead
+    Defend              // Effectively the same as Interdict, but at a much much tighter area, just a couple hundred meters
+}
+enum MissileFinderState
+{
+    Refreshing,      // Currently finding blocks, allowed to refresh
+    Collected,       // Missile has been collected by manager, should not refresh
+    Fired            // Missile has fired, need to allocate new list on next refresh
 }
 internal class MissileFinder
 {
-    IMyTerminalBlock _finderBlock;
     AT_Vector3D _offset;
     AT_Vector3D _extents;
-    List<IMyCubeBlock> _blocks;
+        
+    PayloadType _payloadType;
+    DeliveryType _deliveryType;
+    LaunchMechanism _launchMechanism;
+        
+    LaunchControl _launchControl; // Unsure if I want this to be a global setting instead
+    RefuelPriority _refuelPriority; // Ditto
+
+    string _launchPulseThrusterName = "";
+    string _launchWeaponName = "";
+        
+        
+    IMyTerminalBlock _finderBlock;
+
+        
     ControllableShip _thisShip;
+    MissileFinderState _state;
+    MissilePattern _pattern;
+        
+    List<IMyCubeBlock> _blocks;
+    List<IMyThrust> _launchPulseThrusters; // Only applicable if LaunchMechanism is PulsedThruster
+    List<IMyUserControllableGun> _launchWeapons; // Only applicable if LaunchMechanism is Weapon
 
     public MissileFinder(IMyTerminalBlock finder, ControllableShip ship)
     {
         _finderBlock = finder;
         _finderBlock.CustomData = SyncConfig(_finderBlock.CustomData);
         _blocks = new List<IMyCubeBlock>();
+        _launchPulseThrusters = new List<IMyThrust>();
+        _launchWeapons = new List<IMyUserControllableGun>();
         _thisShip = ship;
-        Program.Log("Finder setup");
-        Program.Log(_offset);
-        Program.Log(_extents);
+        _state = MissileFinderState.Refreshing;
+        _pattern = new MissilePattern();
+        Program.LogLine($"(MissileFinder) Initialized for block '{_finderBlock.CustomName}'", LogLevel.Debug);
         RefreshBlocks();
     }
 
     Vector3I FirstCorner => _finderBlock.Position + LocalTranslate(_offset);
     Vector3I SecondCorner => _finderBlock.Position + LocalTranslate(_offset + _extents);
+
+    // MissileFinder gets the final say on whether it returns blocks; this is if the missile is fully constructed and ready to launch
+    public bool TryCollectBlocks(ref List<IMyCubeBlock> blocks)
+    {
+        if (_blocks.Count == 0)
+        {
+            Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - No blocks found", LogLevel.Debug);
+            return false;
+        }
+            
+        // Check if blocks match the saved pattern
+        if (!_pattern.MatchesPattern(_blocks))
+        {
+            Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Pattern mismatch", LogLevel.Debug);
+            return false;
+        }
+            
+        // Verify all blocks are working
+        foreach (var block in _blocks)
+        {
+            if (!block.IsWorking)
+            {
+                Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Block not working: {block.GetType().Name}", LogLevel.Debug);
+                return false;
+            }
+        }
+        blocks = _blocks;
+        _state = MissileFinderState.Collected;
+        Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Successfully collected {_blocks.Count} blocks", LogLevel.Debug);
+        return true;
+    }
+
+    // Called by the missile manager when the missile has fired and is no longer attached to the ship
+    public void MarkFired()
+    {
+        Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Missile marked as fired", LogLevel.Debug);
+        _state = MissileFinderState.Fired;
+    }
+
+    public void EarlyUpdate(int frame)
+    {
+        if (frame % Config.Missile.FinderRefreshFrequencyFrames != 0) return;
+            
+        RefreshBlocks();
+    }
+    public void LateUpdate(int frame)
+    {
+            
+    }
         
-    public string SyncConfig(string input)
+        
+        
+    string SyncConfig(string input)
     {
         var parsed = Dwon.Parse(input);
             
@@ -2449,6 +3149,16 @@ internal class MissileFinder
             
         cat.Sync("Offset", ref _offset);
         cat.Sync("Extents", ref _extents);
+            
+        cat.SyncEnum("PayloadType", ref _payloadType);
+        cat.SyncEnum("DeliveryType", ref _deliveryType);
+        cat.SyncEnum("LaunchMechanism", ref _launchMechanism);
+        cat.SyncEnum("LaunchControl", ref _launchControl);
+        cat.SyncEnum("RefuelPriority", ref _refuelPriority);
+            
+        cat.Sync("LaunchPulseThrusterName", ref _launchPulseThrusterName, "Optional");
+        cat.Sync("LaunchWeaponName", ref _launchWeaponName, "Optional");
+            
         _offset = _offset.Floor();
         _extents = _extents.Floor();
             
@@ -2469,7 +3179,22 @@ internal class MissileFinder
 
     void RefreshBlocks()
     {
-        _blocks.Clear();
+        bool isFirstRefresh = !_pattern.HasPattern;
+            
+        switch (_state)
+        {
+            case MissileFinderState.Refreshing:
+                _blocks.Clear();
+                break;
+            case MissileFinderState.Collected:
+                return;
+            case MissileFinderState.Fired:
+                Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Resetting after fire", LogLevel.Debug);
+                _blocks = new List<IMyCubeBlock>();
+                _pattern.ClearPattern();
+                _state = MissileFinderState.Refreshing;
+                break;
+        }
 
         Vector3I ca = Vector3I.Min(FirstCorner, SecondCorner);
         Vector3I cb = Vector3I.Max(FirstCorner, SecondCorner);
@@ -2478,15 +3203,21 @@ internal class MissileFinder
         foreach (var pos in Vector3I.EnumerateRange(ca, cb))
         {
             var slimBlock = _thisShip.Grid.GetCubeBlock(pos);
-            if (slimBlock != null)
-            {
-                var fullBlock = slimBlock.FatBlock;
-                _blocks.Add(fullBlock);
-                Program.Log($"Got block {fullBlock.DisplayName}");
-            }
+            if (slimBlock == null) continue;
+            var fullBlock = slimBlock.FatBlock;
+            _blocks.Add(fullBlock);
+        }
+            
+        // Save pattern on first refresh (initial construction detection)
+        if (isFirstRefresh && _blocks.Count > 0)
+        {
+            _pattern.SavePattern(_blocks);
+            Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Pattern saved with {_blocks.Count} blocks", LogLevel.Debug);
         }
     }
         
+        
+
 }
 public class MissileManager
 {
@@ -2506,20 +3237,115 @@ public class MissileManager
 
     public void EarlyUpdate(int frame)
     {
-            
+        foreach (var finder in _missileFinders) finder.EarlyUpdate(frame);
     }
 
     public void LateUpdate(int frame)
     {
-            
+        foreach (var finder in _missileFinders) finder.LateUpdate(frame);
+    }
+}
+public class MissilePattern
+{
+    Dictionary<string, int> _blockPattern;
+    Dictionary<string, int> _currentPattern;
+    bool _hasPattern;
+
+    public MissilePattern()
+    {
+        _blockPattern = new Dictionary<string, int>();
+        _currentPattern = new Dictionary<string, int>();
+        _hasPattern = false;
+    }
+
+    /// <summary>
+    /// Saves the current block configuration as the expected pattern
+    /// </summary>
+    public void SavePattern(List<IMyCubeBlock> blocks)
+    {
+        if (blocks == null || blocks.Count == 0)
+        {
+            _blockPattern.Clear();
+            _hasPattern = false;
+            return;
+        }
+
+        CountBlockTypes(blocks, _blockPattern);
+        _hasPattern = true;
+    }
+
+    /// <summary>
+    /// Compares the current block list against the saved pattern
+    /// </summary>
+    public bool MatchesPattern(List<IMyCubeBlock> blocks)
+    {
+        if (!_hasPattern)
+            return false;
+
+        if (blocks == null || blocks.Count == 0)
+            return false;
+
+        CountBlockTypes(blocks, _currentPattern);
+
+        bool matches = ComparePatternsEqual(_currentPattern, _blockPattern);
+
+        _currentPattern.Clear();
+
+        return matches;
+    }
+
+    void CountBlockTypes(List<IMyCubeBlock> blocks, Dictionary<string, int> pattern)
+    {
+        pattern.Clear();
+
+        foreach (var block in blocks)
+        {
+            if (block == null) continue;
+
+            string blockType = block.BlockDefinition.SubtypeName;
+
+            if (pattern.ContainsKey(blockType))
+            {
+                pattern[blockType]++;
+            }
+            else
+            {
+                pattern[blockType] = 1;
+            }
+        }
+    }
+
+    bool ComparePatternsEqual(Dictionary<string, int> pattern1, Dictionary<string, int> pattern2)
+    {
+        if (pattern1.Count != pattern2.Count)
+            return false;
+
+        foreach (var kvp in pattern2)
+        {
+            if (!pattern1.ContainsKey(kvp.Key))
+                return false;
+
+            if (pattern1[kvp.Key] != kvp.Value)
+                return false;
+        }
+
+        return true;
+    }
+
+    public bool HasPattern => _hasPattern;
+
+    public void ClearPattern()
+    {
+        _blockPattern.Clear();
+        _hasPattern = false;
     }
 }
 public enum PollFrequency
 {
-    Low,
-    Medium,
-    High,
-    Realtime
+    Low,        // For targets veeery far away (>10x max weapon range)
+    Medium,     // For targets out of immediate gun range (>max weapon range)
+    High,       // For targets out of gun range but being tracked by missiles in a non terminal phase
+    Realtime    // For targets in gun range or being tracked by missiles in a terminal phase
 }
 public class Polling
 {
@@ -2527,11 +3353,11 @@ public class Polling
     {
         switch (freq)
         {
-            case PollFrequency.Low:      return 600;
-            case PollFrequency.Medium:   return 60;
-            case PollFrequency.High:     return 10;
-            case PollFrequency.Realtime: return 1;
-            default: return Int32.MaxValue;
+            case PollFrequency.Low:      return 600;  // 10 seconds
+            case PollFrequency.Medium:   return 60;   // 1 second
+            case PollFrequency.High:     return 10;   // every 10 frames
+            case PollFrequency.Realtime: return 1;    // every frame
+            default: return Int32.MaxValue;                 // Fuck you (sanity default case, shouldn't ever actually happen but making it virtually never trigger is probably the best way to catch unintended behavior early)
         }
     }
 
@@ -2544,7 +3370,7 @@ public class BalancedMassSystem
     bool _stateChanged;
     int _updateJitter = 0;
         
-    AT_Vector3D _currentMassMoment = AT_Vector3D.Zero;
+    AT_Vector3D _currentMassMoment = AT_Vector3D.Zero; // running moment
     AT_Vector3D _currentBallMoment = AT_Vector3D.Zero;
 
     ControllableShip _ship;
@@ -2622,7 +3448,11 @@ public class BalancedMassSystem
             
             
     }
-public bool HasStateChanged()
+    /// <summary>
+    /// Returns true if the mass state of the generator has changed since this function was last called.
+    /// </summary>
+    /// <returns></returns>
+    public bool HasStateChanged()
     {
         var state = _stateChanged;
         _stateChanged = false;
@@ -2649,7 +3479,7 @@ public bool HasStateChanged()
     void BalanceMassBlocks()
     {
         AT_Vector3D beforeMoment = _currentMassMoment;
-        double beforeMass = TotalMass;
+        double beforeMass = TotalMass; // however you track total
 
         foreach (var block in _blocks)
         {
@@ -2666,7 +3496,7 @@ public bool HasStateChanged()
             {
                 block.BalancerAllowed = !block.BalancerAllowed;
                 _currentMassMoment = candidate;
-                beforeMass = newMass;
+                beforeMass = newMass; // update after change
             }
         }
 
@@ -2682,17 +3512,22 @@ public bool HasStateChanged()
             
             
             
+        // Total moment before any changes
         AT_Vector3D totalBefore = _currentMassMoment + _currentBallMoment;
-        double totalMass = TotalMass;
+        double totalMass = TotalMass; // total current mass (blocks + balls)
     
+        // We want to reduce moment toward zero
         AT_Vector3D deficit = -totalBefore;
 
         foreach (var ball in _balls)
         {
+            // Unit direction of this ball's moment contribution
             var dir = ball.Moment.Normalized();
         
+            // Project deficit along this ball's direction
             double projection = deficit.Dot(dir) / 250;
 
+            // Ignore tiny adjustments
             if (Math.Abs(projection) < 0.001)
                 continue;
 
@@ -2700,19 +3535,25 @@ public bool HasStateChanged()
             float newMass = (float)MathHelper.Clamp(oldMass + projection, 0f, 20000f);
             if (newMass > 0) newMass += (newMass - oldMass) * 0.1f;
             float applied = newMass - oldMass;
+            // Ignore very tiny changes
             if (Math.Abs(applied) < 0.5)
                 continue;
 
+            // Candidate total moment if this change were applied
             AT_Vector3D candidateMoment = _currentMassMoment + _currentBallMoment + dir * applied;
 
+            // Accept change according to “prefer adding mass” logic
             if (AcceptChange(totalBefore, candidateMoment,
                     totalMass, totalMass + applied, SignificantTorqueGainBall))
             {
+                // Apply change
                 ball.BalancerVirtualMass = newMass;
                 _currentBallMoment += dir * applied;
 
+                // Update running total mass
                 totalMass += applied;
 
+                // Flag if any state changed
                 _stateChanged |= totalBefore != (_currentMassMoment + _currentBallMoment);
             }
         }
@@ -2728,9 +3569,9 @@ public bool HasStateChanged()
         double massDelta = newMass - oldMass;
 
         if (massDelta > 0)
-            return improvement > 0;
+            return improvement > 0; // adding mass? tiny win is enough
         else
-            return improvement > significantTorqueGain;
+            return improvement > significantTorqueGain; // losing mass? must be worth it
     }
 
 
@@ -2742,7 +3583,7 @@ internal class DirectionalDrive
     private readonly List<GravityGenerator> _generators;
     bool _previousEnabled;
     float _acceleration;
-    float _previousAcceleration;
+    float _previousAcceleration; // Stored to detect when the state of the drive hasn't changed between frames
     int _framesOff;
         
     CachedValue<double> _linearForce;
@@ -2794,9 +3635,9 @@ internal class DirectionalDrive
     public void SetAcceleration(float acceleration)
     {
         acceleration = (float)MathHelperD.Clamp(ArgusMath.SnapToMultiple(acceleration, Config.Gdrive.Step), -1, 1);
-        if (acceleration == _acceleration && acceleration == 0) return;
+        if (acceleration == _acceleration && acceleration == 0) return; // If idle
         Enabled = true;
-        if (acceleration == _acceleration) return;
+        if (acceleration == _acceleration) return; // If hasn't changed
         _acceleration = acceleration;
     }
 
@@ -3003,6 +3844,7 @@ public class BallMass : Mass
     public override Vector3I GridPosition => _ball.Position;
 
     public AT_Vector3D Moment => AbsoluteVirtualMass * ((AT_Vector3D)GridPosition * _ship.GridSize - _ship.LocalCenterOfMass);
+    //public AT_Vector3D Moment => AbsoluteVirtualMass * (_ball.GetPosition() - _ship.Controller.CenterOfMass);
    
 
     public bool UpdateState()
@@ -3042,7 +3884,7 @@ public class BlockMass : Mass
     public override double AbsoluteVirtualMass
     {
         get { return _mass.VirtualMass; }
-        set {  }
+        set {  } // Just a stub since can't set virtual mass on a mass block
     }
 
     public override float BalancerVirtualMass
@@ -3081,6 +3923,7 @@ public abstract class GravityGenerator
         set  { Generator.Enabled = value; }
     }
 
+    // The managing classes should not have to concern themselves with what direction the gravity generator identifies as
     public float Acceleration
     {
         get
@@ -3138,11 +3981,12 @@ public class PropulsionController
         Program.LogLine($"Setting up propulsion controller", LogLevel.Info);
         _ship = ship;
         _gDrive = new GDrive(blocks, ship);
-        _tDrive = new TDrive();
+        _tDrive = new TDrive(); // TODO
     }
 
     public void EarlyUpdate(int frame)
     {
+        // Put logic to discern propulsion here?
             
         _gDrive.EarlyUpdate(frame);
         _tDrive.EarlyUpdate(frame);
@@ -3152,7 +3996,7 @@ public class PropulsionController
     {
         var userInput = _ship.Controller.MoveIndicator;
 
-        Matrix matrix;
+        Matrix matrix; // TODO: Cache cockpit local orientation matrix
         _ship.Controller.Orientation.GetMatrix(out matrix);
 
         AT_Vector3D desiredMovement = AT_Vector3D.Transform(userInput, matrix);
@@ -3160,7 +4004,7 @@ public class PropulsionController
         if (_ship.Controller.DampenersOverride)
         {
             var velocity = _ship.Velocity;
-            var localVelocity = AT_Vector3D.TransformNormal(velocity, MatrixD.Invert(_ship.WorldMatrix));
+            var localVelocity = AT_Vector3D.TransformNormal(velocity, MatrixD.Invert(_ship.WorldMatrix)); // TODO: Cache inverted matrix somewhere in ship
                 
             var dampenValueForwardBackward = localVelocity * AT_Vector3D.Forward * 10 * GetForwardBackwardAcceleration();
             var dampenValueLeftRight = localVelocity * AT_Vector3D.Left * 10 * GetLeftRightAcceleration();
@@ -3172,6 +4016,7 @@ public class PropulsionController
         }
             
             
+        // Put logic to resolve propulsion here?
         _gDrive.ApplyPropulsion(desiredMovement);
         _gDrive.LateUpdate(frame);
         _tDrive.LateUpdate(frame);
@@ -3179,21 +4024,25 @@ public class PropulsionController
 
     double GetForwardBackwardAcceleration()
     {
+        // TODO: Implement thruster drive acceleration
         return _ship.Mass.TotalMass / _gDrive.GetForwardBackwardForce();
     }
 
     double GetLeftRightAcceleration()
     {
+        // TODO: Implement thruster drive acceleration
         return _ship.Mass.TotalMass / _gDrive.GetLeftRightForce();
     }
 
     double GetUpDownAcceleration()
     {
+        // TODO: Implement thruster drive acceleration
         return _ship.Mass.TotalMass / _gDrive.GetUpDownForce();
     }
 }
 public class TDrive
 {
+    // TODO: Expand this stub
     public void EarlyUpdate(int frame)
     {
     }
@@ -3212,6 +4061,7 @@ public class TargetTracker
     public IMyTurretControlBlock Block { get; }
     public bool Closed => Block.Closed;
 
+    // Explicit state tracking
     bool _hadTarget;
 
     bool _wasValid = true;
@@ -3239,7 +4089,8 @@ public class TargetTracker
         
     public AT_Vector3D Position => Block.GetPosition();
 
-public void UpdateState()
+    /// <summary>Updates the HasTarget / JustLostTarget / TargetedEntity state.</summary>
+    public void UpdateState()
     {
         var currentHasTarget = Block.HasTarget;
         JustLostTarget = !currentHasTarget && _hadTarget;
@@ -3258,7 +4109,8 @@ public void UpdateState()
             TargetedEntity = 0;
     }
 
-public AT_DetectedEntityInfo GetTargetedEntity()
+    /// <summary>Gets the currently targeted entity and updates TargetedEntity.</summary>
+    public AT_DetectedEntityInfo GetTargetedEntity()
     {
         var info = Block.GetTargetedEntity();
         TargetedEntity = info.EntityId;
@@ -3274,7 +4126,7 @@ public class ControllableShip : SupportingShip
     private readonly FireController _fireController;
     private readonly PropulsionController _propulsionController;
     private readonly MissileManager _missileManager;
-    List<IMyLargeTurretBase> _turrets;
+    List<IMyLargeTurretBase> _turrets; // TODO: Abstract into a turrets handler, assign
         
     CachedValue<AT_Vector3D> _gravity;
     CachedValue<MyShipMass> _mass;
@@ -3283,12 +4135,13 @@ public class ControllableShip : SupportingShip
     public ControllableShip(IMyCubeGrid grid, List<IMyTerminalBlock> blocks, List<IMyTerminalBlock> trackerBlocks) : base(grid, trackerBlocks)
     {
         Program.LogLine("New ControllableShip : SupportingShip : ArgusShip", LogLevel.Debug);
-        foreach (var block in blocks)
+        foreach (var block in blocks) // TODO: Proper controller candidate system (and perhaps manager)
         {
             var controller = block as IMyShipController;
             if (controller != null) Controller = controller;
         }
 
+        // Without a controller, the ship is virtually useless
         if (Controller == null)
         {
             Program.LogLine($"WARNING: Controller not present in group: {Config.String.GroupName}");
@@ -3307,26 +4160,63 @@ public class ControllableShip : SupportingShip
         _missileManager = new MissileManager(blocks, this);
     }
         
-public IMyShipController Controller { get; private set; }
+    /// <summary>
+    /// Gets the current controller of the grid.
+    /// This is subject to change on a per-frame basis.
+    /// </summary>
+    public IMyShipController Controller { get; private set; }
         
-public MatrixD WorldMatrix => _grid.WorldMatrix;
-public AT_Vector3D WorldForward => Controller.WorldMatrix.Forward; 
-public AT_Vector3D WorldUp => Controller.WorldMatrix.Up;
-public Vector3 LocalForward => Base6Directions.Directions[(int)Controller.Orientation.Forward];
-public Direction LocalDirectionForward => (Direction)Controller.Orientation.Forward;
-public TrackableShip CurrentTarget { get; private set; }
+    /// <summary>
+    /// Gets the world matrix of the grid.
+    /// Should only be used for transforms of directions and positions in/out of grid local space.
+    /// </summary>
+    public MatrixD WorldMatrix => _grid.WorldMatrix;
+    /// <summary>
+    /// Gets the controller centric forward of the grid.
+    /// This is more useful and player centric as the controller can be arbitrarily orientated in any of 24 possible options.
+    /// </summary>
+    public AT_Vector3D WorldForward => Controller.WorldMatrix.Forward; 
+    /// <summary>
+    /// Gets the controller centric up of the grid.
+    /// This is more useful and player centric as the controller can be arbitrarily orientated in any of 24 possible options.
+    /// </summary>
+    public AT_Vector3D WorldUp => Controller.WorldMatrix.Up;
+    /// <summary>
+    /// Gets the forward of the controller relative to its own internal orientation in the grid.
+    /// </summary>
+    public Vector3 LocalForward => Base6Directions.Directions[(int)Controller.Orientation.Forward];
+    /// <summary>
+    /// Gets the directional enum of the forward of the controller relative to its own internal orientation in the grid.
+    /// </summary>
+    public Direction LocalDirectionForward => (Direction)Controller.Orientation.Forward;
+    /// <summary>
+    /// Gets the currently targeted grid, if applicable.
+    /// </summary>
+    public TrackableShip CurrentTarget { get; private set; }
 
-public bool HasTarget => CurrentTarget != null;
+    /// <summary>
+    /// Gets if the controller currently has a target.
+    /// </summary>
+    public bool HasTarget => CurrentTarget != null;
 
-public AT_Vector3D Gravity => _gravity.Value;
+    /// <summary>
+    /// Gets the current natural gravity at the position of the controller.
+    /// </summary>
+    public AT_Vector3D Gravity => _gravity.Value;
 
-public MyShipMass Mass => _mass.Value;
+    /// <summary>
+    /// Gets the mass details of the grid. Subject to inaccuracy if being changed rapidly.
+    /// </summary>
+    public MyShipMass Mass => _mass.Value;
 
     public AT_Vector3D LocalCenterOfMass => _localCenterOfMass.Value;
 
     public IMyCubeGrid Grid => _grid;
 
         
+    // Could possibly subscribe these and make them private?
+    // Early Update is called in a deterministic, but undefined order. Designed for gathering data.
+    // All Early Updates are guaranteed to be called before any Late Updates.
     public override void EarlyUpdate(int frame)
     {
         base.EarlyUpdate(frame);
@@ -3341,6 +4231,8 @@ public MyShipMass Mass => _mass.Value;
             _localCenterOfMass.Invalidate();
         }
     }
+    // Late Update is called in a deterministic, but undefined order. Designed for acting on data.
+    // All Late Updates are guaranteed to be called before any Early Updates.
     public override void LateUpdate(int frame)
     {
         base.LateUpdate(frame);
@@ -3348,7 +4240,7 @@ public MyShipMass Mass => _mass.Value;
         {
                 
             var solution = _fireController.ArbitrateFiringSolution();
-            if (solution.TargetPosition == AT_Vector3D.Zero) _gyroManager.ResetGyroOverrides();
+            if (solution.TargetPosition == AT_Vector3D.Zero) _gyroManager.ResetGyroOverrides(); // TODO: Don't spam this
             else _gyroManager.Rotate(ref solution);
         }
         Guns.LateUpdate(frame); 
@@ -3357,7 +4249,10 @@ public MyShipMass Mass => _mass.Value;
     }
         
         
-public void Target()
+    /// <summary>
+    /// Gets the ship to search for a new target off it's bow, and set it as the current target if valid. 
+    /// </summary>
+    public void Target()
     {
             
         CurrentTarget = ShipManager.GetForwardTarget(this, Config.Behavior.LockRange, Config.Behavior.LockAngle);
@@ -3372,13 +4267,20 @@ public void Target()
         }
     }
         
-public void UnTarget()
+    /// <summary>
+    /// Unsets the current target on a ship and allows it to resume normal control.
+    /// </summary>
+    public void UnTarget()
     {
         CurrentTarget = null;
         _gyroManager.ResetGyroOverrides();
     }
 
-public AT_Vector3D GetTargetPosition()
+    /// <summary>
+    /// Gets the current position of the target.
+    /// </summary>
+    /// <returns>The targets position, or 0 if invalid. </returns>
+    public AT_Vector3D GetTargetPosition()
     {
         return CurrentTarget?.Position ?? AT_Vector3D.Zero;
     }
@@ -3408,6 +4310,8 @@ public class SupportingShip : ArgusShip
             rotor = rotor ?? block as IMyMotorStator;
         }
 
+        // if (gun == null) throw new Exception($"FATAL: Grid '{grid.CustomName}' tracker group missing a gun.");
+        // if (rotor == null) throw new Exception($"FATAL: Grid '{grid.CustomName}' tracker group missing a rotor.");
 
 
         if (gun != null && rotor != null)
@@ -3419,7 +4323,7 @@ public class SupportingShip : ArgusShip
                 var block = tracker.Block;
                 block.ClearTools();
                 block.AddTool(gun);
-                block.AzimuthRotor = null;
+                block.AzimuthRotor = null; // These aren't intended to actually shoot at anything, just used for target designation and scanning
                 block.ElevationRotor = rotor;
                 block.AIEnabled = true;
                 block.CustomName = Config.Tracker.SearchingName;
@@ -3453,13 +4357,16 @@ public class SupportingShip : ArgusShip
         {
             var tracker = _targetTrackers[i];
 
+            // Cleanup destroyed trackers
             if (tracker.Closed)
             {
                 _targetTrackers.RemoveAt(i);
                 continue;
             }
 
+            // Update target state
             tracker.UpdateState();
+            // Tracker has no target
             if (!tracker.HasTarget || tracker.Invalid)
             {
                 if (tracker.JustLostTarget && !tracker.Enabled)
@@ -3485,17 +4392,20 @@ public class SupportingShip : ArgusShip
 
                 continue;
             }
+            // Tracker currently has a target
             if (tracker.TargetedEntity != 0) continue;
                 
             AT_DetectedEntityInfo target = tracker.GetTargetedEntity();
                 
             TargetTracker existingTracker;
+            // Already tracked by this or another tracker
             if (ShipManager.HasNonDefunctTrackableShip(target.EntityId, out existingTracker))
             {
                 if (existingTracker == tracker && tracker.Enabled) tracker.Enabled = false;
                 existingTracker.TrackedShip.AddTrackedBlock(target, null, tracker);
                 continue;
             }
+            // Newly detected ship — register it
             var trackableShip = ShipManager.AddTrackableShip(tracker, target.EntityId, target);
             tracker.TrackedShip = trackableShip;
             tracker.CustomName = Config.Tracker.TrackingName;
@@ -3671,7 +4581,7 @@ public class TrackableShip : ArgusShip
             );
 
             if (kv.Value.Countdown()) continue;
-            _scannedBlocks_Swap[kv.Key] = kv.Value;
+            _scannedBlocks_Swap[kv.Key] = kv.Value; // keep the entry if still valid
                 
             Program.Debug.DrawPoint(worldPos, Color.White, 0.2f, 0.016f, true);
         }
@@ -3691,6 +4601,7 @@ public class TrackableShip : ArgusShip
         if (info.EntityId != Info.EntityId || info.HitPosition == null) return;
 
         var targetBlockPosition = (AT_Vector3D)info.HitPosition;
+        //Program.Debug.DrawPoint(targetBlockPosition, Color.Red, 0.2f, 5f, true);
         var worldDirection = targetBlockPosition - Position;
         var positionInGridDouble =
             AT_Vector3D.TransformNormal(worldDirection,
@@ -3751,6 +4662,7 @@ public static class ShipManager
         
     private static List<TrackableShip> _reusedShipList = new List<TrackableShip>();
         
+    //public static Dictionary<long, TargetTracker> EntityIdToTracker = new Dictionary<long, TargetTracker>();
 
     public static Dictionary<long, TrackableShip> EntityIdToTrackableShip = new Dictionary<long, TrackableShip>();
         
@@ -3795,9 +4707,9 @@ public static class ShipManager
             }
 
         }
-            
 
-        foreach (var kvp in DynamicAABBTreeDHelper.GetAllOverlaps(_trackableShipTree))
+        var allOverlaps = TrackableShipAABBTreeHelper.GetAllOverlaps(_trackableShipTree);
+        foreach (var kvp in allOverlaps)
         {
             var testShip = kvp.Key;
             var overlaps = kvp.Value;
@@ -3810,22 +4722,26 @@ public static class ShipManager
 
                 var overlapShipSize = overlapShip.WorldAABB.Size.LengthSquared();
 
+                // var outcome = overlapShipSize > shipSize ? "losing" : "winning";
+                // Program.Log($"Ship {testShip?.Name} is overlapping ship {overlapShip?.Name} and {outcome}");
                     
                 if (overlapShipSize > shipSize)
                 {
                     testShip.IntersectsLargerShipAABB = true;
-                    return;
+                    break;
                 }
             }
-
+            overlaps.Clear(); // Avoids static list induced memory leaks
             testShip.IntersectsLargerShipAABB = false;
         }
+        allOverlaps.Clear(); // Avoids static list induced memory leaks
     }
 
     private static void UpdatePollFrequency()
     {
         if (!_pollEnumerator.MoveNext())
         {
+            // reached the end, restart
             _pollEnumerator = UpdatePollFrequenciesOneByOne().GetEnumerator();
             _pollEnumerator.MoveNext();
         }
@@ -3861,14 +4777,21 @@ public static class ShipManager
             else
                 trackableShip.PollFrequency = PollFrequency.Realtime;
 
-            yield return trackableShip;
+            yield return trackableShip; // yields one ship per call
         }
     }
         
         
         
-public static List<TrackableShip> GetTargetsInRange(SupportingShip ship, double range)
+    /// <summary>
+    /// Gets trackable ships within a set range of this ship. Do not store the returned list, it WILL be mutated unexpectedly.
+    /// </summary>
+    /// <param name="ship">The target ship to test.</param>
+    /// <param name="range">The search range.</param>
+    /// <returns>A REUSED list containing all ships in range. This is REUSED internally and should not be persisted.</returns>
+    public static List<TrackableShip> GetTargetsInRange(SupportingShip ship, double range)
     {
+        // Just an O(n) lookup for now :)
         _reusedShipList.Clear();
         foreach (var otherShip in AllShips)
         {
@@ -3892,6 +4815,7 @@ public static List<TrackableShip> GetTargetsInRange(SupportingShip ship, double 
         double bestScore = double.MaxValue;
         TrackableShip bestCandidate = null;
             
+        // This more or less gets the closest ship closest to the center of the crosshair
         foreach (var candidate in candidates)
         {
             var shipToCandidate = (candidate.Position - ship.Position);
@@ -3946,12 +4870,14 @@ public static List<TrackableShip> GetTargetsInRange(SupportingShip ship, double 
         Program.LogLine("Creating new ship " + entityId, LogLevel.Debug);
         trackableShip = new TrackableShip(tracker, entityId, initial);
         AllShips.Add(trackableShip);
+        //EntityIdToTracker.Add(entityId, tracker);
         EntityIdToTrackableShip.Add(entityId, trackableShip);
         return trackableShip;
     }
     public static void RemoveTrackableShip(TrackableShip trackableShip)
     {
         AllShips.Remove(trackableShip);
+        //EntityIdToTracker.Remove(trackableShip.EntityId);
         EntityIdToTrackableShip.Remove(trackableShip.EntityId);
         _trackableShipTree.RemoveProxy(trackableShip.ProxyId);
     }
@@ -3975,11 +4901,14 @@ public struct AT_DetectedEntityInfo
     }
     public static implicit operator AT_DetectedEntityInfo(MyDetectedEntityInfo info) => new AT_DetectedEntityInfo(info);
     public long EntityId => _info.EntityId;
+    //public string Name => _info.Name;
     public MyDetectedEntityType Type => _info.Type;
     public Vector3D? HitPosition => _info.HitPosition;
     public MatrixD Orientation => _info.Orientation;
     public Vector3 Velocity => _info.Velocity;
+    //public MyRelationsBetweenPlayerAndBlock Relationship => _info.Relationship;
     public BoundingBoxD BoundingBox => _info.BoundingBox;
+    //public long TimeStamp => _info.TimeStamp;
     public Vector3D Position => BoundingBox.Center;
 
         
@@ -4014,13 +4943,19 @@ public struct AT_Vector3D
         
     public static bool operator !=(AT_Vector3D value1, AT_Vector3D value2) => value1._value != value2._value;
         
+    // public static AT_Vector3D operator %(AT_Vector3D value1, double value2) => value1._value % value2;
+    //
+    // public static AT_Vector3D operator %(AT_Vector3D value1, AT_Vector3D value2) => value1._value % value2._value;
 
     public static AT_Vector3D operator +(AT_Vector3D value1, AT_Vector3D value2) => value1._value + value2._value;
         
+    //public static AT_Vector3D operator +(AT_Vector3D value1, double value2) => value1._value + value2;
 
+    //public static AT_Vector3D operator +(AT_Vector3D value1, float value2) => value1._value + value2;
         
     public static AT_Vector3D operator -(AT_Vector3D value1, AT_Vector3D value2) => value1._value - value2._value;
         
+    //public static AT_Vector3D operator -(AT_Vector3D value1, double value2) => value1._value - value2;
         
     public static AT_Vector3D operator *(AT_Vector3D value1, AT_Vector3D value2) => value1._value * value2._value;
         
@@ -4032,6 +4967,7 @@ public struct AT_Vector3D
         
     public static AT_Vector3D operator /(AT_Vector3D value, double divider) => value._value / divider;
 
+    //public static AT_Vector3D operator /(double value, AT_Vector3D divider) =>value / divider._value;
 
     public double X => _value.X;
     public double Y => _value.Y;

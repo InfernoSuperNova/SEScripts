@@ -6,6 +6,7 @@ using IngameScript.Ship.Components;
 using VRage.Game.ModAPI.Ingame;
 using VRageMath;
 using IngameScript.Helper;
+using IngameScript.Helper.Log;
 using IngameScript.TruncationWrappers;
 
 namespace IngameScript

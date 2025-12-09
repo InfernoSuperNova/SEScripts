@@ -1,7 +1,9 @@
 using System;
 
-namespace IngameScript.Ship.Components.Missiles
+namespace IngameScript
 {
+    
+    
     // TODO
     // Missiles:
     // Payload type: Warhead
@@ -70,12 +72,11 @@ namespace IngameScript.Ship.Components.Missiles
     public enum LaunchMechanism
     {
         None = 0,
-        Rotor = 1 << 0,
-        Piston = 1 << 1,
-        Connector = 1 << 2,
-        MergeBlock = 1 << 3,
-        PulsedThruster = 1 << 4,
-        Weapon = 1 << 5
+        Mechanical = 1 << 0,
+        Connector = 1 << 1,
+        MergeBlock = 1 << 2,
+        PulsedThruster = 1 << 3,
+        Weapon = 1 << 4
     }
 
     public enum Behavior

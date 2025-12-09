@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using IngameScript.Helper;
+using IngameScript.Helper.Log;
 using IngameScript.SConfig.Database;
 using IngameScript.TruncationWrappers;
 using Sandbox.ModAPI.Ingame;
@@ -85,7 +86,6 @@ namespace IngameScript.Ship.Components
                         break;
                 }
             }
-            Program.Log(readyCount);
             
             var groupDict = fireGroupsFiring; // TODO: Make sure there's always a fallback
             if (readyCount > 0)

@@ -21,12 +21,12 @@ namespace IngameScript.Ship.Components.Missiles
 
         public void EarlyUpdate(int frame)
         {
-            
+            foreach (var finder in _missileFinders) finder.EarlyUpdate(frame);
         }
 
         public void LateUpdate(int frame)
         {
-            
+            foreach (var finder in _missileFinders) finder.LateUpdate(frame);
         }
     }
 }

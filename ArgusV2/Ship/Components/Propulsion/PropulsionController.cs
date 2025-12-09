@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using IngameScript.Helper;
+using IngameScript.Helper.Log;
 using IngameScript.Ship.Components.Propulsion.Gravity;
 using IngameScript.Ship.Components.Propulsion.Thruster;
 using IngameScript.TruncationWrappers;

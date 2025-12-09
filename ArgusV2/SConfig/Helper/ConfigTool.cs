@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using IngameScript.Helper;
+using IngameScript.Helper.Log;
 using IngameScript.SConfig.Helper;
 using VRage.Game.ModAPI.Ingame.Utilities;
 
@@ -37,8 +38,19 @@ namespace IngameScript.SConfig
             foreach (var kv in Configs)
             {
                 if (!dict.ContainsKey(kv.Key))
-                    dict[kv.Key] = new Dictionary<string, object>();
-                kv.Value.Sync?.Invoke((Dictionary<string, object>)dict[kv.Key]); // sync fields < - > dictionary
+                {
+                    // Create new Field with empty dictionary
+                    dict[kv.Key] = new Dwon.Field(new Dictionary<string, object>());
+                }
+
+                // Unwrap Field to get the dictionary
+                var field = dict[kv.Key] as Dwon.Field;
+                var configDict = field != null ? field.Obj as Dictionary<string, object> : dict[kv.Key] as Dictionary<string, object>;
+
+                if (configDict != null)
+                {
+                    kv.Value.Sync?.Invoke(configDict); // sync fields < - > dictionary
+                }
             }
 
             return Dwon.Serialize(parsed);

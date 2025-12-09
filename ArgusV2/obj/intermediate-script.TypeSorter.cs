@@ -49,6 +49,10 @@ class Program : MyGridProgram
         {
             Echo("Crashed: " + ex);
         }
+        finally
+        {
+            I = null;
+        }
         Echo(_Log.ToString());
     }
         
@@ -59,6 +63,7 @@ class Program : MyGridProgram
 
         try
         {
+            I = this;
             if ((updateSource & UpdateType.Update1) != 0) RunUpdate();
             if ((updateSource & (UpdateType.Trigger | UpdateType.Terminal)) != 0) RunCommand(argument);
         }
@@ -66,6 +71,10 @@ class Program : MyGridProgram
         {
             Echo(ex.ToString());
             Runtime.UpdateFrequency = UpdateFrequency.None;
+        }
+        finally
+        {
+            I = null;
         }
     }
 
@@ -517,70 +526,6 @@ public class Base6Directions
         Vector3.Down
     };
 }
-public static class DynamicAABBTreeDHelper
-{
-    private static readonly List<TrackableShip> Elements = new List<TrackableShip>();
-    private static readonly List<BoundingBoxD> Boxes = new List<BoundingBoxD>();
-
-    private static readonly Dictionary<TrackableShip, List<TrackableShip>> ReusedOverlaps =
-        new Dictionary<TrackableShip, List<TrackableShip>>();
-
-    private static readonly List<List<TrackableShip>> ReusedLists = new List<List<TrackableShip>>();
-
-    private static int _rI = 0;
-    // Diabolical
-    private static List<TrackableShip> GetList()
-    {
-        if (_rI >= ReusedLists.Count)
-            ReusedLists.Add(new List<TrackableShip>(8));
-
-        var list = ReusedLists[_rI++];
-        list.Clear();
-        return list;
-    }
-        
-    public static Dictionary<TrackableShip, List<TrackableShip>> GetAllOverlaps(MyDynamicAABBTreeD tree)
-    {
-        _rI = 0;
-        ReusedOverlaps.Clear();
-        // Get all entities and their AABBs
-        tree.GetAll(Elements, clear: true, boxsList: Boxes);
-
-        for (int i = 0; i < Elements.Count; i++)
-        {
-            var entityA = Elements[i];
-            var boxA = Boxes[i];
-
-            var overlapping = GetList();
-            tree.OverlapAllBoundingBox(ref boxA, overlapping, 0U, false);
-
-            foreach (var entityB in overlapping)
-            {
-                if (entityA == entityB) continue;
-                    
-                if (!ReusedOverlaps.ContainsKey(entityA)) ReusedOverlaps.Add(entityA, GetList());
-                ReusedOverlaps[entityA].Add(entityB);
-                    
-                if (!ReusedOverlaps.ContainsKey(entityB)) ReusedOverlaps.Add(entityB, GetList());
-                ReusedOverlaps[entityB].Add(entityA);
-                    
-            }
-        }
-
-        return ReusedOverlaps;
-    }
-    public static List<TrackableShip> GetOverlapsWithBox(MyDynamicAABBTreeD tree, BoundingBoxD box)
-    {
-        _rI = 0;
-        // Get a temporary list from the pool
-        var overlapping = GetList();
-
-        // Query the tree for all leaf nodes overlapping the given box
-        tree.OverlapAllBoundingBox(ref box, overlapping, 0U, false);
-
-        return overlapping;
-    }
-}
 public static class ArgusMath
 {
     public static double SnapToMultiple(double value, double multiple)
@@ -980,6 +925,77 @@ public static class OBBReconstructor
                 return Math.Min(a, b);
         }
     }
+public static class TrackableShipAABBTreeHelper
+{
+    private static readonly List<TrackableShip> Elements = new List<TrackableShip>();
+    private static readonly List<BoundingBoxD> Boxes = new List<BoundingBoxD>();
+
+    private static readonly Dictionary<TrackableShip, List<TrackableShip>> ReusedOverlaps =
+        new Dictionary<TrackableShip, List<TrackableShip>>();
+
+    private static readonly List<List<TrackableShip>> ReusedLists = new List<List<TrackableShip>>();
+
+    private static int _rI = 0;
+    // Diabolical
+    private static List<TrackableShip> GetList()
+    {
+        if (_rI >= ReusedLists.Count)
+            ReusedLists.Add(new List<TrackableShip>(8));
+
+        var list = ReusedLists[_rI++];
+        list.Clear();
+        return list;
+    }
+        
+    /// <summary>
+    /// Returns a static list with references to game objects. CLEAN UP WHEN YOU ARE DONE OR MEMORY WILL LEAK!
+    /// </summary>
+    /// <param name="tree"></param>
+    /// <returns></returns>
+    public static Dictionary<TrackableShip, List<TrackableShip>> GetAllOverlaps(MyDynamicAABBTreeD tree)
+    {
+        _rI = 0;
+        ReusedOverlaps.Clear();
+        // Get all entities and their AABBs
+        tree.GetAll(Elements, clear: true, boxsList: Boxes);
+
+        for (int i = 0; i < Elements.Count; i++)
+        {
+            var entityA = Elements[i];
+            var boxA = Boxes[i];
+
+            var overlapping = GetList();
+            tree.OverlapAllBoundingBox(ref boxA, overlapping, 0U, false);
+
+            foreach (var entityB in overlapping)
+            {
+                if (entityA == entityB) continue;
+                    
+                if (!ReusedOverlaps.ContainsKey(entityA)) ReusedOverlaps.Add(entityA, GetList());
+                ReusedOverlaps[entityA].Add(entityB);
+                    
+                if (!ReusedOverlaps.ContainsKey(entityB)) ReusedOverlaps.Add(entityB, GetList());
+                ReusedOverlaps[entityB].Add(entityA);
+                    
+            }
+            overlapping.Clear(); // Clear before returning this list to the cache to avoid memory leaks
+        }
+        Elements.Clear();
+        Boxes.Clear();
+        return ReusedOverlaps;
+    }
+    public static List<TrackableShip> GetOverlapsWithBox(MyDynamicAABBTreeD tree, BoundingBoxD box)
+    {
+        _rI = 0;
+        // Get a temporary list from the pool
+        var overlapping = GetList();
+
+        // Query the tree for all leaf nodes overlapping the given box
+        tree.OverlapAllBoundingBox(ref box, overlapping, 0U, false);
+
+        return overlapping;
+    }
+}
 public class SimpleTimer
 {
     public int Remaining;
@@ -1108,6 +1124,8 @@ public static class Commands
 }
 public static class Config
 {
+        
+
     private static ConfigTool _configTool = new ConfigTool("General Config", "")
     {
         Sync = SyncConfig
@@ -1119,6 +1137,7 @@ public static class Config
     public static readonly TrackerConfig Tracker = new TrackerConfig();
     public static readonly GdriveConfig Gdrive = new GdriveConfig();
     public static readonly PidConfig Pid = new PidConfig();
+    public static readonly MissileConfig Missile = new MissileConfig();
 
     public static void Setup(IMyProgrammableBlock me)
     {
@@ -1151,6 +1170,7 @@ public static class Config
         Tracker.Sync(obj);
         Gdrive.Sync(obj);
         Pid.Sync(obj);
+        Missile.Sync(obj);
     }
 
     public class GeneralConfig
@@ -1268,6 +1288,271 @@ public static class Config
             config.Sync("IntegralLowerLimit", ref IntegralLowerLimit);
             config.Sync("IntegralUpperLimit", ref IntegralUpperLimit);
         }
+    }
+
+    public class MissileConfig
+    {
+        public int FinderRefreshFrequencyFrames = 60;
+            
+        internal void Sync(Dictionary<string, object> obj)
+        {
+            var config = ConfigCategory.From(obj, "Missile Config");
+                
+            config.Sync("FinderRefreshFrequencyFrames", ref FinderRefreshFrequencyFrames);
+        }
+    }
+}
+    public static class EnumLookup
+{
+    
+    private static readonly List<Type> isFlags = new List<Type>
+    {
+        typeof(DeliveryType),
+        typeof(LaunchMechanism)
+    };
+    private static readonly Dictionary<Type, Dictionary<int, string>> enumToString =
+        new Dictionary<Type, Dictionary<int, string>>
+        {
+            {
+                typeof(LogLevel),
+                new Dictionary<int, string>
+                {
+                    { (int)LogLevel.Trace, "Trace" },
+                    { (int)LogLevel.Debug, "Debug" },
+                    { (int)LogLevel.Info, "Info" },
+                    { (int)LogLevel.Warning, "Warning" },
+                    { (int)LogLevel.Error, "Error" },
+                    { (int)LogLevel.Critical, "Critical" },
+                    { (int)LogLevel.Highlight, "Highlight" } 
+                }
+            },
+            {
+                typeof(GunReloadType),
+                new Dictionary<int, string>
+                {
+                    { (int)GunReloadType.Normal, "None" },
+                    { (int)GunReloadType.NeedsCharging, "NeedsCharging" },
+                }
+            },
+            {
+                typeof(GunFireType), 
+                new Dictionary<int, string>
+                {
+                    { (int)GunFireType.Normal, "Normal" },
+                    { (int)GunFireType.Delay, "Delay" },
+                }
+            },
+            {
+                typeof(PayloadType),
+                new Dictionary<int, string>
+                {
+                    { (int)PayloadType.Kinetic, "Kinetic" },
+                    { (int)PayloadType.Warhead, "Warhead" },
+                    { (int)PayloadType.Nuke, "Nuke" }
+                }
+            },
+            {
+                typeof(LaunchType),
+                new Dictionary<int, string>
+                {
+                    { (int)LaunchType.OneAtATime, "OneAtATime" },
+                    { (int)LaunchType.Simultaneous, "Simultaneous" },
+                    { (int)LaunchType.Staggered, "Staggered" }
+                }
+            },
+            {
+                typeof(LaunchControl),
+                new Dictionary<int, string>
+                {
+                    { (int)LaunchControl.Automatic, "Automatic" },
+                    { (int)LaunchControl.Manual, "Manual" },
+                    { (int)LaunchControl.ManualCiwsOverride, "ManualCiwsOverride" }
+                }
+            },
+            {
+                typeof(RefuelPriority),
+                new Dictionary<int, string>
+                {
+                    { (int)RefuelPriority.Low, "Low" },
+                    { (int)RefuelPriority.Medium, "Medium" },
+                    { (int)RefuelPriority.High, "High" }
+                }
+            },
+            {
+                typeof(DeliveryType),
+                new Dictionary<int, string>
+                {
+                    { (int)DeliveryType.None, "None" },
+                    { (int)DeliveryType.Hydrogen, "Hydrogen" },
+                    { (int)DeliveryType.Ion, "Ion" },
+                    { (int)DeliveryType.Atmospheric, "Atmospheric" }
+                }
+            },
+            {
+                typeof(LaunchMechanism),
+                new Dictionary<int, string>
+                {
+                    { (int)LaunchMechanism.None, "None" },
+                    { (int)LaunchMechanism.Mechanical, "Mechanical" },
+                    { (int)LaunchMechanism.Connector, "Connector" },
+                    { (int)LaunchMechanism.MergeBlock, "MergeBlock" },
+                    { (int)LaunchMechanism.PulsedThruster, "PulsedThruster" },
+                    { (int)LaunchMechanism.Weapon, "Weapon" }
+                }
+            },
+            {
+                typeof(Behavior),
+                new Dictionary<int, string>
+                {
+                    { (int)Behavior.Interdict, "Interdict" },
+                    { (int)Behavior.DirectAttack, "DirectAttack" },
+                    { (int)Behavior.SurroundAndClose, "SurroundAndClose" },
+                    { (int)Behavior.Defend, "Defend" }
+                }
+            }
+        };
+
+    // Built automatically
+    private static readonly Dictionary<Type, Dictionary<string, int>> stringToEnum =
+        new Dictionary<Type, Dictionary<string, int>>();
+
+    // Build reverse tables on startup
+    static EnumLookup()
+    {
+        foreach (var pair in enumToString)
+        {
+            Type type = pair.Key;
+            Dictionary<int, string> forward = pair.Value;
+
+            var reverse = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            foreach (var kvp in forward)
+            {
+                // kvp.Key   = int value
+                // kvp.Value = name
+                reverse[kvp.Value] = kvp.Key;
+            }
+
+            stringToEnum[type] = reverse;
+        }
+    }
+
+    // Forward: enum → string
+    public static string GetName<T>(T value) where T : struct
+    {
+        Type type = typeof(T);
+        int intVal = Convert.ToInt32(value);
+
+        Dictionary<int, string> map;
+        if (enumToString.TryGetValue(type, out map))
+        {
+            // Check if this is a flags enum
+            if (IsFlags(type))
+            {
+                // Handle flags enum - combine multiple values with " | "
+                List<string> flagNames = new List<string>();
+
+                foreach (var kvp in map)
+                {
+                    int flagValue = kvp.Key;
+                    // Skip "None" value (0) if other flags are set
+                    if (flagValue == 0 && intVal != 0)
+                        continue;
+
+                    // Check if this flag is set in the value
+                    if (flagValue != 0 && (intVal & flagValue) == flagValue)
+                    {
+                        flagNames.Add(kvp.Value);
+                    }
+                    else if (flagValue == 0 && intVal == 0)
+                    {
+                        // Only return "None" if the value is exactly 0
+                        return kvp.Value;
+                    }
+                }
+
+                if (flagNames.Count > 0)
+                    return string.Join(" | ", flagNames);
+            }
+            else
+            {
+                // Regular enum - direct lookup
+                string s;
+                if (map.TryGetValue(intVal, out s))
+                    return s;
+            }
+        }
+
+        return intVal.ToString();
+    }
+
+    // Reverse: string → int → enum
+    public static bool TryGetValue<T>(string name, out T value) where T : struct
+    {
+        Type type = typeof(T);
+
+        Dictionary<string, int> map;
+        if (stringToEnum.TryGetValue(type, out map))
+        {
+            // Check if this is a flags enum and the string contains " | "
+            if (IsFlags(type) && name.Contains(" | "))
+            {
+                // Parse multiple flags separated by " | "
+                string[] parts = name.Split(new[] { " | " }, StringSplitOptions.None);
+                int combinedValue = 0;
+                bool allValid = true;
+
+                foreach (string part in parts)
+                {
+                    string trimmedPart = part.Trim();
+                    int flagValue;
+                    if (map.TryGetValue(trimmedPart, out flagValue))
+                    {
+                        combinedValue |= flagValue;
+                    }
+                    else
+                    {
+                        allValid = false;
+                        break;
+                    }
+                }
+
+                if (allValid)
+                {
+                    value = (T)Enum.ToObject(type, combinedValue);
+                    return true;
+                }
+                // If parsing fails, then instead return the default value
+                value = default(T);
+                return false; 
+            }
+            else
+            {
+                // Regular enum or single flag value - direct lookup
+                int raw;
+                if (map.TryGetValue(name, out raw))
+                {
+                    value = (T)Enum.ToObject(type, raw);
+                    return true;
+                }
+                value = default(T);
+                return false;
+            }
+        }
+
+        value = default(T);
+        return false;
+    }
+
+    public static bool IsFlags(Type type)
+    {
+        return isFlags.Contains(type);
+    }
+
+    public static string[] GetNames(Type type)
+    {
+        Dictionary<int, string> map;
+        return enumToString.TryGetValue(type, out map) ? map.Values.ToArray() : Array.Empty<string>();
     }
 }
 public class ProjectileData
@@ -1449,8 +1734,8 @@ public class GunData
             var reloadTime = existing.ReloadTime;
 
             category.Sync("Projectile", ref projectile);
-            category.SyncEnum("ReloadType", ref reloadType, "0 = normal, 1 = charged");
-            category.SyncEnum("FireType", ref fireType, "0 = normal, 1 = delay before firing");
+            category.SyncEnum("ReloadType", ref reloadType);
+            category.SyncEnum("FireType", ref fireType);
             category.Sync("FireTime", ref fireTime);
             category.Sync("ReloadTime", ref reloadTime);
 
@@ -1495,41 +1780,78 @@ class ConfigCategory
 
     public static ConfigCategory From(Dictionary<string, object> root, string name)
     {
-        Dwon.UnwrapAllComments(root);
-
-        Dictionary<string, object> dict;
         object obj;
 
-        if (!root.TryGetValue(name, out obj) || (dict = obj as Dictionary<string, object>) == null)
+        if (!root.TryGetValue(name, out obj))
         {
-            dict = new Dictionary<string, object>();
-            root[name] = dict;
+            var dict = new Dictionary<string, object>();
+            root[name] = new Dwon.Field(dict);
+            return new ConfigCategory(dict);
         }
 
-        return new ConfigCategory(dict);
+        // Extract the actual dictionary from Field if wrapped
+        Dwon.Field field = obj as Dwon.Field;
+        Dictionary<string, object> extractedDict = field != null
+            ? (field.Obj as Dictionary<string, object>)
+            : (obj as Dictionary<string, object>);
+
+        // If extraction failed, create new and wrap
+        if (extractedDict == null)
+        {
+            extractedDict = new Dictionary<string, object>();
+            root[name] = new Dwon.Field(extractedDict);
+        }
+        else if (field == null)
+        {
+            // If it wasn't wrapped, wrap it now
+            root[name] = new Dwon.Field(extractedDict);
+        }
+
+        return new ConfigCategory(extractedDict);
     }
 
-    public void SyncEnum<E>(string key, ref E field, string comment = "") where E : struct
+    public void SyncEnum<E>(string key, ref E scriptField, string beforeComment = "", string inlineComment = "") where E : struct
     {
-        int temp = Convert.ToInt32(field);  // enum -> int
-        temp = Dwon.GetValue(_values, key, ref comment, temp);
-        field = (E)Enum.ToObject(typeof(E), temp);
+        var field = Dwon.GetField(_values, key, scriptField);
+        var enumName = field.Obj.ToString();
 
-        if (!string.IsNullOrEmpty(comment))
-            _values[key] = new Dwon.Comment(temp, comment);
-        else
-            _values[key] = temp;
+        EnumLookup.TryGetValue(enumName, out scriptField);
+        enumName = EnumLookup.GetName(scriptField);
+
+        // Determine which comment to use: Existing > Provided > Auto-generated
+        if (string.IsNullOrEmpty(field.BeforeComment))
+        {
+            var isFlags = EnumLookup.IsFlags(typeof(E));
+            var join = isFlags ? " | " : ", ";
+            var prefix = isFlags ? "BitFlags: " : "Enum: ";
+            field.BeforeComment = !string.IsNullOrEmpty(beforeComment)
+                ? beforeComment
+                : $"{prefix}{string.Join(join, EnumLookup.GetNames(typeof(E)))}";
+        }
+
+        if (string.IsNullOrEmpty(field.InlineComment))
+        {
+            field.InlineComment = inlineComment;
+        }
+
+        // Update the value and store the reused field
+        field.Obj = enumName;
+        _values[key] = field;
     }
 
 
-    public void Sync<T>(string key, ref T field, string comment = "")
+    public void Sync<T>(string key, ref T field, string beforeComment = "", string inlineComment = "")
     {
-        var temp = Dwon.GetValue(_values, key, ref comment, field);
+        var existingField = Dwon.GetField(_values, key, field);
+        var temp = (T)existingField.Obj;
 
-        if (!string.IsNullOrEmpty(comment))
-            _values[key] = new Dwon.Comment(temp, comment);
-        else
-            _values[key] = temp;
+        // Use existing comments if present, otherwise use provided comments
+        existingField.BeforeComment = !string.IsNullOrEmpty(existingField.BeforeComment) ? existingField.BeforeComment : beforeComment;
+        existingField.InlineComment = !string.IsNullOrEmpty(existingField.InlineComment) ? existingField.InlineComment : inlineComment;
+
+        // Update the value and store the reused field
+        existingField.Obj = temp;
+        _values[key] = existingField;
 
         field = temp;
     }
@@ -1565,428 +1887,593 @@ public class ConfigTool
         foreach (var kv in Configs)
         {
             if (!dict.ContainsKey(kv.Key))
-                dict[kv.Key] = new Dictionary<string, object>();
-            kv.Value.Sync?.Invoke((Dictionary<string, object>)dict[kv.Key]); // sync fields < - > dictionary
+            {
+                // Create new Field with empty dictionary
+                dict[kv.Key] = new Dwon.Field(new Dictionary<string, object>());
+            }
+
+            // Unwrap Field to get the dictionary
+            var field = dict[kv.Key] as Dwon.Field;
+            var configDict = field != null ? field.Obj as Dictionary<string, object> : dict[kv.Key] as Dictionary<string, object>;
+
+            if (configDict != null)
+            {
+                kv.Value.Sync?.Invoke(configDict); // sync fields < - > dictionary
+            }
         }
 
         return Dwon.Serialize(parsed);
     }
 }
-    public static class Dwon
+public static class Dwon
+{
+    /// <summary>
+    /// Represents a field in the DWON object tree with optional before/inline comments
+    /// </summary>
+    public class Field
     {
-        public class Comment
-        {
-            public object Obj;
-            public string Com;
+        public object Obj;
+        public string BeforeComment;
+        public string InlineComment;
 
-            public Comment(object obj, string comment)
-            {
-                Obj = obj;
-                Com = comment;
-            }
+        public Field(object obj, string beforeComment = "", string inlineComment = "")
+        {
+            Obj = obj;
+            BeforeComment = beforeComment ?? "";
+            InlineComment = inlineComment ?? "";
+        }
+    }
+
+
+    public static string Serialize(object obj, int indent = -1)
+    {
+        var sb = new StringBuilder();
+        Serialize(obj, sb, indent, null);
+        Program.LogLine("Serialized successfully", LogLevel.Debug);
+        return sb.ToString();
+    }
+
+    private static void Serialize(object obj, StringBuilder sb, int indent, string key)
+    {
+        string pad = new string(' ', Math.Max(indent, 0));
+
+        if (obj == null)
+        {
+            if (key != null) sb.AppendLine(pad + key + " = null");
+            return;
         }
 
-
-        public static string Serialize(object obj, int indent = -1)
+        Field fieldObj = obj as Field;
+        if (fieldObj != null)
         {
-            var sb = new StringBuilder();
-            Serialize(obj, sb, indent, null);
-            Program.LogLine("Serialized successfully", LogLevel.Debug);
-            return sb.ToString();
+            SerializeField(fieldObj, sb, indent, key);
+            return;
         }
 
-        private static void Serialize(object obj, StringBuilder sb, int indent, string key)
+        IDictionary<string, object> dict = obj as IDictionary<string, object>;
+        if (dict != null)
         {
-            string pad = new string(' ', Math.Max(indent, 0));
+            SerializeDictionary(dict, sb, indent, key, pad);
+            return;
+        }
 
-            if (obj == null)
+        IEnumerable<object> list = obj as IEnumerable<object>;
+        if (list != null)
+        {
+            SerializeList(list, sb, indent, key, pad);
+            return;
+        }
+
+        if (key != null)
+        {
+            sb.AppendLine(pad + key + " = " + ValueToString(obj));
+        }
+    }
+
+    private static void SerializeField(Field fieldObj, StringBuilder sb, int indent, string key)
+    {
+        string pad = new string(' ', Math.Max(indent, 0)) + "    ";
+            
+        // Write before comment on its own line
+        if (!string.IsNullOrEmpty(fieldObj.BeforeComment))
+            sb.AppendLine(pad + "# " + fieldObj.BeforeComment);
+            
+        // Serialize the actual value
+        if (key != null && IsPrimitive(fieldObj.Obj))
+        {
+            // For primitives, write inline
+            sb.Append(pad + key + " = " + ValueToString(fieldObj.Obj));
+                
+            // Add inline comment if present
+            if (!string.IsNullOrEmpty(fieldObj.InlineComment))
+                sb.Append("   # " + fieldObj.InlineComment);
+                
+            sb.AppendLine();
+        }
+        else
+        {
+            // For complex objects (dictionaries, lists), serialize with the key
+            // The before comment has already been written above
+            IDictionary<string, object> dict = fieldObj.Obj as IDictionary<string, object>;
+            if (dict != null && key != null)
             {
-                if (key != null) sb.AppendLine(pad + key + " = null");
-                return;
+                SerializeDictionary(dict, sb, indent, key, pad);
             }
-
-            Comment commentObj = obj as Comment;
-            if (commentObj != null)
+            else
             {
-                bool isPrimitive = IsPrimitive(commentObj.Obj);
-                if (isPrimitive && key != null)
+                IEnumerable<object> list = fieldObj.Obj as IEnumerable<object>;
+                if (list != null && key != null)
                 {
-                    sb.AppendLine(pad + key + " = " + ValueToString(commentObj.Obj) + "   # " + commentObj.Com);
+                    SerializeList(list, sb, indent, key, pad);
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(commentObj.Com))
-                        sb.AppendLine(pad + "# " + commentObj.Com);
-                    Serialize(commentObj.Obj, sb, indent, key);
+                    // Fallback for other types
+                    Serialize(fieldObj.Obj, sb, indent, key);
                 }
-                return;
-            }
-
-            IDictionary<string, object> dict = obj as IDictionary<string, object>;
-            if (dict != null)
-            {
-                if (key != null) sb.AppendLine(pad + key + " = [");
-                foreach (var kv in dict)
-                {
-                    Serialize(kv.Value, sb, indent + 2, kv.Key);
-                }
-                if (key != null) sb.AppendLine(pad + "]");
-                return;
-            }
-
-            IEnumerable<object> list = obj as IEnumerable<object>;
-            if (list != null)
-            {
-                if (key != null)
-                {
-                    sb.Append(pad + key + " = { ");
-                    bool first = true;
-                    foreach (object v in list)
-                    {
-                        if (!first) sb.Append(", ");
-                        sb.Append(ValueToString(v));
-                        first = false;
-                    }
-                    sb.AppendLine(" }");
-                }
-                else
-                {
-                    foreach (object v in list)
-                        Serialize(v, sb, indent, null);
-                }
-                return;
-            }
-
-            if (key != null)
-            {
-                sb.AppendLine(pad + key + " = " + ValueToString(obj));
             }
         }
+    }
 
-        private static string ValueToString(object obj)
+    private static void SerializeDictionary(IDictionary<string, object> dict, StringBuilder sb, int indent, string key, string pad)
+    {
+        if (key != null) sb.AppendLine(pad + key + " = [");
+        foreach (var kv in dict)
         {
-            if (obj == null) return "null";
+            Serialize(kv.Value, sb, indent + 2, kv.Key);
+        }
+        if (key != null) sb.AppendLine(pad + "]");
+    }
 
-            if (obj is AT_Vector3D)
+    private static void SerializeList(IEnumerable<object> list, StringBuilder sb, int indent, string key, string pad)
+    {
+        if (key != null)
+        {
+            sb.Append(pad + key + " = { ");
+            bool first = true;
+            foreach (object v in list)
             {
-                AT_Vector3D v = (AT_Vector3D)obj;
-                return string.Format("Vec3({0} {1} {2})",
-                    v.X.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
-                    v.Y.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
-                    v.Z.ToString("R", System.Globalization.CultureInfo.InvariantCulture));
+                if (!first) sb.Append(", ");
+                sb.Append(ValueToString(v));
+                first = false;
             }
-
-            if (obj is string) return "\"" + Escape((string)obj) + "\"";
-            if (obj is bool) return ((bool)obj ? "true" : "false");
-            if (obj is float) return ((float)obj).ToString("0.#####", System.Globalization.CultureInfo.InvariantCulture);
-            if (obj is double) return ((double)obj).ToString("0.##########", System.Globalization.CultureInfo.InvariantCulture); 
-            if (obj is int || obj is long || obj is short || obj is byte) return obj.ToString();
-            return "\"" + Escape(obj.ToString()) + "\"";
+            sb.AppendLine(" }");
         }
-
-
-        private static string Escape(string s)
+        else
         {
-            return s.Replace("\\", "\\\\").Replace("\"", "\\\"");
+            foreach (object v in list)
+                Serialize(v, sb, indent, null);
         }
+    }
 
-        private static bool IsPrimitive(object value)
+    private static string ValueToString(object obj)
+    {
+        if (obj == null) return "null";
+        if (obj is AT_Vector3D) return FormatVec3((AT_Vector3D)obj);
+        if (obj is string)
         {
-            return value is string || value is bool ||
-                   value is int || value is long || value is short || value is byte ||
-                   value is float || value is double;
+            string str = (string)obj;
+            // Check if string looks like an unquoted identifier or enum value
+            if (IsUnquotedIdentifier(str))
+                return str;
+            return "\"" + Escape(str) + "\"";
         }
+        if (obj is bool) return ((bool)obj ? "true" : "false");
+        if (obj is float) return ((float)obj).ToString("0.#####", System.Globalization.CultureInfo.InvariantCulture);
+        if (obj is double) return ((double)obj).ToString("0.##########", System.Globalization.CultureInfo.InvariantCulture);
+        if (obj is int || obj is long || obj is short || obj is byte) return obj.ToString();
+        return "\"" + Escape(obj.ToString()) + "\"";
+    }
 
+    private static bool IsUnquotedIdentifier(string str)
+    {
+        if (string.IsNullOrEmpty(str)) return false;
 
-
-        public static object Parse(string dwon)
+        // Allow alphanumeric, underscore, pipe, colon, and spaces (for enum flags and labels)
+        foreach (char c in str)
         {
-            int idx = 0;
-            var top = new Dictionary<string, object>();
-            while (idx < dwon.Length)
-            {
-                SkipWhitespaceAndComments(dwon, ref idx);
-                if (idx >= dwon.Length) break;
-
-                string key = ParseKey(dwon, ref idx);
-                ExpectChar(dwon, ref idx, '=');
-                object value = ParseValue(dwon, ref idx);
-                string comment = ParseInlineComment(dwon, ref idx);
-                if (comment != null && IsPrimitive(value))
-                    value = new Comment(value, comment);
-
-                top[key] = value;
-            }
-            return top;
+            if (!char.IsLetterOrDigit(c) && c != '_' && c != '|' && c != ' ' && c != ':')
+                return false;
         }
+        return true;
+    }
 
-        private static object ParseValue(string s, ref int idx)
+    private static string FormatVec3(AT_Vector3D v)
+    {
+        return string.Format("Vec3({0} {1} {2})",
+            v.X.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
+            v.Y.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
+            v.Z.ToString("R", System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+
+    private static string Escape(string s)
+    {
+        return s.Replace("\\", "\\\\").Replace("\"", "\\\"");
+    }
+
+    private static bool IsPrimitive(object value)
+    {
+        return value is string || value is bool ||
+               value is int || value is long || value is short || value is byte ||
+               value is float || value is double;
+    }
+
+
+
+    public static object Parse(string dwon)
+    {
+        int idx = 0;
+        var top = new Dictionary<string, object>();
+        while (idx < dwon.Length)
         {
-            SkipWhitespaceAndComments(s, ref idx);
+            string precedingComment = SkipWhitespaceAndCaptureComments(dwon, ref idx);
+            if (idx >= dwon.Length) break;
 
-            if (idx >= s.Length) return null;
+            string key = ParseKey(dwon, ref idx);
+            ExpectChar(dwon, ref idx, '=');
+            object value = ParseValue(dwon, ref idx);
+            string inlineComment = ParseInlineComment(dwon, ref idx);
 
-            char c = s[idx];
+            // Always wrap in Field object
+            top[key] = new Field(value, precedingComment ?? "", inlineComment ?? "");
+        }
+        return top;
+    }
 
-            switch (c)
-            {
-                // Dictionary / object
-                case '[':
-                {
-                    idx++;
-                    var dict = new Dictionary<string, object>();
-                    while (true)
-                    {
-                        SkipWhitespaceAndComments(s, ref idx);
-                        if (idx >= s.Length) break;
-                        if (s[idx] == ']') { idx++; break; }
+    private static object ParseValue(string s, ref int idx)
+    {
+        SkipWhitespaceAndComments(s, ref idx);
 
-                        string key = ParseKey(s, ref idx);
-                        ExpectChar(s, ref idx, '=');
-                        object value = ParseValue(s, ref idx);
+        if (idx >= s.Length) return null;
 
-                        // attach inline comment if exists
-                        string comment = ParseInlineComment(s, ref idx);
-                        if (comment != null && IsPrimitive(value))
-                            value = new Comment(value, comment);
+        char c = s[idx];
 
-                        dict[key] = value;
-                    }
-                    return dict;
-                }
-                // Array / list
-                case '{':
-                {
-                    idx++;
-                    var list = new List<object>();
-                    while (true)
-                    {
-                        SkipWhitespaceAndComments(s, ref idx);
-                        if (idx >= s.Length) break;
-                        if (s[idx] == '}') { idx++; break; }
+        switch (c)
+        {
+            case '[':
+                return ParseDictionary(s, ref idx);
+            case '{':
+                return ParseList(s, ref idx);
+            default:
+                return ParsePrimitiveValue(s, ref idx);
+        }
+    }
 
-                        object value = ParseValue(s, ref idx);
-                        string comment = ParseInlineComment(s, ref idx);
-                        if (comment != null && IsPrimitive(value))
-                            value = new Comment(value, comment);
+    private static object ParseDictionary(string s, ref int idx)
+    {
+        idx++; // skip '['
+        var dict = new Dictionary<string, object>();
 
-                        list.Add(value);
+        while (true)
+        {
+            string precedingComment = SkipWhitespaceAndCaptureComments(s, ref idx);
+            if (idx >= s.Length) break;
+            if (s[idx] == ']') { idx++; break; }
 
-                        SkipWhitespaceAndComments(s, ref idx);
-                        if (idx < s.Length && s[idx] == ',') idx++; // optional comma
-                    }
-                    return list;
-                }
-            }
-
-            // Primitive or string
-            string token = ParseToken(s, ref idx);
+            string key = ParseKey(s, ref idx);
+            ExpectChar(s, ref idx, '=');
+            object value = ParseValue(s, ref idx);
             string inlineComment = ParseInlineComment(s, ref idx);
-            object primitive = ParsePrimitive(token);
-            if (inlineComment != null && IsPrimitive(primitive))
-                primitive = new Comment(primitive, inlineComment);
-            return primitive;
+
+            // Always wrap in Field object
+            dict[key] = new Field(value, precedingComment ?? "", inlineComment ?? "");
         }
 
-        private static void SkipWhitespaceAndComments(string s, ref int idx)
+        return dict;
+    }
+
+    private static object ParseList(string s, ref int idx)
+    {
+        idx++; // skip '{'
+        var list = new List<object>();
+
+        while (true)
         {
+            string precedingComment = SkipWhitespaceAndCaptureComments(s, ref idx);
+            if (idx >= s.Length) break;
+            if (s[idx] == '}') { idx++; break; }
+
+            object value = ParseValue(s, ref idx);
+            string inlineComment = ParseInlineComment(s, ref idx);
+
+            // Always wrap in Field object
+            list.Add(new Field(value, precedingComment ?? "", inlineComment ?? ""));
+
+            SkipWhitespaceAndComments(s, ref idx);
+            if (idx < s.Length && s[idx] == ',') idx++; // optional comma
+        }
+
+        return list;
+    }
+
+    private static object ParsePrimitiveValue(string s, ref int idx)
+    {
+        string token = ParseToken(s, ref idx);
+        return ParsePrimitive(token);
+    }
+
+    private static void SkipWhitespaceAndComments(string s, ref int idx)
+    {
+        while (idx < s.Length)
+        {
+            if (IsWhitespace(s[idx]))
+            {
+                idx++;
+                continue;
+            }
+
+            if (s[idx] == '#')
+            {
+                SkipToEndOfLine(s, ref idx);
+                continue;
+            }
+            break;
+        }
+    }
+
+    private static string SkipWhitespaceAndCaptureComments(string s, ref int idx)
+    {
+        string lastComment = null;
+        while (idx < s.Length)
+        {
+            if (IsWhitespace(s[idx]))
+            {
+                idx++;
+                continue;
+            }
+
+            if (s[idx] == '#')
+            {
+                lastComment = CaptureComment(s, ref idx);
+                continue;
+            }
+            break;
+        }
+        return lastComment;
+    }
+
+    private static string CaptureComment(string s, ref int idx)
+    {
+        idx++; // skip #
+        int start = idx;
+        while (idx < s.Length && !IsNewline(s[idx])) idx++;
+        return s.Substring(start, idx - start).Trim();
+    }
+
+    private static void SkipToEndOfLine(string s, ref int idx)
+    {
+        while (idx < s.Length && s[idx] != '\n') idx++;
+    }
+
+    private static bool IsWhitespace(char c)
+    {
+        return c == ' ' || c == '\t' || c == '\r' || c == '\n';
+    }
+
+    private static bool IsNewline(char c)
+    {
+        return c == '\n' || c == '\r';
+    }
+
+    private static string ParseKey(string s, ref int idx)
+    {
+        try
+        {
+            SkipWhitespace(s, ref idx);
+
+            int start = idx;
+
             while (idx < s.Length)
             {
-                if (s[idx] == ' ' || s[idx] == '\t' || s[idx] == '\r' || s[idx] == '\n')
-                {
-                    idx++;
-                    continue;
-                }
-
-                if (s[idx] == '#')
-                {
-                    while (idx < s.Length && s[idx] != '\n') idx++;
-                    continue;
-                }
-                break;
-            }
-        }
-
-        private static string ParseKey(string s, ref int idx)
-        {
-            try
-            {
-                SkipWhitespace(s, ref idx);
-
-                int start = idx;
-
-                while (idx < s.Length)
-                {
                    
-                    char c = s[idx];
-                    // key ends ONLY at '='
-                    if (c == '=')
-                        break;
+                char c = s[idx];
+                if (c == '=') break;
+                if (IsNewline(c))
+                    throw new Exception("Unexpected newline while reading key");
 
-                    // stop if we hit newline before seeing '=' → malformed key
-                    if (c == '\n' || c == '\r')
-                        throw new Exception("Unexpected newline while reading key");
-
-                    idx++;
-                }
-
-                if (idx == start)
-                    throw new Exception($"Empty key at index {idx}");
-
-                string key = s.Substring(start, idx - start).Trim();
-
-                return key;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"DWON: ParseKey failed with string ({s}). EX: {ex}");
-            }
-            
-        }
-
-        private static string ParseToken(string s, ref int idx)
-        {
-            SkipWhitespace(s, ref idx);
-            if (idx >= s.Length) return "";
-
-            char c = s[idx];
-
-            // Quoted string
-            if (c == '"' || c == '\'')
-            {
-                char quote = c;
                 idx++;
-                int start = idx;
-                while (idx < s.Length && s[idx] != quote) idx++;
-                string str = s.Substring(start, idx - start);
-                if (idx < s.Length) idx++; // skip closing quote
-                return str;
             }
 
-            // Unquoted token
-            int startToken = idx;
-            while (idx < s.Length && s[idx] != '\n' && s[idx] != '\r' && s[idx] != '#' && s[idx] != ',' && s[idx] != '}' && s[idx] != ']') idx++;
-            string token = s.Substring(startToken, idx - startToken).Trim();
-            return token;
-        }
+            if (idx == start)
+                throw new Exception($"Empty key at index {idx}");
 
-        private static string ParseInlineComment(string s, ref int idx)
-        {
-            SkipWhitespace(s, ref idx);
-            if (idx < s.Length && s[idx] == '#')
-            {
-                idx++; // skip #
-                int start = idx;
-                while (idx < s.Length && s[idx] != '\n' && s[idx] != '\r') idx++;
-                return s.Substring(start, idx - start).Trim();
-            }
-            return null;
+            return s.Substring(start, idx - start).Trim();
         }
-
-        private static void SkipWhitespace(string s, ref int idx)
+        catch (Exception ex)
         {
-            while (idx < s.Length && (s[idx] == ' ' || s[idx] == '\t' || s[idx] == '\r' || s[idx] == '\n')) idx++;
+            throw new Exception($"DWON: ParseKey failed with string ({s}). EX: {ex}");
         }
+            
+    }
 
-        private static void ExpectChar(string s, ref int idx, char expected)
+    private static string ParseToken(string s, ref int idx)
+    {
+        SkipWhitespace(s, ref idx);
+        if (idx >= s.Length) return "";
+
+        char c = s[idx];
+
+        // Quoted string
+        if (c == '"' || c == '\'')
         {
-            SkipWhitespace(s, ref idx);
-            if (idx >= s.Length || s[idx] != expected) throw new Exception("Expected '" + expected + "' at index " + idx);
+            char quote = c;
             idx++;
+            int start = idx;
+            while (idx < s.Length && s[idx] != quote) idx++;
+            string str = s.Substring(start, idx - start);
+            if (idx < s.Length) idx++; // skip closing quote
+            return str;
         }
 
-        private static object ParsePrimitive(string token)
+        // Unquoted token
+        int startToken = idx;
+        while (idx < s.Length && s[idx] != '\n' && s[idx] != '\r' && s[idx] != '#' && s[idx] != ',' && s[idx] != '}' && s[idx] != ']') idx++;
+        string token = s.Substring(startToken, idx - startToken).Trim();
+        return token;
+    }
+
+    private static string ParseInlineComment(string s, ref int idx)
+    {
+        SkipWhitespace(s, ref idx);
+        if (idx < s.Length && s[idx] == '#')
         {
-            if (token.Length == 0) return null;
-
-            if (token == "true") return true;
-            if (token == "false") return false;
-
-            if (token.StartsWith("Vec3(") && token.EndsWith(")"))
-            {
-                string inside = token.Substring(5, token.Length - 6); // remove "Vec3(" and ")"
-                string[] parts = inside.Split(' ');
-                if (parts.Length == 3)
-                {
-                    double x, y, z;
-                    if (double.TryParse(parts[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out x) &&
-                        double.TryParse(parts[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out y) &&
-                        double.TryParse(parts[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out z))
-                    {
-                        return new AT_Vector3D(x, y, z);
-                    }
-                }
-            }
-
-            int i;
-            if (int.TryParse(token, out i)) return i;
-
-            double f;
-            if (double.TryParse(token, System.Globalization.NumberStyles.Float,
-                    System.Globalization.CultureInfo.InvariantCulture, out f)) return f;
-
-            return token; // fallback to string
+            return CaptureComment(s, ref idx);
         }
+        return null;
+    }
+
+    private static void SkipWhitespace(string s, ref int idx)
+    {
+        while (idx < s.Length && IsWhitespace(s[idx])) idx++;
+    }
+
+    private static void ExpectChar(string s, ref int idx, char expected)
+    {
+        SkipWhitespace(s, ref idx);
+        if (idx >= s.Length || s[idx] != expected) throw new Exception("Expected '" + expected + "' at index " + idx);
+        idx++;
+    }
+
+    private static object ParsePrimitive(string token)
+    {
+        if (token.Length == 0) return null;
+
+        if (token == "true") return true;
+        if (token == "false") return false;
+
+        object vec3 = TryParseVec3(token);
+        if (vec3 != null) return vec3;
+
+        int i;
+        if (int.TryParse(token, out i)) return i;
+
+        double f;
+        if (double.TryParse(token, System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out f)) return f;
+
+        return token; // fallback to string
+    }
+
+    private static object TryParseVec3(string token)
+    {
+        if (!token.StartsWith("Vec3(") || !token.EndsWith(")"))
+            return null;
+
+        string inside = token.Substring(5, token.Length - 6);
+        string[] parts = inside.Split(' ');
+
+        if (parts.Length != 3)
+            return null;
+
+        double x, y, z;
+        if (double.TryParse(parts[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out x) &&
+            double.TryParse(parts[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out y) &&
+            double.TryParse(parts[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out z))
+        {
+            return new AT_Vector3D(x, y, z);
+        }
+
+        return null;
+    }
 
 
 
         
-        // Helper: recursively unwrap all Dwon.Comment objects
-        public static void UnwrapAllComments(Dictionary<string, object> dict)
+    // Helper: recursively unwrap all Dwon.Comment objects
+    public static void UnwrapAllComments(Dictionary<string, object> dict)
+    {
+        var keys = new List<string>(dict.Keys);
+        foreach (var key in keys)
         {
-            var keys = new List<string>(dict.Keys);
-            foreach (var key in keys)
-            {
-                var val = dict[key];
-                var c = val as Comment;
-                var nestedDict = val as Dictionary<string, object>;
-                var list = val as List<object>;
-                if (c != null)
-                    dict[key] = c.Obj;
-                
-                else if (nestedDict != null)
-                    UnwrapAllComments(nestedDict);
-                else if (list != null)
-                {
-                    for (int i = 0; i < list.Count; i++)
-                    {
-                        var listItem = list[i];
-                        var cl = listItem as Comment;
-                        list[i] = cl != null ? cl.Obj : list[i];
-                    }
-                        
-                }
-            }
+            dict[key] = UnwrapValue(dict[key]);
+        }
+    }
+
+    private static object UnwrapValue(object val)
+    {
+        // Unwrap Field to get the actual value
+        Field field = val as Field;
+        if (field != null)
+            val = field.Obj;
+
+        // Recursively unwrap nested structures
+        Dictionary<string, object> nestedDict = val as Dictionary<string, object>;
+        if (nestedDict != null)
+        {
+            UnwrapAllComments(nestedDict);
+            return nestedDict;
         }
 
-// Helper: safely get value, returns default if missing
-        public static T GetValue<T>(Dictionary<string, object> dict, string key, ref string comment, T defaultValue = default(T))
+        List<object> list = val as List<object>;
+        if (list != null)
         {
-            comment = "";
-            object value;
-            if (dict.TryGetValue(key, out value))
+            UnwrapList(list);
+            return list;
+        }
+
+        return val;
+    }
+
+    private static void UnwrapList(List<object> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            Field field = list[i] as Field;
+            if (field != null)
             {
-                // Handle value types and reference types separately
-                var temp = value as Comment;
-                if (temp != null)
-                {
-                    value = temp.Obj;
-                    comment = temp.Com;
-                }
-                if (value is T) return (T)value;
-                
-                try
-                {
-                    return (T)Convert.ChangeType(value, typeof(T));
-                }
-                catch
-                {
-                    return defaultValue;
-                }
+                list[i] = field.Obj;
             }
+        }
+    }
+
+    // Helper: safely get field, returns Field with default value if missing
+    public static Field GetField<T>(Dictionary<string, object> dict, string key, T defaultValue = default(T))
+    {
+        object value;
+        if (!dict.TryGetValue(key, out value))
+        {
+            return new Field(defaultValue);
+        }
+
+        // Extract Field if present
+        Field field = value as Field;
+        if (field != null)
+        {
+            // Convert the wrapped value to the correct type
+            T convertedValue = ConvertValue<T>(field.Obj, defaultValue);
+            return new Field(convertedValue, field.BeforeComment, field.InlineComment);
+        }
+        else
+        {
+            // Not wrapped in Field, convert directly
+            T convertedValue = ConvertValue<T>(value, defaultValue);
+            return new Field(convertedValue);
+        }
+    }
+
+    // Helper: safely get value, returns default if missing (legacy method for backward compatibility)
+    public static T GetValue<T>(Dictionary<string, object> dict, string key, ref string comment, T defaultValue = default(T))
+    {
+        Field field = GetField(dict, key, defaultValue);
+        comment = field.BeforeComment;
+        return ConvertValue<T>(field.Obj, defaultValue);
+    }
+
+    private static T ConvertValue<T>(object value, T defaultValue)
+    {
+        if (value is T) return (T)value;
+
+        try
+        {
+            return (T)Convert.ChangeType(value, typeof(T));
+        }
+        catch
+        {
             return defaultValue;
         }
     }
+}
 public abstract class ArgusShip
 {
     protected AT_Vector3D CPreviousVelocity;
@@ -2394,7 +2881,6 @@ public class GunManager
                     break;
             }
         }
-        Program.Log(readyCount);
             
         var groupDict = fireGroupsFiring; // TODO: Make sure there's always a fallback
         if (readyCount > 0)
@@ -2654,12 +3140,11 @@ public enum DeliveryType
 public enum LaunchMechanism
 {
     None = 0,
-    Rotor = 1 << 0,
-    Piston = 1 << 1,
-    Connector = 1 << 2,
-    MergeBlock = 1 << 3,
-    PulsedThruster = 1 << 4,
-    Weapon = 1 << 5
+    Mechanical = 1 << 0,
+    Connector = 1 << 1,
+    MergeBlock = 1 << 2,
+    PulsedThruster = 1 << 3,
+    Weapon = 1 << 4
 }
 public enum Behavior
 {
@@ -2668,30 +3153,112 @@ public enum Behavior
     SurroundAndClose,   // Surround an enemy target and wait for the signal to attack. As a fallback, surround the controlling ship instead
     Defend              // Effectively the same as Interdict, but at a much much tighter area, just a couple hundred meters
 }
+public class MissileEssentials
+{
+        
+}
+internal enum MissileFinderState
+{
+    Refreshing,      // Currently finding blocks, allowed to refresh
+    Collected,       // Missile has been collected by manager, should not refresh
+    Fired            // Missile has fired, need to allocate new list on next refresh
+}
 internal class MissileFinder
 {
-    private IMyTerminalBlock _finderBlock;
     private AT_Vector3D _offset;
     private AT_Vector3D _extents;
-    private List<IMyCubeBlock> _blocks;
+        
+    private PayloadType _payloadType;
+    private DeliveryType _deliveryType;
+    private LaunchMechanism _launchMechanism;
+        
+    private LaunchControl _launchControl; // Unsure if I want this to be a global setting instead
+    private RefuelPriority _refuelPriority; // Ditto
+
+    private string _launchPulseThrusterName = "";
+    private string _launchWeaponName = "";
+        
+        
+    private IMyTerminalBlock _finderBlock;
+
+        
     private ControllableShip _thisShip;
+    private MissileFinderState _state;
+    private MissilePattern _pattern;
+        
+    private List<IMyCubeBlock> _blocks;
+    private List<IMyThrust> _launchPulseThrusters; // Only applicable if LaunchMechanism is PulsedThruster
+    private List<IMyUserControllableGun> _launchWeapons; // Only applicable if LaunchMechanism is Weapon
 
     public MissileFinder(IMyTerminalBlock finder, ControllableShip ship)
     {
         _finderBlock = finder;
         _finderBlock.CustomData = SyncConfig(_finderBlock.CustomData);
         _blocks = new List<IMyCubeBlock>();
+        _launchPulseThrusters = new List<IMyThrust>();
+        _launchWeapons = new List<IMyUserControllableGun>();
         _thisShip = ship;
-        Program.Log("Finder setup");
-        Program.Log(_offset);
-        Program.Log(_extents);
+        _state = MissileFinderState.Refreshing;
+        _pattern = new MissilePattern();
+        Program.LogLine($"(MissileFinder) Initialized for block '{_finderBlock.CustomName}'", LogLevel.Debug);
         RefreshBlocks();
     }
 
     private Vector3I FirstCorner => _finderBlock.Position + LocalTranslate(_offset);
     private Vector3I SecondCorner => _finderBlock.Position + LocalTranslate(_offset + _extents);
+
+    // MissileFinder gets the final say on whether it returns blocks; this is if the missile is fully constructed and ready to launch
+    public bool TryCollectBlocks(ref List<IMyCubeBlock> blocks)
+    {
+        if (_blocks.Count == 0)
+        {
+            Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - No blocks found", LogLevel.Debug);
+            return false;
+        }
+            
+        // Check if blocks match the saved pattern
+        if (!_pattern.MatchesPattern(_blocks))
+        {
+            Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Pattern mismatch", LogLevel.Debug);
+            return false;
+        }
+            
+        // Verify all blocks are working
+        foreach (var block in _blocks)
+        {
+            if (!block.IsWorking)
+            {
+                Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Block not working: {block.GetType().Name}", LogLevel.Debug);
+                return false;
+            }
+        }
+        blocks = _blocks;
+        _state = MissileFinderState.Collected;
+        Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Successfully collected {_blocks.Count} blocks", LogLevel.Debug);
+        return true;
+    }
+
+    // Called by the missile manager when the missile has fired and is no longer attached to the ship
+    public void MarkFired()
+    {
+        Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Missile marked as fired", LogLevel.Debug);
+        _state = MissileFinderState.Fired;
+    }
+
+    public void EarlyUpdate(int frame)
+    {
+        if (frame % Config.Missile.FinderRefreshFrequencyFrames != 0) return;
+            
+        RefreshBlocks();
+    }
+    public void LateUpdate(int frame)
+    {
+            
+    }
         
-    public string SyncConfig(string input)
+        
+        
+    private string SyncConfig(string input)
     {
         var parsed = Dwon.Parse(input);
             
@@ -2706,6 +3273,16 @@ internal class MissileFinder
             
         cat.Sync("Offset", ref _offset);
         cat.Sync("Extents", ref _extents);
+            
+        cat.SyncEnum("PayloadType", ref _payloadType);
+        cat.SyncEnum("DeliveryType", ref _deliveryType);
+        cat.SyncEnum("LaunchMechanism", ref _launchMechanism);
+        cat.SyncEnum("LaunchControl", ref _launchControl);
+        cat.SyncEnum("RefuelPriority", ref _refuelPriority);
+            
+        cat.Sync("LaunchPulseThrusterName", ref _launchPulseThrusterName, "Optional");
+        cat.Sync("LaunchWeaponName", ref _launchWeaponName, "Optional");
+            
         _offset = _offset.Floor();
         _extents = _extents.Floor();
             
@@ -2726,7 +3303,22 @@ internal class MissileFinder
 
     private void RefreshBlocks()
     {
-        _blocks.Clear();
+        bool isFirstRefresh = !_pattern.HasPattern;
+            
+        switch (_state)
+        {
+            case MissileFinderState.Refreshing:
+                _blocks.Clear();
+                break;
+            case MissileFinderState.Collected:
+                return;
+            case MissileFinderState.Fired:
+                Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Resetting after fire", LogLevel.Debug);
+                _blocks = new List<IMyCubeBlock>();
+                _pattern.ClearPattern();
+                _state = MissileFinderState.Refreshing;
+                break;
+        }
 
         Vector3I ca = Vector3I.Min(FirstCorner, SecondCorner);
         Vector3I cb = Vector3I.Max(FirstCorner, SecondCorner);
@@ -2735,14 +3327,35 @@ internal class MissileFinder
         foreach (var pos in Vector3I.EnumerateRange(ca, cb))
         {
             var slimBlock = _thisShip.Grid.GetCubeBlock(pos);
-            if (slimBlock != null)
-            {
-                var fullBlock = slimBlock.FatBlock;
-                _blocks.Add(fullBlock);
-                Program.Log($"Got block {fullBlock.DisplayName}");
-            }
+            if (slimBlock == null) continue;
+            var fullBlock = slimBlock.FatBlock;
+            _blocks.Add(fullBlock);
+        }
+            
+        // Save pattern on first refresh (initial construction detection)
+        if (isFirstRefresh && _blocks.Count > 0)
+        {
+            _pattern.SavePattern(_blocks);
+            Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Pattern saved with {_blocks.Count} blocks", LogLevel.Debug);
         }
     }
+        
+        
+
+}
+public class MissileLauncher
+{
+    private LaunchMechanism _launchMechanism;
+        
+        
+        
+        
+    public MissileLauncher(LaunchMechanism launchMechanism)
+    {
+        _launchMechanism = launchMechanism;
+    }
+    internal LaunchMechanism LaunchMechanism => _launchMechanism;
+
         
 }
 public class MissileManager
@@ -2763,12 +3376,107 @@ public class MissileManager
 
     public void EarlyUpdate(int frame)
     {
-            
+        foreach (var finder in _missileFinders) finder.EarlyUpdate(frame);
     }
 
     public void LateUpdate(int frame)
     {
-            
+        foreach (var finder in _missileFinders) finder.LateUpdate(frame);
+    }
+}
+public class MissilePattern
+{
+    private Dictionary<string, int> _blockPattern;
+    private Dictionary<string, int> _currentPattern;
+    private bool _hasPattern;
+
+    public MissilePattern()
+    {
+        _blockPattern = new Dictionary<string, int>();
+        _currentPattern = new Dictionary<string, int>();
+        _hasPattern = false;
+    }
+
+    /// <summary>
+    /// Saves the current block configuration as the expected pattern
+    /// </summary>
+    public void SavePattern(List<IMyCubeBlock> blocks)
+    {
+        if (blocks == null || blocks.Count == 0)
+        {
+            _blockPattern.Clear();
+            _hasPattern = false;
+            return;
+        }
+
+        CountBlockTypes(blocks, _blockPattern);
+        _hasPattern = true;
+    }
+
+    /// <summary>
+    /// Compares the current block list against the saved pattern
+    /// </summary>
+    public bool MatchesPattern(List<IMyCubeBlock> blocks)
+    {
+        if (!_hasPattern)
+            return false;
+
+        if (blocks == null || blocks.Count == 0)
+            return false;
+
+        CountBlockTypes(blocks, _currentPattern);
+
+        bool matches = ComparePatternsEqual(_currentPattern, _blockPattern);
+
+        _currentPattern.Clear();
+
+        return matches;
+    }
+
+    private void CountBlockTypes(List<IMyCubeBlock> blocks, Dictionary<string, int> pattern)
+    {
+        pattern.Clear();
+
+        foreach (var block in blocks)
+        {
+            if (block == null) continue;
+
+            string blockType = block.BlockDefinition.SubtypeName;
+
+            if (pattern.ContainsKey(blockType))
+            {
+                pattern[blockType]++;
+            }
+            else
+            {
+                pattern[blockType] = 1;
+            }
+        }
+    }
+
+    private bool ComparePatternsEqual(Dictionary<string, int> pattern1, Dictionary<string, int> pattern2)
+    {
+        if (pattern1.Count != pattern2.Count)
+            return false;
+
+        foreach (var kvp in pattern2)
+        {
+            if (!pattern1.ContainsKey(kvp.Key))
+                return false;
+
+            if (pattern1[kvp.Key] != kvp.Value)
+                return false;
+        }
+
+        return true;
+    }
+
+    public bool HasPattern => _hasPattern;
+
+    public void ClearPattern()
+    {
+        _blockPattern.Clear();
+        _hasPattern = false;
     }
 }
 public enum PollFrequency
@@ -4138,9 +4846,9 @@ public static class ShipManager
             }
 
         }
-            
 
-        foreach (var kvp in DynamicAABBTreeDHelper.GetAllOverlaps(_trackableShipTree))
+        var allOverlaps = TrackableShipAABBTreeHelper.GetAllOverlaps(_trackableShipTree);
+        foreach (var kvp in allOverlaps)
         {
             var testShip = kvp.Key;
             var overlaps = kvp.Value;
@@ -4159,12 +4867,13 @@ public static class ShipManager
                 if (overlapShipSize > shipSize)
                 {
                     testShip.IntersectsLargerShipAABB = true;
-                    return;
+                    break;
                 }
             }
-
+            overlaps.Clear(); // Avoids static list induced memory leaks
             testShip.IntersectsLargerShipAABB = false;
         }
+        allOverlaps.Clear(); // Avoids static list induced memory leaks
     }
 
     private static void UpdatePollFrequency()

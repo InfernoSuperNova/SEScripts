@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using IngameScript.Helper;
+using IngameScript.Helper.Log;
 using IngameScript.SConfig;
 using IngameScript.SConfig.Database;
 using IngameScript.SConfig.Helper;
@@ -10,6 +11,8 @@ namespace IngameScript
 {
     public static class Config
     {
+        
+
         private static ConfigTool _configTool = new ConfigTool("General Config", "")
         {
             Sync = SyncConfig
@@ -21,6 +24,7 @@ namespace IngameScript
         public static readonly TrackerConfig Tracker = new TrackerConfig();
         public static readonly GdriveConfig Gdrive = new GdriveConfig();
         public static readonly PidConfig Pid = new PidConfig();
+        public static readonly MissileConfig Missile = new MissileConfig();
 
         public static void Setup(IMyProgrammableBlock me)
         {
@@ -53,6 +57,7 @@ namespace IngameScript
             Tracker.Sync(obj);
             Gdrive.Sync(obj);
             Pid.Sync(obj);
+            Missile.Sync(obj);
         }
 
         public class GeneralConfig
@@ -169,6 +174,18 @@ namespace IngameScript
                 config.Sync("DerivativeGain", ref DerivativeGain);
                 config.Sync("IntegralLowerLimit", ref IntegralLowerLimit);
                 config.Sync("IntegralUpperLimit", ref IntegralUpperLimit);
+            }
+        }
+
+        public class MissileConfig
+        {
+            public int FinderRefreshFrequencyFrames = 60;
+            
+            internal void Sync(Dictionary<string, object> obj)
+            {
+                var config = ConfigCategory.From(obj, "Missile Config");
+                
+                config.Sync("FinderRefreshFrequencyFrames", ref FinderRefreshFrequencyFrames);
             }
         }
     }

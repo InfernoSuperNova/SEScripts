@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using IngameScript.Helper.Log;
 using Color = VRageMath.Color;
 
 namespace IngameScript.Helper
