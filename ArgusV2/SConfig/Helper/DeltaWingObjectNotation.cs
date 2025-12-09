@@ -79,7 +79,7 @@ namespace IngameScript.SConfig.Helper
             
             // Write before comment on its own line
             if (!string.IsNullOrEmpty(fieldObj.BeforeComment))
-                sb.AppendLine(pad + "# " + fieldObj.BeforeComment);
+                sb.AppendLine(pad + "    # " + fieldObj.BeforeComment);
             
             // Serialize the actual value
             if (key != null && IsPrimitive(fieldObj.Obj))
@@ -89,7 +89,7 @@ namespace IngameScript.SConfig.Helper
                 
                 // Add inline comment if present
                 if (!string.IsNullOrEmpty(fieldObj.InlineComment))
-                    sb.Append("   # " + fieldObj.InlineComment);
+                    sb.Append("       # " + fieldObj.InlineComment);
                 
                 sb.AppendLine();
             }
@@ -402,12 +402,17 @@ namespace IngameScript.SConfig.Helper
 
         private static string ParseInlineComment(string s, ref int idx)
         {
-            SkipWhitespace(s, ref idx);
+            SkipNonNewlineWhitespace(s, ref idx);
             if (idx < s.Length && s[idx] == '#')
             {
                 return CaptureComment(s, ref idx);
             }
             return null;
+        }
+        
+        private static void SkipNonNewlineWhitespace(string s, ref int idx)
+        {
+            while (idx < s.Length && IsWhitespace(s[idx]) && s[idx] != '\n' && s[idx] != '\r') idx++;
         }
 
         private static void SkipWhitespace(string s, ref int idx)

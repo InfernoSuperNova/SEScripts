@@ -170,10 +170,10 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
                 // Unit direction of this ball's moment contribution
                 var dir = ball.Moment.Normalized();
         
-                // Project deficit along this ball's direction
+                // Project deficit along this ball's direction (tuning constant, if too slow then decrease)
                 double projection = deficit.Dot(dir) / 250;
 
-                // Ignore tiny adjustments
+                // Ignore tiny adjustments (0.001 prevents oscillation in theory)
                 if (Math.Abs(projection) < 0.001)
                     continue;
 

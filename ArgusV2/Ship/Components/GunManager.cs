@@ -11,12 +11,13 @@ using VRageMath;
 namespace IngameScript.Ship.Components
 {
 
-    public enum PositionValidity
+    public enum PositionValidity 
     {
-        Fallback,
-        Ready,
-        Firing
+        Fallback,       // Falls back to ships center of mass
+        Ready,          // Consider this gun's position if none are firing
+        Firing          // Ready but higher priority
     }
+    // Firing guns are prioritized because they *need* a ballistic solution *now*.Compared to ready guns that can wait
 
     public enum FireType
     {
@@ -65,8 +66,10 @@ namespace IngameScript.Ship.Components
         {
             var validity = PositionValidity.Fallback;
             
+            // TODO: Reuse this lists, idiot
             var fireGroupsReady = new Dictionary<GunData, List<Gun>>();
             var fireGroupsFiring = new Dictionary<GunData, List<Gun>>();
+            
             var readyCount = 0;
             var firingCount = 0;
             
@@ -133,7 +136,7 @@ namespace IngameScript.Ship.Components
                 _firingReferencePosition = ThisShip.Position;
                 return;
             }
-            
+            // We get the average firing position of the guns in this cluster as it will be the best spot for "most" of them to hit
             AT_Vector3D average = AT_Vector3D.Zero;
 
             foreach (var gun in _currentFiringGroup)

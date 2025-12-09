@@ -114,7 +114,8 @@ namespace IngameScript.Ship
 
         #endregion
         
-        // Could possibly subscribe these and make them private?
+        // IMPORTANT: All components must have their EarlyUpdate/LateUpdate called here
+        // // in the correct order. Do not forget to add new components!
         #region Updates
         // Early Update is called in a deterministic, but undefined order. Designed for gathering data.
         // All Early Updates are guaranteed to be called before any Late Updates.
@@ -146,7 +147,7 @@ namespace IngameScript.Ship
             }
             Guns.LateUpdate(frame); 
             _propulsionController.LateUpdate(frame);
-            _missileManager.EarlyUpdate(frame);
+            _missileManager.LateUpdate(frame);
         }
         #endregion
         

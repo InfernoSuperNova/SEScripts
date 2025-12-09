@@ -1308,7 +1308,7 @@ public static class Config
     
     private static readonly List<Type> isFlags = new List<Type>
     {
-        typeof(DeliveryType),
+        typeof(PropulsionType),
         typeof(LaunchMechanism)
     };
     private static readonly Dictionary<Type, Dictionary<int, string>> enumToString =
@@ -1380,13 +1380,13 @@ public static class Config
                 }
             },
             {
-                typeof(DeliveryType),
+                typeof(PropulsionType),
                 new Dictionary<int, string>
                 {
-                    { (int)DeliveryType.None, "None" },
-                    { (int)DeliveryType.Hydrogen, "Hydrogen" },
-                    { (int)DeliveryType.Ion, "Ion" },
-                    { (int)DeliveryType.Atmospheric, "Atmospheric" }
+                    { (int)PropulsionType.None, "None" },
+                    { (int)PropulsionType.Hydrogen, "Hydrogen" },
+                    { (int)PropulsionType.Ion, "Ion" },
+                    { (int)PropulsionType.Atmospheric, "Atmospheric" }
                 }
             },
             {
@@ -1973,11 +1973,11 @@ public static class Dwon
 
     private static void SerializeField(Field fieldObj, StringBuilder sb, int indent, string key)
     {
-        string pad = new string(' ', Math.Max(indent, 0)) + "    ";
+        string pad = new string(' ', Math.Max(indent, 0));
             
         // Write before comment on its own line
         if (!string.IsNullOrEmpty(fieldObj.BeforeComment))
-            sb.AppendLine(pad + "# " + fieldObj.BeforeComment);
+            sb.AppendLine(pad + "    # " + fieldObj.BeforeComment);
             
         // Serialize the actual value
         if (key != null && IsPrimitive(fieldObj.Obj))
@@ -1987,32 +1987,14 @@ public static class Dwon
                 
             // Add inline comment if present
             if (!string.IsNullOrEmpty(fieldObj.InlineComment))
-                sb.Append("   # " + fieldObj.InlineComment);
+                sb.Append("       # " + fieldObj.InlineComment);
                 
             sb.AppendLine();
         }
         else
         {
-            // For complex objects (dictionaries, lists), serialize with the key
-            // The before comment has already been written above
-            IDictionary<string, object> dict = fieldObj.Obj as IDictionary<string, object>;
-            if (dict != null && key != null)
-            {
-                SerializeDictionary(dict, sb, indent, key, pad);
-            }
-            else
-            {
-                IEnumerable<object> list = fieldObj.Obj as IEnumerable<object>;
-                if (list != null && key != null)
-                {
-                    SerializeList(list, sb, indent, key, pad);
-                }
-                else
-                {
-                    // Fallback for other types
-                    Serialize(fieldObj.Obj, sb, indent, key);
-                }
-            }
+            // For complex objects, just serialize normally
+            Serialize(fieldObj.Obj, sb, indent, key);
         }
     }
 
@@ -2316,12 +2298,17 @@ public static class Dwon
 
     private static string ParseInlineComment(string s, ref int idx)
     {
-        SkipWhitespace(s, ref idx);
+        SkipNonNewlineWhitespace(s, ref idx);
         if (idx < s.Length && s[idx] == '#')
         {
             return CaptureComment(s, ref idx);
         }
         return null;
+    }
+        
+    private static void SkipNonNewlineWhitespace(string s, ref int idx)
+    {
+        while (idx < s.Length && IsWhitespace(s[idx]) && s[idx] != '\n' && s[idx] != '\r') idx++;
     }
 
     private static void SkipWhitespace(string s, ref int idx)
@@ -2460,7 +2447,7 @@ public static class Dwon
         comment = field.BeforeComment;
         return ConvertValue<T>(field.Obj, defaultValue);
     }
-
+        
     private static T ConvertValue<T>(object value, T defaultValue)
     {
         if (value is T) return (T)value;
@@ -3130,7 +3117,7 @@ public enum RefuelPriority
     High                // Allows: Automatic launch @ 100% fuel, manual launch @ 100% out of combat, 10% with a tracked target, CIWS launch @ 1%
 }
 [Flags]
-public enum DeliveryType
+public enum PropulsionType
 {
     None = 0,
     Hydrogen = 1 << 0,
@@ -3170,7 +3157,7 @@ internal class MissileFinder
     AT_Vector3D _extents;
         
     PayloadType _payloadType;
-    DeliveryType _deliveryType;
+    PropulsionType _propulsionType;
     LaunchMechanism _launchMechanism;
         
     LaunchControl _launchControl; // Unsure if I want this to be a global setting instead
@@ -3276,7 +3263,7 @@ internal class MissileFinder
         cat.Sync("Extents", ref _extents);
             
         cat.SyncEnum("PayloadType", ref _payloadType);
-        cat.SyncEnum("DeliveryType", ref _deliveryType);
+        cat.SyncEnum("PropulsionType", ref _propulsionType);
         cat.SyncEnum("LaunchMechanism", ref _launchMechanism);
         cat.SyncEnum("LaunchControl", ref _launchControl);
         cat.SyncEnum("RefuelPriority", ref _refuelPriority);

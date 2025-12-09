@@ -25,7 +25,7 @@ namespace IngameScript.Ship.Components.Missiles
         private AT_Vector3D _extents;
         
         private PayloadType _payloadType;
-        private DeliveryType _deliveryType;
+        private PropulsionType _propulsionType;
         private LaunchMechanism _launchMechanism;
         
         private LaunchControl _launchControl; // Unsure if I want this to be a global setting instead
@@ -132,7 +132,7 @@ namespace IngameScript.Ship.Components.Missiles
             cat.Sync("Extents", ref _extents);
             
             cat.SyncEnum("PayloadType", ref _payloadType);
-            cat.SyncEnum("DeliveryType", ref _deliveryType);
+            cat.SyncEnum("PropulsionType", ref _propulsionType);
             cat.SyncEnum("LaunchMechanism", ref _launchMechanism);
             cat.SyncEnum("LaunchControl", ref _launchControl);
             cat.SyncEnum("RefuelPriority", ref _refuelPriority);

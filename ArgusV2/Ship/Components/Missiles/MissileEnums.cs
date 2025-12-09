@@ -60,7 +60,7 @@ namespace IngameScript
     }
 
     [Flags]
-    public enum DeliveryType
+    public enum PropulsionType
     {
         None = 0,
         Hydrogen = 1 << 0,

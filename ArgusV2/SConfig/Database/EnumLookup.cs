@@ -11,7 +11,7 @@ namespace IngameScript.SConfig.Database
     
     private static readonly List<Type> isFlags = new List<Type>
     {
-        typeof(DeliveryType),
+        typeof(PropulsionType),
         typeof(LaunchMechanism)
     };
     private static readonly Dictionary<Type, Dictionary<int, string>> enumToString =
@@ -83,13 +83,13 @@ namespace IngameScript.SConfig.Database
                 }
             },
             {
-                typeof(DeliveryType),
+                typeof(PropulsionType),
                 new Dictionary<int, string>
                 {
-                    { (int)DeliveryType.None, "None" },
-                    { (int)DeliveryType.Hydrogen, "Hydrogen" },
-                    { (int)DeliveryType.Ion, "Ion" },
-                    { (int)DeliveryType.Atmospheric, "Atmospheric" }
+                    { (int)PropulsionType.None, "None" },
+                    { (int)PropulsionType.Hydrogen, "Hydrogen" },
+                    { (int)PropulsionType.Ion, "Ion" },
+                    { (int)PropulsionType.Atmospheric, "Atmospheric" }
                 }
             },
             {
