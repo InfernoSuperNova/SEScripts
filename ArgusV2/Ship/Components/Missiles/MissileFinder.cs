@@ -80,33 +80,16 @@ namespace IngameScript.Ship.Components.Missiles
         {
             
             launcher = null;
-            if (_state == MissileFinderState.Collected)
-            {
-                //Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Already collected", LogLevel.Debug);
-                return false;
-            }
-            if (_blocks.Count == 0)
-            {
-                //Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - No blocks found", LogLevel.Debug);
-                return false;
-            }
+            if (_state == MissileFinderState.Collected) return false;
             
+            if (_blocks.Count == 0) return false;
+                    
             // Check if blocks match the saved pattern
-            if (!_pattern.MatchesPattern(_blocks))
-            {
-                //Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Pattern mismatch", LogLevel.Debug);
-                return false;
-            }
+            if (!_pattern.MatchesPattern(_blocks)) return false;
             
             // Verify all blocks are working
-            foreach (var block in _blocks)
-            {
-                if (!block.IsWorking)
-                {
-                    //Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Block not working: {block.GetType().Name}", LogLevel.Debug);
-                    return false;
-                }
-            }
+            foreach (var block in _blocks) if (!block.IsWorking) return false;
+            
 
             // Create the missile and launcher
             var missile = new Missile(_blocks, _launchControl);
