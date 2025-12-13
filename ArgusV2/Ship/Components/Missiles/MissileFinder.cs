@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using IngameScript.Helper;
 using IngameScript.Helper.Log;
 using IngameScript.SConfig.Helper;
+using IngameScript.Ship.Components.Missiles.LaunchMechanisms;
 using IngameScript.TruncationWrappers;
 using Sandbox.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame;
@@ -18,7 +19,7 @@ namespace IngameScript.Ship.Components.Missiles
         Fired            // Missile has fired, need to allocate new list on next refresh
     }
 
-    internal class MissileFinder
+    public class MissileFinder
     {
         #region config
         private AT_Vector3D _offset;
@@ -46,10 +47,12 @@ namespace IngameScript.Ship.Components.Missiles
         private List<IMyCubeBlock> _blocks;
         private List<IMyThrust> _launchPulseThrusters; // Only applicable if LaunchMechanism is PulsedThruster
         private List<IMyUserControllableGun> _launchWeapons; // Only applicable if LaunchMechanism is Weapon
+        private string _friendlyName;
 
         public MissileFinder(IMyTerminalBlock finder, ControllableShip ship)
         {
             _finderBlock = finder;
+            SyncFinderName();
             _finderBlock.CustomData = SyncConfig(_finderBlock.CustomData);
             _blocks = new List<IMyCubeBlock>();
             _launchPulseThrusters = new List<IMyThrust>();
@@ -57,16 +60,25 @@ namespace IngameScript.Ship.Components.Missiles
             _thisShip = ship;
             _state = MissileFinderState.Refreshing;
             _pattern = new MissilePattern();
-            Program.LogLine($"(MissileFinder) Initialized for block '{_finderBlock.CustomName}'", LogLevel.Debug);
+            
+            Program.LogLine($"(MissileFinder) Initialized with friendly name '{_friendlyName}'", LogLevel.Info);
             RefreshBlocks();
         }
+
+ 
 
         private Vector3I FirstCorner => _finderBlock.Position + LocalTranslate(_offset);
         private Vector3I SecondCorner => _finderBlock.Position + LocalTranslate(_offset + _extents);
 
-        // MissileFinder gets the final say on whether it returns blocks; this is if the missile is fully constructed and ready to launch
-        public bool TryCollectBlocks(ref List<IMyCubeBlock> blocks)
+        public string FriendlyName => _friendlyName;
+
+        public IMyCubeGrid ReferenceGrid => _finderBlock.CubeGrid;
+
+        // MissileFinder gets the final say on whether it returns a launcher; this is if the missile is fully constructed and ready to launch
+        public bool TryCollectMissile(out MissileLauncher launcher)
         {
+            launcher = null;
+
             if (_blocks.Count == 0)
             {
                 Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - No blocks found", LogLevel.Debug);
@@ -89,7 +101,10 @@ namespace IngameScript.Ship.Components.Missiles
                     return false;
                 }
             }
-            blocks = _blocks;
+
+            // Create the missile and launcher
+            var missile = new Missile(_blocks);
+            launcher = new MissileLauncher(_launchMechanism, missile, _launchPulseThrusters, _launchWeapons, this);
             _state = MissileFinderState.Collected;
             Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Successfully collected {_blocks.Count} blocks", LogLevel.Debug);
             return true;
@@ -114,7 +129,27 @@ namespace IngameScript.Ship.Components.Missiles
         }
         
         
-        
+        private void SyncFinderName()
+        {
+            if (!string.IsNullOrEmpty(_finderBlock.CustomName) && _finderBlock.CustomName.Contains("["))
+            {
+                int openBracket = _finderBlock.CustomName.IndexOf('[');
+                int closeBracket = _finderBlock.CustomName.LastIndexOf(']');
+
+                if (closeBracket > openBracket)
+                {
+                    var extracted = _finderBlock.CustomName.Substring(openBracket + 1, closeBracket - openBracket - 1).Trim();
+                    if (!string.IsNullOrEmpty(extracted))
+                    {
+                        _friendlyName = extracted;
+                        return;
+                    }
+                }
+            }
+            
+            _friendlyName = MemorableName.Get();
+            _finderBlock.CustomName = $"{Config.String.MissileFinderPrefix} [{_friendlyName}]";
+        }
         private string SyncConfig(string input)
         {
             var parsed = Dwon.Parse(input);

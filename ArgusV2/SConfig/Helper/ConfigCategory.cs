@@ -48,12 +48,15 @@ namespace IngameScript.SConfig.Helper
 
         public void SyncEnum<E>(string key, ref E scriptField, string beforeComment = "", string inlineComment = "") where E : struct
         {
-            var field = Dwon.GetField(_values, key, scriptField);
+            var field = Dwon.GetField(_values, key, EnumLookup.GetName(scriptField));
             var enumName = field.Obj.ToString();
-
-            EnumLookup.TryGetValue(enumName, out scriptField);
+            Program.Log(enumName);
+            bool debug = enumName == "Info";
+            if (debug) Program.Log(enumName);
+            if (debug) Program.Log(scriptField.GetType());
+            EnumLookup.TryGetValue(enumName, out scriptField);  
             enumName = EnumLookup.GetName(scriptField);
-
+            if (debug) Program.Log(enumName);
             // Determine which comment to use: Existing > Provided > Auto-generated
             if (string.IsNullOrEmpty(field.BeforeComment))
             {

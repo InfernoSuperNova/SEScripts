@@ -32,7 +32,6 @@ namespace IngameScript.SConfig.Helper
         {
             var sb = new StringBuilder();
             Serialize(obj, sb, indent, null);
-            Program.LogLine("Serialized successfully", LogLevel.Debug);
             return sb.ToString();
         }
 
@@ -191,60 +190,172 @@ namespace IngameScript.SConfig.Helper
         public static object Parse(string dwon)
         {
             int idx = 0;
+            int len = dwon.Length;
             var top = new Dictionary<string, object>();
-            while (idx < dwon.Length)
-            {
-                string precedingComment = SkipWhitespaceAndCaptureComments(dwon, ref idx);
-                if (idx >= dwon.Length) break;
 
-                string key = ParseKey(dwon, ref idx);
-                ExpectChar(dwon, ref idx, '=');
+            while (idx < len)
+            {
+                // Inline: SkipWhitespaceAndCaptureComments
+                string lastComment = null;
+                while (idx < len)
+                {
+                    char c = dwon[idx];
+                    if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                    {
+                        idx++;
+                        continue;
+                    }
+                    if (c == '#')
+                    {
+                        idx++; // skip #
+                        int start = idx;
+                        while (idx < len && dwon[idx] != '\n') idx++;
+                        lastComment = dwon.Substring(start, idx - start).Trim();
+                        continue;
+                    }
+                    break;
+                }
+
+                if (idx >= len) break;
+
+                // Inline: ParseKey
+                int keyStart = idx;
+                while (idx < len && dwon[idx] != '=')
+                {
+                    char c = dwon[idx];
+                    if (c == '\n' || c == '\r')
+                        throw new Exception("Unexpected newline while reading key");
+                    idx++;
+                }
+                if (idx == keyStart)
+                    throw new Exception($"Empty key at index {idx}");
+                string key = dwon.Substring(keyStart, idx - keyStart).Trim();
+
+                // Inline: ExpectChar for '='
+                while (idx < len && (dwon[idx] == ' ' || dwon[idx] == '\t' || dwon[idx] == '\r' || dwon[idx] == '\n')) idx++;
+                if (idx >= len || dwon[idx] != '=') throw new Exception("Expected '=' at index " + idx);
+                idx++;
+
+                // Parse value
                 object value = ParseValue(dwon, ref idx);
-                string inlineComment = ParseInlineComment(dwon, ref idx);
+
+                // Inline: ParseInlineComment
+                string inlineComment = null;
+                while (idx < len && dwon[idx] == ' ' || dwon[idx] == '\t') idx++;
+                if (idx < len && dwon[idx] == '#')
+                {
+                    idx++; // skip #
+                    int start = idx;
+                    while (idx < len && dwon[idx] != '\n') idx++;
+                    inlineComment = dwon.Substring(start, idx - start).Trim();
+                }
 
                 // Always wrap in Field object
-                top[key] = new Field(value, precedingComment ?? "", inlineComment ?? "");
+                top[key] = new Field(value, lastComment ?? "", inlineComment ?? "");
             }
             return top;
         }
 
         private static object ParseValue(string s, ref int idx)
         {
-            SkipWhitespaceAndComments(s, ref idx);
-
-            if (idx >= s.Length) return null;
-
-            char c = s[idx];
-
-            switch (c)
+            int len = s.Length;
+            // Inline: SkipWhitespaceAndComments
+            while (idx < len)
             {
-                case '[':
-                    return ParseDictionary(s, ref idx);
-                case '{':
-                    return ParseList(s, ref idx);
-                default:
-                    return ParsePrimitiveValue(s, ref idx);
+                char c = s[idx];
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                {
+                    idx++;
+                    continue;
+                }
+                if (c == '#')
+                {
+                    while (idx < len && s[idx] != '\n') idx++;
+                    continue;
+                }
+                break;
             }
+
+            if (idx >= len) return null;
+
+            char ch = s[idx];
+
+            if (ch == '[')
+                return ParseDictionary(s, ref idx);
+            if (ch == '{')
+                return ParseList(s, ref idx);
+
+            // ParsePrimitiveValue inlined
+            string token = ParseToken(s, ref idx);
+            return ParsePrimitive(token);
         }
 
         private static object ParseDictionary(string s, ref int idx)
         {
             idx++; // skip '['
+            int len = s.Length;
             var dict = new Dictionary<string, object>();
 
             while (true)
             {
-                string precedingComment = SkipWhitespaceAndCaptureComments(s, ref idx);
-                if (idx >= s.Length) break;
+                // Inline: SkipWhitespaceAndCaptureComments
+                string lastComment = null;
+                while (idx < len)
+                {
+                    char c = s[idx];
+                    if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                    {
+                        idx++;
+                        continue;
+                    }
+                    if (c == '#')
+                    {
+                        idx++; // skip #
+                        int start = idx;
+                        while (idx < len && s[idx] != '\n') idx++;
+                        lastComment = s.Substring(start, idx - start).Trim();
+                        continue;
+                    }
+                    break;
+                }
+
+                if (idx >= len) break;
                 if (s[idx] == ']') { idx++; break; }
 
-                string key = ParseKey(s, ref idx);
-                ExpectChar(s, ref idx, '=');
+                // Inline: ParseKey
+                int keyStart = idx;
+                while (idx < len && s[idx] != '=')
+                {
+                    char c = s[idx];
+                    if (c == '\n' || c == '\r')
+                        throw new Exception("Unexpected newline while reading key");
+                    idx++;
+                }
+                if (idx == keyStart)
+                    throw new Exception($"Empty key at index {idx}");
+                string key = s.Substring(keyStart, idx - keyStart).Trim();
+
+                // Inline: ExpectChar for '='
+                while (idx < len && (s[idx] == ' ' || s[idx] == '\t' || s[idx] == '\r' || s[idx] == '\n')) idx++;
+                if (idx >= len || s[idx] != '=') throw new Exception("Expected '=' at index " + idx);
+                idx++;
+
+                // Parse value
                 object value = ParseValue(s, ref idx);
-                string inlineComment = ParseInlineComment(s, ref idx);
+
+                // Inline: ParseInlineComment
+                string inlineComment = null;
+                while (idx < len && (s[idx] == ' ' || s[idx] == '\t')) idx++;
+                if (idx < len && s[idx] == '#')
+                {
+                    idx++; // skip #
+                    int start = idx;
+                    while (idx < len && s[idx] != '\n') idx++;
+                    inlineComment = s.Substring(start, idx - start).Trim();
+                }
 
                 // Always wrap in Field object
-                dict[key] = new Field(value, precedingComment ?? "", inlineComment ?? "");
+                dict[key] = new Field(value, lastComment ?? "", inlineComment ?? "");
             }
 
             return dict;
@@ -253,131 +364,82 @@ namespace IngameScript.SConfig.Helper
         private static object ParseList(string s, ref int idx)
         {
             idx++; // skip '{'
+            int len = s.Length;
             var list = new List<object>();
 
             while (true)
             {
-                string precedingComment = SkipWhitespaceAndCaptureComments(s, ref idx);
-                if (idx >= s.Length) break;
+                // Inline: SkipWhitespaceAndCaptureComments
+                string lastComment = null;
+                while (idx < len)
+                {
+                    char c = s[idx];
+                    if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                    {
+                        idx++;
+                        continue;
+                    }
+                    if (c == '#')
+                    {
+                        idx++; // skip #
+                        int start = idx;
+                        while (idx < len && s[idx] != '\n') idx++;
+                        lastComment = s.Substring(start, idx - start).Trim();
+                        continue;
+                    }
+                    break;
+                }
+
+                if (idx >= len) break;
                 if (s[idx] == '}') { idx++; break; }
 
                 object value = ParseValue(s, ref idx);
-                string inlineComment = ParseInlineComment(s, ref idx);
+
+                // Inline: ParseInlineComment
+                string inlineComment = null;
+                while (idx < len && (s[idx] == ' ' || s[idx] == '\t')) idx++;
+                if (idx < len && s[idx] == '#')
+                {
+                    idx++; // skip #
+                    int start = idx;
+                    while (idx < len && s[idx] != '\n') idx++;
+                    inlineComment = s.Substring(start, idx - start).Trim();
+                }
 
                 // Always wrap in Field object
-                list.Add(new Field(value, precedingComment ?? "", inlineComment ?? ""));
+                list.Add(new Field(value, lastComment ?? "", inlineComment ?? ""));
 
-                SkipWhitespaceAndComments(s, ref idx);
-                if (idx < s.Length && s[idx] == ',') idx++; // optional comma
+                // Inline: SkipWhitespaceAndComments
+                while (idx < len)
+                {
+                   
+                    char c = s[idx];
+                    if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                    {
+                        idx++;
+                        continue;
+                    }
+                    if (c == '#')
+                    {
+                        while (idx < len && s[idx] != '\n') idx++;
+                        continue;
+                    }
+                    break;
+                }
+
+                if (idx < len && s[idx] == ',') idx++; // optional comma
             }
 
             return list;
         }
 
-        private static object ParsePrimitiveValue(string s, ref int idx)
-        {
-            string token = ParseToken(s, ref idx);
-            return ParsePrimitive(token);
-        }
-
-        private static void SkipWhitespaceAndComments(string s, ref int idx)
-        {
-            while (idx < s.Length)
-            {
-                if (IsWhitespace(s[idx]))
-                {
-                    idx++;
-                    continue;
-                }
-
-                if (s[idx] == '#')
-                {
-                    SkipToEndOfLine(s, ref idx);
-                    continue;
-                }
-                break;
-            }
-        }
-
-        private static string SkipWhitespaceAndCaptureComments(string s, ref int idx)
-        {
-            string lastComment = null;
-            while (idx < s.Length)
-            {
-                if (IsWhitespace(s[idx]))
-                {
-                    idx++;
-                    continue;
-                }
-
-                if (s[idx] == '#')
-                {
-                    lastComment = CaptureComment(s, ref idx);
-                    continue;
-                }
-                break;
-            }
-            return lastComment;
-        }
-
-        private static string CaptureComment(string s, ref int idx)
-        {
-            idx++; // skip #
-            int start = idx;
-            while (idx < s.Length && !IsNewline(s[idx])) idx++;
-            return s.Substring(start, idx - start).Trim();
-        }
-
-        private static void SkipToEndOfLine(string s, ref int idx)
-        {
-            while (idx < s.Length && s[idx] != '\n') idx++;
-        }
-
-        private static bool IsWhitespace(char c)
-        {
-            return c == ' ' || c == '\t' || c == '\r' || c == '\n';
-        }
-
-        private static bool IsNewline(char c)
-        {
-            return c == '\n' || c == '\r';
-        }
-
-        private static string ParseKey(string s, ref int idx)
-        {
-            try
-            {
-                SkipWhitespace(s, ref idx);
-
-                int start = idx;
-
-                while (idx < s.Length)
-                {
-                   
-                    char c = s[idx];
-                    if (c == '=') break;
-                    if (IsNewline(c))
-                        throw new Exception("Unexpected newline while reading key");
-
-                    idx++;
-                }
-
-                if (idx == start)
-                    throw new Exception($"Empty key at index {idx}");
-
-                return s.Substring(start, idx - start).Trim();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"DWON: ParseKey failed with string ({s}). EX: {ex}");
-            }
-            
-        }
-
         private static string ParseToken(string s, ref int idx)
         {
-            SkipWhitespace(s, ref idx);
-            if (idx >= s.Length) return "";
+            int len = s.Length;
+            // Inline: SkipWhitespace
+            while (idx < len && (s[idx] == ' ' || s[idx] == '\t' || s[idx] == '\r' || s[idx] == '\n')) idx++;
+
+            if (idx >= len) return "";
 
             char c = s[idx];
 
@@ -387,45 +449,20 @@ namespace IngameScript.SConfig.Helper
                 char quote = c;
                 idx++;
                 int start = idx;
-                while (idx < s.Length && s[idx] != quote) idx++;
+                while (idx < len && s[idx] != quote) idx++;
                 string str = s.Substring(start, idx - start);
-                if (idx < s.Length) idx++; // skip closing quote
+                if (idx < len) idx++; // skip closing quote
                 return str;
             }
 
             // Unquoted token
             int startToken = idx;
-            while (idx < s.Length && s[idx] != '\n' && s[idx] != '\r' && s[idx] != '#' && s[idx] != ',' && s[idx] != '}' && s[idx] != ']') idx++;
+            while (idx < len && s[idx] != '\n' && s[idx] != '\r' && s[idx] != '#' && s[idx] != ',' && s[idx] != '}' && s[idx] != ']') idx++;
             string token = s.Substring(startToken, idx - startToken).Trim();
             return token;
         }
 
-        private static string ParseInlineComment(string s, ref int idx)
-        {
-            SkipNonNewlineWhitespace(s, ref idx);
-            if (idx < s.Length && s[idx] == '#')
-            {
-                return CaptureComment(s, ref idx);
-            }
-            return null;
-        }
-        
-        private static void SkipNonNewlineWhitespace(string s, ref int idx)
-        {
-            while (idx < s.Length && IsWhitespace(s[idx]) && s[idx] != '\n' && s[idx] != '\r') idx++;
-        }
 
-        private static void SkipWhitespace(string s, ref int idx)
-        {
-            while (idx < s.Length && IsWhitespace(s[idx])) idx++;
-        }
-
-        private static void ExpectChar(string s, ref int idx, char expected)
-        {
-            SkipWhitespace(s, ref idx);
-            if (idx >= s.Length || s[idx] != expected) throw new Exception("Expected '" + expected + "' at index " + idx);
-            idx++;
-        }
 
         private static object ParsePrimitive(string token)
         {

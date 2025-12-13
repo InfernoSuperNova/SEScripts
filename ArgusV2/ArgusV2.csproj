@@ -23,7 +23,4 @@
 <!--    <AdditionalFiles Include="Instructions.readme"/>-->
 <!--    <AdditionalFiles Include="thumb.png"/>-->
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Ship\Components\Missiles\LaunchMechanisms\" />
-  </ItemGroup>
 </Project>

@@ -339,6 +339,106 @@ public class TimedLog
         return value;
     }
 }
+public static class MemorableName
+{
+    public static string[] adjectives = new string[]
+    {
+        "Blazing",
+        "Screaming",
+        "Reckless",
+        "Furious",
+        "Vengeful",
+        "Merciless",
+        "Relentless",
+        "Unstoppable",
+        "Fearless",
+        "Savage",
+        "Brutal",
+        "Vicious",
+        "Lethal",
+        "Deadly",
+        "Explosive",
+        "Thunderous",
+        "Infernal",
+        "Celestial",
+        "Phantom",
+        "Shadow",
+        "Silent",
+        "Swift",
+        "Mighty",
+        "Titanic",
+        "Colossal",
+        "Adorable"
+    };
+
+    public static string[] nouns = new string[]
+    {
+        "Reaper",
+        "Viper",
+        "Falcon",
+        "Hammer",
+        "Blade",
+        "Storm",
+        "Thunder",
+        "Inferno",
+        "Cyclone",
+        "Avalanche",
+        "Meteor",
+        "Phoenix",
+        "Dragon",
+        "Kraken",
+        "Leviathan",
+        "Specter",
+        "Wraith",
+        "Banshee",
+        "Valkyrie",
+        "Sentinel",
+        "Titan",
+        "Goliath",
+        "Behemoth",
+        "Juggernaut",
+        "Colossus",
+        "Kitten"
+    };
+
+    public static string[] suffixes = new string[]
+    {
+        "Death",
+        "Destruction",
+        "Ruin",
+        "Chaos",
+        "Vengeance",
+        "Wrath",
+        "Doom",
+        "Oblivion",
+        "Annihilation",
+        "The Apocalypse",
+        "Perdition",
+        "Damnation",
+        "Judgment",
+        "Retribution",
+        "Calamity",
+        "Cataclysm",
+        "Devastation",
+        "Extinction",
+        "Armageddon",
+        "Twilight",
+        "Nightfall",
+        "Reckoning",
+        "Fury",
+        "Malice",
+        "Torment",
+        "Cuddles"
+    };
+
+    public static string Get()
+    {
+        var adjective = adjectives[Program.RNG.Next(adjectives.Length)];
+        var noun = nouns[Program.RNG.Next(nouns.Length)];
+        var suffix = suffixes[Program.RNG.Next(suffixes.Length)];
+        return $"{adjective} {noun} of {suffix}";
+    }
+}
 public class OrientedOccludedSphere : OccludedSphere
 {
         
@@ -1103,8 +1203,6 @@ public static class Commands
         {
             { Config.String.ArgumentUnTarget, ShipManager.PrimaryShip.Target },
             { Config.String.ArgumentTarget, ShipManager.PrimaryShip.UnTarget },
-            { "FireAllTest", ShipManager.PrimaryShip.Guns.FireAll },
-            { "CancelAllTest", ShipManager.PrimaryShip.Guns.CancelAll }
         };
 
         if (LogLevel.Trace <= Config.General.LogLevel)
@@ -1813,12 +1911,15 @@ class ConfigCategory
 
     public void SyncEnum<E>(string key, ref E scriptField, string beforeComment = "", string inlineComment = "") where E : struct
     {
-        var field = Dwon.GetField(_values, key, scriptField);
+        var field = Dwon.GetField(_values, key, EnumLookup.GetName(scriptField));
         var enumName = field.Obj.ToString();
-
-        EnumLookup.TryGetValue(enumName, out scriptField);
+        Program.Log(enumName);
+        bool debug = enumName == "Info";
+        if (debug) Program.Log(enumName);
+        if (debug) Program.Log(scriptField.GetType());
+        EnumLookup.TryGetValue(enumName, out scriptField);  
         enumName = EnumLookup.GetName(scriptField);
-
+        if (debug) Program.Log(enumName);
         // Determine which comment to use: Existing > Provided > Auto-generated
         if (string.IsNullOrEmpty(field.BeforeComment))
         {
@@ -1930,7 +2031,6 @@ public static class Dwon
     {
         var sb = new StringBuilder();
         Serialize(obj, sb, indent, null);
-        Program.LogLine("Serialized successfully", LogLevel.Debug);
         return sb.ToString();
     }
 
@@ -2087,60 +2187,172 @@ public static class Dwon
     public static object Parse(string dwon)
     {
         int idx = 0;
+        int len = dwon.Length;
         var top = new Dictionary<string, object>();
-        while (idx < dwon.Length)
-        {
-            string precedingComment = SkipWhitespaceAndCaptureComments(dwon, ref idx);
-            if (idx >= dwon.Length) break;
 
-            string key = ParseKey(dwon, ref idx);
-            ExpectChar(dwon, ref idx, '=');
+        while (idx < len)
+        {
+            // Inline: SkipWhitespaceAndCaptureComments
+            string lastComment = null;
+            while (idx < len)
+            {
+                char c = dwon[idx];
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                {
+                    idx++;
+                    continue;
+                }
+                if (c == '#')
+                {
+                    idx++; // skip #
+                    int start = idx;
+                    while (idx < len && dwon[idx] != '\n') idx++;
+                    lastComment = dwon.Substring(start, idx - start).Trim();
+                    continue;
+                }
+                break;
+            }
+
+            if (idx >= len) break;
+
+            // Inline: ParseKey
+            int keyStart = idx;
+            while (idx < len && dwon[idx] != '=')
+            {
+                char c = dwon[idx];
+                if (c == '\n' || c == '\r')
+                    throw new Exception("Unexpected newline while reading key");
+                idx++;
+            }
+            if (idx == keyStart)
+                throw new Exception($"Empty key at index {idx}");
+            string key = dwon.Substring(keyStart, idx - keyStart).Trim();
+
+            // Inline: ExpectChar for '='
+            while (idx < len && (dwon[idx] == ' ' || dwon[idx] == '\t' || dwon[idx] == '\r' || dwon[idx] == '\n')) idx++;
+            if (idx >= len || dwon[idx] != '=') throw new Exception("Expected '=' at index " + idx);
+            idx++;
+
+            // Parse value
             object value = ParseValue(dwon, ref idx);
-            string inlineComment = ParseInlineComment(dwon, ref idx);
+
+            // Inline: ParseInlineComment
+            string inlineComment = null;
+            while (idx < len && dwon[idx] == ' ' || dwon[idx] == '\t') idx++;
+            if (idx < len && dwon[idx] == '#')
+            {
+                idx++; // skip #
+                int start = idx;
+                while (idx < len && dwon[idx] != '\n') idx++;
+                inlineComment = dwon.Substring(start, idx - start).Trim();
+            }
 
             // Always wrap in Field object
-            top[key] = new Field(value, precedingComment ?? "", inlineComment ?? "");
+            top[key] = new Field(value, lastComment ?? "", inlineComment ?? "");
         }
         return top;
     }
 
     private static object ParseValue(string s, ref int idx)
     {
-        SkipWhitespaceAndComments(s, ref idx);
-
-        if (idx >= s.Length) return null;
-
-        char c = s[idx];
-
-        switch (c)
+        int len = s.Length;
+        // Inline: SkipWhitespaceAndComments
+        while (idx < len)
         {
-            case '[':
-                return ParseDictionary(s, ref idx);
-            case '{':
-                return ParseList(s, ref idx);
-            default:
-                return ParsePrimitiveValue(s, ref idx);
+            char c = s[idx];
+            if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+            {
+                idx++;
+                continue;
+            }
+            if (c == '#')
+            {
+                while (idx < len && s[idx] != '\n') idx++;
+                continue;
+            }
+            break;
         }
+
+        if (idx >= len) return null;
+
+        char ch = s[idx];
+
+        if (ch == '[')
+            return ParseDictionary(s, ref idx);
+        if (ch == '{')
+            return ParseList(s, ref idx);
+
+        // ParsePrimitiveValue inlined
+        string token = ParseToken(s, ref idx);
+        return ParsePrimitive(token);
     }
 
     private static object ParseDictionary(string s, ref int idx)
     {
         idx++; // skip '['
+        int len = s.Length;
         var dict = new Dictionary<string, object>();
 
         while (true)
         {
-            string precedingComment = SkipWhitespaceAndCaptureComments(s, ref idx);
-            if (idx >= s.Length) break;
+            // Inline: SkipWhitespaceAndCaptureComments
+            string lastComment = null;
+            while (idx < len)
+            {
+                char c = s[idx];
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                {
+                    idx++;
+                    continue;
+                }
+                if (c == '#')
+                {
+                    idx++; // skip #
+                    int start = idx;
+                    while (idx < len && s[idx] != '\n') idx++;
+                    lastComment = s.Substring(start, idx - start).Trim();
+                    continue;
+                }
+                break;
+            }
+
+            if (idx >= len) break;
             if (s[idx] == ']') { idx++; break; }
 
-            string key = ParseKey(s, ref idx);
-            ExpectChar(s, ref idx, '=');
+            // Inline: ParseKey
+            int keyStart = idx;
+            while (idx < len && s[idx] != '=')
+            {
+                char c = s[idx];
+                if (c == '\n' || c == '\r')
+                    throw new Exception("Unexpected newline while reading key");
+                idx++;
+            }
+            if (idx == keyStart)
+                throw new Exception($"Empty key at index {idx}");
+            string key = s.Substring(keyStart, idx - keyStart).Trim();
+
+            // Inline: ExpectChar for '='
+            while (idx < len && (s[idx] == ' ' || s[idx] == '\t' || s[idx] == '\r' || s[idx] == '\n')) idx++;
+            if (idx >= len || s[idx] != '=') throw new Exception("Expected '=' at index " + idx);
+            idx++;
+
+            // Parse value
             object value = ParseValue(s, ref idx);
-            string inlineComment = ParseInlineComment(s, ref idx);
+
+            // Inline: ParseInlineComment
+            string inlineComment = null;
+            while (idx < len && (s[idx] == ' ' || s[idx] == '\t')) idx++;
+            if (idx < len && s[idx] == '#')
+            {
+                idx++; // skip #
+                int start = idx;
+                while (idx < len && s[idx] != '\n') idx++;
+                inlineComment = s.Substring(start, idx - start).Trim();
+            }
 
             // Always wrap in Field object
-            dict[key] = new Field(value, precedingComment ?? "", inlineComment ?? "");
+            dict[key] = new Field(value, lastComment ?? "", inlineComment ?? "");
         }
 
         return dict;
@@ -2149,131 +2361,82 @@ public static class Dwon
     private static object ParseList(string s, ref int idx)
     {
         idx++; // skip '{'
+        int len = s.Length;
         var list = new List<object>();
 
         while (true)
         {
-            string precedingComment = SkipWhitespaceAndCaptureComments(s, ref idx);
-            if (idx >= s.Length) break;
+            // Inline: SkipWhitespaceAndCaptureComments
+            string lastComment = null;
+            while (idx < len)
+            {
+                char c = s[idx];
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                {
+                    idx++;
+                    continue;
+                }
+                if (c == '#')
+                {
+                    idx++; // skip #
+                    int start = idx;
+                    while (idx < len && s[idx] != '\n') idx++;
+                    lastComment = s.Substring(start, idx - start).Trim();
+                    continue;
+                }
+                break;
+            }
+
+            if (idx >= len) break;
             if (s[idx] == '}') { idx++; break; }
 
             object value = ParseValue(s, ref idx);
-            string inlineComment = ParseInlineComment(s, ref idx);
+
+            // Inline: ParseInlineComment
+            string inlineComment = null;
+            while (idx < len && (s[idx] == ' ' || s[idx] == '\t')) idx++;
+            if (idx < len && s[idx] == '#')
+            {
+                idx++; // skip #
+                int start = idx;
+                while (idx < len && s[idx] != '\n') idx++;
+                inlineComment = s.Substring(start, idx - start).Trim();
+            }
 
             // Always wrap in Field object
-            list.Add(new Field(value, precedingComment ?? "", inlineComment ?? ""));
+            list.Add(new Field(value, lastComment ?? "", inlineComment ?? ""));
 
-            SkipWhitespaceAndComments(s, ref idx);
-            if (idx < s.Length && s[idx] == ',') idx++; // optional comma
+            // Inline: SkipWhitespaceAndComments
+            while (idx < len)
+            {
+                   
+                char c = s[idx];
+                if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                {
+                    idx++;
+                    continue;
+                }
+                if (c == '#')
+                {
+                    while (idx < len && s[idx] != '\n') idx++;
+                    continue;
+                }
+                break;
+            }
+
+            if (idx < len && s[idx] == ',') idx++; // optional comma
         }
 
         return list;
     }
 
-    private static object ParsePrimitiveValue(string s, ref int idx)
-    {
-        string token = ParseToken(s, ref idx);
-        return ParsePrimitive(token);
-    }
-
-    private static void SkipWhitespaceAndComments(string s, ref int idx)
-    {
-        while (idx < s.Length)
-        {
-            if (IsWhitespace(s[idx]))
-            {
-                idx++;
-                continue;
-            }
-
-            if (s[idx] == '#')
-            {
-                SkipToEndOfLine(s, ref idx);
-                continue;
-            }
-            break;
-        }
-    }
-
-    private static string SkipWhitespaceAndCaptureComments(string s, ref int idx)
-    {
-        string lastComment = null;
-        while (idx < s.Length)
-        {
-            if (IsWhitespace(s[idx]))
-            {
-                idx++;
-                continue;
-            }
-
-            if (s[idx] == '#')
-            {
-                lastComment = CaptureComment(s, ref idx);
-                continue;
-            }
-            break;
-        }
-        return lastComment;
-    }
-
-    private static string CaptureComment(string s, ref int idx)
-    {
-        idx++; // skip #
-        int start = idx;
-        while (idx < s.Length && !IsNewline(s[idx])) idx++;
-        return s.Substring(start, idx - start).Trim();
-    }
-
-    private static void SkipToEndOfLine(string s, ref int idx)
-    {
-        while (idx < s.Length && s[idx] != '\n') idx++;
-    }
-
-    private static bool IsWhitespace(char c)
-    {
-        return c == ' ' || c == '\t' || c == '\r' || c == '\n';
-    }
-
-    private static bool IsNewline(char c)
-    {
-        return c == '\n' || c == '\r';
-    }
-
-    private static string ParseKey(string s, ref int idx)
-    {
-        try
-        {
-            SkipWhitespace(s, ref idx);
-
-            int start = idx;
-
-            while (idx < s.Length)
-            {
-                   
-                char c = s[idx];
-                if (c == '=') break;
-                if (IsNewline(c))
-                    throw new Exception("Unexpected newline while reading key");
-
-                idx++;
-            }
-
-            if (idx == start)
-                throw new Exception($"Empty key at index {idx}");
-
-            return s.Substring(start, idx - start).Trim();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"DWON: ParseKey failed with string ({s}). EX: {ex}");
-        }
-            
-    }
-
     private static string ParseToken(string s, ref int idx)
     {
-        SkipWhitespace(s, ref idx);
-        if (idx >= s.Length) return "";
+        int len = s.Length;
+        // Inline: SkipWhitespace
+        while (idx < len && (s[idx] == ' ' || s[idx] == '\t' || s[idx] == '\r' || s[idx] == '\n')) idx++;
+
+        if (idx >= len) return "";
 
         char c = s[idx];
 
@@ -2283,45 +2446,20 @@ public static class Dwon
             char quote = c;
             idx++;
             int start = idx;
-            while (idx < s.Length && s[idx] != quote) idx++;
+            while (idx < len && s[idx] != quote) idx++;
             string str = s.Substring(start, idx - start);
-            if (idx < s.Length) idx++; // skip closing quote
+            if (idx < len) idx++; // skip closing quote
             return str;
         }
 
         // Unquoted token
         int startToken = idx;
-        while (idx < s.Length && s[idx] != '\n' && s[idx] != '\r' && s[idx] != '#' && s[idx] != ',' && s[idx] != '}' && s[idx] != ']') idx++;
+        while (idx < len && s[idx] != '\n' && s[idx] != '\r' && s[idx] != '#' && s[idx] != ',' && s[idx] != '}' && s[idx] != ']') idx++;
         string token = s.Substring(startToken, idx - startToken).Trim();
         return token;
     }
 
-    private static string ParseInlineComment(string s, ref int idx)
-    {
-        SkipNonNewlineWhitespace(s, ref idx);
-        if (idx < s.Length && s[idx] == '#')
-        {
-            return CaptureComment(s, ref idx);
-        }
-        return null;
-    }
-        
-    private static void SkipNonNewlineWhitespace(string s, ref int idx)
-    {
-        while (idx < s.Length && IsWhitespace(s[idx]) && s[idx] != '\n' && s[idx] != '\r') idx++;
-    }
 
-    private static void SkipWhitespace(string s, ref int idx)
-    {
-        while (idx < s.Length && IsWhitespace(s[idx])) idx++;
-    }
-
-    private static void ExpectChar(string s, ref int idx, char expected)
-    {
-        SkipWhitespace(s, ref idx);
-        if (idx >= s.Length || s[idx] != expected) throw new Exception("Expected '" + expected + "' at index " + idx);
-        idx++;
-    }
 
     private static object ParsePrimitive(string token)
     {
@@ -2796,11 +2934,11 @@ public class Gun
         _gun.Enabled = true;
     }
 }
-public enum PositionValidity
+public enum PositionValidity 
 {
-    Fallback,
-    Ready,
-    Firing
+    Fallback,       // Falls back to ships center of mass
+    Ready,          // Consider this gun's position if none are firing
+    Firing          // Ready but higher priority
 }
 public enum FireType
 {
@@ -2848,8 +2986,10 @@ public class GunManager
     {
         var validity = PositionValidity.Fallback;
             
+        // TODO: Reuse this lists, idiot
         var fireGroupsReady = new Dictionary<GunData, List<Gun>>();
         var fireGroupsFiring = new Dictionary<GunData, List<Gun>>();
+            
         var readyCount = 0;
         var firingCount = 0;
             
@@ -2916,7 +3056,7 @@ public class GunManager
             _firingReferencePosition = ThisShip.Position;
             return;
         }
-            
+        // We get the average firing position of the guns in this cluster as it will be the best spot for "most" of them to hit
         AT_Vector3D average = AT_Vector3D.Zero;
 
         foreach (var gun in _currentFiringGroup)
@@ -3092,6 +3232,30 @@ public class GyroManager
         
         
 }
+public class Missile
+{
+    private readonly List<IMyCubeBlock> _blocks;
+        
+    private readonly IMyGyro _gyro;
+
+    public Missile(List<IMyCubeBlock> blocks)
+    {
+        _blocks = new List<IMyCubeBlock>(blocks);
+        _gyro = blocks.Find(b => b is IMyGyro) as IMyGyro;
+    }
+
+    /// <summary>
+    /// Gets all blocks that make up this missile
+    /// </summary>
+    public List<IMyCubeBlock> Blocks => _blocks;
+
+    /// <summary>
+    /// Gets the number of blocks in this missile
+    /// </summary>
+    public int BlockCount => _blocks.Count;
+
+    public IMyCubeGrid ReferenceGrid => _gyro.CubeGrid;
+}
 public enum PayloadType
 {
     Kinetic,            // Effectively: No payload
@@ -3151,7 +3315,7 @@ enum MissileFinderState
     Collected,       // Missile has been collected by manager, should not refresh
     Fired            // Missile has fired, need to allocate new list on next refresh
 }
-internal class MissileFinder
+public class MissileFinder
 {
     AT_Vector3D _offset;
     AT_Vector3D _extents;
@@ -3177,10 +3341,14 @@ internal class MissileFinder
     List<IMyCubeBlock> _blocks;
     List<IMyThrust> _launchPulseThrusters; // Only applicable if LaunchMechanism is PulsedThruster
     List<IMyUserControllableGun> _launchWeapons; // Only applicable if LaunchMechanism is Weapon
+    string _friendlyName;
 
     public MissileFinder(IMyTerminalBlock finder, ControllableShip ship)
     {
         _finderBlock = finder;
+
+        SyncFinderName();
+            
         _finderBlock.CustomData = SyncConfig(_finderBlock.CustomData);
         _blocks = new List<IMyCubeBlock>();
         _launchPulseThrusters = new List<IMyThrust>();
@@ -3188,16 +3356,45 @@ internal class MissileFinder
         _thisShip = ship;
         _state = MissileFinderState.Refreshing;
         _pattern = new MissilePattern();
-        Program.LogLine($"(MissileFinder) Initialized for block '{_finderBlock.CustomName}'", LogLevel.Debug);
+            
+        Program.LogLine($"(MissileFinder) Initialized with friendly name '{_friendlyName}'", LogLevel.Info);
         RefreshBlocks();
+    }
+
+    void SyncFinderName()
+    {
+        if (!string.IsNullOrEmpty(_finderBlock.CustomName) && _finderBlock.CustomName.Contains("["))
+        {
+            int openBracket = _finderBlock.CustomName.IndexOf('[');
+            int closeBracket = _finderBlock.CustomName.LastIndexOf(']');
+
+            if (closeBracket > openBracket)
+            {
+                var extracted = _finderBlock.CustomName.Substring(openBracket + 1, closeBracket - openBracket - 1).Trim();
+                if (!string.IsNullOrEmpty(extracted))
+                {
+                    _friendlyName = extracted;
+                    return;
+                }
+            }
+        }
+            
+        _friendlyName = MemorableName.Get();
+        _finderBlock.CustomName = $"{Config.String.MissileFinderPrefix} [{_friendlyName}]";
     }
 
     Vector3I FirstCorner => _finderBlock.Position + LocalTranslate(_offset);
     Vector3I SecondCorner => _finderBlock.Position + LocalTranslate(_offset + _extents);
 
-    // MissileFinder gets the final say on whether it returns blocks; this is if the missile is fully constructed and ready to launch
-    public bool TryCollectBlocks(ref List<IMyCubeBlock> blocks)
+    public string FriendlyName => _friendlyName;
+
+    public IMyCubeGrid ReferenceGrid => _finderBlock.CubeGrid;
+
+    // MissileFinder gets the final say on whether it returns a launcher; this is if the missile is fully constructed and ready to launch
+    public bool TryCollectMissile(out MissileLauncher launcher)
     {
+        launcher = null;
+
         if (_blocks.Count == 0)
         {
             Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - No blocks found", LogLevel.Debug);
@@ -3220,7 +3417,10 @@ internal class MissileFinder
                 return false;
             }
         }
-        blocks = _blocks;
+
+        // Create the missile and launcher
+        var missile = new Missile(_blocks);
+        launcher = new MissileLauncher(_launchMechanism, missile, _launchPulseThrusters, _launchWeapons, this);
         _state = MissileFinderState.Collected;
         Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Successfully collected {_blocks.Count} blocks", LogLevel.Debug);
         return true;
@@ -3331,20 +3531,180 @@ internal class MissileFinder
         
 
 }
+enum MissileLauncherState
+{
+    Waiting,
+    Launching,
+    Done,
+    Failed
+}
 public class MissileLauncher
 {
+    MissileLauncherState _state = MissileLauncherState.Waiting;
     LaunchMechanism _launchMechanism;
-        
-        
-        
-        
-    public MissileLauncher(LaunchMechanism launchMechanism)
+    private readonly Missile _missile;
+
+    private readonly List<IMyThrust> _launchPulseThrusters; // Only applicable if LaunchMechanism is PulsedThruster
+    private readonly List<IMyUserControllableGun> _launchWeapons; // Only applicable if LaunchMechanism is Weapon
+    private readonly MissileFinder _missileFinder;
+
+    public MissileLauncher(LaunchMechanism launchMechanism, Missile missile, List<IMyThrust> launchPulseThrusters, List<IMyUserControllableGun> launchWeapons, MissileFinder missileFinder)
     {
         _launchMechanism = launchMechanism;
+        _missile = missile;
+        _launchPulseThrusters = launchPulseThrusters;
+        _launchWeapons = launchWeapons;
+        _missileFinder = missileFinder;
     }
+
+    /// <summary>
+    /// Gets the launch mechanism type for this launcher
+    /// </summary>
     internal LaunchMechanism LaunchMechanism => _launchMechanism;
 
+    /// <summary>
+    /// Gets the missile associated with this launcher
+    /// </summary>
+    public Missile Missile => _missile;
+
+    /// <summary>
+    /// Gets the launch pulse thrusters (only applicable if LaunchMechanism is PulsedThruster)
+    /// </summary>
+    public List<IMyThrust> LaunchPulseThrusters => _launchPulseThrusters;
+
+    /// <summary>
+    /// Gets the launch weapons (only applicable if LaunchMechanism is Weapon)
+    /// </summary>
+    public List<IMyUserControllableGun> LaunchWeapons => _launchWeapons;
+
+    public bool HasSuccessfullyDetached => _missile.ReferenceGrid != _missileFinder.ReferenceGrid;
+
+    public void Launch()
+    {
+        if (_state == MissileLauncherState.Waiting)
+            _state = MissileLauncherState.Launching;
+    }
+    public void EarlyUpdate(int frame)
+    {
+            
+    }
         
+    public void LateUpdate(int frame)
+    {
+        if (_state == MissileLauncherState.Launching)
+        {
+            if (HasSuccessfullyDetached)
+            {
+                _state = MissileLauncherState.Done;
+                OnSuccessfulDetach();
+                return;
+            }
+            EvaluateLaunchMechanism();
+            if (_launchMechanism == LaunchMechanism.None)
+            {
+                _state = MissileLauncherState.Failed;
+                Program.LogLine($"(MissileLauncher) '{_missileFinder.FriendlyName}' - Launch mechanism failed", LogLevel.Error);
+                // We don't clean up here and instead let the launcher hang on to the missile for analysis later
+            }
+        }
+    }
+
+    void EvaluateLaunchMechanism()
+    {
+        // Check flag values on launch mechanism
+        if (_launchMechanism.HasFlag(LaunchMechanism.Mechanical))
+        {
+            MechanicalLaunchMechanism();
+        }
+        if (_launchMechanism.HasFlag(LaunchMechanism.Connector))
+        {
+            ConnectorLaunchMechanism();
+        }
+        if (_launchMechanism.HasFlag(LaunchMechanism.MergeBlock))
+        {
+            MergeBlockLaunchMechanism();
+        }
+        if (_launchMechanism.HasFlag(LaunchMechanism.PulsedThruster))
+        {
+            PulsedThrusterLaunchMechanism();
+        }
+        if (_launchMechanism.HasFlag(LaunchMechanism.Weapon))
+        {
+            WeaponLaunchMechanism();
+        }
+    }
+
+    void MechanicalLaunchMechanism()
+    {
+        foreach (var block in _missile.Blocks)
+        {
+            var connector = block as IMyMechanicalConnectionBlock;
+            if (connector != null && connector.IsAttached)
+            {
+                connector.Detach();
+            }
+        }
+
+        foreach (var block in _missile.Blocks)
+        {
+            var top = block as IMyAttachableTopBlock;
+            if (top != null && top.IsAttached)
+            {
+                top.Base.Detach();
+            }
+        }
+        _launchMechanism &= ~LaunchMechanism.Mechanical;
+    }
+    void ConnectorLaunchMechanism()
+    {
+        foreach (var block in _missile.Blocks)
+        {
+            var connector = block as IMyMechanicalConnectionBlock;
+            if (connector != null && connector.IsAttached)
+            {
+                connector.Detach();
+            }
+        }
+
+        _launchMechanism &= ~LaunchMechanism.Connector;
+    }
+    void MergeBlockLaunchMechanism()
+    {
+        foreach (var block in _missile.Blocks)
+        {
+            var mergeBlock = block as IMyShipMergeBlock;
+            if (mergeBlock != null && mergeBlock.IsConnected)
+            {
+                mergeBlock.Enabled = false;
+            }
+        }
+
+        _launchMechanism &= ~LaunchMechanism.MergeBlock;
+    }
+    void PulsedThrusterLaunchMechanism()
+    {
+        // This is a special case and requires continuous attention
+        foreach (var thruster in _launchPulseThrusters)
+        {
+            thruster.Enabled = !thruster.Enabled;
+        }
+        // We don't remove this flag because this condition needs to continuously fire until true
+    }
+
+    void WeaponLaunchMechanism()
+    {
+        foreach (var weapon in _launchWeapons)
+        {
+            weapon.ShootOnce();
+        }
+
+        _launchMechanism &= ~LaunchMechanism.Weapon;
+    }
+
+    void OnSuccessfulDetach()
+    {
+        _missileFinder.MarkFired();
+    }
 }
 public class MissileManager
 {
@@ -3651,10 +4011,10 @@ public class BalancedMassSystem
             // Unit direction of this ball's moment contribution
             var dir = ball.Moment.Normalized();
         
-            // Project deficit along this ball's direction
+            // Project deficit along this ball's direction (tuning constant, if too slow then decrease)
             double projection = deficit.Dot(dir) / 250;
 
-            // Ignore tiny adjustments
+            // Ignore tiny adjustments (0.001 prevents oscillation in theory)
             if (Math.Abs(projection) < 0.001)
                 continue;
 
@@ -4247,8 +4607,8 @@ public class TargetTracker
 public class ControllableShip : SupportingShip
 {
         
-        
-    public readonly GunManager Guns;
+
+    private readonly GunManager _guns;
     private readonly GyroManager _gyroManager;
     private readonly FireController _fireController;
     private readonly PropulsionController _propulsionController;
@@ -4275,8 +4635,8 @@ public class ControllableShip : SupportingShip
             return;
         }
         _gyroManager = new GyroManager(blocks);
-        Guns = new GunManager(blocks, this);
-        _fireController = new FireController(this, Guns);
+        _guns = new GunManager(blocks, this);
+        _fireController = new FireController(this, _guns);
             
         _gravity = new CachedValue<AT_Vector3D>(() => Controller.GetNaturalGravity());
         _mass = new CachedValue<MyShipMass>(() => Controller.CalculateShipMass());
@@ -4341,13 +4701,14 @@ public class ControllableShip : SupportingShip
     public IMyCubeGrid Grid => _grid;
 
         
-    // Could possibly subscribe these and make them private?
+    // IMPORTANT: All components must have their EarlyUpdate/LateUpdate called here
+    // // in the correct order. Do not forget to add new components!
     // Early Update is called in a deterministic, but undefined order. Designed for gathering data.
     // All Early Updates are guaranteed to be called before any Late Updates.
     public override void EarlyUpdate(int frame)
     {
         base.EarlyUpdate(frame);
-        Guns.EarlyUpdate(frame);
+        _guns.EarlyUpdate(frame);
         _propulsionController.EarlyUpdate(frame);
         _missileManager.EarlyUpdate(frame);
             
@@ -4370,9 +4731,9 @@ public class ControllableShip : SupportingShip
             if (solution.TargetPosition == AT_Vector3D.Zero) _gyroManager.ResetGyroOverrides(); // TODO: Don't spam this
             else _gyroManager.Rotate(ref solution);
         }
-        Guns.LateUpdate(frame); 
+        _guns.LateUpdate(frame); 
         _propulsionController.LateUpdate(frame);
-        _missileManager.EarlyUpdate(frame);
+        _missileManager.LateUpdate(frame);
     }
         
         

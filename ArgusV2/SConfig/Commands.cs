@@ -17,8 +17,6 @@ namespace IngameScript.SConfig
             {
                 { Config.String.ArgumentUnTarget, ShipManager.PrimaryShip.Target },
                 { Config.String.ArgumentTarget, ShipManager.PrimaryShip.UnTarget },
-                { "FireAllTest", ShipManager.PrimaryShip.Guns.FireAll },
-                { "CancelAllTest", ShipManager.PrimaryShip.Guns.CancelAll }
             };
 
             if (LogLevel.Trace <= Config.General.LogLevel)

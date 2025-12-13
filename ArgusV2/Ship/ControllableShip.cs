@@ -17,8 +17,8 @@ namespace IngameScript.Ship
     {
         
         #region Fields
-        
-        public readonly GunManager Guns;
+
+        private readonly GunManager _guns;
         private readonly GyroManager _gyroManager;
         private readonly FireController _fireController;
         private readonly PropulsionController _propulsionController;
@@ -46,8 +46,8 @@ namespace IngameScript.Ship
                 return;
             }
             _gyroManager = new GyroManager(blocks);
-            Guns = new GunManager(blocks, this);
-            _fireController = new FireController(this, Guns);
+            _guns = new GunManager(blocks, this);
+            _fireController = new FireController(this, _guns);
             
             _gravity = new CachedValue<AT_Vector3D>(() => Controller.GetNaturalGravity());
             _mass = new CachedValue<MyShipMass>(() => Controller.CalculateShipMass());
@@ -122,7 +122,7 @@ namespace IngameScript.Ship
         public override void EarlyUpdate(int frame)
         {
             base.EarlyUpdate(frame);
-            Guns.EarlyUpdate(frame);
+            _guns.EarlyUpdate(frame);
             _propulsionController.EarlyUpdate(frame);
             _missileManager.EarlyUpdate(frame);
             
@@ -145,7 +145,7 @@ namespace IngameScript.Ship
                 if (solution.TargetPosition == AT_Vector3D.Zero) _gyroManager.ResetGyroOverrides(); // TODO: Don't spam this
                 else _gyroManager.Rotate(ref solution);
             }
-            Guns.LateUpdate(frame); 
+            _guns.LateUpdate(frame); 
             _propulsionController.LateUpdate(frame);
             _missileManager.LateUpdate(frame);
         }
