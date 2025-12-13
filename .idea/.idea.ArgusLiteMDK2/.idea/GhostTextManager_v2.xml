@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GhostTextManager">
+    <option name="inputs">
+      <map>
+        <entry key="Can you add some debug logging">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765240786074" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="Can you add support here for searlizing flag type enums to and from thing1 | thing2 | thing3 etc">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765252724617" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="Can you do git commits or is that beyond your capabilities">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765186170127" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="Can you figure out why TrackingName in Tracker Config is in quotation marks when other strings such as ArgumentTarget in String Config is not?">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765255239873" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="Can you make SyncEnum able to sync into the config as an unquoted token">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765255001601" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="Can you reduce the cognitive complexity of MatchesPattern by breaking it up into functions and reuse the currentPattern dict to reduce allocations?">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765186098884" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="Can you tell me what you think of the entire project">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765255595679" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="Can you update SyncConfig to match too">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765272659944" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="Can you update the comment handling on this to instead of putting comments on the same line it puts them on a newline just before and correctly handles both serialization and deserialization">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765254107697" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="Confirmed it works properly. Do you think you could do something about the overall cognitive complexity in this file?">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765254376363" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="For me at least I prefer the switch as it's a very clear state machine and it's reasonably clear which value leads to what outcome">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765184006252" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="How ahrd would it be to parse enums as    LaunchMechanism = Mechanical | Connector instead of    LaunchMechanism = &quot;Mechanical | Connector&quot;">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765254863640" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="How does it stack up as far as object notation languages go">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765255343101" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="I can't figure out what's wrong with my comments. For example, LogLevel here should have a comment before it">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765258539692" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="I just renamed the Comment class into the FIeld class and I'd like to treat it as the defacto bespoke field object for all fields in the object tree, can you refactor to reflect this?">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765270236914" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="I think I want an enum to control the state instead. Because the collector will be in multiple states, 1 is currently finding blocks, refreshing etc. 2 is the missile has been collected by the missile manager and it wants to fire, so it should stop being allowed to refresh. 3 is the missile has just fired, so is no longer attached to the ship, so the finder has to forget the current list (it is being used elsewhere so clearing is not an option) and needs to allocate a new one">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765183769931" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="I think there's an issue here with that. THe previous fix did not fix the issue">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765253286639" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="I tried to add comment support for both before and inline, can you finalize this and make sure it's working as it should">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765258319647" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="I'd rather avoid allocations if possible. My idea is to mark an internal flag inside MissileFinder that it has been collected and next time it tries to refresh blocks it needs to create a new list. But also the missile instance itself would need to mark a property inside MIssileFinder saying that it is allowed to recollect after it launches">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765183313452" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="If I were applying for a job and this was on my resume what position would or should I apply for">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765255859633" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="Is this switch statement objectively better than the if statmenet I had replaced">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765183955074" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="It was designed to be an alternative to ini as that's the standard for object notation in space engineers">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765255496509" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="MissileFinder = [&#10;   Offset = Vec3(0 0 0)&#10;   Extents = Vec3(0 0 0)&#10;   PayloadType = &quot;Kinetic&quot;   # Valid: Kinetic, Warhead, Nuke&#10;   DeliveryType = &quot;None&quot;   # Valid: None | Hydrogen | Ion | Atmospheric&#10;   LaunchMechanism = &quot;Mechanical | Connector&quot;   # Valid: None | Mechanical | Connector | MergeBlock | PulsedThruster | Weapon&#10;   LaunchControl = &quot;Automatic | Manual | ManualCiwsOverride&quot;   # Valid: Automatic, Manual, ManualCiwsOverride&#10;   RefuelPriority = &quot;Low&quot;   # Valid: Low, Medium, High&#10;   LaunchPulseThrusterName = &quot;null&quot;&#10;   LaunchWeaponName = &quot;null&quot;&#10; ]&#10;&#10;&#10;&#10;Why does it allow options like what i have for LaunchControl? Shouldn't it handle cases like this where distinct states are treated like flags by the user?">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765253145640" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="Ok I've changed my mind about how I want to do this. Sorry lol I do that a lot. Instead I'm gonna have the construction process do an initial refresh and save a pattern of the missile it detects in its search region, and based on the counts of each block type, the next time it tries to collect it compares to the count of each block type for a match">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765185830113" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="Ok so a few serialization issues I&quot;d like to fix here:&#10;&#10;&#10;#1, it has &quot;General Config&quot; twice, instead it should allow mulitple top level configs and drop the main General Config wrapper&#10;#2, LogLevel doesn't have a comment saying it's valid values for some reason&#10;#3, also to ensure compatability with other scripts it should:&#10;&#10;A, prepend the entire config body with &quot;---&quot;, this tells SE's MyIni that the content that comes after is not ini config&#10;B, if there *is* any other random data in the config, it should be put before the &quot;---&quot;">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765256516448" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="Okay. So I have this class here which is supposed to essentially be a list of essential blocks on a missile to be able to safely say that the missile is a missile and is thus valid for collection (see MissileFinder.TryCollectBlocks). It obviously needs to interrogate a list of terminal blocks, searching for a thruster, warhead, etc. Although there are multiple types to match, for example a hydrogen thruster means it *needs* a hydrogen tank. The key types that would denote what blocks are needed in the missile are PayloadType and DeliveryType.@&lt;file_name&gt;">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765185594732" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="Omg you are actually amazing">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765184791809" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="Some time in the not so distant future I assume?">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765186371525" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="That's awesome. Is Essentials still the best name for what it does now?">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765185939884" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="That's perfect I think">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765255317029" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="Will this return the list that the missile is currently using">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1765183239880" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

@@ -1,8 +1,0 @@
-/home/delta/RiderProjects/SEScripts/ArgusV2/bin/x64/Debug/netframework48/ArgusV2.dll
-/home/delta/RiderProjects/SEScripts/ArgusV2/bin/x64/Debug/netframework48/ArgusV2.pdb
-/home/delta/RiderProjects/SEScripts/ArgusV2/obj/x64/Debug/netframework48/ArgusV2.csproj.AssemblyReference.cache
-/home/delta/RiderProjects/SEScripts/ArgusV2/obj/x64/Debug/netframework48/ArgusV2.GeneratedMSBuildEditorConfig.editorconfig
-/home/delta/RiderProjects/SEScripts/ArgusV2/obj/x64/Debug/netframework48/ArgusV2.csproj.CoreCompileInputs.cache
-/home/delta/RiderProjects/SEScripts/ArgusV2/obj/x64/Debug/netframework48/ArgusV2.sourcelink.json
-/home/delta/RiderProjects/SEScripts/ArgusV2/obj/x64/Debug/netframework48/ArgusV2.dll
-/home/delta/RiderProjects/SEScripts/ArgusV2/obj/x64/Debug/netframework48/ArgusV2.pdb
