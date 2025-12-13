@@ -29,7 +29,7 @@ namespace IngameScript.Ship.Components.Missiles
         private PropulsionType _propulsionType;
         private LaunchMechanism _launchMechanism;
         
-        private LaunchControl _launchControl; // Unsure if I want this to be a global setting instead
+        private LaunchControl _launchControl = LaunchControl.Manual | LaunchControl.Ciws; // Unsure if I want this to be a global setting instead
         private RefuelPriority _refuelPriority; // Ditto
 
         private string _launchPulseThrusterName = "";
@@ -103,8 +103,8 @@ namespace IngameScript.Ship.Components.Missiles
             }
 
             // Create the missile and launcher
-            var missile = new Missile(_blocks);
-            launcher = new MissileLauncher(_launchMechanism, missile, _launchPulseThrusters, _launchWeapons, this);
+            var missile = new Missile(_blocks, _launchControl);
+            launcher = new MissileLauncher(_launchMechanism, missile, _launchPulseThrusters, _launchWeapons, _launchControl, this);
             _state = MissileFinderState.Collected;
             Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Successfully collected {_blocks.Count} blocks", LogLevel.Debug);
             return true;
@@ -149,7 +149,7 @@ namespace IngameScript.Ship.Components.Missiles
             cat.SyncEnum("PayloadType", ref _payloadType);
             cat.SyncEnum("PropulsionType", ref _propulsionType);
             cat.SyncEnum("LaunchMechanism", ref _launchMechanism);
-            cat.SyncEnum("LaunchControl", ref _launchControl);
+            cat.SyncEnum("LaunchControl", ref _launchControl, inlineComment: "Recommended to keep CIWS enabled");
             cat.SyncEnum("RefuelPriority", ref _refuelPriority);
             
             cat.Sync("LaunchPulseThrusterName", ref _launchPulseThrusterName, "Optional");

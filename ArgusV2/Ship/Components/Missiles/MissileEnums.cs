@@ -43,11 +43,12 @@ namespace IngameScript
         Staggered           // All launchers fire on button press, but with a delay between them
     }
 
+    [Flags]
     public enum LaunchControl
     {
-        Automatic,          // Launch to a quota whenever any target is tracked. See refuel state for further launch conditions
-        Manual,             // Launch only when commanded to by the controlling player. See refuel state for further launch conditions
-        ManualCiwsOverride  // Launch only when commanded to by the controlling player, or when CIWS system requests a missile and none are nearby. See refuel state for further launch conditions
+        Automatic = 1 << 0,          // Launch to a quota whenever any target is tracked. See refuel state for further launch conditions
+        Manual = 1 << 1,             // Launch when commanded to by the controlling player. See refuel state for further launch conditions
+        Ciws = 1 << 2                // Launch when CIWS system requests a missile and none are nearby. See refuel state for further launch conditions
     }
 
     // Only relevant for hydrogen missiles

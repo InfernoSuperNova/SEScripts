@@ -70,7 +70,7 @@ namespace IngameScript.SConfig.Database
                 {
                     { (int)LaunchControl.Automatic, "Automatic" },
                     { (int)LaunchControl.Manual, "Manual" },
-                    { (int)LaunchControl.ManualCiwsOverride, "ManualCiwsOverride" }
+                    { (int)LaunchControl.Ciws, "ManualCiwsOverride" }
                 }
             },
             {
