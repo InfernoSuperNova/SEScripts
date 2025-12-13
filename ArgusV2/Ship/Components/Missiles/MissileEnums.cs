@@ -86,4 +86,10 @@ namespace IngameScript
         SurroundAndClose,   // Surround an enemy target and wait for the signal to attack. As a fallback, surround the controlling ship instead
         Defend              // Effectively the same as Interdict, but at a much much tighter area, just a couple hundred meters
     }
+
+    public enum TargetingMode
+    {
+        AABBCenter,         // Target the center of the target's bounding box (CIWS default)
+        SpecificBlock       // Target a specific block or offset position on the target
+    }
 }

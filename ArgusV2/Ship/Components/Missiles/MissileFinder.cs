@@ -47,12 +47,12 @@ namespace IngameScript.Ship.Components.Missiles
         private List<IMyCubeBlock> _blocks;
         private List<IMyThrust> _launchPulseThrusters; // Only applicable if LaunchMechanism is PulsedThruster
         private List<IMyUserControllableGun> _launchWeapons; // Only applicable if LaunchMechanism is Weapon
-        private string _friendlyName;
+        private FriendlyCustomName _friendlyCustomName;
 
         public MissileFinder(IMyTerminalBlock finder, ControllableShip ship)
         {
             _finderBlock = finder;
-            SyncFinderName();
+            _friendlyCustomName = new FriendlyCustomName(_finderBlock, Config.String.MissileFinderPrefix);
             _finderBlock.CustomData = SyncConfig(_finderBlock.CustomData);
             _blocks = new List<IMyCubeBlock>();
             _launchPulseThrusters = new List<IMyThrust>();
@@ -61,7 +61,7 @@ namespace IngameScript.Ship.Components.Missiles
             _state = MissileFinderState.Refreshing;
             _pattern = new MissilePattern();
             
-            Program.LogLine($"(MissileFinder) Initialized with friendly name '{_friendlyName}'", LogLevel.Info);
+            Program.LogLine($"(MissileFinder) Initialized with friendly name '{_friendlyCustomName.FriendlyName}'", LogLevel.Info);
             RefreshBlocks();
         }
 
@@ -70,7 +70,7 @@ namespace IngameScript.Ship.Components.Missiles
         private Vector3I FirstCorner => _finderBlock.Position + LocalTranslate(_offset);
         private Vector3I SecondCorner => _finderBlock.Position + LocalTranslate(_offset + _extents);
 
-        public string FriendlyName => _friendlyName;
+        public string FriendlyName => _friendlyCustomName.FriendlyName;
 
         public IMyCubeGrid ReferenceGrid => _finderBlock.CubeGrid;
 
@@ -110,6 +110,7 @@ namespace IngameScript.Ship.Components.Missiles
             return true;
         }
 
+        #region API
         // Called by the missile manager when the missile has fired and is no longer attached to the ship
         public void MarkFired()
         {
@@ -128,28 +129,7 @@ namespace IngameScript.Ship.Components.Missiles
             
         }
         
-        
-        private void SyncFinderName()
-        {
-            if (!string.IsNullOrEmpty(_finderBlock.CustomName) && _finderBlock.CustomName.Contains("["))
-            {
-                int openBracket = _finderBlock.CustomName.IndexOf('[');
-                int closeBracket = _finderBlock.CustomName.LastIndexOf(']');
-
-                if (closeBracket > openBracket)
-                {
-                    var extracted = _finderBlock.CustomName.Substring(openBracket + 1, closeBracket - openBracket - 1).Trim();
-                    if (!string.IsNullOrEmpty(extracted))
-                    {
-                        _friendlyName = extracted;
-                        return;
-                    }
-                }
-            }
-            
-            _friendlyName = MemorableName.Get();
-            _finderBlock.CustomName = $"{Config.String.MissileFinderPrefix} [{_friendlyName}]";
-        }
+        #endregion
         private string SyncConfig(string input)
         {
             var parsed = Dwon.Parse(input);

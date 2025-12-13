@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using IngameScript.Helper.Log;
 using Sandbox.ModAPI.Ingame;
@@ -26,6 +27,7 @@ namespace IngameScript.Ship.Components.Missiles.LaunchMechanisms
         private readonly List<IMyThrust> _launchPulseThrusters; // Only applicable if LaunchMechanism is PulsedThruster
         private readonly List<IMyUserControllableGun> _launchWeapons; // Only applicable if LaunchMechanism is Weapon
         private readonly MissileFinder _missileFinder;
+        private Action<MissileLauncher, LaunchRequest> _onMissileLaunchSuccess;
 
         public MissileLauncher(LaunchMechanism launchMechanism, Missile missile, List<IMyThrust> launchPulseThrusters, List<IMyUserControllableGun> launchWeapons, MissileFinder missileFinder)
         {
@@ -58,10 +60,13 @@ namespace IngameScript.Ship.Components.Missiles.LaunchMechanisms
 
         public bool HasSuccessfullyDetached => _missile.ReferenceGrid != _missileFinder.ReferenceGrid;
 
-        public void Launch()
+        public void Launch(Action<MissileLauncher, LaunchRequest> onMissileLaunchSuccess, LaunchRequest launchRequest)
         {
             if (_state == MissileLauncherState.Waiting)
+            {
                 _state = MissileLauncherState.Launching;
+                _onMissileLaunchSuccess = (launcher, request) => onMissileLaunchSuccess(launcher, launchRequest);
+            }
         }
         public void EarlyUpdate(int frame)
         {
@@ -185,6 +190,8 @@ namespace IngameScript.Ship.Components.Missiles.LaunchMechanisms
         private void OnSuccessfulDetach()
         {
             _missileFinder.MarkFired();
+            _onMissileLaunchSuccess?.Invoke(this, new LaunchRequest());
         }
+        
     }
 }
