@@ -81,6 +81,7 @@ namespace IngameScript.Ship.Components.Missiles.LaunchMechanisms
         }
         public void EarlyUpdate(int frame)
         {
+            Program.Log($"(MissileLauncher) '{_missileFinder.FriendlyName}' - EarlyUpdate");
             if (_state == MissileLauncherState.Launching)
             {
                 EvaluateLaunchMechanism();

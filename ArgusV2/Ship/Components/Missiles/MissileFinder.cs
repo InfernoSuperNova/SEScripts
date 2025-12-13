@@ -22,8 +22,8 @@ namespace IngameScript.Ship.Components.Missiles
     public class MissileFinder
     {
         #region config
-        private AT_Vector3D _offset;
-        private AT_Vector3D _extents;
+        private AT_Vector3D _localCornerA;
+        private AT_Vector3D _localCornerB;
         
         private PayloadType _payloadType;
         private PropulsionType _propulsionType;
@@ -49,6 +49,7 @@ namespace IngameScript.Ship.Components.Missiles
         private List<IMyUserControllableGun> _launchWeapons; // Only applicable if LaunchMechanism is Weapon
         private FriendlyCustomName _friendlyCustomName;
 
+
         public MissileFinder(IMyTerminalBlock finder, ControllableShip ship)
         {
             _finderBlock = finder;
@@ -67,8 +68,8 @@ namespace IngameScript.Ship.Components.Missiles
 
  
 
-        private Vector3I FirstCorner => _finderBlock.Position + LocalTranslate(_offset);
-        private Vector3I SecondCorner => _finderBlock.Position + LocalTranslate(_offset + _extents);
+        private Vector3I FirstCorner => _finderBlock.Position + LocalTranslate(_localCornerA);
+        private Vector3I SecondCorner => _finderBlock.Position + LocalTranslate(_localCornerB);
 
         public string FriendlyName => _friendlyCustomName.FriendlyName;
 
@@ -77,18 +78,23 @@ namespace IngameScript.Ship.Components.Missiles
         // MissileFinder gets the final say on whether it returns a launcher; this is if the missile is fully constructed and ready to launch
         public bool TryCollectMissile(out MissileLauncher launcher)
         {
+            
             launcher = null;
-
+            if (_state == MissileFinderState.Collected)
+            {
+                //Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Already collected", LogLevel.Debug);
+                return false;
+            }
             if (_blocks.Count == 0)
             {
-                Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - No blocks found", LogLevel.Debug);
+                //Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - No blocks found", LogLevel.Debug);
                 return false;
             }
             
             // Check if blocks match the saved pattern
             if (!_pattern.MatchesPattern(_blocks))
             {
-                Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Pattern mismatch", LogLevel.Debug);
+                //Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Pattern mismatch", LogLevel.Debug);
                 return false;
             }
             
@@ -97,7 +103,7 @@ namespace IngameScript.Ship.Components.Missiles
             {
                 if (!block.IsWorking)
                 {
-                    Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Block not working: {block.GetType().Name}", LogLevel.Debug);
+                    //Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Block not working: {block.GetType().Name}", LogLevel.Debug);
                     return false;
                 }
             }
@@ -120,8 +126,15 @@ namespace IngameScript.Ship.Components.Missiles
 
         public void EarlyUpdate(int frame)
         {
-            if (frame % Config.Missile.FinderRefreshFrequencyFrames != 0) return;
             
+            AT_Vector3D ca = (Vector3D.Min(FirstCorner, SecondCorner) - 0.5) * _finderBlock.CubeGrid.GridSize;
+            AT_Vector3D cb = (Vector3D.Max(FirstCorner, SecondCorner) + 0.5) * _finderBlock.CubeGrid.GridSize;
+            
+            var aabb = new BoundingBoxD(ca, cb);
+            var obb = new MyOrientedBoundingBoxD(aabb, _finderBlock.CubeGrid.WorldMatrix);
+            Program.Debug.DrawOBB(obb, Color.Red, DebugAPI.Style.Wireframe, 0.02f, 0.016f, true);
+            
+            if (frame % Config.Missile.FinderRefreshFrequencyFrames != 0) return;
             RefreshBlocks();
         }
         public void LateUpdate(int frame)
@@ -143,8 +156,8 @@ namespace IngameScript.Ship.Components.Missiles
 
             var cat = ConfigCategory.From(dict, "MissileFinder");
             
-            cat.Sync("Offset", ref _offset);
-            cat.Sync("Extents", ref _extents);
+            cat.Sync("CornerA", ref _localCornerA, "X/Y/Z, Forward/Up/Left. Negative values move in opposite direction");
+            cat.Sync("CornerB", ref _localCornerB, "Use these corners to create a bounding box around the missile. Orientation is block relative." );
             
             cat.SyncEnum("PayloadType", ref _payloadType);
             cat.SyncEnum("PropulsionType", ref _propulsionType);
@@ -155,8 +168,8 @@ namespace IngameScript.Ship.Components.Missiles
             cat.Sync("LaunchPulseThrusterName", ref _launchPulseThrusterName, "Optional");
             cat.Sync("LaunchWeaponName", ref _launchWeaponName, "Optional");
             
-            _offset = _offset.Floor();
-            _extents = _extents.Floor();
+            _localCornerA = _localCornerA.Floor();
+            _localCornerB = _localCornerB.Floor();
             
             return Dwon.Serialize(parsed);
         }
@@ -170,7 +183,7 @@ namespace IngameScript.Ship.Components.Missiles
             var left = Base6Directions.Directions[(int)orientation.Left] * (float)translation.Z;
 
 
-            return (Vector3I)(forward + up + left);
+            return Vector3D.Round(forward + up + left);
         }
 
         private void RefreshBlocks()
@@ -185,7 +198,7 @@ namespace IngameScript.Ship.Components.Missiles
                 case MissileFinderState.Collected:
                     return;
                 case MissileFinderState.Fired:
-                    Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Resetting after fire", LogLevel.Debug);
+                    //Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Resetting after fire", LogLevel.Debug);
                     _blocks = new List<IMyCubeBlock>();
                     _pattern.ClearPattern();
                     _state = MissileFinderState.Refreshing;
@@ -193,8 +206,7 @@ namespace IngameScript.Ship.Components.Missiles
             }
 
             Vector3I ca = Vector3I.Min(FirstCorner, SecondCorner);
-            Vector3I cb = Vector3I.Max(FirstCorner, SecondCorner);
-            
+            Vector3I cb = Vector3I.Max(FirstCorner, SecondCorner) + Vector3I.One;
             
             foreach (var pos in Vector3I.EnumerateRange(ca, cb))
             {
@@ -208,7 +220,6 @@ namespace IngameScript.Ship.Components.Missiles
             if (isFirstRefresh && _blocks.Count > 0)
             {
                 _pattern.SavePattern(_blocks);
-                Program.LogLine($"(MissileFinder) '{_finderBlock.CustomName}' - Pattern saved with {_blocks.Count} blocks", LogLevel.Debug);
             }
         }
         

@@ -32,6 +32,7 @@ namespace IngameScript.Ship.Components.Missiles
         public void EarlyUpdate(int frame)
         {
             foreach (var finder in _finders) finder.EarlyUpdate(frame);
+            Collect(); // TODO: Put this on a timer
             foreach (var launcher in _launchers) launcher.EarlyUpdate(frame);
             foreach (var missile in _missiles) missile.EarlyUpdate(frame);
         }
@@ -46,7 +47,7 @@ namespace IngameScript.Ship.Components.Missiles
 
         public void RequestCiws(TrackableShip target)
         {
-            _ciwsHandler.HandleCiwsRequest(_launchers, _missiles, target, OnMissileLaunchSuccess);
+            _ciwsHandler.HandleRequest(_launchers, _missiles, target, OnMissileLaunchSuccess);
         }
 
         public void RequestMissileFireManual()

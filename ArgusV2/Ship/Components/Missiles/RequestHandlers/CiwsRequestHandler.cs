@@ -10,7 +10,7 @@ namespace IngameScript.Ship.Components.Missiles.RequestHandlers
         private List<MissileLauncher> _launcherCandidates = new List<MissileLauncher>();
         private List<Missile> _missileCandidates = new List<Missile>();
 
-        public void HandleCiwsRequest(
+        public void HandleRequest(
             List<MissileLauncher> launchers,
             List<Missile> missiles,
             TrackableShip target,

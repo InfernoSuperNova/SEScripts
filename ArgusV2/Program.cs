@@ -35,7 +35,7 @@ namespace IngameScript
                 ShipManager.CreateControllableShip(Me.CubeGrid, GridTerminalSystem);
                 Program.LogLine("Creating commands", LogLevel.Info);
                 Commands.Setup();
-                //Runtime.UpdateFrequency = UpdateFrequency.Update1;
+                Runtime.UpdateFrequency = UpdateFrequency.Update1;
                 
                 var elapsed = DateTime.UtcNow - startTime;
                 LogLine($"Setup completed in {elapsed.TotalMilliseconds:F1} ms", LogLevel.Highlight);
