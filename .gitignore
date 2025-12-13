@@ -4,3 +4,6 @@ obj/
 **/obj/
 bin/
 **/bin/
+
+# Local configuration
+*.mdk.local.ini
