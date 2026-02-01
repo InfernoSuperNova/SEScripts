@@ -44,7 +44,7 @@ namespace IngameScript
     }
 
     [Flags]
-    public enum LaunchControl
+    public enum MissileCommandContext
     {
         Automatic = 1 << 0,          // Launch to a quota whenever any target is tracked. See refuel state for further launch conditions
         Manual = 1 << 1,             // Launch when commanded to by the controlling player. See refuel state for further launch conditions
