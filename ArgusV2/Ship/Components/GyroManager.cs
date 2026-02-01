@@ -8,6 +8,12 @@ using VRageMath;
 
 namespace IngameScript.Ship.Components
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public class GyroManager
     {
         private readonly List<IMyGyro> _gyros;

@@ -7,11 +7,31 @@ using VRage.Game.ModAPI.Ingame.Utilities;
 
 namespace IngameScript.SConfig
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public class ConfigTool
     {
+        /// <summary>
+        /// Dictionary method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Dictionary method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         private static readonly Dictionary<string, ConfigTool> Configs = new Dictionary<string, ConfigTool>();
 
         public delegate void ConfigSync(Dictionary<string, object> dict);
+        /// <summary>
+        /// Gets or sets the Sync.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the Sync.
+        /// </summary>
         public ConfigSync Sync { get; set; }
 
         public ConfigTool(string name, string comment)
@@ -22,6 +42,12 @@ namespace IngameScript.SConfig
         }
 
         public string Name { get; }
+        /// <summary>
+        /// Gets or sets the Comment.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the Comment.
+        /// </summary>
         public string Comment { get; }
 
         public static string SyncConfig(string input)

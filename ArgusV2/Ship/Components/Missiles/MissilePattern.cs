@@ -3,11 +3,20 @@ using VRage.Game.ModAPI.Ingame;
 
 namespace IngameScript.Ship.Components.Missiles
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public class MissilePattern
     {
         private Dictionary<string, int> _blockPattern;
         private Dictionary<string, int> _currentPattern;
         private bool _hasPattern;
+
+        private bool _patternValid;
+        
 
         public MissilePattern()
         {
@@ -19,8 +28,20 @@ namespace IngameScript.Ship.Components.Missiles
         /// <summary>
         /// Saves the current block configuration as the expected pattern
         /// </summary>
+        /// <summary>
+        /// SavePattern method.
+        /// </summary>
+        /// <param name="blocks">The blocks parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// SavePattern method.
+        /// </summary>
+        /// <param name="blocks">The blocks parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public void SavePattern(List<IMyCubeBlock> blocks)
         {
+            _patternValid = MissileEssentials.IsValidMissile(blocks);
+            
             if (blocks == null || blocks.Count == 0)
             {
                 _blockPattern.Clear();
@@ -35,6 +56,16 @@ namespace IngameScript.Ship.Components.Missiles
         /// <summary>
         /// Compares the current block list against the saved pattern
         /// </summary>
+        /// <summary>
+        /// MatchesPattern method.
+        /// </summary>
+        /// <param name="blocks">The blocks parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// MatchesPattern method.
+        /// </summary>
+        /// <param name="blocks">The blocks parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public bool MatchesPattern(List<IMyCubeBlock> blocks)
         {
             if (!_hasPattern)
@@ -91,6 +122,8 @@ namespace IngameScript.Ship.Components.Missiles
         }
 
         public bool HasPattern => _hasPattern;
+        
+        public bool IsValid => _hasPattern && _patternValid;
 
         public void ClearPattern()
         {

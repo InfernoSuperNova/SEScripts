@@ -2,6 +2,15 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../Architects-In-Void" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../CopyGyroOverride" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../FortsLobbyManager" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../HopefulDemise" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../RotaryGunScript" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../Space Engineers Gradient Painter" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../godot_debug_draw_3d" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../mdk2" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../school-lunch-ordering-system" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../vis_classic" vcs="Git" />
   </component>
 </project>

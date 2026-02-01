@@ -4,6 +4,12 @@ using VRageMath;
 
 namespace IngameScript.Ship.Components.Propulsion.Gravity.Wrapper
 {
+    /// <summary>
+    /// BallMass class.
+    /// </summary>
+    /// <summary>
+    /// BallMass class.
+    /// </summary>
     public class BallMass : Mass
     {
         private IMySpaceBall _ball;
@@ -11,6 +17,20 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity.Wrapper
         private ControllableShip _ship;
         private float _cachedVirtualMass = 20000;
         private bool _wasActive;
+        /// <summary>
+        /// BallMass method.
+        /// </summary>
+        /// <param name="ball">The ball parameter.</param>
+        /// <param name="massSystem">The massSystem parameter.</param>
+        /// <param name="ship">The ship parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// BallMass method.
+        /// </summary>
+        /// <param name="ball">The ball parameter.</param>
+        /// <param name="massSystem">The massSystem parameter.</param>
+        /// <param name="ship">The ship parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public BallMass(IMySpaceBall ball, BalancedMassSystem massSystem, ControllableShip ship)
         {
             _ball = ball;
@@ -23,6 +43,14 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity.Wrapper
         public bool GeneratorRequested => _massSystem.Enabled;
 
         public bool IsActive => BalancerAllowed && GeneratorRequested;
+        /// <summary>
+        /// GetPosition method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// GetPosition method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         public override AT_Vector3D Position => _ball.GetPosition();
 
         public override double AbsoluteVirtualMass

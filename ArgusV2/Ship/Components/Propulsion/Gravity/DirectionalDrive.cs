@@ -7,6 +7,12 @@ using Base6Directions = IngameScript.Helper.Base6Directions;
 
 namespace IngameScript.Ship.Components.Propulsion.Gravity
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     internal class DirectionalDrive
     {
         private BalancedMassSystem _massSystem;
@@ -33,6 +39,12 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
         }
         
         public Direction Direction { get; private set; }
+        /// <summary>
+        /// Gets or sets the Enabled.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the Enabled.
+        /// </summary>
         public bool Enabled { get; private set; }
         public double MaxLinearForce => _linearForce.Value;
         public double MaxSphericalForce => _sphericalForce.Value;

@@ -8,6 +8,12 @@ using VRageMath;
 
 namespace IngameScript.Ship.Components.Propulsion.Gravity
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public class BalancedMassSystem
     {
         private readonly List<BlockMass> _blocks;
@@ -57,7 +63,19 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
         }
         
         public bool Enabled { get; set; }
+        /// <summary>
+        /// Gets or sets the TotalMass.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the TotalMass.
+        /// </summary>
         public double TotalMass { get; private set; }
+        /// <summary>
+        /// Gets or sets the TotalMassBlocks.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the TotalMassBlocks.
+        /// </summary>
         public double TotalMassBlocks { get; private set; }
 
         public List<Mass> AllBlocks => _allBlocks;
@@ -98,6 +116,14 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity
         /// Returns true if the mass state of the generator has changed since this function was last called.
         /// </summary>
         /// <returns></returns>
+        /// <summary>
+        /// HasStateChanged method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// HasStateChanged method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         public bool HasStateChanged()
         {
             var state = _stateChanged;

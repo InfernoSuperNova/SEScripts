@@ -12,6 +12,12 @@ using Base6Directions = IngameScript.Helper.Base6Directions;
 
 namespace IngameScript.Ship.Components.Propulsion.Gravity
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public class GDrive
     {
         private readonly DirectionalDrive _forwardBackward;

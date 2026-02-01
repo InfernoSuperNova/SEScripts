@@ -1,20 +1,43 @@
 using System;
 using System.Collections.Generic;
+using IngameScript.Ship.Components.Missiles.GuidanceObjective;
 using IngameScript.Ship.Components.Missiles.LaunchMechanisms;
 using Sandbox.ModAPI.Ingame;
 
 namespace IngameScript.Ship.Components.Missiles.RequestHandlers
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public class CiwsRequestHandler
     {
+        /// <summary>
+        /// List method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// List method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         private List<MissileLauncher> _launcherCandidates = new List<MissileLauncher>();
+        /// <summary>
+        /// List method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// List method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         private List<Missile> _missileCandidates = new List<Missile>();
 
         public void HandleRequest(
             List<MissileLauncher> launchers,
             List<Missile> missiles,
             TrackableShip target,
-            Action<MissileLauncher, LaunchRequest> onLaunchSuccess)
+            Action<MissileLauncher, MissileCommand> onLaunchSuccess)
         {
             var launchRequest = CreateCiwsLaunchRequest(target);
 
@@ -39,7 +62,7 @@ namespace IngameScript.Ship.Components.Missiles.RequestHandlers
             }
             else
             {
-                closestMissile?.Redirect(target, launchRequest);
+                closestMissile?.Command(launchRequest);
             }
         }
 
@@ -52,15 +75,15 @@ namespace IngameScript.Ship.Components.Missiles.RequestHandlers
             // Filter launchers capable of CIWS
             foreach (var launcher in launchers)
             {
-                if (launcher.LaunchControl.HasFlag(LaunchControl.Ciws))
+                if (launcher.MissileCommandContext.HasFlag(MissileCommandContext.Ciws))
                     _launcherCandidates.Add(launcher);
             }
 
             // Filter missiles capable of CIWS with ballistic advantage
             foreach (var missile in missiles)
             {
-                if (missile.LaunchCapability.HasFlag(LaunchControl.Ciws) // If the missile is capable of CIWS...
-                    && !missile.LaunchContext.HasFlag(LaunchControl.Ciws) // Not currently in flight as CIWS...
+                if (missile.LaunchCapability.HasFlag(MissileCommandContext.Ciws) // If the missile is capable of CIWS...
+                    && !missile.LaunchContext.HasFlag(MissileCommandContext.Ciws) // Not currently in flight as CIWS...
                     && (missile.Position - target.Position).Dot(target.Velocity) > 0) // And has ballistic advantage
                     _missileCandidates.Add(missile); // Then it's a candidate for redirection
             }
@@ -108,14 +131,17 @@ namespace IngameScript.Ship.Components.Missiles.RequestHandlers
             return closestMissile;
         }
 
-        private LaunchRequest CreateCiwsLaunchRequest(TrackableShip target)
+        private MissileCommand CreateCiwsLaunchRequest(TrackableShip target)
         {
-            return new LaunchRequest(
-                launchControl: LaunchControl.Ciws,
-                target: target,
-                targetingMode: TargetingMode.AABBCenter,
-                behavior: Behavior.DirectAttack
+            
+            var missionObjective = new DirectAttackBehavior(target);
+            
+            return new MissileCommand(
+                MissileCommandContext.Ciws,
+                missionObjective
             );
         }
     }
+
+
 }

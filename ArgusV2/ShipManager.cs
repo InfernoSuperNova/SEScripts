@@ -12,6 +12,12 @@ using VRageMath;
 
 namespace IngameScript
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public static class ShipManager
     {
         
@@ -146,6 +152,18 @@ namespace IngameScript
         /// <param name="ship">The target ship to test.</param>
         /// <param name="range">The search range.</param>
         /// <returns>A REUSED list containing all ships in range. This is REUSED internally and should not be persisted.</returns>
+        /// <summary>
+        /// List method.
+        /// </summary>
+        /// <param name="ship">The ship parameter.</param>
+        /// <param name="range">The range parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// List method.
+        /// </summary>
+        /// <param name="ship">The ship parameter.</param>
+        /// <param name="range">The range parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public static List<TrackableShip> GetTargetsInRange(SupportingShip ship, double range)
         {
             // Just an O(n) lookup for now :)

@@ -4,6 +4,12 @@ using VRageMath;
 
 namespace IngameScript.TruncationWrappers
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public struct AT_DetectedEntityInfo
     {
         private MyDetectedEntityInfo _info;

@@ -5,6 +5,12 @@ using VRageMath;
 
 namespace IngameScript.Helper
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public static class OBBReconstructor
     {
         

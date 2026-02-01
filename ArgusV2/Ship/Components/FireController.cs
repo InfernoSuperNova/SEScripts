@@ -5,6 +5,12 @@ using VRageMath;
 
 namespace IngameScript.Ship.Components
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public struct FiringSolution
     {
         public readonly AT_Vector3D DesiredForward;
@@ -27,6 +33,12 @@ namespace IngameScript.Ship.Components
         }
     }
     // Responsible for gathering targeting information from both ControllableShip and GunManager and deciding on a course of action
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public class FireController
     {
         private ControllableShip _ship;
@@ -41,6 +53,7 @@ namespace IngameScript.Ship.Components
         /// <summary>
         /// What a cool function name, that's how you know it's cool
         /// </summary>
+        /// <returns>The result of the operation.</returns>
         public FiringSolution ArbitrateFiringSolution()
         {
 

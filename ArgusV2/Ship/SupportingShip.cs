@@ -14,6 +14,12 @@ namespace IngameScript
     /// <summary>
     /// Represents a friendly ship that can be directly referenced by, but should not be controlled by Argus. Should be able to be promoted to a ControllableShip though.
     /// </summary>
+    /// <summary>
+    /// SupportingShip class.
+    /// </summary>
+    /// <summary>
+    /// SupportingShip class.
+    /// </summary>
     public class SupportingShip : ArgusShip 
     {
         private readonly List<TargetTracker> _targetTrackers;
@@ -68,10 +74,28 @@ namespace IngameScript
         
         public override AT_Vector3D Position => _grid.GetPosition();
         public override AT_Vector3D Velocity => CVelocity;
+        /// <summary>
+        /// Acceleration method.
+        /// </summary>
+        /// <param name="CPreviousVelocity">The CPreviousVelocity parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Acceleration method.
+        /// </summary>
+        /// <param name="CPreviousVelocity">The CPreviousVelocity parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public override AT_Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
         public override float GridSize => _grid.GridSize;
 
         public override string Name => _grid.CustomName;
+        /// <summary>
+        /// ToString method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// ToString method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         public override string ToString() => Name;
 
         public override void EarlyUpdate(int frame)

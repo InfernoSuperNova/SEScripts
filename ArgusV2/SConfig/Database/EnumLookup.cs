@@ -6,6 +6,12 @@ using IngameScript.Ship.Components;
 
 namespace IngameScript.SConfig.Database
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public static class EnumLookup
 {
     
@@ -65,12 +71,12 @@ namespace IngameScript.SConfig.Database
                 }
             },
             {
-                typeof(LaunchControl),
+                typeof(MissileCommandContext),
                 new Dictionary<int, string>
                 {
-                    { (int)LaunchControl.Automatic, "Automatic" },
-                    { (int)LaunchControl.Manual, "Manual" },
-                    { (int)LaunchControl.Ciws, "ManualCiwsOverride" }
+                    { (int)MissileCommandContext.Automatic, "Automatic" },
+                    { (int)MissileCommandContext.Manual, "Manual" },
+                    { (int)MissileCommandContext.Ciws, "ManualCiwsOverride" }
                 }
             },
             {
@@ -123,6 +129,16 @@ namespace IngameScript.SConfig.Database
     // Build reverse tables on startup
     static EnumLookup()
     {
+        /// <summary>
+        /// foreach method.
+        /// </summary>
+        /// <param name="enumToString">The enumToString parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// foreach method.
+        /// </summary>
+        /// <param name="enumToString">The enumToString parameter.</param>
+        /// <returns>The result of the operation.</returns>
         foreach (var pair in enumToString)
         {
             Type type = pair.Key;
@@ -142,12 +158,34 @@ namespace IngameScript.SConfig.Database
     }
 
     // Forward: enum → string
+        /// <summary>
+        /// GetName method.
+        /// </summary>
+        /// <param name="value">The value parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// GetName method.
+        /// </summary>
+        /// <param name="value">The value parameter.</param>
+        /// <returns>The result of the operation.</returns>
     public static string GetName<T>(T value) where T : struct
     {
         Type type = typeof(T);
         int intVal = Convert.ToInt32(value);
 
         Dictionary<int, string> map;
+        /// <summary>
+        /// if method.
+        /// </summary>
+        /// <param name="enumToString.TryGetValue(type">The enumToString.TryGetValue(type parameter.</param>
+        /// <param name="map">The map parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// if method.
+        /// </summary>
+        /// <param name="enumToString.TryGetValue(type">The enumToString.TryGetValue(type parameter.</param>
+        /// <param name="map">The map parameter.</param>
+        /// <returns>The result of the operation.</returns>
         if (enumToString.TryGetValue(type, out map))
         {
             // Check if this is a flags enum
@@ -191,6 +229,18 @@ namespace IngameScript.SConfig.Database
     }
 
     // Reverse: string → int → enum
+        /// <summary>
+        /// TryGetValue method.
+        /// </summary>
+        /// <param name="name">The name parameter.</param>
+        /// <param name="value">The value parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// TryGetValue method.
+        /// </summary>
+        /// <param name="name">The name parameter.</param>
+        /// <param name="value">The value parameter.</param>
+        /// <returns>The result of the operation.</returns>
     public static bool TryGetValue<T>(string name, out T value) where T : struct
     {
         Type type = typeof(T);
@@ -256,6 +306,18 @@ namespace IngameScript.SConfig.Database
     public static string[] GetNames(Type type)
     {
         Dictionary<int, string> map;
+        /// <summary>
+        /// TryGetValue method.
+        /// </summary>
+        /// <param name="type">The type parameter.</param>
+        /// <param name="map">The map parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// TryGetValue method.
+        /// </summary>
+        /// <param name="type">The type parameter.</param>
+        /// <param name="map">The map parameter.</param>
+        /// <returns>The result of the operation.</returns>
         return enumToString.TryGetValue(type, out map) ? map.Values.ToArray() : Array.Empty<string>();
     }
 }

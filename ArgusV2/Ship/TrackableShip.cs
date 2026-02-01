@@ -50,10 +50,24 @@ namespace IngameScript.Ship
     /// <summary>
     /// Represents an enemy ship that can be tracked by Argus but cannot be controlled by Argus.
     /// </summary>
+    /// <summary>
+    /// TrackableShip class.
+    /// </summary>
+    /// <summary>
+    /// TrackableShip class.
+    /// </summary>
     public class TrackableShip : ArgusShip
     {
         
         private Dictionary<Vector3I, ScannedBlockTracker> _scannedBlocks = new Dictionary<Vector3I, ScannedBlockTracker>();
+        /// <summary>
+        /// Dictionary method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Dictionary method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         private Dictionary<Vector3I, ScannedBlockTracker> _scannedBlocks_Swap = new Dictionary<Vector3I, ScannedBlockTracker>();
 
         public SupportingShip TrackingShip;
@@ -93,6 +107,16 @@ namespace IngameScript.Ship
 
         public override AT_Vector3D Position => Info.Position;
         public override AT_Vector3D Velocity => CVelocity;
+        /// <summary>
+        /// Acceleration method.
+        /// </summary>
+        /// <param name="CPreviousVelocity">The CPreviousVelocity parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Acceleration method.
+        /// </summary>
+        /// <param name="CPreviousVelocity">The CPreviousVelocity parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public override AT_Vector3D Acceleration => (CVelocity - CPreviousVelocity) * 60;
         public override float GridSize => _gridSize;
 
@@ -103,12 +127,24 @@ namespace IngameScript.Ship
         public override string ToString() => Name;
 
         public TargetTracker Tracker { get; set; }
+        /// <summary>
+        /// Gets or sets the IntersectsLargerShipAABB.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the IntersectsLargerShipAABB.
+        /// </summary>
         public bool IntersectsLargerShipAABB { get; set; }
 
         public BoundingBoxD WorldAABB => Info.BoundingBox;
         
         public AT_Vector3D Extents => LocalAABB.Extents;
         public AT_Vector3D HalfExtents => LocalAABB.HalfExtents;
+        /// <summary>
+        /// Gets or sets the ProxyId.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the ProxyId.
+        /// </summary>
         public int ProxyId { get; set; } = 0;
         
 
@@ -144,6 +180,20 @@ namespace IngameScript.Ship
 
         private void GenerateLocalAABB()
         {
+        /// <summary>
+        /// GetMaxInscribedOBB method.
+        /// </summary>
+        /// <param name="WorldAABB">The WorldAABB parameter.</param>
+        /// <param name="Info.Orientation">The Info.Orientation parameter.</param>
+        /// <param name="_gridSize">The _gridSize parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// GetMaxInscribedOBB method.
+        /// </summary>
+        /// <param name="WorldAABB">The WorldAABB parameter.</param>
+        /// <param name="Info.Orientation">The Info.Orientation parameter.</param>
+        /// <param name="_gridSize">The _gridSize parameter.</param>
+        /// <returns>The result of the operation.</returns>
             _cachedAABB = OBBReconstructor.GetMaxInscribedOBB(WorldAABB, Info.Orientation, _gridSize);
             _aabbNeedsRecalc = false;
             var extents = HalfExtents;
@@ -164,13 +214,17 @@ namespace IngameScript.Ship
             {
                 _aabbNeedsRecalc = true;
                 Vector3I displacement =
-                    (Vector3I)(AT_Vector3D.Transform(_displacement - (CVelocity / 60), MatrixD.Invert(_worldMatrix)) * 2);
+                    (Vector3I)(AT_Vector3D.Transform(_displacement - (CVelocity / 60),
+                        MatrixD.Invert(_worldMatrix)) * 2);
                 DisplaceTrackedBlocks(displacement);
             }
+
             
             _worldMatrix = Info.Orientation;
             _worldMatrix.Translation += Info.Position;
             _previousPosition = Position;
+            Program.Debug.DrawOBB(new MyOrientedBoundingBoxD(LocalAABB, _worldMatrix), Color.White, DebugAPI.Style.Wireframe, 0.02f, 0.016f, true);
+            Program.Debug.DrawAABB(WorldAABB, Color.Red, DebugAPI.Style.Wireframe, 0.02f, 0.016f, true);
         }
 
         public override void LateUpdate(int frame)

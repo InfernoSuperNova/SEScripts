@@ -100,6 +100,24 @@ namespace IngameScript.Helper
             // }
 
             //Shortcut Ignoring Of Complex Values And Return Smallest Real Number
+        /// <summary>
+        /// Solve method.
+        /// </summary>
+        /// <param name="a">The a parameter.</param>
+        /// <param name="b">The b parameter.</param>
+        /// <param name="c">The c parameter.</param>
+        /// <param name="d">The d parameter.</param>
+        /// <param name="e">The e parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Solve method.
+        /// </summary>
+        /// <param name="a">The a parameter.</param>
+        /// <param name="b">The b parameter.</param>
+        /// <param name="c">The c parameter.</param>
+        /// <param name="d">The d parameter.</param>
+        /// <param name="e">The e parameter.</param>
+        /// <returns>The result of the operation.</returns>
             public static double Solve(double a, double b, double c, double d, double e)
             {
                 if (Math.Abs(a) < epsilon) a = a >= 0 ? epsilon : -epsilon;

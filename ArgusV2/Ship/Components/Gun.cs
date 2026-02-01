@@ -74,7 +74,21 @@ namespace IngameScript.Ship.Components
         }
         
         public AT_Vector3D GridPosition => (Vector3)(_gun.Min + _gun.Max) / 2 * _manager.ThisShip.GridSize;
+        /// <summary>
+        /// GetPosition method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// GetPosition method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         public AT_Vector3D WorldPosition => _gun.GetPosition();
+        /// <summary>
+        /// Gets or sets the Direction.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the Direction.
+        /// </summary>
         public AT_Vector3D Direction { get; set; }
         public float Velocity => _gunData.ProjectileData.ProjectileVelocity;
         public float Acceleration => _gunData.ProjectileData.Acceleration;

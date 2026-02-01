@@ -28,6 +28,14 @@ namespace IngameScript.Ship.Components
     
     public class GunManager
     {
+        /// <summary>
+        /// List method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// List method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         private List<Gun> _guns = new List<Gun>();
         
         private List<Gun> _currentFiringGroup = new List<Gun>();
@@ -159,6 +167,14 @@ namespace IngameScript.Ship.Components
         
         
         // API
+        /// <summary>
+        /// FireAll method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// FireAll method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         public void FireAll()
         {
             foreach (var gun in _guns) gun.Fire();

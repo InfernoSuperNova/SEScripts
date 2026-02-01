@@ -11,6 +11,12 @@ namespace IngameScript.Ship
     /// <summary>
     /// The base ship type.
     /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public abstract class ArgusShip
     {
         protected AT_Vector3D CPreviousVelocity;
@@ -25,9 +31,33 @@ namespace IngameScript.Ship
         }
         
         public abstract AT_Vector3D Position { get; }
+        /// <summary>
+        /// Gets or sets the Velocity.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the Velocity.
+        /// </summary>
         public abstract AT_Vector3D Velocity { get; }
+        /// <summary>
+        /// Gets or sets the Acceleration.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the Acceleration.
+        /// </summary>
         public abstract AT_Vector3D Acceleration { get; }
+        /// <summary>
+        /// Gets or sets the GridSize.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the GridSize.
+        /// </summary>
         public abstract float GridSize { get; }
+        /// <summary>
+        /// Gets or sets the Name.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the Name.
+        /// </summary>
         public abstract string Name { get; }
 
 
@@ -35,12 +65,32 @@ namespace IngameScript.Ship
         /// The first update to be called. This should be for grabbing new data from the API, e.g. positions, velocities, targets.
         /// </summary>
         /// <param name="frame"></param>
+        /// <summary>
+        /// EarlyUpdate method.
+        /// </summary>
+        /// <param name="frame">The frame parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// EarlyUpdate method.
+        /// </summary>
+        /// <param name="frame">The frame parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public abstract void EarlyUpdate(int frame);
         
         /// <summary>
         /// The second update to be called. This would be for anything that depends on up-to-date data from other ships, e.g. ballistic calculations, distance checks.
         /// </summary>
         /// <param name="frame"></param>
+        /// <summary>
+        /// LateUpdate method.
+        /// </summary>
+        /// <param name="frame">The frame parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// LateUpdate method.
+        /// </summary>
+        /// <param name="frame">The frame parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public abstract void LateUpdate(int frame);
         
         
@@ -54,6 +104,18 @@ namespace IngameScript.Ship
         /// <param name="target">The target ship to hit.</param>
         /// <param name="projectileVelocity">The speed of the projectile.</param>
         /// <returns>A normalized direction vector to aim at for impact.</returns>
+        /// <summary>
+        /// GetTargetLeadPosition method.
+        /// </summary>
+        /// <param name="target">The target parameter.</param>
+        /// <param name="projectileVelocity">The projectileVelocity parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// GetTargetLeadPosition method.
+        /// </summary>
+        /// <param name="target">The target parameter.</param>
+        /// <param name="projectileVelocity">The projectileVelocity parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public AT_Vector3D GetTargetLeadPosition(ArgusShip target, float projectileVelocity)
         {
             AT_Vector3D shooterPos = this.Position;

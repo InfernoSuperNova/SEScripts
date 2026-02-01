@@ -5,8 +5,22 @@ using Color = VRageMath.Color;
 
 namespace IngameScript.Helper
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public class TimedLog
     {
+        /// <summary>
+        /// Dictionary method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Dictionary method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         private Dictionary<LogLevel, string> _logColour = new Dictionary<LogLevel, string>()
         {
             { LogLevel.Trace, $"{ColorToHexARGB(Color.Gray)}" },
@@ -17,6 +31,16 @@ namespace IngameScript.Helper
             { LogLevel.Critical, $"{ColorToHexARGB(Color.DarkRed)}" },
             { LogLevel.Highlight, $"{ColorToHexARGB(Color.Aquamarine)}"}
         };
+        /// <summary>
+        /// ColorToHexARGB method.
+        /// </summary>
+        /// <param name="color">The color parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// ColorToHexARGB method.
+        /// </summary>
+        /// <param name="color">The color parameter.</param>
+        /// <returns>The result of the operation.</returns>
         private static string ColorToHexARGB(Color color)
         {
             return $"[color=#{color.A:X2}{color.R:X2}{color.G:X2}{color.B:X2}]";
@@ -29,6 +53,20 @@ namespace IngameScript.Helper
             internal readonly string Text;
             internal readonly double Timestamp; // seconds since epoch
             internal readonly LogLevel Level;
+        /// <summary>
+        /// Entry method.
+        /// </summary>
+        /// <param name="text">The text parameter.</param>
+        /// <param name="timestamp">The timestamp parameter.</param>
+        /// <param name="level">The level parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Entry method.
+        /// </summary>
+        /// <param name="text">The text parameter.</param>
+        /// <param name="timestamp">The timestamp parameter.</param>
+        /// <param name="level">The level parameter.</param>
+        /// <returns>The result of the operation.</returns>
             public Entry(string text, double timestamp, LogLevel level)
             {
                 Text = text;

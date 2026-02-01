@@ -6,9 +6,31 @@ using VRageMath;
 
 namespace IngameScript.Helper
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public static class TrackableShipAABBTreeHelper
     {
+        /// <summary>
+        /// List method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// List method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         private static readonly List<TrackableShip> Elements = new List<TrackableShip>();
+        /// <summary>
+        /// List method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// List method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         private static readonly List<BoundingBoxD> Boxes = new List<BoundingBoxD>();
 
         private static readonly Dictionary<TrackableShip, List<TrackableShip>> ReusedOverlaps =
@@ -18,6 +40,14 @@ namespace IngameScript.Helper
 
         private static int _rI = 0;
         // Diabolical
+        /// <summary>
+        /// List method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// List method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         private static List<TrackableShip> GetList()
         {
             if (_rI >= ReusedLists.Count)
@@ -33,6 +63,16 @@ namespace IngameScript.Helper
         /// </summary>
         /// <param name="tree"></param>
         /// <returns></returns>
+        /// <summary>
+        /// Dictionary method.
+        /// </summary>
+        /// <param name="tree">The tree parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Dictionary method.
+        /// </summary>
+        /// <param name="tree">The tree parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public static Dictionary<TrackableShip, List<TrackableShip>> GetAllOverlaps(MyDynamicAABBTreeD tree)
         {
             _rI = 0;

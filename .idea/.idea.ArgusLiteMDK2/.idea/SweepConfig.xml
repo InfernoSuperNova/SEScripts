@@ -10,6 +10,20 @@
         <option value="get_errors" />
       </set>
     </option>
+    <option name="bashAutoApproveMode" value="USE_ALLOWLIST" />
+    <option name="bashCommandAllowlist">
+      <set>
+        <option value="sed" />
+        <option value="grep" />
+        <option value="find" />
+        <option value="ls" />
+        <option value="cat" />
+        <option value="chmod" />
+        <option value="wc" />
+        <option value="which" />
+        <option value="ddgr" />
+      </set>
+    </option>
     <option name="byokProviderConfigs">
       <map>
         <entry key="anthropic">

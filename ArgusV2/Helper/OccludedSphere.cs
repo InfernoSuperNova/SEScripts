@@ -7,6 +7,12 @@ using VRageMath;
 
 namespace IngameScript.Helper
 {
+    /// <summary>
+    /// OrientedOccludedSphere class.
+    /// </summary>
+    /// <summary>
+    /// OrientedOccludedSphere class.
+    /// </summary>
     public class OrientedOccludedSphere : OccludedSphere
     {
         
@@ -33,6 +39,12 @@ namespace IngameScript.Helper
     
     /// <summary>
     /// Assumed to be axis aligned.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
     /// </summary>
     public class OccludedSphere
     {
@@ -89,6 +101,16 @@ namespace IngameScript.Helper
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
+        /// <summary>
+        /// Intersects method.
+        /// </summary>
+        /// <param name="point">The point parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Intersects method.
+        /// </summary>
+        /// <param name="point">The point parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public virtual bool Intersects(AT_Vector3D point)
         {
             var to = point;

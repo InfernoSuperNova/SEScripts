@@ -7,11 +7,23 @@ using IngameScript.TruncationWrappers;
 
 namespace IngameScript.SConfig.Helper
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public static class Dwon
     {
         /// <summary>
         /// Represents a field in the DWON object tree with optional before/inline comments
         /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
         public class Field
         {
             public object Obj;
@@ -511,6 +523,16 @@ namespace IngameScript.SConfig.Helper
         #endregion
         
         // Helper: recursively unwrap all Dwon.Comment objects
+        /// <summary>
+        /// UnwrapAllComments method.
+        /// </summary>
+        /// <param name="dict">The dict parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// UnwrapAllComments method.
+        /// </summary>
+        /// <param name="dict">The dict parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public static void UnwrapAllComments(Dictionary<string, object> dict)
         {
             var keys = new List<string>(dict.Keys);
@@ -558,6 +580,20 @@ namespace IngameScript.SConfig.Helper
         }
 
         // Helper: safely get field, returns Field with default value if missing
+        /// <summary>
+        /// GetField method.
+        /// </summary>
+        /// <param name="dict">The dict parameter.</param>
+        /// <param name="key">The key parameter.</param>
+        /// <param name="default(T">The default(T parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// GetField method.
+        /// </summary>
+        /// <param name="dict">The dict parameter.</param>
+        /// <param name="key">The key parameter.</param>
+        /// <param name="default(T">The default(T parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public static Field GetField<T>(Dictionary<string, object> dict, string key, T defaultValue = default(T))
         {
             object value;
@@ -583,6 +619,22 @@ namespace IngameScript.SConfig.Helper
         }
 
         // Helper: safely get value, returns default if missing (legacy method for backward compatibility)
+        /// <summary>
+        /// GetValue method.
+        /// </summary>
+        /// <param name="dict">The dict parameter.</param>
+        /// <param name="key">The key parameter.</param>
+        /// <param name="comment">The comment parameter.</param>
+        /// <param name="default(T">The default(T parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// GetValue method.
+        /// </summary>
+        /// <param name="dict">The dict parameter.</param>
+        /// <param name="key">The key parameter.</param>
+        /// <param name="comment">The comment parameter.</param>
+        /// <param name="default(T">The default(T parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public static T GetValue<T>(Dictionary<string, object> dict, string key, ref string comment, T defaultValue = default(T))
         {
             Field field = GetField(dict, key, defaultValue);

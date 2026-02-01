@@ -12,6 +12,16 @@ namespace IngameScript.Ship.Components
     }
     public class Polling
     {
+        /// <summary>
+        /// GetFramesBetweenPolls method.
+        /// </summary>
+        /// <param name="freq">The freq parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// GetFramesBetweenPolls method.
+        /// </summary>
+        /// <param name="freq">The freq parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public static int GetFramesBetweenPolls(PollFrequency freq)
         {
             switch (freq)

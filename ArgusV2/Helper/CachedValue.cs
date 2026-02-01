@@ -2,6 +2,7 @@ using System;
 
 namespace IngameScript.Helper
 {
+
     public struct CachedValue<T>
     {
         private T _value;

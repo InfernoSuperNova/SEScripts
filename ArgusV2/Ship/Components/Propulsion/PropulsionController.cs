@@ -11,6 +11,12 @@ using VRageMath;
 
 namespace IngameScript.Ship.Components.Propulsion
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public class PropulsionController
     {
         private GDrive _gDrive;

@@ -5,11 +5,23 @@ using VRageMath;
 
 namespace IngameScript.Ship.Components.Propulsion.Gravity.Wrapper
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public abstract class GravityGenerator
     {
         protected bool IsInverted;
         
         public IMyGravityGeneratorBase Generator { get; protected set; }
+        /// <summary>
+        /// Gets or sets the Direction.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the Direction.
+        /// </summary>
         public Direction Direction { get; protected set; }
 
         

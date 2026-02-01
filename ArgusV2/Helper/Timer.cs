@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 namespace IngameScript
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public class SimpleTimer
     {
         public int Remaining;
@@ -11,7 +17,23 @@ namespace IngameScript
 
     public static class TimerManager
     {
+        /// <summary>
+        /// Dictionary method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Dictionary method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         private static readonly Dictionary<int, SimpleTimer> Timers = new Dictionary<int, SimpleTimer>();
+        /// <summary>
+        /// Dictionary method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Dictionary method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         private static readonly Dictionary<int, SimpleTimer> _pendingAdditions = new Dictionary<int, SimpleTimer>();
         private static int _nextId = 1;
 
@@ -19,6 +41,18 @@ namespace IngameScript
         /// Starts a timer for the given duration and optional callback.
         /// Returns a unique timer ID that is never reused.
         /// </summary>
+        /// <summary>
+        /// Start method.
+        /// </summary>
+        /// <param name="duration">The duration parameter.</param>
+        /// <param name="null">The null parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Start method.
+        /// </summary>
+        /// <param name="duration">The duration parameter.</param>
+        /// <param name="null">The null parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public static int Start(int duration, Action onComplete = null)
         {
             if (duration <= 0)
@@ -47,6 +81,16 @@ namespace IngameScript
         /// <summary>
         /// Cancels a timer immediately.
         /// </summary>
+        /// <summary>
+        /// Cancel method.
+        /// </summary>
+        /// <param name="id">The id parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Cancel method.
+        /// </summary>
+        /// <param name="id">The id parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public static void Cancel(int id)
         {
             Timers.Remove(id);
@@ -56,6 +100,14 @@ namespace IngameScript
         /// <summary>
         /// Tick all active timers. Call once per frame.
         /// </summary>
+        /// <summary>
+        /// TickAll method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// TickAll method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         public static void TickAll()
         {
             if (_pendingAdditions.Count > 0)

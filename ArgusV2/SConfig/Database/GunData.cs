@@ -7,6 +7,12 @@ using IngameScript.Ship.Components;
 
 namespace IngameScript.SConfig.Database
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public class ProjectileData
     {
         private static readonly ConfigTool Config = new ConfigTool("Projectile Data",
@@ -17,6 +23,22 @@ namespace IngameScript.SConfig.Database
 
 
         public static Dictionary<string, ProjectileData> LookupTable = new Dictionary<string, ProjectileData>();
+        /// <summary>
+        /// ProjectileData method.
+        /// </summary>
+        /// <param name="0">The 0 parameter.</param>
+        /// <param name="0">The 0 parameter.</param>
+        /// <param name="0">The 0 parameter.</param>
+        /// <param name="0">The 0 parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// ProjectileData method.
+        /// </summary>
+        /// <param name="0">The 0 parameter.</param>
+        /// <param name="0">The 0 parameter.</param>
+        /// <param name="0">The 0 parameter.</param>
+        /// <param name="0">The 0 parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public static readonly ProjectileData DefaultProjectile = new ProjectileData(0, 0, 0, 0);
 
         static ProjectileData()
@@ -44,8 +66,26 @@ namespace IngameScript.SConfig.Database
         }
 
         public float ProjectileVelocity { get; private set; }
+        /// <summary>
+        /// Gets or sets the MaxVelocity.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the MaxVelocity.
+        /// </summary>
         public float MaxVelocity { get; private set; }
+        /// <summary>
+        /// Gets or sets the MaxRange.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the MaxRange.
+        /// </summary>
         public float MaxRange { get; private set; }
+        /// <summary>
+        /// Gets or sets the Acceleration.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the Acceleration.
+        /// </summary>
         public float Acceleration { get; private set; }
 
         public ProjectileData(float projectileVelocity, float maxVelocity, float maxRange, float acceleration)
@@ -110,7 +150,33 @@ namespace IngameScript.SConfig.Database
         {
             Sync = SyncConfig
         };
+        /// <summary>
+        /// Dictionary method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Dictionary method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         public static Dictionary<string, GunData> LookupTable = new Dictionary<string, GunData>();
+        /// <summary>
+        /// GunData method.
+        /// </summary>
+        /// <param name=""Default"">The "Default" parameter.</param>
+        /// <param name="0">The 0 parameter.</param>
+        /// <param name="0">The 0 parameter.</param>
+        /// <param name="0f">The 0f parameter.</param>
+        /// <param name="0f">The 0f parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// GunData method.
+        /// </summary>
+        /// <param name=""Default"">The "Default" parameter.</param>
+        /// <param name="0">The 0 parameter.</param>
+        /// <param name="0">The 0 parameter.</param>
+        /// <param name="0f">The 0f parameter.</param>
+        /// <param name="0f">The 0f parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public static readonly GunData DefaultGun = new GunData("Default", 0, 0, 0f, 0f);
         
         static GunData()
@@ -147,11 +213,41 @@ namespace IngameScript.SConfig.Database
 
 
         private string _projectileDataString;
+        /// <summary>
+        /// Gets or sets the ProjectileData.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the ProjectileData.
+        /// </summary>
         public ProjectileData ProjectileData { get; }
+        /// <summary>
+        /// Gets or sets the ReloadType.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the ReloadType.
+        /// </summary>
         public GunReloadType ReloadType { get; }
+        /// <summary>
+        /// Gets or sets the FireType.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the FireType.
+        /// </summary>
         public GunFireType FireType { get; }
+        /// <summary>
+        /// Gets or sets the FireTimeFrames.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the FireTimeFrames.
+        /// </summary>
         public int FireTimeFrames { get; }
         public float FireTime => FireTimeFrames / 60.0f;
+        /// <summary>
+        /// Gets or sets the ReloadTimeFrames.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the ReloadTimeFrames.
+        /// </summary>
         public int ReloadTimeFrames { get; }
         public float ReloadTime => ReloadTimeFrames / 60.0f;
 

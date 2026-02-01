@@ -5,6 +5,12 @@ using IngameScript.SConfig.Database;
 
 namespace IngameScript.SConfig.Helper
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     class ConfigCategory
     {
         private readonly Dictionary<string, object> _values;
@@ -49,13 +55,73 @@ namespace IngameScript.SConfig.Helper
         public void SyncEnum<E>(string key, ref E scriptField, string beforeComment = "", string inlineComment = "") where E : struct
         {
             var field = Dwon.GetField(_values, key, EnumLookup.GetName(scriptField));
+        /// <summary>
+        /// ToString method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// ToString method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
             var enumName = field.Obj.ToString();
+        /// <summary>
+        /// Log method.
+        /// </summary>
+        /// <param name="enumName">The enumName parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Log method.
+        /// </summary>
+        /// <param name="enumName">The enumName parameter.</param>
+        /// <returns>The result of the operation.</returns>
             Program.Log(enumName);
             bool debug = enumName == "Info";
+        /// <summary>
+        /// if method.
+        /// </summary>
+        /// <param name="debug">The debug parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// if method.
+        /// </summary>
+        /// <param name="debug">The debug parameter.</param>
+        /// <returns>The result of the operation.</returns>
             if (debug) Program.Log(enumName);
             if (debug) Program.Log(scriptField.GetType());
+        /// <summary>
+        /// TryGetValue method.
+        /// </summary>
+        /// <param name="enumName">The enumName parameter.</param>
+        /// <param name="scriptField">The scriptField parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// TryGetValue method.
+        /// </summary>
+        /// <param name="enumName">The enumName parameter.</param>
+        /// <param name="scriptField">The scriptField parameter.</param>
+        /// <returns>The result of the operation.</returns>
             EnumLookup.TryGetValue(enumName, out scriptField);  
+        /// <summary>
+        /// GetName method.
+        /// </summary>
+        /// <param name="scriptField">The scriptField parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// GetName method.
+        /// </summary>
+        /// <param name="scriptField">The scriptField parameter.</param>
+        /// <returns>The result of the operation.</returns>
             enumName = EnumLookup.GetName(scriptField);
+        /// <summary>
+        /// if method.
+        /// </summary>
+        /// <param name="debug">The debug parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// if method.
+        /// </summary>
+        /// <param name="debug">The debug parameter.</param>
+        /// <returns>The result of the operation.</returns>
             if (debug) Program.Log(enumName);
             // Determine which comment to use: Existing > Provided > Auto-generated
             if (string.IsNullOrEmpty(field.BeforeComment))

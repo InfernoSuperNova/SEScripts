@@ -4,6 +4,12 @@ using VRageMath;
 
 namespace IngameScript.Ship.Components.Propulsion.Gravity.Wrapper
 {
+    /// <summary>
+    /// BlockMass class.
+    /// </summary>
+    /// <summary>
+    /// BlockMass class.
+    /// </summary>
     public class BlockMass : Mass
     {
         private IMyArtificialMassBlock _mass;
@@ -11,6 +17,20 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity.Wrapper
         private ControllableShip _ship;
 
         private bool _previousActive;
+        /// <summary>
+        /// BlockMass method.
+        /// </summary>
+        /// <param name="mass">The mass parameter.</param>
+        /// <param name="massSystem">The massSystem parameter.</param>
+        /// <param name="ship">The ship parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// BlockMass method.
+        /// </summary>
+        /// <param name="mass">The mass parameter.</param>
+        /// <param name="massSystem">The massSystem parameter.</param>
+        /// <param name="ship">The ship parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public BlockMass(IMyArtificialMassBlock mass, BalancedMassSystem massSystem, ControllableShip ship)
         {
             _mass = mass;
@@ -24,6 +44,14 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity.Wrapper
         public bool GeneratorRequested => _massSystem.Enabled;
 
         public bool IsActive => BalancerAllowed && GeneratorRequested;
+        /// <summary>
+        /// GetPosition method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// GetPosition method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         public override AT_Vector3D Position => _mass.GetPosition();
         public override double AbsoluteVirtualMass
         {
@@ -38,6 +66,16 @@ namespace IngameScript.Ship.Components.Propulsion.Gravity.Wrapper
         }
 
         public override Vector3I GridPosition => _mass.Position;
+        /// <summary>
+        /// GetPosition method.
+        /// </summary>
+        /// <param name="_mass.GetPosition(">The _mass.GetPosition( parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// GetPosition method.
+        /// </summary>
+        /// <param name="_mass.GetPosition(">The _mass.GetPosition( parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public AT_Vector3D Moment => AbsoluteVirtualMass * (_mass.GetPosition() - _ship.Controller.CenterOfMass);
 
         public bool UpdateState()

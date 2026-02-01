@@ -47,6 +47,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptBits", "ScriptBits\Sc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCLoader", "GCLoader\GCLoader.csproj", "{764DFB0C-9E3B-4121-9FF3-8B428F123DB5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblerPull", "AssemblerPull\AssemblerPull.csproj", "{742DA152-4F33-4FF7-AF51-42BED75D4489}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IceCollector", "IceCollector\IceCollector.csproj", "{13AE6560-9AFB-4C4D-B63A-ACDBF454DBA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IceBallast", "IceBallast\IceBallast.csproj", "{CBC9102A-AF59-4661-8D21-AB7CF04F7170}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoatSteerer", "BoatSteerer\BoatSteerer.csproj", "{1774FE93-8465-4B65-8383-6914A70E0F1E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -141,6 +149,22 @@ Global
 		{764DFB0C-9E3B-4121-9FF3-8B428F123DB5}.Debug|x64.Build.0 = Debug|x64
 		{764DFB0C-9E3B-4121-9FF3-8B428F123DB5}.Release|x64.ActiveCfg = Release|x64
 		{764DFB0C-9E3B-4121-9FF3-8B428F123DB5}.Release|x64.Build.0 = Release|x64
+		{742DA152-4F33-4FF7-AF51-42BED75D4489}.Debug|x64.ActiveCfg = Debug|x64
+		{742DA152-4F33-4FF7-AF51-42BED75D4489}.Debug|x64.Build.0 = Debug|x64
+		{742DA152-4F33-4FF7-AF51-42BED75D4489}.Release|x64.ActiveCfg = Release|x64
+		{742DA152-4F33-4FF7-AF51-42BED75D4489}.Release|x64.Build.0 = Release|x64
+		{13AE6560-9AFB-4C4D-B63A-ACDBF454DBA1}.Debug|x64.ActiveCfg = Debug|x64
+		{13AE6560-9AFB-4C4D-B63A-ACDBF454DBA1}.Debug|x64.Build.0 = Debug|x64
+		{13AE6560-9AFB-4C4D-B63A-ACDBF454DBA1}.Release|x64.ActiveCfg = Release|x64
+		{13AE6560-9AFB-4C4D-B63A-ACDBF454DBA1}.Release|x64.Build.0 = Release|x64
+		{CBC9102A-AF59-4661-8D21-AB7CF04F7170}.Debug|x64.ActiveCfg = Debug|x64
+		{CBC9102A-AF59-4661-8D21-AB7CF04F7170}.Debug|x64.Build.0 = Debug|x64
+		{CBC9102A-AF59-4661-8D21-AB7CF04F7170}.Release|x64.ActiveCfg = Release|x64
+		{CBC9102A-AF59-4661-8D21-AB7CF04F7170}.Release|x64.Build.0 = Release|x64
+		{1774FE93-8465-4B65-8383-6914A70E0F1E}.Debug|x64.ActiveCfg = Debug|x64
+		{1774FE93-8465-4B65-8383-6914A70E0F1E}.Debug|x64.Build.0 = Debug|x64
+		{1774FE93-8465-4B65-8383-6914A70E0F1E}.Release|x64.ActiveCfg = Release|x64
+		{1774FE93-8465-4B65-8383-6914A70E0F1E}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

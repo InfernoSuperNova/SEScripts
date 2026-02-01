@@ -9,6 +9,12 @@ namespace IngameScript.Helper
     /// Manages friendly names extracted from or embedded in a block's CustomName.
     /// Follows the pattern: "[Prefix] [FriendlyName]" where the friendly name is extracted from brackets.
     /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public class FriendlyCustomName
     {
         private readonly IMyTerminalBlock _block;
@@ -20,6 +26,18 @@ namespace IngameScript.Helper
         /// </summary>
         /// <param name="block">The block whose CustomName will be managed</param>
         /// <param name="prefix">The prefix to use when setting the CustomName (e.g., "Missile Finder")</param>
+        /// <summary>
+        /// FriendlyCustomName method.
+        /// </summary>
+        /// <param name="block">The block parameter.</param>
+        /// <param name="prefix">The prefix parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// FriendlyCustomName method.
+        /// </summary>
+        /// <param name="block">The block parameter.</param>
+        /// <param name="prefix">The prefix parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public FriendlyCustomName(IMyTerminalBlock block, string prefix)
         {
             _block = block;
@@ -36,6 +54,14 @@ namespace IngameScript.Helper
         /// Synchronizes the friendly name with the block's CustomName.
         /// Extracts existing friendly name from brackets, or generates and sets a new one.
         /// </summary>
+        /// <summary>
+        /// Sync method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Sync method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         public void Sync()
         {
             string extracted;
@@ -53,6 +79,16 @@ namespace IngameScript.Helper
         /// <summary>
         /// Sets a new friendly name and updates the block's CustomName.
         /// </summary>
+        /// <summary>
+        /// SetFriendlyName method.
+        /// </summary>
+        /// <param name="newName">The newName parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// SetFriendlyName method.
+        /// </summary>
+        /// <param name="newName">The newName parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public void SetFriendlyName(string newName)
         {
             if (string.IsNullOrWhiteSpace(newName))
@@ -66,6 +102,16 @@ namespace IngameScript.Helper
         /// Attempts to extract the friendly name from the block's CustomName.
         /// Looks for text between the first '[' and last ']'.
         /// </summary>
+        /// <summary>
+        /// TryExtractFriendlyName method.
+        /// </summary>
+        /// <param name="extracted">The extracted parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// TryExtractFriendlyName method.
+        /// </summary>
+        /// <param name="extracted">The extracted parameter.</param>
+        /// <returns>The result of the operation.</returns>
         private bool TryExtractFriendlyName(out string extracted)
         {
             extracted = null;
@@ -87,6 +133,14 @@ namespace IngameScript.Helper
         /// Updates the block's CustomName with the current friendly name.
         /// Format: "[Prefix] [FriendlyName]"
         /// </summary>
+        /// <summary>
+        /// UpdateBlockCustomName method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// UpdateBlockCustomName method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         private void UpdateBlockCustomName()
         {
             _block.CustomName = $"{_prefix} [{_friendlyName}]";

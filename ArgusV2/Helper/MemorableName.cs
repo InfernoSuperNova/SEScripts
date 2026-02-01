@@ -1,5 +1,11 @@
 namespace IngameScript.Helper
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public static class MemorableName
     {
         public static string[] adjectives = new string[]

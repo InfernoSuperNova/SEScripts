@@ -7,7 +7,7 @@ using SpaceEngineers.Game.ModAPI.Ingame;
 namespace IngameScript.Ship.Components.Missiles.LaunchMechanisms
 {
 
-    enum MissileLauncherState
+    public enum MissileLauncherState
     {
         Waiting,
         Launching,
@@ -18,26 +18,35 @@ namespace IngameScript.Ship.Components.Missiles.LaunchMechanisms
     /// <summary>
     /// Represents a missile launcher with its launch mechanism and associated missile
     /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public class MissileLauncher
     {
         private MissileLauncherState _state = MissileLauncherState.Waiting;
         private LaunchMechanism _launchMechanism;
         private readonly Missile _missile;
 
-        private readonly List<IMyThrust> _launchPulseThrusters; // Only applicable if LaunchMechanism is PulsedThruster
+        private readonly IMyThrust _launchPulseThruster; // Only applicable if LaunchMechanism is PulsedThruster
         private readonly List<IMyUserControllableGun> _launchWeapons; // Only applicable if LaunchMechanism is Weapon
         private readonly MissileFinder _missileFinder;
-        private Action<MissileLauncher, LaunchRequest> _onMissileLaunchSuccess;
-        private readonly LaunchControl _launchControl;
+        private Action<MissileLauncher, MissileCommand> _onMissileLaunchSuccess;
+        private readonly MissileCommandContext _missileCommandContext;
 
-        public MissileLauncher(LaunchMechanism launchMechanism, Missile missile, List<IMyThrust> launchPulseThrusters, List<IMyUserControllableGun> launchWeapons, LaunchControl launchControl, MissileFinder missileFinder)
+        public MissileLauncher(LaunchMechanism launchMechanism, Missile missile, IMyThrust launchPulseThruster, List<IMyUserControllableGun> launchWeapons, MissileCommandContext missileCommandContext, MissileFinder missileFinder)
         {
             _launchMechanism = launchMechanism;
             _missile = missile;
-            _launchPulseThrusters = launchPulseThrusters;
+            _launchPulseThruster = launchPulseThruster;
             _launchWeapons = launchWeapons;
-            _launchControl = launchControl;
+            _missileCommandContext = missileCommandContext;
             _missileFinder = missileFinder;
+            
+            
+
             
         }
 
@@ -54,12 +63,12 @@ namespace IngameScript.Ship.Components.Missiles.LaunchMechanisms
         /// <summary>
         /// Gets the launch control mode for this launcher
         /// </summary>
-        public LaunchControl LaunchControl => _launchControl;
+        public MissileCommandContext MissileCommandContext => _missileCommandContext;
 
         /// <summary>
-        /// Gets the launch pulse thrusters (only applicable if LaunchMechanism is PulsedThruster)
+        /// Gets the launch pulse thruster (only applicable if LaunchMechanism is PulsedThruster)
         /// </summary>
-        public List<IMyThrust> LaunchPulseThrusters => _launchPulseThrusters;
+        public IMyThrust LaunchPulseThruster => _launchPulseThruster;
 
         /// <summary>
         /// Gets the launch weapons (only applicable if LaunchMechanism is Weapon)
@@ -67,21 +76,30 @@ namespace IngameScript.Ship.Components.Missiles.LaunchMechanisms
         public List<IMyUserControllableGun> LaunchWeapons => _launchWeapons;
 
         public bool HasSuccessfullyDetached => _missile.ReferenceGrid != _missileFinder.ReferenceGrid;
+        public MissileLauncherState State => _state;
 
-        public void Launch(Action<MissileLauncher, LaunchRequest> onMissileLaunchSuccess, LaunchRequest launchRequest)
+        public void Launch(Action<MissileLauncher, MissileCommand> onMissileLaunchSuccess, MissileCommand missileCommand)
         {
             if (_state == MissileLauncherState.Waiting)
             {
                 _state = MissileLauncherState.Launching;
-                _onMissileLaunchSuccess = (launcher, request) => onMissileLaunchSuccess(launcher, launchRequest);
+                _onMissileLaunchSuccess = (launcher, request) => onMissileLaunchSuccess(launcher, missileCommand);
         
                 // Execute launch mechanism immediately instead of waiting for LateUpdate
                 EvaluateLaunchMechanism();
+
+
+                switch (_launchMechanism)
+                {
+                    case LaunchMechanism.PulsedThruster:
+                        _launchPulseThruster.ThrustOverridePercentage = 1.0f;
+                        break;
+                }
+                
             }
         }
         public void EarlyUpdate(int frame)
         {
-            Program.Log($"(MissileLauncher) '{_missileFinder.FriendlyName}' - EarlyUpdate");
             if (_state == MissileLauncherState.Launching)
             {
                 EvaluateLaunchMechanism();
@@ -94,7 +112,7 @@ namespace IngameScript.Ship.Components.Missiles.LaunchMechanisms
                 if (_launchMechanism == LaunchMechanism.None)
                 {
                     _state = MissileLauncherState.Failed;
-                    Program.LogLine($"(MissileLauncher) '{_missileFinder.FriendlyName}' - Launch mechanism failed", LogLevel.Error);
+                    Program.LogLine($"(MissileLauncher) '{_missileFinder.FriendlyName}' - Launch mechanism failed (no launch mechanism set)", LogLevel.Error);
                     // We don't clean up here and instead let the launcher hang on to the missile for analysis later
                 }
             }
@@ -131,6 +149,14 @@ namespace IngameScript.Ship.Components.Missiles.LaunchMechanisms
         }
 
         #region Launch Mechanisms
+        /// <summary>
+        /// MechanicalLaunchMechanism method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// MechanicalLaunchMechanism method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         private void MechanicalLaunchMechanism()
         {
             foreach (var block in _missile.Blocks)
@@ -178,14 +204,13 @@ namespace IngameScript.Ship.Components.Missiles.LaunchMechanisms
 
             _launchMechanism &= ~LaunchMechanism.MergeBlock;
         }
+
+        
         private void PulsedThrusterLaunchMechanism()
         {
-            // This is a special case and requires continuous attention
-            foreach (var thruster in _launchPulseThrusters)
-            {
-                thruster.Enabled = !thruster.Enabled;
-            }
-            // We don't remove this flag because this condition needs to continuously fire until true
+            if (Program.RNG.NextDouble() < 0.5) // Can't explain it but it works
+            _launchPulseThruster.Enabled = !_launchPulseThruster.Enabled;
+            
         }
 
         private void WeaponLaunchMechanism()
@@ -199,10 +224,22 @@ namespace IngameScript.Ship.Components.Missiles.LaunchMechanisms
         }
 
         #endregion
+        /// <summary>
+        /// OnSuccessfulDetach method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// OnSuccessfulDetach method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         private void OnSuccessfulDetach()
         {
             _missileFinder.MarkFired();
-            _onMissileLaunchSuccess?.Invoke(this, new LaunchRequest());
+            _onMissileLaunchSuccess?.Invoke(this, new MissileCommand());
+            
+            
+            _launchPulseThruster.ThrustOverridePercentage = 0.0f;
+            _launchPulseThruster.Enabled = false;
         }
         
     }

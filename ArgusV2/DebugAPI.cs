@@ -7,6 +7,12 @@ using VRageMath;
 
 namespace IngameScript
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public class DebugAPI
         {
             public readonly bool ModDetected;
@@ -60,20 +66,70 @@ namespace IngameScript
             Func<TimeSpan> _ts;
 
             public MeasureToken Measure(Action<TimeSpan> call) => new MeasureToken(this, call);
+    /// <summary>
+    /// MeasureToken class.
+    /// </summary>
+    /// <summary>
+    /// MeasureToken class.
+    /// </summary>
             public struct MeasureToken : IDisposable
             {
                 DebugAPI A; TimeSpan S; Action<TimeSpan> C;
+        /// <summary>
+        /// MeasureToken method.
+        /// </summary>
+        /// <param name="api">The api parameter.</param>
+        /// <param name="call">The call parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// MeasureToken method.
+        /// </summary>
+        /// <param name="api">The api parameter.</param>
+        /// <param name="call">The call parameter.</param>
+        /// <returns>The result of the operation.</returns>
                 public MeasureToken(DebugAPI api, Action<TimeSpan> call) { A = api; C = call; S = A.GetTimestamp(); }
+        /// <summary>
+        /// Dispose method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Dispose method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
                 public void Dispose() { C?.Invoke(A.GetTimestamp() - S); }
             }
 
             public enum Style { Solid, Wireframe, SolidAndWireframe }
+        /// <summary>
+        /// Gets or sets the Input.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the Input.
+        /// </summary>
             public enum Input { MouseLeftButton, MouseRightButton, MouseMiddleButton, MouseExtraButton1, MouseExtraButton2, LeftShift, RightShift, LeftControl, RightControl, LeftAlt, RightAlt, Tab, Shift, Control, Alt, Space, PageUp, PageDown, End, Home, Insert, Delete, Left, Up, Right, Down, D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, NumPad0, NumPad1, NumPad2, NumPad3, NumPad4, NumPad5, NumPad6, NumPad7, NumPad8, NumPad9, Multiply, Add, Separator, Subtract, Decimal, Divide, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12 }
+        /// <summary>
+        /// Gets or sets the Font.
+        /// </summary>
+        /// <summary>
+        /// Gets or sets the Font.
+        /// </summary>
             public enum Font { Debug, White, Red, Green, Blue, DarkBlue }
             const float DefaultThickness = 0.02f;
             const float DefaultSeconds = -1;
             IMyProgrammableBlock _pb;
             bool _defTop;
+        /// <summary>
+        /// DebugAPI method.
+        /// </summary>
+        /// <param name="program">The program parameter.</param>
+        /// <param name="false">The false parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// DebugAPI method.
+        /// </summary>
+        /// <param name="program">The program parameter.</param>
+        /// <param name="false">The false parameter.</param>
+        /// <returns>The result of the operation.</returns>
             public DebugAPI(MyGridProgram program, bool drawOnTopDefault = false)
             {
                 if(program == null) throw new Exception("Pass `this` into the API, not null.");

@@ -2,6 +2,12 @@ using System;
 
 namespace IngameScript.Helper
 {
+    /// <summary>
+    /// Item class.
+    /// </summary>
+    /// <summary>
+    /// Item class.
+    /// </summary>
     public class PIDController
     {
         double integral;

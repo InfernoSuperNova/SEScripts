@@ -21,9 +21,49 @@ namespace IngameScript.TruncationWrappers
         }
         
         public static implicit operator AT_Vector3D(Vector3D value) => new AT_Vector3D(value);
+        /// <summary>
+        /// AT_Vector3D method.
+        /// </summary>
+        /// <param name="value">The value parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// AT_Vector3D method.
+        /// </summary>
+        /// <param name="value">The value parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public static implicit operator AT_Vector3D(Vector3 value) => (Vector3D)value;
+        /// <summary>
+        /// Vector3D method.
+        /// </summary>
+        /// <param name="value">The value parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Vector3D method.
+        /// </summary>
+        /// <param name="value">The value parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public static implicit operator Vector3D(AT_Vector3D value) => value._value;
+        /// <summary>
+        /// Vector3I method.
+        /// </summary>
+        /// <param name="value">The value parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Vector3I method.
+        /// </summary>
+        /// <param name="value">The value parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public static explicit operator Vector3I(AT_Vector3D value) => (Vector3I)value._value;
+        /// <summary>
+        /// AT_Vector3D method.
+        /// </summary>
+        /// <param name="value">The value parameter.</param>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// AT_Vector3D method.
+        /// </summary>
+        /// <param name="value">The value parameter.</param>
+        /// <returns>The result of the operation.</returns>
         public static explicit operator AT_Vector3D(Vector3I value) => (Vector3D)value;
 
 
@@ -69,6 +109,14 @@ namespace IngameScript.TruncationWrappers
         public static AT_Vector3D Forward => Vector3D.Forward;
         public static AT_Vector3D Left => Vector3D.Left;
         public static AT_Vector3D Up => Vector3D.Up;
+        /// <summary>
+        /// Length method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
+        /// <summary>
+        /// Length method.
+        /// </summary>
+        /// <returns>The result of the operation.</returns>
         public double Length() => _value.Length();
 
         public double Dot(AT_Vector3D other) => _value.Dot(other._value);

@@ -4,6 +4,12 @@ using VRageMath;
 
 namespace IngameScript.Ship.Components.Propulsion.Gravity.Wrapper
 {
+    /// <summary>
+    /// GravityGeneratorLinear class.
+    /// </summary>
+    /// <summary>
+    /// GravityGeneratorLinear class.
+    /// </summary>
     public class GravityGeneratorLinear : GravityGenerator
     {
 
